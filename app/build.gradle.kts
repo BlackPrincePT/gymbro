@@ -107,4 +107,7 @@ dependencies {
     implementation(libs.converter.kotlinx.serialization)
     implementation(libs.okhttp)
     implementation(libs.logging.interceptor)
+
+    // Cache
+    implementation(libs.androidx.datastore.preferences)
 }
