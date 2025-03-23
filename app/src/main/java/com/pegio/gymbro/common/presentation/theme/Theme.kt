@@ -1,4 +1,4 @@
-package com.pegio.gymbro.common.presentation.ui.theme
+package com.pegio.gymbro.common.presentation.theme
 
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme

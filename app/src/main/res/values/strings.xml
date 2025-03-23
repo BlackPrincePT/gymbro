@@ -1,3 +1,38 @@
 <resources>
     <string name="app_name">gymbro</string>
+
+    <!-- Firestore Error Strings -->
+    <string name="firestore_cancelled">Operation cancelled</string>
+    <string name="firestore_unknown">An unknown error occurred</string>
+    <string name="firestore_unexpected">An unexpected error occurred</string>
+    <string name="firestore_invalid_argument">Invalid argument provided</string>
+    <string name="firestore_deadline_exceeded">Deadline exceeded</string>
+    <string name="firestore_document_not_found">Document not found</string>
+    <string name="firestore_already_exists">Document already exists</string>
+    <string name="firestore_permission_denied">Permission denied</string>
+    <string name="firestore_resource_exhausted">Resource exhausted</string>
+    <string name="firestore_failed_precondition">Failed precondition</string>
+    <string name="firestore_aborted">Operation aborted</string>
+    <string name="firestore_out_of_range">Out of range</string>
+    <string name="firestore_unimplemented">Unimplemented operation</string>
+    <string name="firestore_internal">Internal error</string>
+    <string name="firestore_unavailable">Service unavailable</string>
+    <string name="firestore_data_loss">Data loss encountered</string>
+    <string name="firestore_unauthenticated">Unauthenticated access</string>
+    <string name="firestore_document_parse_failed">Document parse failed</string>
+
+    <!-- Network Error Strings -->
+    <string name="error_unknown">An unknown error occurred.</string>
+    <string name="error_timeout">The request timed out.</string>
+    <string name="error_no_connection">No network connection available.</string>
+    <string name="error_bad_request">Bad request.</string>
+    <string name="error_unauthorized">Unauthorized access.</string>
+    <string name="error_forbidden">Access is forbidden.</string>
+    <string name="error_not_found">Resource not found.</string>
+    <string name="error_method_not_allowed">Method not allowed.</string>
+    <string name="error_conflict">Conflict occurred.</string>
+    <string name="error_internal_server_error">Internal server error.</string>
+    <string name="error_bad_gateway">Bad gateway.</string>
+    <string name="error_service_unavailable">Service is unavailable.</string>
+    <string name="error_gateway_timeout">Gateway timeout occurred.</string>
 </resources>
