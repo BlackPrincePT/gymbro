@@ -7,6 +7,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.pegio.gymbro.presentation.ai_chat.AiChatScreen
 import com.pegio.gymbro.presentation.auth.AuthScreen
 import com.pegio.gymbro.presentation.core.Route
 import com.pegio.gymbro.presentation.home.HomeScreen
@@ -23,7 +24,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             GymBroTheme {
                 val navController = rememberNavController()
-                NavHost(navController = navController, startDestination = Route.SplashScreen) {
+                NavHost(navController = navController, startDestination = Route.AiChatScreen) {
                     composable<Route.SplashScreen> {
                         SplashScreen(navController)
                     }
@@ -39,6 +40,12 @@ class MainActivity : ComponentActivity() {
                     composable<Route.HomeScreen> {
                         HomeScreen()
                     }
+
+                    composable<Route.AiChatScreen> {
+                        AiChatScreen()
+                    }
+
+
                 }
             }
         }
