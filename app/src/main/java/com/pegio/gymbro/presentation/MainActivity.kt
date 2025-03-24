@@ -25,6 +25,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.pegio.gymbro.presentation.ai_chat.AiChatScreen
 import com.pegio.gymbro.presentation.auth.AuthScreen
 import com.pegio.gymbro.presentation.core.Route
 import com.pegio.gymbro.presentation.drawer.AppDrawer
@@ -45,6 +46,30 @@ class MainActivity : ComponentActivity() {
         setContent {
             GymBroTheme {
                 AppContent()
+                val navController = rememberNavController()
+                NavHost(navController = navController, startDestination = Route.SplashScreen) {
+                    composable<Route.SplashScreen> {
+                        SplashScreen(navController)
+                    }
+
+                    composable<Route.AuthScreen> {
+                        AuthScreen(navController)
+                    }
+
+                    composable<Route.RegisterScreen> {
+                        RegisterScreen(navController)
+                    }
+
+                    composable<Route.HomeScreen> {
+                        HomeScreen()
+                    }
+
+                    composable<Route.AiChatScreen> {
+                        AiChatScreen()
+                    }
+
+
+                }
             }
         }
     }
