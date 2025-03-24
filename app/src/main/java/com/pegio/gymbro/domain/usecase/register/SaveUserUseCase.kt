@@ -1,4 +1,4 @@
-package com.pegio.gymbro.domain.usecase.user
+package com.pegio.gymbro.domain.usecase.register
 
 import com.pegio.gymbro.domain.model.User
 import com.pegio.gymbro.domain.repository.UserRepository
