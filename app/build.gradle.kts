@@ -1,3 +1,5 @@
+import com.android.build.gradle.internal.cxx.configure.gradleLocalProperties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -30,6 +32,12 @@ android {
         vectorDrawables {
             useSupportLibrary = true
         }
+
+        buildConfigField(
+            "String",
+            "DEFAULT_WEB_CLIENT_ID",
+            gradleLocalProperties(rootDir, providers).getProperty("DEFAULT_WEB_CLIENT_ID")
+        )
     }
 
     buildTypes {
@@ -85,6 +93,9 @@ dependencies {
     debugImplementation(libs.androidx.ui.test.manifest)
 
     implementation(libs.kotlinx.serialization.json)
+
+    // Navigation
+    implementation(libs.navigation.compose)
 
     // DI
     implementation(libs.hilt.android)
