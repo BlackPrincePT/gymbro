@@ -37,7 +37,14 @@ class AuthViewModel @Inject constructor(
     private val _uiEffect = MutableSharedFlow<AuthUiEffect>()
     val uiEffect = _uiEffect.asSharedFlow()
 
-    fun launchGoogleAuthOptions(context: Context) = viewModelScope.launch {
+    fun onEvent(event: AuthUiEvent) {
+        when (event) {
+            is AuthUiEvent.OnLaunchGoogleAuthOptions -> launchGoogleAuthOptions(context = event.context)
+            AuthUiEvent.OnContinueAsGuest -> { }
+        }
+    }
+
+    private fun launchGoogleAuthOptions(context: Context) = viewModelScope.launch {
         try {
             val signInWithGoogleOption = GetSignInWithGoogleOption
                 .Builder(BuildConfig.DEFAULT_WEB_CLIENT_ID)

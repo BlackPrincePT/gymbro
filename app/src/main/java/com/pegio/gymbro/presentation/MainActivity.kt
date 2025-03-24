@@ -9,7 +9,9 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.pegio.gymbro.presentation.auth.AuthScreen
 import com.pegio.gymbro.presentation.core.Route
-import com.pegio.gymbro.presentation.theme.GymbroTheme
+import com.pegio.gymbro.presentation.home.HomeScreen
+import com.pegio.gymbro.presentation.register.RegisterScreen
+import com.pegio.gymbro.presentation.theme.GymBroTheme
 import com.pegio.gymbro.presentation.splash.SplashScreen
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -19,7 +21,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            GymbroTheme {
+            GymBroTheme {
                 val navController = rememberNavController()
                 NavHost(navController = navController, startDestination = Route.SplashScreen) {
                     composable<Route.SplashScreen> {
@@ -27,7 +29,15 @@ class MainActivity : ComponentActivity() {
                     }
 
                     composable<Route.AuthScreen> {
-                        AuthScreen()
+                        AuthScreen(navController)
+                    }
+
+                    composable<Route.RegisterScreen> {
+                        RegisterScreen(navController)
+                    }
+
+                    composable<Route.HomeScreen> {
+                        HomeScreen()
                     }
                 }
             }
