@@ -1,4 +1,4 @@
-package com.pegio.gymbro.domain.usecase.auth
+package com.pegio.gymbro.domain.usecase.drawer
 
 import com.pegio.gymbro.domain.repository.AuthRepository
 import javax.inject.Inject
