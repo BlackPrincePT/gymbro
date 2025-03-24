@@ -15,6 +15,7 @@ import com.pegio.gymbro.domain.usecase.auth.SignInWithGoogleUseCase
 import com.pegio.gymbro.domain.core.DataError
 import com.pegio.gymbro.domain.core.Resource
 import com.pegio.gymbro.domain.usecase.auth.CheckUserRegistrationStatusUseCase
+import com.pegio.gymbro.domain.usecase.auth.SignInAnonymouslyUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
@@ -28,6 +29,7 @@ import javax.inject.Inject
 @HiltViewModel
 class AuthViewModel @Inject constructor(
     private val signInWithGoogle: SignInWithGoogleUseCase,
+    private val signInAnonymously: SignInAnonymouslyUseCase,
     private val checkUserRegistrationStatus: CheckUserRegistrationStatusUseCase
 ) : ViewModel() {
 
@@ -40,7 +42,7 @@ class AuthViewModel @Inject constructor(
     fun onEvent(event: AuthUiEvent) {
         when (event) {
             is AuthUiEvent.OnLaunchGoogleAuthOptions -> launchGoogleAuthOptions(context = event.context)
-            AuthUiEvent.OnContinueAsGuest -> { }
+            AuthUiEvent.OnContinueAsGuest -> continueAsGuest()
         }
     }
 
@@ -74,6 +76,13 @@ class AuthViewModel @Inject constructor(
             }
         } else {
             sendEffect(AuthUiEffect.Failure(e = DataError.Firebase.INVALID_CREDENTIAL))
+        }
+    }
+
+    private fun continueAsGuest() = viewModelScope.launch {
+        when (val signInResult = signInAnonymously()) {
+            is Resource.Success -> sendEffect(AuthUiEffect.NavigateToHome)
+            is Resource.Failure -> sendEffect(AuthUiEffect.Failure(e = signInResult.error))
         }
     }
 

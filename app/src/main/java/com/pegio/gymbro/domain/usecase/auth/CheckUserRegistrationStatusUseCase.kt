@@ -24,8 +24,11 @@ class CheckUserRegistrationStatusUseCase @Inject constructor(
         runCatching { userRepository.getCurrentUserId() ?: throw UserNotAuthenticatedException() }
             .fold(
                 onSuccess = { currentUserId ->
-                    if (isRegistrationComplete(currentUserId)) onRegistrationComplete.invoke()
-                    else onRegistrationIncomplete.invoke()
+                    if (authRepository.isAnonymousSession() || isRegistrationComplete(currentUserId)) {
+                        onRegistrationComplete.invoke()
+                    } else {
+                        onRegistrationIncomplete.invoke()
+                    }
                 },
                 onFailure = {
                     authRepository.signOut()
