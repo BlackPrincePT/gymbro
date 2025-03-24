@@ -2,6 +2,7 @@ package com.pegio.gymbro.presentation.splash
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.firebase.auth.FirebaseAuth
 import com.pegio.gymbro.domain.usecase.auth.CheckUserRegistrationStatusUseCase
 import com.pegio.gymbro.domain.usecase.splash.HasSavedAuthSessionUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel

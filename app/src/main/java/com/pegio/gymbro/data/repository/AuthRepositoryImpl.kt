@@ -18,7 +18,8 @@ import javax.inject.Inject
 
 class AuthRepositoryImpl @Inject constructor() : AuthRepository {
 
-    override fun hasSavedAuthSession(): Boolean = FirebaseAuth.getInstance().currentUser != null
+    override fun hasSavedAuthSession() = FirebaseAuth.getInstance().currentUser != null
+    override fun isAnonymousSession() = FirebaseAuth.getInstance().currentUser?.isAnonymous == true
 
     override suspend fun signInWithGoogle(idToken: String): Resource<Unit, DataError.Firebase> {
         val firebaseCredential = GoogleAuthProvider.getCredential(idToken, null)
@@ -31,6 +32,19 @@ class AuthRepositoryImpl @Inject constructor() : AuthRepository {
         }
     }
 
+    override suspend fun signInAnonymously(): Resource<Unit, DataError.Firebase> {
+        return try {
+            Firebase.auth.signInAnonymously().await()
+            Resource.Success(Unit)
+        } catch (e: Exception) {
+            Resource.Failure(error = mapExceptionToSignInError(e))
+        }
+    }
+
+    override fun signOut() {
+        Firebase.auth.signOut()
+    }
+
     private fun mapExceptionToSignInError(e: Exception): DataError.Firebase {
         return when (e) {
             is FirebaseAuthInvalidCredentialsException -> DataError.Firebase.INVALID_CREDENTIAL
@@ -39,9 +53,5 @@ class AuthRepositoryImpl @Inject constructor() : AuthRepository {
             is FirebaseException -> DataError.Firebase.FIREBASE_ERROR
             else -> DataError.Firebase.UNKNOWN
         }
-    }
-
-    override fun signOut() {
-        Firebase.auth.signOut()
     }
 }
