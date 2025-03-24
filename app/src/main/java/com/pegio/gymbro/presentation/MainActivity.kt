@@ -24,7 +24,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             GymBroTheme {
                 val navController = rememberNavController()
-                NavHost(navController = navController, startDestination = Route.AiChatScreen) {
+                NavHost(navController = navController, startDestination = Route.SplashScreen) {
                     composable<Route.SplashScreen> {
                         SplashScreen(navController)
                     }
