@@ -1,8 +1,10 @@
 package com.pegio.gymbro.di
 
 import com.pegio.gymbro.data.repository.AuthRepositoryImpl
+import com.pegio.gymbro.data.repository.AiChatRepositoryImpl
 import com.pegio.gymbro.data.repository.UserRepositoryImpl
 import com.pegio.gymbro.domain.repository.AuthRepository
+import com.pegio.gymbro.domain.repository.ChatRepository
 import com.pegio.gymbro.domain.repository.UserRepository
 import dagger.Binds
 import dagger.Module
@@ -18,4 +20,7 @@ abstract class RepositoryModule {
 
     @Binds
     abstract fun bindUserRepository(repository: UserRepositoryImpl): UserRepository
+
+    @Binds
+    abstract fun bindChatRepository(repository: AiChatRepositoryImpl): ChatRepository
 }
