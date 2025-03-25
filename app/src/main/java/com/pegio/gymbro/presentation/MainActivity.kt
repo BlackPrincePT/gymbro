@@ -25,6 +25,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.pegio.gymbro.presentation.ai_chat.AiChatScreen
 import com.pegio.gymbro.presentation.auth.AuthScreen
 import com.pegio.gymbro.presentation.core.Route
 import com.pegio.gymbro.presentation.drawer.AppDrawer
@@ -124,6 +125,9 @@ private fun NavigationHost(navController: NavHostController, modifier: Modifier 
 
         composable<Route.HomeScreen> {
             HomeScreen()
+        }
+        composable<Route.AiChatScreen> {
+            AiChatScreen()
         }
     }
 }

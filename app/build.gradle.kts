@@ -41,6 +41,11 @@ android {
     }
 
     buildTypes {
+        debug {
+            buildConfigField("String", "GEMINI_URL", "\"https://api.openai.com/\"")
+            buildConfigField("String", "GPT_MODEL", "\"gpt-4o-mini\"")
+            buildConfigField("String", "API_KEY", gradleLocalProperties(rootDir, providers).getProperty("API_KEY"))
+        }
         release {
             isMinifyEnabled = false
             proguardFiles(
