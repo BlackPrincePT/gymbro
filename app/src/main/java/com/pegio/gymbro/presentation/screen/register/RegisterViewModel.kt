@@ -41,7 +41,8 @@ class RegisterViewModel @Inject constructor(
     private fun createUser(): User {
         return User(
             id = getCurrentUserId(),
-            username = _uiState.value.username
+            username = _uiState.value.username,
+            profile = null
         )
     }
 

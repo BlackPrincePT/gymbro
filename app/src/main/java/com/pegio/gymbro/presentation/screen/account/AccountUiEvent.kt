@@ -1,5 +1,8 @@
 package com.pegio.gymbro.presentation.screen.account
 
+import android.net.Uri
+
 sealed interface AccountUiEvent {
-    data object OnProfileImageClicked: AccountUiEvent
+    data class OnPhotoSelected(val imageUri: Uri): AccountUiEvent
+    data class OnPhotoUpload(val imageUrl: String): AccountUiEvent
 }

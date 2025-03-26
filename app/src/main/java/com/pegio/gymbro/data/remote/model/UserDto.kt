@@ -4,5 +4,6 @@ import com.google.firebase.firestore.DocumentId
 
 data class UserDto(
     @DocumentId val id: String? = null,
-    val username: String = ""
+    val username: String = "",
+    val profile: String? = null
 )

@@ -1,16 +1,26 @@
 package com.pegio.gymbro.data.workmanager
 
 import android.app.Notification
+import android.app.NotificationChannel
+import android.app.NotificationManager
 import android.content.Context
+import android.content.pm.ServiceInfo
 import android.net.Uri
+import android.os.Build
+import androidx.core.app.NotificationCompat
 import androidx.hilt.work.HiltWorker
 import androidx.work.CoroutineWorker
 import androidx.work.ForegroundInfo
 import androidx.work.WorkerParameters
 import androidx.work.workDataOf
+import com.google.firebase.firestore.FirebaseFirestoreException
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageException
+import com.pegio.gymbro.R
 import com.pegio.gymbro.domain.manager.upload.FileType
+import com.pegio.gymbro.domain.manager.upload.FileUploadManager.Companion.FILE_TYPE_KEY
+import com.pegio.gymbro.domain.manager.upload.FileUploadManager.Companion.RESULT_URL
+import com.pegio.gymbro.domain.manager.upload.FileUploadManager.Companion.URI_KEY
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import kotlinx.coroutines.tasks.await
@@ -21,14 +31,6 @@ class UploadWorker @AssistedInject constructor(
     @Assisted appContext: Context,
     @Assisted workerParams: WorkerParameters
 ) : CoroutineWorker(appContext, workerParams) {
-
-    companion object {
-        const val URI_KEY = "image_uri"
-        const val FILE_TYPE_KEY = "file_type"
-        const val RESULT_URL = "result_url"
-
-        private const val NOTIFICATION_ID = 1
-    }
 
     private val storageRef = FirebaseStorage.getInstance().reference
 
@@ -43,13 +45,11 @@ class UploadWorker @AssistedInject constructor(
             val uri = Uri.parse(uriString)
             val fileExtension = FileType.valueOf(fileTypeString).extension
 
-            setForeground(getForegroundInfo()) // is this necessary?
-
             val uniquePath = UUID.randomUUID().toString() + fileExtension
 
             storageRef.child(uniquePath).putFile(uri).await()
 
-            val resultUrl = storageRef.downloadUrl.await().toString()
+            val resultUrl = storageRef.child(uniquePath).downloadUrl.await().toString()
 
             Result.success(workDataOf(RESULT_URL to resultUrl))
         } catch (e: Exception) {
@@ -59,13 +59,5 @@ class UploadWorker @AssistedInject constructor(
                 else -> Result.failure()
             }
         }
-    }
-
-    override suspend fun getForegroundInfo(): ForegroundInfo {
-        return ForegroundInfo(NOTIFICATION_ID, createNotification())
-    }
-
-    private fun createNotification(): Notification {
-        TODO()
     }
 }

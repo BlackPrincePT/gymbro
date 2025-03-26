@@ -113,6 +113,8 @@ dependencies {
 
     // UI
     implementation(libs.androidx.paging.runtime)
+    implementation(libs.coil.compose)
+    implementation(libs.coil.network.okhttp)
 
     // Firebase
     implementation(platform(libs.firebase.bom))
