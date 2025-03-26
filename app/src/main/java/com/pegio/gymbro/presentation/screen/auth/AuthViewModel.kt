@@ -75,7 +75,7 @@ class AuthViewModel @Inject constructor(
                 is Resource.Failure -> sendEffect(AuthUiEffect.Failure(e = signInResult.error))
             }
         } else {
-            sendEffect(AuthUiEffect.Failure(e = DataError.Firebase.INVALID_CREDENTIAL))
+            sendEffect(AuthUiEffect.Failure(e = DataError.FirebaseAuth.INVALID_CREDENTIAL))
         }
     }
 

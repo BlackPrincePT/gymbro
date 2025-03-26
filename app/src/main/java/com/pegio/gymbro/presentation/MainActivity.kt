@@ -29,6 +29,7 @@ import com.pegio.gymbro.presentation.screen.ai_chat.AiChatScreen
 import com.pegio.gymbro.presentation.screen.auth.AuthScreen
 import com.pegio.gymbro.presentation.core.Route
 import com.pegio.gymbro.presentation.drawer.AppDrawer
+import com.pegio.gymbro.presentation.screen.account.AccountScreen
 import com.pegio.gymbro.presentation.screen.home.HomeScreen
 import com.pegio.gymbro.presentation.screen.register.RegisterScreen
 import com.pegio.gymbro.presentation.screen.splash.SplashScreen
@@ -126,6 +127,11 @@ private fun NavigationHost(navController: NavHostController, modifier: Modifier 
         composable<Route.HomeScreen> {
             HomeScreen()
         }
+
+        composable<Route.AccountScreen> {
+            AccountScreen()
+        }
+
         composable<Route.AiChatScreen> {
             AiChatScreen()
         }

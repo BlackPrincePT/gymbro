@@ -3,7 +3,6 @@ package com.pegio.gymbro.presentation.drawer
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.DrawerState
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -13,7 +12,6 @@ import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.NavigationDrawerItem
 import androidx.compose.material3.NavigationDrawerItemDefaults
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -42,11 +40,10 @@ fun AppDrawer(
     LaunchedEffect(Unit) {
         viewModel.uiEffect.collectLatest { effect ->
             when (effect) {
-                AppDrawerUiEffect.NavigateToAuth -> {
-                    navController.navigate(Route.AuthScreen)
-                    drawerState.close()
-                }
+                AppDrawerUiEffect.NavigateToAuth -> navController.navigate(Route.AuthScreen)
+                AppDrawerUiEffect.NavigateToAccount -> navController.navigate(Route.AccountScreen)
             }
+            drawerState.close()
         }
     }
 
@@ -69,6 +66,12 @@ private fun AppDrawerContent(
                 .fillMaxSize()
                 .padding(vertical = 16.dp)
         ) {
+            NavigationDrawerItem(
+                label = { Text(text = "Account") },
+                selected = false,
+                onClick = { onEvent(AppDrawerUiEvent.OnAccountClicked) },
+                modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding)
+            )
 
             Spacer(modifier = Modifier.weight(1f))
 

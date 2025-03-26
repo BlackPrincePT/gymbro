@@ -25,6 +25,7 @@ class AppDrawerViewModel @Inject constructor(
 
     fun onEvent(event: AppDrawerUiEvent) {
         when (event) {
+            AppDrawerUiEvent.OnAccountClicked -> sendEffect(AppDrawerUiEffect.NavigateToAccount)
             AppDrawerUiEvent.OnSignOut -> {
                 signOut()
                 sendEffect(AppDrawerUiEffect.NavigateToAuth)

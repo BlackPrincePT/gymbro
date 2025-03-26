@@ -1,7 +1,7 @@
 package com.pegio.gymbro.domain.usecase.auth
 
-import com.pegio.gymbro.domain.cache.CacheManager
-import com.pegio.gymbro.domain.cache.PreferenceKeys
+import com.pegio.gymbro.domain.manager.cache.CacheManager
+import com.pegio.gymbro.domain.manager.cache.PreferenceKeys
 import com.pegio.gymbro.domain.core.DataError
 import com.pegio.gymbro.domain.core.FailedToFetchDataException
 import com.pegio.gymbro.domain.core.Resource
@@ -41,7 +41,7 @@ class CheckUserRegistrationStatusUseCase @Inject constructor(
         if (cacheManager.observe(key = PreferenceKeys.AUTH_STATE_KEY).first() == true)
             return true
 
-        return when (val resource = userRepository.fetchUserById(id = currentUserId)) {
+        return when (val resource = userRepository.fetchUser(id = currentUserId)) {
             is Resource.Success -> {
                 cacheManager.save(key = PreferenceKeys.AUTH_STATE_KEY, true)
                 true

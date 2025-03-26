@@ -39,10 +39,10 @@ class RegisterViewModel @Inject constructor(
     }
 
     private fun createUser(): User {
-        val currentUserId = getCurrentUserId() ?: throw UserNotAuthenticatedException()
         return User(
-            id = currentUserId,
-            username = _uiState.value.username
+            id = getCurrentUserId(),
+            username = _uiState.value.username,
+            profile = null
         )
     }
 

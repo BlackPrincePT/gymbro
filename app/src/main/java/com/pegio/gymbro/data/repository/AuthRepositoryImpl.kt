@@ -19,7 +19,7 @@ class AuthRepositoryImpl @Inject constructor() : AuthRepository {
     override fun hasSavedAuthSession() = FirebaseAuth.getInstance().currentUser != null
     override fun isAnonymousSession() = FirebaseAuth.getInstance().currentUser?.isAnonymous == true
 
-    override suspend fun signInWithGoogle(idToken: String): Resource<Unit, DataError.Firebase> {
+    override suspend fun signInWithGoogle(idToken: String): Resource<Unit, DataError.FirebaseAuth> {
         val firebaseCredential = GoogleAuthProvider.getCredential(idToken, null)
 
         return try {
@@ -30,7 +30,7 @@ class AuthRepositoryImpl @Inject constructor() : AuthRepository {
         }
     }
 
-    override suspend fun signInAnonymously(): Resource<Unit, DataError.Firebase> {
+    override suspend fun signInAnonymously(): Resource<Unit, DataError.FirebaseAuth> {
         return try {
             Firebase.auth.signInAnonymously().await()
             Resource.Success(Unit)
@@ -43,13 +43,13 @@ class AuthRepositoryImpl @Inject constructor() : AuthRepository {
         Firebase.auth.signOut()
     }
 
-    private fun mapExceptionToSignInError(e: Exception): DataError.Firebase {
+    private fun mapExceptionToSignInError(e: Exception): DataError.FirebaseAuth {
         return when (e) {
-            is FirebaseAuthInvalidCredentialsException -> DataError.Firebase.INVALID_CREDENTIAL
-            is FirebaseAuthInvalidUserException -> DataError.Firebase.INVALID_USER
-            is FirebaseNetworkException -> DataError.Firebase.NETWORK_ERROR
-            is FirebaseException -> DataError.Firebase.FIREBASE_ERROR
-            else -> DataError.Firebase.UNKNOWN
+            is FirebaseAuthInvalidCredentialsException -> DataError.FirebaseAuth.INVALID_CREDENTIAL
+            is FirebaseAuthInvalidUserException -> DataError.FirebaseAuth.INVALID_USER
+            is FirebaseNetworkException -> DataError.FirebaseAuth.NETWORK_ERROR
+            is FirebaseException -> DataError.FirebaseAuth.FIREBASE_ERROR
+            else -> DataError.FirebaseAuth.UNKNOWN
         }
     }
 }

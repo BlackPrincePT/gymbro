@@ -1,4 +1,4 @@
-package com.pegio.gymbro.domain.cache
+package com.pegio.gymbro.domain.manager.cache
 
 import androidx.datastore.preferences.core.Preferences
 import kotlinx.coroutines.flow.Flow

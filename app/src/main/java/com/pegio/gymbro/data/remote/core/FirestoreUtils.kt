@@ -3,14 +3,36 @@ package com.pegio.gymbro.data.remote.core
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestoreException
 import com.google.firebase.firestore.Query
+import com.google.firebase.firestore.snapshots
+import com.pegio.gymbro.data.remote.model.UserDto
 import com.pegio.gymbro.domain.core.DataError
 import com.pegio.gymbro.domain.core.Resource
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.fold
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
 class FirestoreUtils @Inject constructor() {
+
+    fun <T> observeDocument(documentRef: DocumentReference, klass: Class<T>): Flow<Resource<T, DataError.Firestore>> {
+        return documentRef.snapshots()
+            .map { documentSnapshot ->
+
+                if (documentSnapshot.exists()) {
+                    documentSnapshot.toObject(klass)?.let {
+                        Resource.Success(data = it)
+                    } ?: Resource.Failure(error = DataError.Firestore.DOCUMENT_PARSE_FAILED)
+                } else {
+                    Resource.Failure(error = DataError.Firestore.DOCUMENT_NOT_FOUND)
+                }
+            }
+            .catch { cause: Throwable ->
+                Resource.Failure(error = mapExceptionToNetworkError(cause))
+            }
+    }
 
     suspend fun <T> readDocument(documentRef: DocumentReference, klass: Class<T>): Resource<T, DataError.Firestore> {
         return try {
@@ -39,7 +61,7 @@ class FirestoreUtils @Inject constructor() {
         }
     }
 
-    private fun mapExceptionToNetworkError(e: Exception): DataError.Firestore {
+    private fun mapExceptionToNetworkError(e: Throwable): DataError.Firestore {
         return when (e) {
             is FirebaseFirestoreException -> mapFirebaseCodeToError(e.code)
             else -> DataError.Firestore.UNKNOWN
