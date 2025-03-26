@@ -12,7 +12,6 @@ private fun DataError.toStringResId(): Int = when (this) {
     is DataError.Network -> this.toStringResId()
     is DataError.Firestore -> this.toStringResId()
     is DataError.FirebaseAuth -> this.toStringResId()
-    is DataError.CloudStorage -> this.toStringResId()
 }
 
 private fun DataError.Network.toStringResId(): Int = when (this) {

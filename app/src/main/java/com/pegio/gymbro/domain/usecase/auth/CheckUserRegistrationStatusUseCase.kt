@@ -41,7 +41,7 @@ class CheckUserRegistrationStatusUseCase @Inject constructor(
         if (cacheManager.observe(key = PreferenceKeys.AUTH_STATE_KEY).first() == true)
             return true
 
-        return when (val resource = userRepository.fetchUserById(id = currentUserId)) {
+        return when (val resource = userRepository.fetchUser(id = currentUserId)) {
             is Resource.Success -> {
                 cacheManager.save(key = PreferenceKeys.AUTH_STATE_KEY, true)
                 true
