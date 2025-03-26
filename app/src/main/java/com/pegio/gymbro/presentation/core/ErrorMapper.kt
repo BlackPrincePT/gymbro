@@ -11,7 +11,8 @@ fun Error.toStringResId(): Int = when (this) {
 private fun DataError.toStringResId(): Int = when (this) {
     is DataError.Network -> this.toStringResId()
     is DataError.Firestore -> this.toStringResId()
-    is DataError.Firebase -> this.toStringResId()
+    is DataError.FirebaseAuth -> this.toStringResId()
+    is DataError.CloudStorage -> this.toStringResId()
 }
 
 private fun DataError.Network.toStringResId(): Int = when (this) {
@@ -51,12 +52,12 @@ private fun DataError.Firestore.toStringResId(): Int = when (this) {
     DataError.Firestore.DOCUMENT_PARSE_FAILED -> R.string.firestore_document_parse_failed
 }
 
-fun DataError.Firebase.toStringResId(): Int {
+private fun DataError.FirebaseAuth.toStringResId(): Int {
     return when (this) {
-        DataError.Firebase.INVALID_CREDENTIAL -> R.string.error_invalid_credential
-        DataError.Firebase.INVALID_USER -> R.string.error_invalid_user
-        DataError.Firebase.NETWORK_ERROR -> R.string.error_network
-        DataError.Firebase.FIREBASE_ERROR -> R.string.error_firebase
-        DataError.Firebase.UNKNOWN -> R.string.error_unknown
+        DataError.FirebaseAuth.INVALID_CREDENTIAL -> R.string.error_invalid_credential
+        DataError.FirebaseAuth.INVALID_USER -> R.string.error_invalid_user
+        DataError.FirebaseAuth.NETWORK_ERROR -> R.string.error_network
+        DataError.FirebaseAuth.FIREBASE_ERROR -> R.string.error_firebase
+        DataError.FirebaseAuth.UNKNOWN -> R.string.error_unknown
     }
 }

@@ -2,6 +2,30 @@ package com.pegio.gymbro.domain.core
 
 sealed interface DataError : Error {
 
+    enum class Network : DataError {
+        UNKNOWN,
+        TIMEOUT,
+        NO_CONNECTION,
+        BAD_REQUEST,
+        UNAUTHORIZED,
+        FORBIDDEN,
+        NOT_FOUND,
+        METHOD_NOT_ALLOWED,
+        CONFLICT,
+        INTERNAL_SERVER_ERROR,
+        BAD_GATEWAY,
+        SERVICE_UNAVAILABLE,
+        GATEWAY_TIMEOUT
+    }
+
+    enum class FirebaseAuth : DataError {
+        INVALID_CREDENTIAL,
+        INVALID_USER,
+        NETWORK_ERROR,
+        FIREBASE_ERROR,
+        UNKNOWN
+    }
+
     enum class Firestore : DataError {
         CANCELLED,
         UNKNOWN,
@@ -21,29 +45,5 @@ sealed interface DataError : Error {
         DATA_LOSS,
         UNAUTHENTICATED,
         DOCUMENT_PARSE_FAILED
-    }
-
-    enum class Network : DataError {
-        UNKNOWN,
-        TIMEOUT,
-        NO_CONNECTION,
-        BAD_REQUEST,
-        UNAUTHORIZED,
-        FORBIDDEN,
-        NOT_FOUND,
-        METHOD_NOT_ALLOWED,
-        CONFLICT,
-        INTERNAL_SERVER_ERROR,
-        BAD_GATEWAY,
-        SERVICE_UNAVAILABLE,
-        GATEWAY_TIMEOUT
-    }
-
-    enum class Firebase : DataError {
-        INVALID_CREDENTIAL,
-        INVALID_USER,
-        NETWORK_ERROR,
-        FIREBASE_ERROR,
-        UNKNOWN
     }
 }

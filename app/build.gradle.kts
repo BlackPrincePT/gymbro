@@ -44,7 +44,11 @@ android {
         debug {
             buildConfigField("String", "GEMINI_URL", "\"https://api.openai.com/\"")
             buildConfigField("String", "GPT_MODEL", "\"gpt-4o-mini\"")
-            buildConfigField("String", "API_KEY", gradleLocalProperties(rootDir, providers).getProperty("API_KEY"))
+            buildConfigField(
+                "String",
+                "API_KEY",
+                gradleLocalProperties(rootDir, providers).getProperty("API_KEY")
+            )
         }
         release {
             isMinifyEnabled = false
@@ -114,6 +118,7 @@ dependencies {
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.auth)
     implementation(libs.firebase.firestore)
+    implementation(libs.firebase.storage.ktx)
     implementation(libs.androidx.credentials)
     implementation(libs.androidx.credentials.play.services.auth)
     implementation(libs.googleid)
@@ -126,4 +131,8 @@ dependencies {
 
     // Cache
     implementation(libs.androidx.datastore.preferences)
+
+    // Task
+    implementation(libs.androidx.work.runtime)
+    implementation(libs.androidx.hilt.work)
 }

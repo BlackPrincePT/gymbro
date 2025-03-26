@@ -1,7 +1,7 @@
 package com.pegio.gymbro.domain.usecase.auth
 
-import com.pegio.gymbro.domain.cache.CacheManager
-import com.pegio.gymbro.domain.cache.PreferenceKeys
+import com.pegio.gymbro.domain.manager.cache.CacheManager
+import com.pegio.gymbro.domain.manager.cache.PreferenceKeys
 import com.pegio.gymbro.domain.core.DataError
 import com.pegio.gymbro.domain.core.FailedToFetchDataException
 import com.pegio.gymbro.domain.core.Resource
