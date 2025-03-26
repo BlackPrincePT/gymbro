@@ -1,4 +1,4 @@
-package com.pegio.gymbro.presentation.auth
+package com.pegio.gymbro.presentation.screen.auth
 
 import com.pegio.gymbro.domain.core.Error
 

@@ -1,4 +1,4 @@
-package com.pegio.gymbro.presentation.ai_chat
+package com.pegio.gymbro.presentation.screen.ai_chat
 
 import com.pegio.gymbro.presentation.model.AiChatMessage
 

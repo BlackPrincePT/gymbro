@@ -1,4 +1,4 @@
-package com.pegio.gymbro.presentation.auth
+package com.pegio.gymbro.presentation.screen.auth
 
 import android.content.Context
 import androidx.credentials.Credential

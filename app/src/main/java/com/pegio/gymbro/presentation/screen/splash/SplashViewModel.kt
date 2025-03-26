@@ -1,4 +1,4 @@
-package com.pegio.gymbro.presentation.splash
+package com.pegio.gymbro.presentation.screen.splash
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

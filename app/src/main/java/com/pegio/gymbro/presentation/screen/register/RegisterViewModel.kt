@@ -1,4 +1,4 @@
-package com.pegio.gymbro.presentation.register
+package com.pegio.gymbro.presentation.screen.register
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

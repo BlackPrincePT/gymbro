@@ -1,4 +1,4 @@
-package com.pegio.gymbro.presentation.register
+package com.pegio.gymbro.presentation.screen.register
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column

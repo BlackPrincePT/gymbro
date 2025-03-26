@@ -1,4 +1,4 @@
-package com.pegio.gymbro.presentation.auth
+package com.pegio.gymbro.presentation.screen.auth
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column

@@ -1,4 +1,4 @@
-package com.pegio.gymbro.presentation.register
+package com.pegio.gymbro.presentation.screen.register
 
 sealed interface RegisterUiEvent {
     data class OnUsernameChanged(val newValue: String) : RegisterUiEvent

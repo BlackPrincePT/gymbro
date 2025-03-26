@@ -1,4 +1,4 @@
-package com.pegio.gymbro.presentation.register
+package com.pegio.gymbro.presentation.screen.register
 
 sealed interface RegisterUiEffect {
     data object NavigateToHome: RegisterUiEffect

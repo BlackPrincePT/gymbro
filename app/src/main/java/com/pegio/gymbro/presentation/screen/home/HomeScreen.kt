@@ -1,4 +1,4 @@
-package com.pegio.gymbro.presentation.home
+package com.pegio.gymbro.presentation.screen.home
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize

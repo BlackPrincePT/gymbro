@@ -1,4 +1,4 @@
-package com.pegio.gymbro.presentation.ai_chat
+package com.pegio.gymbro.presentation.screen.ai_chat
 
 sealed class AiChatUiEvent {
     data class OnTextChanged(val text: String) : AiChatUiEvent()

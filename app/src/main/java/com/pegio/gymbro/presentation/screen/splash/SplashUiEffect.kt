@@ -1,4 +1,4 @@
-package com.pegio.gymbro.presentation.splash
+package com.pegio.gymbro.presentation.screen.splash
 
 sealed interface SplashUiEffect {
     data object NavigateToHome: SplashUiEffect
