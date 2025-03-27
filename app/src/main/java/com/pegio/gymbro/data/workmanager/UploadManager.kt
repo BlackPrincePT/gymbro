@@ -39,7 +39,10 @@ class UploadManager @Inject constructor(
             .setInputData(inputData)
             .build()
 
-        WorkManager.getInstance(appContext).enqueue(workRequest)
+        WorkManager.getInstance(appContext).apply {
+            enqueue(workRequest)
+            getWorkInfoByIdFlow(workRequest.id)
+        }
 
         return workRequest.id
     }

@@ -1,26 +1,87 @@
 package com.pegio.gymbro.presentation.screen.home
 
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.Text
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.DrawerValue
+import androidx.compose.material3.ModalNavigationDrawer
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.sp
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.pegio.gymbro.presentation.components.AppDrawerContent
+import com.pegio.gymbro.presentation.components.TopAppBarContent
+import com.pegio.gymbro.presentation.theme.GymBroTheme
+import kotlinx.coroutines.flow.collectLatest
 
 @Composable
-fun HomeScreen() {
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
+fun HomeScreen(
+    onChatClick: () -> Unit,
+    onAccountClick: () -> Unit,
+    onSignOutSuccess: () -> Unit,
+    viewModel: HomeViewModel = hiltViewModel()
+) {
+
+    val uiState by viewModel.uiState
+        .collectAsStateWithLifecycle()
+
+    val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
+
+    LaunchedEffect(Unit) {
+        viewModel.uiEffect.collectLatest { effect ->
+            when (effect) {
+                HomeUiEffect.SignedOutSuccessfully -> onSignOutSuccess()
+                HomeUiEffect.NavigateToAccount -> {
+                    onAccountClick()
+                    drawerState.close()
+                }
+            }
+        }
+    }
+
+    ModalNavigationDrawer(
+        drawerState = drawerState,
+        drawerContent = {
+            AppDrawerContent(
+                displayedUser = uiState.displayedUser,
+                onAccountClick = { viewModel.onEvent(HomeUiEvent.OnAccountClick) },
+                onSignOutClick = { viewModel.onEvent(HomeUiEvent.OnSignOut) }
+            )
+        }
     ) {
-        Text(
-            text = "This is Home Screen!",
-            fontWeight = FontWeight.Bold,
-            fontSize = 24.sp,
+        Scaffold(
+            topBar = { TopAppBarContent(drawerState, onChatClick) },
             modifier = Modifier
-                .align(Alignment.Center)
-        )
+                .fillMaxSize()
+        ) { innerPadding ->
+
+            HomeContent(
+                state = uiState,
+                onEvent = viewModel::onEvent,
+                modifier = Modifier
+                    .padding(innerPadding)
+            )
+        }
+    }
+}
+
+@Composable
+private fun HomeContent(
+    state: HomeUiState,
+    onEvent: (HomeUiEvent) -> Unit,
+    modifier: Modifier = Modifier
+) {
+
+}
+
+@Preview
+@Composable
+private fun HomeContentPreview() {
+    GymBroTheme {
+        HomeContent(state = HomeUiState(), onEvent = { })
     }
 }

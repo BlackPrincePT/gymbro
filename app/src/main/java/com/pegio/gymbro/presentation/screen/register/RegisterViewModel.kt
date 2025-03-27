@@ -2,10 +2,10 @@ package com.pegio.gymbro.presentation.screen.register
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.pegio.gymbro.domain.core.UserNotAuthenticatedException
-import com.pegio.gymbro.domain.model.User
 import com.pegio.gymbro.domain.usecase.common.GetCurrentUserIdUseCase
 import com.pegio.gymbro.domain.usecase.register.SaveUserUseCase
+import com.pegio.gymbro.presentation.mapper.UiUserMapper
+import com.pegio.gymbro.presentation.model.UiUser
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -19,7 +19,8 @@ import javax.inject.Inject
 @HiltViewModel
 class RegisterViewModel @Inject constructor(
     private val saveUser: SaveUserUseCase,
-    private val getCurrentUserId: GetCurrentUserIdUseCase
+    private val getCurrentUserId: GetCurrentUserIdUseCase,
+    private val uiUserMapper: UiUserMapper
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(RegisterUiState())
@@ -32,17 +33,18 @@ class RegisterViewModel @Inject constructor(
         when (event) {
             is RegisterUiEvent.OnUsernameChanged -> _uiState.update { it.copy(username = event.newValue) }
             RegisterUiEvent.OnRegister -> {
-                saveUser(createUser())
+                saveUser(uiUserMapper.mapToDomain(createUser()))
                 sendEffect(RegisterUiEffect.NavigateToHome)
             }
         }
     }
 
-    private fun createUser(): User {
-        return User(
+    private fun createUser(): UiUser {
+        return UiUser(
             id = getCurrentUserId(),
             username = _uiState.value.username,
-            profile = null
+            imgProfileUrl = null,
+            imgBackgroundUrl = null
         )
     }
 

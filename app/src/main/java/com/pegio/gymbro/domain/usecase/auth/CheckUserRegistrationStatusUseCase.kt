@@ -3,9 +3,9 @@ package com.pegio.gymbro.domain.usecase.auth
 import com.pegio.gymbro.domain.manager.cache.CacheManager
 import com.pegio.gymbro.domain.manager.cache.PreferenceKeys
 import com.pegio.gymbro.domain.core.DataError
-import com.pegio.gymbro.domain.core.FailedToFetchDataException
+import com.pegio.gymbro.domain.core.DataRetrievalException
 import com.pegio.gymbro.domain.core.Resource
-import com.pegio.gymbro.domain.core.UserNotAuthenticatedException
+import com.pegio.gymbro.domain.core.UserAuthenticationException
 import com.pegio.gymbro.domain.repository.AuthRepository
 import com.pegio.gymbro.domain.repository.UserRepository
 import kotlinx.coroutines.flow.first
@@ -21,7 +21,7 @@ class CheckUserRegistrationStatusUseCase @Inject constructor(
         onRegistrationIncomplete: () -> Unit,
         onException: () -> Unit = {}
     ) {
-        runCatching { userRepository.getCurrentUserId() ?: throw UserNotAuthenticatedException() }
+        runCatching { userRepository.getCurrentUserId() ?: throw UserAuthenticationException() }
             .fold(
                 onSuccess = { currentUserId ->
                     if (authRepository.isAnonymousSession() || isRegistrationComplete(currentUserId)) {
@@ -49,7 +49,7 @@ class CheckUserRegistrationStatusUseCase @Inject constructor(
 
             is Resource.Failure -> {
                 if (resource.error == DataError.Firestore.DOCUMENT_NOT_FOUND) false
-                else throw FailedToFetchDataException()
+                else throw DataRetrievalException()
             }
         }
     }

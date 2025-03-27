@@ -17,15 +17,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.NavController
-import com.pegio.gymbro.presentation.core.Route
 import com.pegio.gymbro.presentation.theme.GymBroTheme
-import com.pegio.gymbro.presentation.util.popNavigate
 import kotlinx.coroutines.flow.collectLatest
 
 @Composable
 fun RegisterScreen(
-    navController: NavController,
+    onRegisterSuccess: () -> Unit,
     viewModel: RegisterViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState
@@ -34,7 +31,7 @@ fun RegisterScreen(
     LaunchedEffect(Unit) {
         viewModel.uiEffect.collectLatest { effect ->
             when (effect) {
-                RegisterUiEffect.NavigateToHome -> navController.popNavigate(Route.HomeScreen)
+                RegisterUiEffect.NavigateToHome -> onRegisterSuccess()
             }
         }
     }
