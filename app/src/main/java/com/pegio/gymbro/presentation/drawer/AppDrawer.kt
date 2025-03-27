@@ -23,6 +23,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.pegio.gymbro.presentation.core.Route
 import com.pegio.gymbro.presentation.theme.GymBroTheme
+import com.pegio.gymbro.presentation.util.popNavigate
 import kotlinx.coroutines.flow.collectLatest
 
 @Composable
@@ -40,7 +41,7 @@ fun AppDrawer(
     LaunchedEffect(Unit) {
         viewModel.uiEffect.collectLatest { effect ->
             when (effect) {
-                AppDrawerUiEffect.NavigateToAuth -> navController.navigate(Route.AuthScreen)
+                AppDrawerUiEffect.NavigateToAuth -> navController.popNavigate(Route.AuthScreen)
                 AppDrawerUiEffect.NavigateToAccount -> navController.navigate(Route.AccountScreen)
             }
             drawerState.close()

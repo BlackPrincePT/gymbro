@@ -22,6 +22,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.pegio.gymbro.presentation.core.Route
+import com.pegio.gymbro.presentation.util.popNavigate
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 
@@ -41,9 +42,9 @@ fun SplashScreen(
             }
 
             when (effect) {
-                SplashUiEffect.NavigateToHome -> navController.navigate(Route.HomeScreen)
-                SplashUiEffect.NavigateToAuth -> navController.navigate(Route.AuthScreen)
-                SplashUiEffect.NavigateToRegister -> navController.navigate(Route.RegisterScreen)
+                SplashUiEffect.NavigateToHome -> navController.popNavigate(Route.HomeScreen)
+                SplashUiEffect.NavigateToAuth -> navController.popNavigate(Route.AuthScreen)
+                SplashUiEffect.NavigateToRegister -> navController.popNavigate(Route.RegisterScreen)
             }
         }
     }

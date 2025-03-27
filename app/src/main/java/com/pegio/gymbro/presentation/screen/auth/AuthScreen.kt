@@ -22,6 +22,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.pegio.gymbro.presentation.core.Route
 import com.pegio.gymbro.presentation.theme.GymBroTheme
+import com.pegio.gymbro.presentation.util.popNavigate
 import kotlinx.coroutines.flow.collectLatest
 
 @Composable
@@ -35,8 +36,8 @@ fun AuthScreen(
     LaunchedEffect(Unit) {
         viewModel.uiEffect.collectLatest { effect ->
             when (effect) {
-                AuthUiEffect.NavigateToHome -> navController.navigate(Route.HomeScreen)
-                AuthUiEffect.NavigateToRegister -> navController.navigate(Route.RegisterScreen)
+                AuthUiEffect.NavigateToHome -> navController.popNavigate(Route.HomeScreen)
+                AuthUiEffect.NavigateToRegister -> navController.popNavigate(Route.RegisterScreen)
                 is AuthUiEffect.Failure -> {}
             }
         }

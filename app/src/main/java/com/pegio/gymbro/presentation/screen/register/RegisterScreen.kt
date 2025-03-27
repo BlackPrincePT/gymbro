@@ -20,6 +20,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.pegio.gymbro.presentation.core.Route
 import com.pegio.gymbro.presentation.theme.GymBroTheme
+import com.pegio.gymbro.presentation.util.popNavigate
 import kotlinx.coroutines.flow.collectLatest
 
 @Composable
@@ -33,7 +34,7 @@ fun RegisterScreen(
     LaunchedEffect(Unit) {
         viewModel.uiEffect.collectLatest { effect ->
             when (effect) {
-                RegisterUiEffect.NavigateToHome -> navController.navigate(Route.HomeScreen)
+                RegisterUiEffect.NavigateToHome -> navController.popNavigate(Route.HomeScreen)
             }
         }
     }
