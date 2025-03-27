@@ -13,8 +13,11 @@ class SendMessageUseCase @Inject constructor(
 )  {
 
     suspend operator fun invoke(aiMessages: List<AiMessage>): Resource<AiChatResponse, DataError.Network> {
+        // This needs to be discussed, where this should be and what should be written in content
+        val systemMessage = AiMessage(role = "system", content = "You are a professional gym assistant in the app called GymBro.")
+
         val aiChatRequest = AiChatRequest(
-            aiMessages = aiMessages
+            aiMessages = listOf(systemMessage) + aiMessages
         )
 
         return chatRepository.sendMessage(aiChatRequest)
