@@ -19,8 +19,8 @@ import javax.inject.Inject
 @HiltViewModel
 class RegisterViewModel @Inject constructor(
     private val saveUser: SaveUserUseCase,
-    private val getCurrentUserId: GetCurrentUserIdUseCase,
-    private val uiUserMapper: UiUserMapper
+    private val uiUserMapper: UiUserMapper,
+    getCurrentUserId: GetCurrentUserIdUseCase
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(RegisterUiState())
@@ -29,23 +29,55 @@ class RegisterViewModel @Inject constructor(
     private val _uiEffect = MutableSharedFlow<RegisterUiEffect>()
     val uiEffect = _uiEffect.asSharedFlow()
 
-    fun onEvent(event: RegisterUiEvent) {
-        when (event) {
-            is RegisterUiEvent.OnUsernameChanged -> _uiState.update { it.copy(username = event.newValue) }
-            RegisterUiEvent.OnRegister -> {
-                saveUser(uiUserMapper.mapToDomain(createUser()))
-                sendEffect(RegisterUiEffect.NavigateToHome)
+    init {
+        getCurrentUserId()?.let { currentUserId ->
+            _uiState.update { oldState ->
+                oldState.copy(user = oldState.user.copy(id = currentUserId))
             }
         }
     }
 
-    private fun createUser(): UiUser {
-        return UiUser(
-            id = getCurrentUserId()!!,
-            username = _uiState.value.username,
-            imgProfileUrl = null,
-            imgBackgroundUrl = null
-        )
+    fun onEvent(event: RegisterUiEvent) {
+        when (event) {
+            is RegisterUiEvent.OnUsernameChanged -> {
+                _uiState.update { currentState ->
+                    currentState.copy(user = currentState.user.copy(username = event.username))
+                }
+            }
+
+            is RegisterUiEvent.OnAgeChanged -> {
+                _uiState.update { currentState ->
+                    currentState.copy(user = currentState.user.copy(age = event.age))
+                }
+            }
+
+            is RegisterUiEvent.OnGenderChanged -> {
+                _uiState.update { currentState ->
+                    currentState.copy(user = currentState.user.copy(gender = event.gender))
+                }
+            }
+
+            is RegisterUiEvent.OnHeightChanged -> {
+                _uiState.update { currentState ->
+                    currentState.copy(user = currentState.user.copy(heightCm = event.height))
+                }
+            }
+
+            is RegisterUiEvent.OnWeightChanged -> {
+                _uiState.update { currentState ->
+                    currentState.copy(user = currentState.user.copy(weightKg = event.weight))
+                }
+            }
+
+            RegisterUiEvent.OnProfilePhotoClicked -> {
+
+            }
+
+            RegisterUiEvent.OnSubmit -> {
+                saveUser(uiUserMapper.mapToDomain(uiState.value.user))
+                sendEffect(RegisterUiEffect.NavigateToHome)
+            }
+        }
     }
 
     private fun sendEffect(effect: RegisterUiEffect) {

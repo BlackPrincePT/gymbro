@@ -1,5 +1,7 @@
 package com.pegio.gymbro.presentation.screen.register
 
+import com.pegio.gymbro.presentation.model.UiUser
+
 data class RegisterUiState(
-    val username: String = ""
+    val user: UiUser = UiUser.EMPTY
 )

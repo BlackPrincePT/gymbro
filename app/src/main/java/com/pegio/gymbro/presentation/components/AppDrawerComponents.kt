@@ -118,7 +118,7 @@ private fun AppDrawerHeader(
 private fun AppDrawerContentPreview() {
     GymBroTheme {
         AppDrawerContent(
-            displayedUser = UiUser.EMPTY,
+            displayedUser = UiUser.DEFAULT,
             onAccountClick = {},
             onSignOutClick = {}
         )
