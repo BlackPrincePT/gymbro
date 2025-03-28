@@ -1,11 +1,9 @@
-package com.pegio.gymbro.domain.usecase.auth
+package com.pegio.gymbro.domain.usecase.common
 
 import com.pegio.gymbro.domain.manager.cache.CacheManager
 import com.pegio.gymbro.domain.manager.cache.PreferenceKeys
 import com.pegio.gymbro.domain.core.DataError
-import com.pegio.gymbro.domain.core.DataRetrievalException
 import com.pegio.gymbro.domain.core.Resource
-import com.pegio.gymbro.domain.core.UserAuthenticationException
 import com.pegio.gymbro.domain.repository.AuthRepository
 import com.pegio.gymbro.domain.repository.UserRepository
 import kotlinx.coroutines.flow.first
@@ -16,28 +14,19 @@ class CheckUserRegistrationStatusUseCase @Inject constructor(
     private val userRepository: UserRepository,
     private val cacheManager: CacheManager
 ) {
-    suspend operator fun invoke(
-        onRegistrationComplete: () -> Unit,
-        onRegistrationIncomplete: () -> Unit,
-        onException: () -> Unit = {}
-    ) {
-        runCatching { userRepository.getCurrentUserId() ?: throw UserAuthenticationException() }
-            .fold(
-                onSuccess = { currentUserId ->
-                    if (authRepository.isAnonymousSession() || isRegistrationComplete(currentUserId)) {
-                        onRegistrationComplete.invoke()
-                    } else {
-                        onRegistrationIncomplete.invoke()
-                    }
-                },
-                onFailure = {
-                    authRepository.signOut()
-                    onException.invoke()
-                }
-            )
+    suspend operator fun invoke(): Resource<Boolean, DataError.Auth> {
+        val currentUserId = authRepository.getCurrentUserId()
+            ?: run { authRepository.signOut(); return Resource.Failure(error = DataError.Auth.UNAUTHENTICATED) }
+
+        val registrationComplete = isRegistrationComplete(currentUserId)
+            ?: run { authRepository.signOut(); return Resource.Failure(error = DataError.Auth.UNAUTHENTICATED) }
+
+        val isAnonymous = authRepository.isAnonymousSession()
+        return Resource.Success(data = isAnonymous || registrationComplete)
     }
 
-    private suspend fun isRegistrationComplete(currentUserId: String): Boolean {
+
+    private suspend fun isRegistrationComplete(currentUserId: String): Boolean? {
         if (cacheManager.observe(key = PreferenceKeys.AUTH_STATE_KEY).first() == true)
             return true
 
@@ -49,7 +38,7 @@ class CheckUserRegistrationStatusUseCase @Inject constructor(
 
             is Resource.Failure -> {
                 if (resource.error == DataError.Firestore.DOCUMENT_NOT_FOUND) false
-                else throw DataRetrievalException()
+                else null
             }
         }
     }

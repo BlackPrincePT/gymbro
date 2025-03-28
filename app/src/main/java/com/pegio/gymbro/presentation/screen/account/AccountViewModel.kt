@@ -4,10 +4,8 @@ import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.pegio.gymbro.domain.core.Resource
-import com.pegio.gymbro.domain.manager.upload.FileType
 import com.pegio.gymbro.domain.manager.upload.FileUploadManager
-import com.pegio.gymbro.domain.usecase.common.FetchUserStreamByIdUseCase
-import com.pegio.gymbro.domain.usecase.common.GetCurrentUserIdUseCase
+import com.pegio.gymbro.domain.usecase.common.FetchCurrentUserStreamUseCase
 import com.pegio.gymbro.domain.usecase.register.SaveUserUseCase
 import com.pegio.gymbro.presentation.mapper.UiUserMapper
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -23,8 +21,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AccountViewModel @Inject constructor(
-    private val getCurrentUserId: GetCurrentUserIdUseCase,
-    private val fetchUserStreamById: FetchUserStreamByIdUseCase,
+    private val fetchCurrentUserStream: FetchCurrentUserStreamUseCase,
     private val fileUploadManager: FileUploadManager,
     private val saveUser: SaveUserUseCase,
     private val uiUserMapper: UiUserMapper
@@ -50,14 +47,18 @@ class AccountViewModel @Inject constructor(
         }
     }
 
+    private fun updateProfileImage(uri: Uri) = viewModelScope.launch {
+        fileUploadManager.enqueueFileUpload(uri.toString()).also { result ->
+            when (result) {
+                is Resource.Success -> uploadProfileImageUrl(url = result.data)
+                is Resource.Failure -> { }
+            }
+        }
+    }
+
     private fun uploadProfileImageUrl(url: String) {
         uiState.value.user.copy(imgProfileUrl = url)
             .let { saveUser(uiUserMapper.mapToDomain(it)) }
-    }
-
-    private fun updateProfileImage(uri: Uri) {
-        fileUploadManager.enqueueFileUpload(uri, fileType = FileType.JPG)
-            .also { sendEffect(AccountUiEffect.ProfilePictureUploadStarted(workId = it)) }
     }
 
     private fun deleteExistingProfileImage() {
@@ -66,11 +67,11 @@ class AccountViewModel @Inject constructor(
     }
 
     private fun observeCurrentUser() = viewModelScope.launch {
-        fetchUserStreamById(getCurrentUserId())
+        fetchCurrentUserStream()
             .collectLatest { result ->
                 when (result) {
                     is Resource.Success -> _uiState.update { it.copy(user = uiUserMapper.mapFromDomain(result.data)) }
-                    is Resource.Failure -> {}
+                    is Resource.Failure -> { }
                 }
             }
     }

@@ -3,8 +3,7 @@ package com.pegio.gymbro.presentation.screen.home
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.pegio.gymbro.domain.core.Resource
-import com.pegio.gymbro.domain.usecase.common.FetchUserStreamByIdUseCase
-import com.pegio.gymbro.domain.usecase.common.GetCurrentUserIdUseCase
+import com.pegio.gymbro.domain.usecase.common.FetchCurrentUserStreamUseCase
 import com.pegio.gymbro.domain.usecase.drawer.SignOutUseCase
 import com.pegio.gymbro.presentation.mapper.UiUserMapper
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -20,8 +19,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private val getCurrentUserId: GetCurrentUserIdUseCase,
-    private val fetchUserStreamById: FetchUserStreamByIdUseCase,
+    private val fetchCurrentUserStream: FetchCurrentUserStreamUseCase,
     private val signOut: SignOutUseCase,
     private val uiUserMapper: UiUserMapper
 ) : ViewModel() {
@@ -47,7 +45,7 @@ class HomeViewModel @Inject constructor(
     }
 
     private fun observeCurrentUser() = viewModelScope.launch {
-        fetchUserStreamById(getCurrentUserId())
+        fetchCurrentUserStream()
             .collectLatest { result ->
                 when (result) {
                     is Resource.Success -> _uiState.update {

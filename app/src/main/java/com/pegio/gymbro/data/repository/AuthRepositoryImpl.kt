@@ -1,8 +1,6 @@
 package com.pegio.gymbro.data.repository
 
 import com.google.firebase.Firebase
-import com.google.firebase.FirebaseException
-import com.google.firebase.FirebaseNetworkException
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import com.google.firebase.auth.FirebaseAuthInvalidUserException
@@ -18,8 +16,9 @@ class AuthRepositoryImpl @Inject constructor() : AuthRepository {
 
     override fun hasSavedAuthSession() = FirebaseAuth.getInstance().currentUser != null
     override fun isAnonymousSession() = FirebaseAuth.getInstance().currentUser?.isAnonymous == true
+    override fun getCurrentUserId(): String? = FirebaseAuth.getInstance().currentUser?.uid
 
-    override suspend fun signInWithGoogle(idToken: String): Resource<Unit, DataError.FirebaseAuth> {
+    override suspend fun signInWithGoogle(idToken: String): Resource<Unit, DataError.Auth> {
         val firebaseCredential = GoogleAuthProvider.getCredential(idToken, null)
 
         return try {
@@ -30,7 +29,7 @@ class AuthRepositoryImpl @Inject constructor() : AuthRepository {
         }
     }
 
-    override suspend fun signInAnonymously(): Resource<Unit, DataError.FirebaseAuth> {
+    override suspend fun signInAnonymously(): Resource<Unit, DataError.Auth> {
         return try {
             Firebase.auth.signInAnonymously().await()
             Resource.Success(Unit)
@@ -43,13 +42,11 @@ class AuthRepositoryImpl @Inject constructor() : AuthRepository {
         Firebase.auth.signOut()
     }
 
-    private fun mapExceptionToSignInError(e: Exception): DataError.FirebaseAuth {
+    private fun mapExceptionToSignInError(e: Exception): DataError.Auth {
         return when (e) {
-            is FirebaseAuthInvalidCredentialsException -> DataError.FirebaseAuth.INVALID_CREDENTIAL
-            is FirebaseAuthInvalidUserException -> DataError.FirebaseAuth.INVALID_USER
-            is FirebaseNetworkException -> DataError.FirebaseAuth.NETWORK_ERROR
-            is FirebaseException -> DataError.FirebaseAuth.FIREBASE_ERROR
-            else -> DataError.FirebaseAuth.UNKNOWN
+            is FirebaseAuthInvalidCredentialsException -> DataError.Auth.INVALID_CREDENTIAL
+            is FirebaseAuthInvalidUserException -> DataError.Auth.INVALID_USER
+            else -> DataError.Auth.UNKNOWN
         }
     }
 }

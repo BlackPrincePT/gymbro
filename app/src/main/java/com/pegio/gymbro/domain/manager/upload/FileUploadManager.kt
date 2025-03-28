@@ -1,15 +1,14 @@
 package com.pegio.gymbro.domain.manager.upload
 
-import android.net.Uri
-import java.util.UUID
+import com.pegio.gymbro.domain.core.DataError
+import com.pegio.gymbro.domain.core.Resource
 
 interface FileUploadManager {
-    fun enqueueFileUpload(uri: Uri, fileType: FileType): UUID
+    suspend fun enqueueFileUpload(uri: String): Resource<String, DataError.Firestore>
     fun deleteFile(url: String)
 
     companion object {
-        const val URI_KEY = "image_uri"
-        const val FILE_TYPE_KEY = "file_type"
+        const val URI_KEY = "content_uri"
         const val RESULT_URL = "result_url"
     }
 }

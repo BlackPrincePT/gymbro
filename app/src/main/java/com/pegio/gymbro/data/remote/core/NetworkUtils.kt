@@ -35,14 +35,10 @@ class NetworkUtils @Inject constructor() {
             401 -> DataError.Network.UNAUTHORIZED
             403 -> DataError.Network.FORBIDDEN
             404 -> DataError.Network.NOT_FOUND
-            405 -> DataError.Network.METHOD_NOT_ALLOWED
             408 -> DataError.Network.TIMEOUT
-            409 -> DataError.Network.CONFLICT
             422 -> DataError.Network.BAD_REQUEST
             500 -> DataError.Network.INTERNAL_SERVER_ERROR
-            502 -> DataError.Network.BAD_GATEWAY
             503 -> DataError.Network.SERVICE_UNAVAILABLE
-            504 -> DataError.Network.GATEWAY_TIMEOUT
             else -> DataError.Network.UNKNOWN
         }
     }
