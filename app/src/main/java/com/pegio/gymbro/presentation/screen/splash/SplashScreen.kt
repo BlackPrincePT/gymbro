@@ -15,20 +15,21 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavController
-import com.pegio.gymbro.presentation.core.Route
-import com.pegio.gymbro.presentation.util.popNavigate
+import com.pegio.gymbro.R
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 
 @Composable
 fun SplashScreen(
-    navController: NavController,
+    onUserNotAuthenticated: () -> Unit,
+    onRegistrationIncomplete: () -> Unit,
+    onUserAuthenticatedAndRegistrationComplete: () -> Unit,
     viewModel: SplashViewModel = hiltViewModel()
 ) {
     val startTime = remember { System.currentTimeMillis() }
@@ -42,25 +43,25 @@ fun SplashScreen(
             }
 
             when (effect) {
-                SplashUiEffect.NavigateToHome -> navController.popNavigate(Route.HomeScreen)
-                SplashUiEffect.NavigateToAuth -> navController.popNavigate(Route.AuthScreen)
-                SplashUiEffect.NavigateToRegister -> navController.popNavigate(Route.RegisterScreen)
+                SplashUiEffect.NavigateToHome -> onUserAuthenticatedAndRegistrationComplete()
+                SplashUiEffect.NavigateToAuth -> onUserNotAuthenticated()
+                SplashUiEffect.NavigateToRegister -> onRegistrationIncomplete()
             }
         }
     }
 
-    Splash()
+    SplashContent()
 }
 
 @Composable
-private fun Splash() {
+private fun SplashContent() {
     Box(
         modifier = Modifier
             .fillMaxSize()
             .background(color = Color.LightGray)
     ) {
         Text(
-            text = "GymBro",
+            text = stringResource(R.string.gymbro),
             color = Color.White,
             fontWeight = FontWeight.Bold,
             fontSize = 48.sp,
@@ -71,7 +72,7 @@ private fun Splash() {
 
         Icon(
             imageVector = Icons.Default.Place,
-            contentDescription = "Splash Logo",
+            contentDescription = stringResource(R.string.splash_logo),
             tint = Color.White,
             modifier = Modifier
                 .align(Alignment.Center)
@@ -83,5 +84,5 @@ private fun Splash() {
 @Preview
 @Composable
 private fun SplashPreview() {
-    Splash()
+    SplashContent()
 }

@@ -115,6 +115,8 @@ dependencies {
     implementation(libs.androidx.paging.runtime)
     implementation(libs.coil.compose)
     implementation(libs.coil.network.okhttp)
+    implementation(libs.androidx.constraintlayout.compose)
+    implementation(libs.androidx.material.icons.extended)
 
     // Firebase
     implementation(platform(libs.firebase.bom))

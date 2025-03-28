@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -27,11 +28,13 @@ import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import com.pegio.gymbro.domain.manager.upload.FileUploadManager.Companion.RESULT_URL
 import com.pegio.gymbro.presentation.components.ProfileImage
+import com.pegio.gymbro.presentation.components.TopAppBarContent
 import com.pegio.gymbro.presentation.theme.GymBroTheme
 import kotlinx.coroutines.flow.collectLatest
 
 @Composable
 fun AccountScreen(
+    onBackClick: () -> Unit,
     viewModel: AccountViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
@@ -51,7 +54,19 @@ fun AccountScreen(
         }
     }
 
-    AccountContent(state = uiState, onEvent = viewModel::onEvent)
+    Scaffold(
+        topBar = { TopAppBarContent(onBackClick) },
+        modifier = Modifier
+            .fillMaxSize()
+    ) { innerPadding ->
+
+        AccountContent(
+            state = uiState,
+            onEvent = viewModel::onEvent,
+            modifier = Modifier
+                .padding(innerPadding)
+        )
+    }
 }
 
 // TODO - Better handling
@@ -70,7 +85,8 @@ fun handleUploadUpdates(workInfo: WorkInfo?, onEvent: (AccountUiEvent) -> Unit) 
 @Composable
 private fun AccountContent(
     state: AccountUiState,
-    onEvent: (AccountUiEvent) -> Unit
+    onEvent: (AccountUiEvent) -> Unit,
+    modifier: Modifier = Modifier
 ) {
     val galleryLauncher =
         rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri ->
@@ -79,7 +95,7 @@ private fun AccountContent(
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
     ) {
         Row(
@@ -88,7 +104,7 @@ private fun AccountContent(
                 .padding(top = 32.dp)
         ) {
             ProfileImage(
-                imageUrl = state.user.profile,
+                imageUrl = state.user.imgProfileUrl,
                 modifier = Modifier
                     .clip(CircleShape)
                     .size(64.dp)

@@ -1,7 +1,7 @@
 package com.pegio.gymbro.presentation.screen.account
 
-import com.pegio.gymbro.domain.model.User
+import com.pegio.gymbro.presentation.model.UiUser
 
 data class AccountUiState(
-    val user: User = User(id = "" , username = "", profile = null)
+    val user: UiUser = UiUser.EMPTY
 )

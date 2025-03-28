@@ -19,15 +19,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.NavController
-import com.pegio.gymbro.presentation.core.Route
 import com.pegio.gymbro.presentation.theme.GymBroTheme
-import com.pegio.gymbro.presentation.util.popNavigate
 import kotlinx.coroutines.flow.collectLatest
 
 @Composable
 fun AuthScreen(
-    navController: NavController,
+    onAuthSuccessAndRegistrationComplete: () -> Unit,
+    onAuthSuccessButRegistrationIncomplete: () -> Unit,
     viewModel: AuthViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState
@@ -36,8 +34,8 @@ fun AuthScreen(
     LaunchedEffect(Unit) {
         viewModel.uiEffect.collectLatest { effect ->
             when (effect) {
-                AuthUiEffect.NavigateToHome -> navController.popNavigate(Route.HomeScreen)
-                AuthUiEffect.NavigateToRegister -> navController.popNavigate(Route.RegisterScreen)
+                AuthUiEffect.NavigateToHome -> onAuthSuccessAndRegistrationComplete()
+                AuthUiEffect.NavigateToRegister -> onAuthSuccessButRegistrationIncomplete()
                 is AuthUiEffect.Failure -> {}
             }
         }
