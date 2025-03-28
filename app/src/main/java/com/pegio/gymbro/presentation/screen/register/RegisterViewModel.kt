@@ -2,7 +2,7 @@ package com.pegio.gymbro.presentation.screen.register
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.pegio.gymbro.domain.usecase.common.GetCurrentUserIdUseCase
+import com.pegio.gymbro.domain.usecase.register.GetCurrentUserIdUseCase
 import com.pegio.gymbro.domain.usecase.register.SaveUserUseCase
 import com.pegio.gymbro.presentation.mapper.UiUserMapper
 import com.pegio.gymbro.presentation.model.UiUser
@@ -41,7 +41,7 @@ class RegisterViewModel @Inject constructor(
 
     private fun createUser(): UiUser {
         return UiUser(
-            id = getCurrentUserId(),
+            id = getCurrentUserId()!!,
             username = _uiState.value.username,
             imgProfileUrl = null,
             imgBackgroundUrl = null

@@ -1,7 +1,6 @@
 package com.pegio.gymbro.data.repository
 
 import com.google.firebase.Firebase
-import com.google.firebase.auth.auth
 import com.google.firebase.firestore.firestore
 import com.pegio.gymbro.data.remote.core.FirebaseConstants.USERS
 import com.pegio.gymbro.data.remote.core.FirestoreUtils
@@ -22,11 +21,6 @@ class UserRepositoryImpl @Inject constructor(
 ) : UserRepository {
 
     private val db = Firebase.firestore
-
-    override fun getCurrentUserId(): Resource<String, DataError.FirebaseAuth> {
-        return Firebase.auth.currentUser?.uid?.let { Resource.Success(data = it) }
-            ?: Resource.Failure(error = DataError.FirebaseAuth.UNAUTHENTICATED)
-    }
 
     override suspend fun fetchUser(id: String): Resource<User, DataError.Firestore> {
         val documentRef = db.collection(USERS).document(id)

@@ -2,7 +2,8 @@ package com.pegio.gymbro.presentation.screen.splash
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.pegio.gymbro.domain.usecase.auth.CheckUserRegistrationStatusUseCase
+import com.pegio.gymbro.domain.core.Resource
+import com.pegio.gymbro.domain.usecase.common.CheckUserRegistrationStatusUseCase
 import com.pegio.gymbro.domain.usecase.splash.HasSavedAuthSessionUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -26,11 +27,13 @@ class SplashViewModel @Inject constructor(
 
     private fun checkForSavedAuthState() = viewModelScope.launch {
         if (hasSavedAuthSession()) {
-            checkUserRegistrationStatus(
-                onRegistrationComplete = { sendEffect(SplashUiEffect.NavigateToHome) },
-                onRegistrationIncomplete = { sendEffect(SplashUiEffect.NavigateToRegister) },
-                onException = { sendEffect(SplashUiEffect.NavigateToAuth) }
-            )
+            when (val result = checkUserRegistrationStatus()) {
+                is Resource.Failure -> { }
+                is Resource.Success -> {
+                    val navigationEffect = if (result.data) SplashUiEffect.NavigateToHome else SplashUiEffect.NavigateToRegister
+                    sendEffect(navigationEffect)
+                }
+            }
         } else {
             sendEffect(SplashUiEffect.NavigateToAuth)
         }

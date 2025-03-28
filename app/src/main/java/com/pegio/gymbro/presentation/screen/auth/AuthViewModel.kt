@@ -11,11 +11,11 @@ import com.google.android.libraries.identity.googleid.GetSignInWithGoogleOption
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential.Companion.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL
 import com.pegio.gymbro.BuildConfig
-import com.pegio.gymbro.domain.usecase.auth.SignInWithGoogleUseCase
 import com.pegio.gymbro.domain.core.DataError
 import com.pegio.gymbro.domain.core.Resource
-import com.pegio.gymbro.domain.usecase.auth.CheckUserRegistrationStatusUseCase
 import com.pegio.gymbro.domain.usecase.auth.SignInAnonymouslyUseCase
+import com.pegio.gymbro.domain.usecase.auth.SignInWithGoogleUseCase
+import com.pegio.gymbro.domain.usecase.common.CheckUserRegistrationStatusUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
@@ -75,7 +75,7 @@ class AuthViewModel @Inject constructor(
                 is Resource.Failure -> sendEffect(AuthUiEffect.Failure(e = signInResult.error))
             }
         } else {
-            sendEffect(AuthUiEffect.Failure(e = DataError.FirebaseAuth.INVALID_CREDENTIAL))
+            sendEffect(AuthUiEffect.Failure(e = DataError.Auth.INVALID_CREDENTIAL))
         }
     }
 
@@ -87,10 +87,13 @@ class AuthViewModel @Inject constructor(
     }
 
     private fun checkForSavedAuthState() = viewModelScope.launch {
-        checkUserRegistrationStatus(
-            onRegistrationComplete = { sendEffect(AuthUiEffect.NavigateToHome) },
-            onRegistrationIncomplete = { sendEffect(AuthUiEffect.NavigateToRegister) }
-        )
+        when (val result = checkUserRegistrationStatus()) {
+            is Resource.Failure -> { }
+            is Resource.Success -> {
+                val navigationEffect = if (result.data) AuthUiEffect.NavigateToHome else AuthUiEffect.NavigateToRegister
+                sendEffect(navigationEffect)
+            }
+        }
     }
 
     private fun sendEffect(effect: AuthUiEffect) {

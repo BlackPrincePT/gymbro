@@ -19,14 +19,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.work.WorkInfo
-import androidx.work.WorkManager
-import com.pegio.gymbro.domain.manager.upload.FileUploadManager.Companion.RESULT_URL
 import com.pegio.gymbro.presentation.components.ProfileImage
 import com.pegio.gymbro.presentation.components.TopAppBarContent
 import com.pegio.gymbro.presentation.theme.GymBroTheme
@@ -37,20 +33,12 @@ fun AccountScreen(
     onBackClick: () -> Unit,
     viewModel: AccountViewModel = hiltViewModel()
 ) {
-    val context = LocalContext.current
-
     val uiState by viewModel.uiState
         .collectAsStateWithLifecycle()
 
     LaunchedEffect(Unit) {
         viewModel.uiEffect.collectLatest { effect ->
-            when (effect) {
-                is AccountUiEffect.ProfilePictureUploadStarted -> {
-                    WorkManager.getInstance(context)
-                        .getWorkInfoByIdFlow(effect.workId)
-                        .collect { workInfo -> handleUploadUpdates(workInfo, viewModel::onEvent) }
-                }
-            }
+
         }
     }
 
@@ -66,19 +54,6 @@ fun AccountScreen(
             modifier = Modifier
                 .padding(innerPadding)
         )
-    }
-}
-
-// TODO - Better handling
-fun handleUploadUpdates(workInfo: WorkInfo?, onEvent: (AccountUiEvent) -> Unit) {
-    println(workInfo)
-    if (workInfo != null && workInfo.state.isFinished) {
-        if (workInfo.state == WorkInfo.State.SUCCEEDED) {
-            val newUrl = workInfo.outputData.getString(RESULT_URL)
-            newUrl?.let {
-                onEvent(AccountUiEvent.OnPhotoUpload(imageUrl = it.also { println(it) }))
-            }
-        }
     }
 }
 

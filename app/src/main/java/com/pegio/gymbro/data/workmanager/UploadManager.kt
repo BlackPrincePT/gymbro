@@ -1,20 +1,22 @@
 package com.pegio.gymbro.data.workmanager
 
 import android.content.Context
-import android.net.Uri
 import androidx.work.Constraints
 import androidx.work.NetworkType
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.OutOfQuotaPolicy
+import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import androidx.work.workDataOf
 import com.google.firebase.storage.FirebaseStorage
-import com.pegio.gymbro.domain.manager.upload.FileType
+import com.pegio.gymbro.domain.core.DataError
+import com.pegio.gymbro.domain.core.Resource
 import com.pegio.gymbro.domain.manager.upload.FileUploadManager
-import com.pegio.gymbro.domain.manager.upload.FileUploadManager.Companion.FILE_TYPE_KEY
+import com.pegio.gymbro.domain.manager.upload.FileUploadManager.Companion.RESULT_URL
 import com.pegio.gymbro.domain.manager.upload.FileUploadManager.Companion.URI_KEY
 import dagger.hilt.android.qualifiers.ApplicationContext
-import java.util.UUID
+import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.first
 import javax.inject.Inject
 
 class UploadManager @Inject constructor(
@@ -23,11 +25,8 @@ class UploadManager @Inject constructor(
 
     private val storage = FirebaseStorage.getInstance()
 
-    override fun enqueueFileUpload(uri: Uri, fileType: FileType): UUID {
-        val inputData = workDataOf(
-            URI_KEY to uri.toString(),
-            FILE_TYPE_KEY to fileType.name
-        )
+    override suspend fun enqueueFileUpload(uri: String): Resource<String, DataError.Firestore> {
+        val inputData = workDataOf(URI_KEY to uri)
 
         val constraints = Constraints.Builder()
             .setRequiredNetworkType(NetworkType.CONNECTED)
@@ -39,15 +38,29 @@ class UploadManager @Inject constructor(
             .setInputData(inputData)
             .build()
 
-        WorkManager.getInstance(appContext).apply {
-            enqueue(workRequest)
-            getWorkInfoByIdFlow(workRequest.id)
-        }
+        val workManager = WorkManager.getInstance(appContext)
+        workManager.enqueue(workRequest)
 
-        return workRequest.id
+        val finishedWorkInfo = workManager.getWorkInfoByIdFlow(workRequest.id)
+            .filterNotNull()
+            .first { it.state.isFinished }
+
+        return handleUploadUpdates(finishedWorkInfo)
     }
 
     override fun deleteFile(url: String) {
         storage.getReferenceFromUrl(url).delete()
+    }
+
+    private fun handleUploadUpdates(workInfo: WorkInfo): Resource<String, DataError.Firestore> {
+        return when (workInfo.state) {
+            WorkInfo.State.SUCCEEDED -> {
+                workInfo.outputData.getString(RESULT_URL)
+                    ?.let { url -> Resource.Success(data = url) }
+                    ?: Resource.Failure(error = DataError.Firestore.UNKNOWN)
+            }
+
+            else -> Resource.Failure(error = DataError.Firestore.UNKNOWN)
+        }
     }
 }
