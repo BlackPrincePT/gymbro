@@ -42,6 +42,7 @@
     <string name="error_invalid_user">This user account is disabled or no longer exists.</string>
     <string name="error_network">Network error occurred. Please check your internet connection.</string>
     <string name="error_firebase">An unexpected Firebase error occurred.</string>
+    <string name="error_unauthenticated">User is not logged in.</string>
 
     <string name="chat_hint">Type a message…</string>
     <string name="profile_picture">Profile picture</string>

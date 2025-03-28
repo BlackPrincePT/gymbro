@@ -23,7 +23,10 @@ class UserRepositoryImpl @Inject constructor(
 
     private val db = Firebase.firestore
 
-    override fun getCurrentUserId(): String? = Firebase.auth.currentUser?.uid
+    override fun getCurrentUserId(): Resource<String, DataError.FirebaseAuth> {
+        return Firebase.auth.currentUser?.uid?.let { Resource.Success(data = it) }
+            ?: Resource.Failure(error = DataError.FirebaseAuth.UNAUTHENTICATED)
+    }
 
     override suspend fun fetchUser(id: String): Resource<User, DataError.Firestore> {
         val documentRef = db.collection(USERS).document(id)

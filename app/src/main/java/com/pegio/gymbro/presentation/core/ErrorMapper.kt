@@ -58,5 +58,6 @@ private fun DataError.FirebaseAuth.toStringResId(): Int {
         DataError.FirebaseAuth.NETWORK_ERROR -> R.string.error_network
         DataError.FirebaseAuth.FIREBASE_ERROR -> R.string.error_firebase
         DataError.FirebaseAuth.UNKNOWN -> R.string.error_unknown
+        DataError.FirebaseAuth.UNAUTHENTICATED -> R.string.error_unauthenticated
     }
 }

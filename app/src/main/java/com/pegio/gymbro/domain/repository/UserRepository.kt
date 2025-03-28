@@ -6,7 +6,7 @@ import com.pegio.gymbro.domain.model.User
 import kotlinx.coroutines.flow.Flow
 
 interface UserRepository {
-    fun getCurrentUserId(): String?
+    fun getCurrentUserId(): Resource<String, DataError.FirebaseAuth>
     suspend fun fetchUser(id: String): Resource<User, DataError.Firestore>
     fun fetchUserSteam(id: String): Flow<Resource<User, DataError.Firestore>>
     fun saveUser(user: User)

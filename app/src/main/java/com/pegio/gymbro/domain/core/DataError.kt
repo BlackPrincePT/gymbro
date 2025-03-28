@@ -23,6 +23,7 @@ sealed interface DataError : Error {
         INVALID_USER,
         NETWORK_ERROR,
         FIREBASE_ERROR,
+        UNAUTHENTICATED,
         UNKNOWN
     }
 
