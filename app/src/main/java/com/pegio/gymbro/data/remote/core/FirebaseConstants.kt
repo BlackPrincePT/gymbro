@@ -10,4 +10,5 @@ object FirebaseConstants {
      * Document Parameters
      */
     const val USERNAME = "username"
+    const val TIMESTAMP = "timestamp"
 }
