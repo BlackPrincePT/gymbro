@@ -42,4 +42,5 @@ class UserRepositoryImpl @Inject constructor(
         val userDto = userDtoMapper.mapFromDomain(user)
         db.collection(USERS).document(user.id).set(userDto)
     }
+
 }

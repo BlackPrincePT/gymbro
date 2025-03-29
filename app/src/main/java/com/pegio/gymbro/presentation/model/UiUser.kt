@@ -10,10 +10,20 @@ data class UiUser(
     val heightCm: String,
     val weightKg: String,
     val imgProfileUrl: String?,
-    val imgBackgroundUrl: String?
+    val imgBackgroundUrl: String?,
 ) {
 
     companion object {
+        val test = UiUser(
+            id = "",
+            username = "TBCBANK",
+            age =  "94",
+            heightCm = "123",
+            weightKg = "223",
+            imgProfileUrl = null,
+            imgBackgroundUrl = null,
+            gender = Gender.MALE,
+        )
         val DEFAULT = UiUser(
             id = "",
             username = "Pitiful Android Developer",
@@ -22,7 +32,7 @@ data class UiUser(
             heightCm = "180",
             weightKg = "75",
             imgProfileUrl = null,
-            imgBackgroundUrl = null
+            imgBackgroundUrl = null,
         )
 
         val EMPTY = UiUser(

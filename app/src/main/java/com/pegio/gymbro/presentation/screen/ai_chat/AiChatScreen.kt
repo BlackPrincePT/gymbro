@@ -1,5 +1,7 @@
 package com.pegio.gymbro.presentation.screen.ai_chat
 
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.compose.foundation.layout.Box
@@ -9,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -32,17 +35,22 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.pegio.gymbro.R
-import com.pegio.gymbro.presentation.model.AiChatMessage
+import com.pegio.gymbro.presentation.model.UiAiChatMessage
 import com.pegio.gymbro.presentation.theme.GymBroTheme
 import kotlinx.coroutines.flow.collectLatest
 
 @Composable
 fun AiChatScreen(
+    onBackClick: () -> Unit,
     viewModel: AiChatViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val listState = rememberLazyListState()
     val snackBarHostState = remember { SnackbarHostState() }
+    val galleryLauncher =
+        rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri ->
+            uri?.let { viewModel.onEvent(AiChatUiEvent.OnSendMessage(imageUri = uri)) }
+        }
 
 
     LaunchedEffect(Unit) {
@@ -85,14 +93,15 @@ fun AiChatScreen(
         ChatInput(
             text = uiState.inputText,
             onTextChange = { viewModel.onEvent(AiChatUiEvent.OnTextChanged(it)) },
-            onSend = { viewModel.onEvent(AiChatUiEvent.OnSendMessage) }
+            onSend = { viewModel.onEvent(AiChatUiEvent.OnSendMessage()) },
+            onImageSelect = { galleryLauncher.launch(input = "image/*") }
         )
 
     }
 }
 
 @Composable
-fun ChatBubble(message: AiChatMessage) {
+fun ChatBubble(message: UiAiChatMessage) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -114,19 +123,28 @@ fun ChatBubble(message: AiChatMessage) {
 
 @Composable
 fun ChatBubblePlaceholder() {
-    val placeholderMessage = AiChatMessage(text = "Typing...", isFromUser = false)
+    val placeholderMessage = UiAiChatMessage(text = "Typing...", isFromUser = false)
 
     ChatBubble(message = placeholderMessage)
 }
 
 @Composable
-fun ChatInput(text: String, onTextChange: (String) -> Unit, onSend: () -> Unit) {
+fun ChatInput(text: String, onTextChange: (String) -> Unit, onSend: () -> Unit,onImageSelect: () -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .background(Color.LightGray, RoundedCornerShape(3.dp)),
         verticalAlignment = Alignment.CenterVertically
     ) {
+        IconButton(onClick = onImageSelect, modifier = Modifier.padding(4.dp)) {
+            Icon(
+                painter = painterResource(id = R.drawable.attach_icon),
+                contentDescription = "Attach Image",
+                tint = Color.Black,
+                modifier = Modifier.size(28.dp)
+            )
+        }
+
         TextField(
             value = text,
             onValueChange = onTextChange,
@@ -157,6 +175,6 @@ fun ChatInput(text: String, onTextChange: (String) -> Unit, onSend: () -> Unit) 
 @Composable
 fun PreviewChatScreen() {
     GymBroTheme {
-        AiChatScreen()
+        AiChatScreen(onBackClick = {})
     }
 }

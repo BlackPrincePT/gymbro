@@ -2,21 +2,23 @@ package com.pegio.gymbro.presentation.mapper
 
 import com.pegio.gymbro.domain.core.Mapper
 import com.pegio.gymbro.domain.model.AiMessage
-import com.pegio.gymbro.presentation.model.AiChatMessage
+import com.pegio.gymbro.presentation.model.UiAiChatMessage
 import javax.inject.Inject
 
-class AiMessageMapper @Inject constructor() : Mapper<AiChatMessage, AiMessage> {
-    override fun mapToDomain(data: AiChatMessage): AiMessage {
+class AiMessageMapper @Inject constructor() : Mapper<UiAiChatMessage, AiMessage> {
+
+    override fun mapToDomain(data: UiAiChatMessage): AiMessage {
         return AiMessage(
-            role = if (data.isFromUser) "user" else "assistant",
-            content = data.text
+            imageUrl = data.imageUri,
+            text = data.text
         )
     }
 
-    override fun mapFromDomain(data: AiMessage): AiChatMessage {
-        return AiChatMessage(
-            text = data.content,
-            isFromUser = data.role == "user"
+    override fun mapFromDomain(data: AiMessage): UiAiChatMessage {
+        return UiAiChatMessage(
+            text = data.text,
+            imageUri = data.imageUrl,
+            isFromUser = true
         )
     }
 }

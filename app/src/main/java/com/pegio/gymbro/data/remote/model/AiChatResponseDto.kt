@@ -10,5 +10,11 @@ data class AiChatResponseDto(
 
 @Serializable
 data class ChoiceDto(
-    @SerialName("message") val message: MessageDto
+    @SerialName("message") val message: ResponseMessageDto
+)
+
+@Serializable
+data class ResponseMessageDto(
+    @SerialName("role") val role: String = "assistant",
+    @SerialName("content") val content: String
 )

@@ -43,7 +43,7 @@ android {
     buildTypes {
         debug {
             buildConfigField("String", "GEMINI_URL", "\"https://api.openai.com/\"")
-            buildConfigField("String", "GPT_MODEL", "\"gpt-4o-mini\"")
+            buildConfigField("String", "GPT_ENDPOINT", "\"v1/chat/completions\"")
             buildConfigField(
                 "String",
                 "API_KEY",

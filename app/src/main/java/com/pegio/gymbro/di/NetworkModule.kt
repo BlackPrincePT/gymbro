@@ -22,6 +22,7 @@ object NetworkModule {
     @Singleton
     fun provideRetrofit(): Retrofit {
         val json = Json {
+            encodeDefaults = true
             ignoreUnknownKeys = true
         }
 

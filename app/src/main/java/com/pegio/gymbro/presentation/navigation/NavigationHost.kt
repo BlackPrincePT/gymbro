@@ -62,7 +62,7 @@ fun NavigationHost() {
         }
 
         composable<AiChatRoute> {
-            AiChatScreen()
+            AiChatScreen(onBackClick = navController::navigateUp)
         }
     }
 }

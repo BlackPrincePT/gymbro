@@ -11,5 +11,6 @@ data class UserDto(
     val heightCm: Int = 0,
     val weightKg: Int = 0,
     val imgProfileUrl: String? = null,
-    val imgBackgroundUrl: String? = null
+    val imgBackgroundUrl: String? = null,
+
 )
