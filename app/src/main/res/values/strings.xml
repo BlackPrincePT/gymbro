@@ -20,6 +20,26 @@
     <string name="error_document_not_found">The requested document could not be found.</string>
     <string name="error_permission_denied">Permission denied to access the requested resource.</string>
 
+    <!-- Username Errors -->
+    <string name="error_username_empty">Username cannot be empty.</string>
+    <string name="error_username_too_short">Username is too short. Please choose a longer username.</string>
+
+    <!-- Age Errors -->
+    <string name="error_age_invalid">Age must be greater than zero.</string>
+    <string name="error_age_too_young">You must be at least 18 years old.</string>
+
+    <!-- Gender Errors -->
+    <string name="error_gender_empty">Gender cannot be empty.</string>
+    <string name="error_gender_invalid">The gender provided is invalid.</string>
+
+    <!-- Height Errors -->
+    <string name="error_height_invalid">The height value provided is invalid.</string>
+    <string name="error_height_too_low">The height is below the acceptable threshold.</string>
+
+    <!-- Weight Errors -->
+    <string name="error_weight_invalid">The weight value provided is invalid.</string>
+    <string name="error_weight_too_low">The weight is below the acceptable threshold.</string>
+
     <string name="chat_hint">Type a message…</string>
     <string name="profile_picture">Profile picture</string>
     <string name="background_photo">Background photo</string>

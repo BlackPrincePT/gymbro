@@ -37,8 +37,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.pegio.gymbro.domain.core.DataError
 import com.pegio.gymbro.domain.model.User
 import com.pegio.gymbro.presentation.components.DropdownMenu
+import com.pegio.gymbro.presentation.components.FormTextField
 import com.pegio.gymbro.presentation.components.ProfileImage
 import com.pegio.gymbro.presentation.theme.GymBroTheme
 import kotlinx.coroutines.flow.collectLatest
@@ -121,20 +123,22 @@ fun RegisterForm(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        TextField(
+        FormTextField(
             value = state.user.username,
             onValueChange = { onEvent(RegisterUiEvent.OnUsernameChanged(it)) },
             label = { Text("Username") },
+            error = state.validationError.username,
             modifier = Modifier.fillMaxWidth()
         )
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        TextField(
+        FormTextField(
             value = state.user.age,
             onValueChange = { onEvent(RegisterUiEvent.OnAgeChanged(it)) },
             label = { Text("Age") },
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+            isNumberOnly = true,
+            error = state.validationError.age,
             modifier = Modifier.fillMaxWidth()
         )
 
@@ -144,26 +148,29 @@ fun RegisterForm(
             options = User.Gender.entries,
             onSelectionChanged = { onEvent(RegisterUiEvent.OnGenderChanged(it)) },
             label = { Text(text = "Gender") },
-            selectedOption = state.user.gender?.name
+            selectedOption = state.user.gender?.name,
+            error = state.validationError.gender
         )
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        TextField(
+        FormTextField(
             value = state.user.heightCm,
             onValueChange = { onEvent(RegisterUiEvent.OnHeightChanged(it)) },
             label = { Text("Height (cm)") },
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+            isNumberOnly = true,
+            error = state.validationError.height,
             modifier = Modifier.fillMaxWidth()
         )
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        TextField(
+        FormTextField(
             value = state.user.weightKg,
             onValueChange = { onEvent(RegisterUiEvent.OnWeightChanged(it)) },
             label = { Text("Weight (kg)") },
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+            isNumberOnly = true,
+            error = state.validationError.weight,
             modifier = Modifier.fillMaxWidth()
         )
 

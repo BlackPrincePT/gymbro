@@ -4,10 +4,13 @@ import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.pegio.gymbro.domain.core.Resource
+import com.pegio.gymbro.domain.core.ifFailure
 import com.pegio.gymbro.domain.manager.upload.FileUploadManager
+import com.pegio.gymbro.domain.usecase.aggregator.FormValidatorUseCases
 import com.pegio.gymbro.domain.usecase.register.GetCurrentUserIdUseCase
 import com.pegio.gymbro.domain.usecase.register.SaveUserUseCase
 import com.pegio.gymbro.presentation.mapper.UiUserMapper
+import com.pegio.gymbro.presentation.model.UiUser
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -23,6 +26,7 @@ class RegisterViewModel @Inject constructor(
     private val saveUser: SaveUserUseCase,
     private val uiUserMapper: UiUserMapper,
     private val fileUploadManager: FileUploadManager,
+    private val formValidator: FormValidatorUseCases,
     getCurrentUserId: GetCurrentUserIdUseCase
 ) : ViewModel() {
 
@@ -34,58 +38,31 @@ class RegisterViewModel @Inject constructor(
 
     init {
         getCurrentUserId()?.let { currentUserId ->
-            _uiState.update { oldState ->
-                oldState.copy(user = oldState.user.copy(id = currentUserId))
-            }
+            updateUser { copy(id = currentUserId) }
         }
     }
 
     fun onEvent(event: RegisterUiEvent) {
         when (event) {
-            is RegisterUiEvent.OnUsernameChanged -> {
-                _uiState.update { currentState ->
-                    currentState.copy(user = currentState.user.copy(username = event.username))
-                }
-            }
+            is RegisterUiEvent.OnUsernameChanged -> updateUser { copy(username = event.username) }
+            is RegisterUiEvent.OnAgeChanged -> updateUser { copy(age = event.age) }
+            is RegisterUiEvent.OnGenderChanged -> updateUser { copy(gender = event.gender) }
+            is RegisterUiEvent.OnHeightChanged -> updateUser { copy(heightCm = event.height) }
+            is RegisterUiEvent.OnWeightChanged -> updateUser { copy(weightKg = event.weight) }
+            is RegisterUiEvent.OnProfilePhotoSelected -> _uiState.update { it.copy(selectedImageUri = event.imageUri) }
+            RegisterUiEvent.OnSubmit -> onSubmit()
+        }
+    }
 
-            is RegisterUiEvent.OnAgeChanged -> {
-                _uiState.update { currentState ->
-                    currentState.copy(user = currentState.user.copy(age = event.age))
-                }
-            }
+    private fun onSubmit() {
+        if (areFieldsValid().not())
+            return
 
-            is RegisterUiEvent.OnGenderChanged -> {
-                _uiState.update { currentState ->
-                    currentState.copy(user = currentState.user.copy(gender = event.gender))
-                }
-            }
-
-            is RegisterUiEvent.OnHeightChanged -> {
-                _uiState.update { currentState ->
-                    currentState.copy(user = currentState.user.copy(heightCm = event.height))
-                }
-            }
-
-            is RegisterUiEvent.OnWeightChanged -> {
-                _uiState.update { currentState ->
-                    currentState.copy(user = currentState.user.copy(weightKg = event.weight))
-                }
-            }
-
-            is RegisterUiEvent.OnProfilePhotoSelected -> {
-                _uiState.update { currentState ->
-                    currentState.copy(selectedImageUri = event.imageUri)
-                }
-            }
-
-            RegisterUiEvent.OnSubmit -> {
-                uiState.value.selectedImageUri?.let { imageUri ->
-                    saveUserWithProfilePhoto(uri = imageUri)
-                } ?: run {
-                    saveUser(uiUserMapper.mapToDomain(uiState.value.user))
-                    sendEffect(RegisterUiEffect.NavigateToHome)
-                }
-            }
+        uiState.value.selectedImageUri?.let { imageUri ->
+            saveUserWithProfilePhoto(uri = imageUri)
+        } ?: run {
+            saveUser(uiUserMapper.mapToDomain(uiState.value.user))
+            sendEffect(RegisterUiEffect.NavigateToHome)
         }
     }
 
@@ -98,6 +75,41 @@ class RegisterViewModel @Inject constructor(
                     sendEffect(RegisterUiEffect.NavigateToHome)
                 }
             }
+        }
+    }
+
+    private fun areFieldsValid(): Boolean {
+        val currentUser = uiState.value.user
+
+        var isValid = true
+
+        formValidator.validateUsername(currentUser.username)
+            .ifFailure { updateError { copy(username = it) }; isValid = it == null }
+
+        formValidator.validateAge(ageString = currentUser.age)
+            .ifFailure { updateError { copy(age = it) }; isValid = it == null }
+
+        formValidator.validateGender(gender = currentUser.gender)
+            .ifFailure { updateError { copy(gender = it) }; isValid = it == null }
+
+        formValidator.validateHeight(heightString = currentUser.heightCm)
+            .ifFailure { updateError { copy(height = it) }; isValid = it == null }
+
+        formValidator.validateWeight(weightString = currentUser.weightKg)
+            .ifFailure { updateError { copy(weight = it) }; isValid = it == null }
+
+        return isValid
+    }
+
+    private fun updateUser(update: UiUser.() -> UiUser) {
+        _uiState.update { currentState ->
+            currentState.copy(user = currentState.user.update())
+        }
+    }
+
+    private fun updateError(update: RegisterValidationError.() -> RegisterValidationError) {
+        _uiState.update { currentState ->
+            currentState.copy(validationError = currentState.validationError.update())
         }
     }
 
