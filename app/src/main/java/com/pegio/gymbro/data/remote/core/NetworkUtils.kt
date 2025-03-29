@@ -28,7 +28,6 @@ class NetworkUtils @Inject constructor() {
         }
     }
 
-
     private fun mapResponseCodeToError(code: Int): DataError.Network {
         return when (code) {
             400 -> DataError.Network.BAD_REQUEST

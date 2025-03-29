@@ -1,7 +1,9 @@
 package com.pegio.gymbro.domain.model
 
+import com.google.firebase.firestore.DocumentId
+
 data class User(
-    val id: String,
+    @DocumentId val id: String,
     val username: String,
     val age: Int,
     val gender: Gender,
