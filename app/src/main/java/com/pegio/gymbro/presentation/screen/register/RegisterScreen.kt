@@ -1,5 +1,7 @@
 package com.pegio.gymbro.presentation.screen.register
 
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -67,6 +69,11 @@ fun RegisterForm(
     state: RegisterUiState,
     onEvent: (RegisterUiEvent) -> Unit
 ) {
+    val galleryLauncher =
+        rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri ->
+            uri?.let { onEvent(RegisterUiEvent.OnProfilePhotoSelected(imageUri = uri)) }
+        }
+
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
@@ -86,16 +93,16 @@ fun RegisterForm(
                     .size(100.dp)
                     .clip(CircleShape)
                     .background(Color.LightGray)
-                    .clickable { onEvent(RegisterUiEvent.OnProfilePhotoClicked) },
+                    .clickable { galleryLauncher.launch(input = "image/*") },
                 contentAlignment = Alignment.Center
             ) {
                 ProfileImage(
-                    imageUrl = state.user.imgProfileUrl,
+                    imageUrl = state.selectedImageUri?.toString(),
                     modifier = Modifier
                         .fillMaxSize()
                 )
 
-                if (state.user.imgProfileUrl == null)
+                if (state.selectedImageUri == null)
                     Icon(
                         imageVector = Icons.Default.CameraAlt,
                         tint = Color.White,
@@ -107,7 +114,7 @@ fun RegisterForm(
 
             Spacer(modifier = Modifier.width(16.dp))
 
-            TextButton(onClick = { }) {
+            TextButton(onClick = { galleryLauncher.launch(input = "image/*") }) {
                 Text(text = "Click to choose profile picture")
             }
         }
