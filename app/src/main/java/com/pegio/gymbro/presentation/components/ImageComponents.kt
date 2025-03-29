@@ -18,6 +18,7 @@ fun ProfileImage(
         model = imageUrl,
         contentDescription = stringResource(R.string.profile_picture),
         fallback = ColorPainter(Color.Gray),
+        contentScale = ContentScale.Crop,
         modifier = modifier
     )
 }
