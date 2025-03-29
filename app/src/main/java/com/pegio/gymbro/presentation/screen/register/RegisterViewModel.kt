@@ -3,8 +3,8 @@ package com.pegio.gymbro.presentation.screen.register
 import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.pegio.gymbro.domain.core.Resource
-import com.pegio.gymbro.domain.core.ifFailure
+import com.pegio.gymbro.domain.core.withError
+import com.pegio.gymbro.domain.core.onSuccess
 import com.pegio.gymbro.domain.manager.upload.FileUploadManager
 import com.pegio.gymbro.domain.usecase.aggregator.FormValidatorUseCases
 import com.pegio.gymbro.domain.usecase.register.GetCurrentUserIdUseCase
@@ -38,6 +38,7 @@ class RegisterViewModel @Inject constructor(
 
     init {
         getCurrentUserId()?.let { currentUserId ->
+            println(currentUserId)
             updateUser { copy(id = currentUserId) }
         }
     }
@@ -61,21 +62,17 @@ class RegisterViewModel @Inject constructor(
         uiState.value.selectedImageUri?.let { imageUri ->
             saveUserWithProfilePhoto(uri = imageUri)
         } ?: run {
-            saveUser(uiUserMapper.mapToDomain(uiState.value.user))
+            saveUser(uiUserMapper.mapToDomain(uiState.value.user).also { println(it) })
             sendEffect(RegisterUiEffect.NavigateToHome)
         }
     }
 
     private fun saveUserWithProfilePhoto(uri: Uri) = viewModelScope.launch {
-        fileUploadManager.enqueueFileUpload(uri.toString()).also { result ->
-            when (result) {
-                is Resource.Failure -> { }
-                is Resource.Success -> {
-                    saveUser(uiUserMapper.mapToDomain(uiState.value.user.copy(imgProfileUrl = result.data)))
-                    sendEffect(RegisterUiEffect.NavigateToHome)
-                }
+        fileUploadManager.enqueueFileUpload(uri.toString())
+            .onSuccess {
+                saveUser(uiUserMapper.mapToDomain(uiState.value.user.copy(imgProfileUrl = it)))
+                sendEffect(RegisterUiEffect.NavigateToHome)
             }
-        }
     }
 
     private fun areFieldsValid(): Boolean {
@@ -84,19 +81,19 @@ class RegisterViewModel @Inject constructor(
         var isValid = true
 
         formValidator.validateUsername(currentUser.username)
-            .ifFailure { updateError { copy(username = it) }; isValid = it == null }
+            .withError { updateError { copy(username = it) }; isValid = it == null }
 
         formValidator.validateAge(ageString = currentUser.age)
-            .ifFailure { updateError { copy(age = it) }; isValid = it == null }
+            .withError { updateError { copy(age = it) }; isValid = it == null }
 
         formValidator.validateGender(gender = currentUser.gender)
-            .ifFailure { updateError { copy(gender = it) }; isValid = it == null }
+            .withError { updateError { copy(gender = it) }; isValid = it == null }
 
         formValidator.validateHeight(heightString = currentUser.heightCm)
-            .ifFailure { updateError { copy(height = it) }; isValid = it == null }
+            .withError { updateError { copy(height = it) }; isValid = it == null }
 
         formValidator.validateWeight(weightString = currentUser.weightKg)
-            .ifFailure { updateError { copy(weight = it) }; isValid = it == null }
+            .withError { updateError { copy(weight = it) }; isValid = it == null }
 
         return isValid
     }

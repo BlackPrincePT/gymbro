@@ -40,6 +40,6 @@ class UserRepositoryImpl @Inject constructor(
 
     override fun saveUser(user: User) {
         val userDto = userDtoMapper.mapFromDomain(user)
-        db.collection(USERS).add(user)
+        db.collection(USERS).document(user.id).set(userDto)
     }
 }

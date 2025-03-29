@@ -4,6 +4,7 @@ import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.pegio.gymbro.domain.core.Resource
+import com.pegio.gymbro.domain.core.onSuccess
 import com.pegio.gymbro.domain.manager.upload.FileUploadManager
 import com.pegio.gymbro.domain.usecase.common.FetchCurrentUserStreamUseCase
 import com.pegio.gymbro.domain.usecase.register.SaveUserUseCase
@@ -15,6 +16,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -48,12 +50,8 @@ class AccountViewModel @Inject constructor(
     }
 
     private fun updateProfileImage(uri: Uri) = viewModelScope.launch {
-        fileUploadManager.enqueueFileUpload(uri.toString()).also { result ->
-            when (result) {
-                is Resource.Success -> uploadProfileImageUrl(url = result.data)
-                is Resource.Failure -> { }
-            }
-        }
+        fileUploadManager.enqueueFileUpload(uri.toString())
+            .onSuccess { uploadProfileImageUrl(url = it) }
     }
 
     private fun uploadProfileImageUrl(url: String) {
@@ -66,14 +64,10 @@ class AccountViewModel @Inject constructor(
         fileUploadManager.deleteFile(currentProfileImageUrl)
     }
 
-    private fun observeCurrentUser() = viewModelScope.launch {
+    private fun observeCurrentUser() {
         fetchCurrentUserStream()
-            .collectLatest { result ->
-                when (result) {
-                    is Resource.Success -> _uiState.update { it.copy(user = uiUserMapper.mapFromDomain(result.data)) }
-                    is Resource.Failure -> { }
-                }
-            }
+            .onSuccess { user -> _uiState.update { it.copy(user = uiUserMapper.mapFromDomain(user)) } }
+            .launchIn(viewModelScope)
     }
 
     private fun sendEffect(effect: AccountUiEffect) {

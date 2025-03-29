@@ -13,6 +13,8 @@ import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential.Co
 import com.pegio.gymbro.BuildConfig
 import com.pegio.gymbro.domain.core.DataError
 import com.pegio.gymbro.domain.core.Resource
+import com.pegio.gymbro.domain.core.onFailure
+import com.pegio.gymbro.domain.core.onSuccess
 import com.pegio.gymbro.domain.usecase.auth.SignInAnonymouslyUseCase
 import com.pegio.gymbro.domain.usecase.auth.SignInWithGoogleUseCase
 import com.pegio.gymbro.domain.usecase.common.CheckUserRegistrationStatusUseCase
@@ -70,30 +72,26 @@ class AuthViewModel @Inject constructor(
         if (credential is CustomCredential && credential.type == TYPE_GOOGLE_ID_TOKEN_CREDENTIAL) {
             val googleIdTokenCredential = GoogleIdTokenCredential.createFrom(credential.data)
 
-            when (val signInResult = signInWithGoogle(googleIdTokenCredential.idToken)) {
-                is Resource.Success -> checkForSavedAuthState()
-                is Resource.Failure -> sendEffect(AuthUiEffect.Failure(e = signInResult.error))
-            }
+            signInWithGoogle(googleIdTokenCredential.idToken)
+                .onSuccess { checkForSavedAuthState() }
+                .onFailure { sendEffect(AuthUiEffect.Failure(error = it)) }
         } else {
-            sendEffect(AuthUiEffect.Failure(e = DataError.Auth.INVALID_CREDENTIAL))
+            sendEffect(AuthUiEffect.Failure(error = DataError.Auth.INVALID_CREDENTIAL))
         }
     }
 
     private fun continueAsGuest() = viewModelScope.launch {
-        when (val signInResult = signInAnonymously()) {
-            is Resource.Success -> sendEffect(AuthUiEffect.NavigateToHome)
-            is Resource.Failure -> sendEffect(AuthUiEffect.Failure(e = signInResult.error))
-        }
+        signInAnonymously()
+            .onSuccess { sendEffect(AuthUiEffect.NavigateToHome) }
+            .onFailure { sendEffect(AuthUiEffect.Failure(error = it)) }
     }
 
     private fun checkForSavedAuthState() = viewModelScope.launch {
-        when (val result = checkUserRegistrationStatus()) {
-            is Resource.Failure -> { }
-            is Resource.Success -> {
-                val navigationEffect = if (result.data) AuthUiEffect.NavigateToHome else AuthUiEffect.NavigateToRegister
+        checkUserRegistrationStatus()
+            .onSuccess { isComplete ->
+                val navigationEffect = if (isComplete) AuthUiEffect.NavigateToHome else AuthUiEffect.NavigateToRegister
                 sendEffect(navigationEffect)
             }
-        }
     }
 
     private fun sendEffect(effect: AuthUiEffect) {
