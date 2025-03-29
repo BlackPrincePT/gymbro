@@ -13,6 +13,6 @@ interface AiChatApi {
         "Content-Type: application/json",
         "Authorization: Bearer ${BuildConfig.API_KEY}"
     )
-    @POST("v1/chat/completions")
+    @POST(BuildConfig.GPT_ENDPOINT)
     suspend fun sendMessage(@Body request: AiChatRequestDto): Response<AiChatResponseDto>
 }

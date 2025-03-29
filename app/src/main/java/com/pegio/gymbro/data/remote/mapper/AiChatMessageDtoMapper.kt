@@ -1,13 +1,12 @@
-package com.pegio.gymbro.presentation.mapper
+package com.pegio.gymbro.data.remote.mapper
 
+import com.pegio.gymbro.data.remote.model.AiChatMessageDto
 import com.pegio.gymbro.domain.core.Mapper
 import com.pegio.gymbro.domain.model.AiChatMessage
-import com.pegio.gymbro.presentation.model.UiAiChatMessage
 import javax.inject.Inject
 
-class AiChatMessageMapper @Inject constructor(
-) : Mapper<UiAiChatMessage, AiChatMessage> {
-    override fun mapToDomain(data: UiAiChatMessage): AiChatMessage {
+class AiChatMessageDtoMapper @Inject constructor(): Mapper<AiChatMessageDto, AiChatMessage> {
+    override fun mapToDomain(data: AiChatMessageDto): AiChatMessage {
         return AiChatMessage(
             text = data.text,
             date = data.date,
@@ -16,13 +15,12 @@ class AiChatMessageMapper @Inject constructor(
         )
     }
 
-    override fun mapFromDomain(data: AiChatMessage): UiAiChatMessage {
-        return UiAiChatMessage(
+    override fun mapFromDomain(data: AiChatMessage): AiChatMessageDto {
+        return AiChatMessageDto(
             text = data.text,
             date = data.date,
             imageUri = data.imageUri,
             isFromUser = data.isFromUser
         )
     }
-
 }

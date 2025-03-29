@@ -5,7 +5,9 @@ import com.pegio.gymbro.domain.model.User
 import com.pegio.gymbro.presentation.model.UiUser
 import javax.inject.Inject
 
-class UiUserMapper @Inject constructor() : Mapper<UiUser, User> {
+class UiUserMapper @Inject constructor(
+    private val aiChatMessageMapper: AiChatMessageMapper
+) : Mapper<UiUser, User> {
 
     override fun mapToDomain(data: UiUser): User {
         return User(
@@ -16,7 +18,7 @@ class UiUserMapper @Inject constructor() : Mapper<UiUser, User> {
             heightCm = data.heightCm.toInt(),
             weightKg = data.weightKg.toInt(),
             imgProfileUrl = data.imgProfileUrl,
-            imgBackgroundUrl = data.imgBackgroundUrl
+            imgBackgroundUrl = data.imgBackgroundUrl,
         )
     }
 
@@ -29,7 +31,7 @@ class UiUserMapper @Inject constructor() : Mapper<UiUser, User> {
             heightCm = data.heightCm.toString(),
             weightKg = data.weightKg.toString(),
             imgProfileUrl = data.imgProfileUrl,
-            imgBackgroundUrl = data.imgBackgroundUrl
+            imgBackgroundUrl = data.imgBackgroundUrl,
         )
     }
 }

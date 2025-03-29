@@ -1,30 +1,13 @@
 package com.pegio.gymbro.data.remote.mapper
 
 import com.pegio.gymbro.data.remote.model.AiChatResponseDto
-import com.pegio.gymbro.data.remote.model.ChoiceDto
-import com.pegio.gymbro.data.remote.model.MessageDto
+import com.pegio.gymbro.domain.core.ToDomainMapper
+import com.pegio.gymbro.domain.model.AiMessage
 import javax.inject.Inject
-import com.pegio.gymbro.domain.core.Mapper
-import com.pegio.gymbro.domain.model.AiChatResponse
 
-class AiChatResponseDtoMapper @Inject constructor() : Mapper<AiChatResponseDto, AiChatResponse> {
+class AiChatResponseDtoMapper @Inject constructor() : ToDomainMapper<AiChatResponseDto, AiMessage> {
 
-    override fun mapToDomain(data: AiChatResponseDto): AiChatResponse {
-        return AiChatResponse(
-            content = data.choices.firstOrNull()?.message?.content ?: "No response"
-        )
-    }
-
-    override fun mapFromDomain(data: AiChatResponse): AiChatResponseDto {
-        return AiChatResponseDto(
-            choices = listOf(
-                ChoiceDto(
-                    message = MessageDto(
-                        role = "assistant",
-                        content = data.content
-                    )
-                )
-            )
-        )
+    override fun mapToDomain(data: AiChatResponseDto): AiMessage {
+        return AiMessage(text = data.choices.first().message.content)
     }
 }

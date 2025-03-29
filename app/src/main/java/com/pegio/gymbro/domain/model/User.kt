@@ -1,5 +1,6 @@
 package com.pegio.gymbro.domain.model
 
+
 data class User(
     val id: String,
     val username: String,
@@ -8,7 +9,8 @@ data class User(
     val heightCm: Int,
     val weightKg: Int,
     val imgProfileUrl: String?,
-    val imgBackgroundUrl: String?
+    val imgBackgroundUrl: String?,
+
 ) {
     enum class Gender {
         MALE,

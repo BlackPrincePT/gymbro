@@ -1,11 +1,11 @@
-package com.pegio.gymbro.presentation.model
+package com.pegio.gymbro.domain.model
 
 import com.pegio.gymbro.presentation.core.DateUtil
-import java.util.UUID
 
 data class AiChatMessage(
-    val id: UUID = UUID.randomUUID(),
+    val id: String = "",
     val text: String,
     val date: String = DateUtil.todayDate(),
-    val isFromUser: Boolean = true
+    val imageUri : String? = null,
+    val isFromUser: Boolean = true,
 )

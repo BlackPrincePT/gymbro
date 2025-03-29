@@ -2,9 +2,8 @@ package com.pegio.gymbro.domain.repository
 
 import com.pegio.gymbro.domain.core.DataError
 import com.pegio.gymbro.domain.core.Resource
-import com.pegio.gymbro.domain.model.AiChatRequest
-import com.pegio.gymbro.domain.model.AiChatResponse
+import com.pegio.gymbro.domain.model.AiMessage
 
 interface ChatRepository {
-    suspend fun sendMessage(aiChatRequest: AiChatRequest): Resource<AiChatResponse, DataError.Network>
+    suspend fun sendMessage(aiMessage: List<AiMessage>): Resource<AiMessage, DataError.Network>
 }
