@@ -27,7 +27,18 @@ class FirestoreUtils @Inject constructor() {
                 }
             }
             .catch { cause: Throwable ->
-                Resource.Failure(error = mapExceptionToNetworkError(cause))
+                Resource.Failure(error = mapExceptionToFirestoreError(cause))
+            }
+    }
+
+    fun <T> observeDocuments(query: Query, klass: Class<T>) : Flow<Resource<List<T>, DataError.Firestore>> {
+        return query.snapshots()
+            .map { querySnapshot ->
+                querySnapshot.toObjects(klass)
+                    .let { Resource.Success(data = it) }
+            }
+            .catch { cause: Throwable ->
+                Resource.Failure(error = mapExceptionToFirestoreError(cause))
             }
     }
 
@@ -43,7 +54,7 @@ class FirestoreUtils @Inject constructor() {
                 Resource.Failure(error = DataError.Firestore.DOCUMENT_NOT_FOUND)
             }
         } catch (e: Exception) {
-            Resource.Failure(error = mapExceptionToNetworkError(e))
+            Resource.Failure(error = mapExceptionToFirestoreError(e))
         }
     }
 
@@ -54,11 +65,11 @@ class FirestoreUtils @Inject constructor() {
             Resource.Success(data = documentSnapshot.toObjects(klass))
 
         } catch (e: Exception) {
-            Resource.Failure(error = mapExceptionToNetworkError(e))
+            Resource.Failure(error = mapExceptionToFirestoreError(e))
         }
     }
 
-    private fun mapExceptionToNetworkError(e: Throwable): DataError.Firestore {
+    private fun mapExceptionToFirestoreError(e: Throwable): DataError.Firestore {
         return when (e) {
             is FirebaseFirestoreException -> mapFirebaseCodeToError(e.code)
             else -> DataError.Firestore.UNKNOWN

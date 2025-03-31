@@ -12,11 +12,12 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Send
 import androidx.compose.material.icons.filled.AttachFile
-import androidx.compose.material.icons.filled.Send
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
@@ -28,14 +29,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.paging.compose.LazyPagingItems
-import androidx.paging.compose.collectAsLazyPagingItems
 import com.pegio.gymbro.R
 import com.pegio.gymbro.presentation.components.TopAppBarContent
 import com.pegio.gymbro.presentation.model.UiAiMessage
@@ -49,9 +47,6 @@ fun AiChatScreen(
 ) {
     val uiState by viewModel.uiState
         .collectAsStateWithLifecycle()
-
-    val messages = viewModel.test
-        .collectAsLazyPagingItems()
 
     LaunchedEffect(Unit) {
         viewModel.uiEffect.collectLatest { effect ->
@@ -69,7 +64,6 @@ fun AiChatScreen(
 
         AiChatContent(
             state = uiState,
-            messages = messages,
             onEvent = viewModel::onEvent,
             modifier = Modifier
                 .padding(innerPadding)
@@ -80,14 +74,20 @@ fun AiChatScreen(
 @Composable
 private fun AiChatContent(
     state: AiChatUiState,
-    messages: LazyPagingItems<UiAiMessage>,
     onEvent: (AiChatUiEvent) -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val listState = rememberLazyListState()
     val galleryLauncher =
         rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri ->
             uri?.let { onEvent(AiChatUiEvent.OnSendMessage(imageUri = uri)) }
         }
+
+    LaunchedEffect(listState.firstVisibleItemIndex) {
+        if (listState.firstVisibleItemIndex == 0) {
+            onEvent(AiChatUiEvent.LoadMoreMessages)
+        }
+    }
 
     Column(
         modifier = modifier
@@ -95,13 +95,12 @@ private fun AiChatContent(
     ) {
 
         LazyColumn(
+            state = listState,
             modifier = Modifier
                 .weight(1f)
         ) {
-            items(messages.itemCount) { index ->
-                messages[index]?.let {
-                    ChatBubble(it)
-                }
+            items(state.messages) { message ->
+                ChatBubble(message)
             }
 
             if (state.isLoading) {

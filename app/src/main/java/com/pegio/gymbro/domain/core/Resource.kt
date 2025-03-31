@@ -16,9 +16,21 @@ fun <T, D, E : Error> Resource<D, E>.map(transform: (D) -> T): Resource<T, E> {
     }
 }
 
+fun <T, D, E : Error> Resource<List<D>, E>.mapList(transform: (D) -> T): Resource<List<T>, E> {
+    return map { list ->
+        list.map(transform)
+    }
+}
+
 fun <T, D, E : Error> Flow<Resource<D, E>>.convert(transform: (D) -> T): Flow<Resource<T, E>> {
     return map { resource ->
         resource.map(transform)
+    }
+}
+
+fun <T, D, E : Error> Flow<Resource<List<D>, E>>.convertList(transform: (D) -> T): Flow<Resource<List<T>, E>> {
+    return map { resource ->
+        resource.mapList(transform)
     }
 }
 
