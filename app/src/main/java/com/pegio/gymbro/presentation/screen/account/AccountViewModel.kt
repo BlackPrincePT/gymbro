@@ -4,6 +4,7 @@ import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.pegio.gymbro.domain.core.Resource
+import com.pegio.gymbro.domain.core.onFailure
 import com.pegio.gymbro.domain.core.onSuccess
 import com.pegio.gymbro.domain.manager.upload.FileUploadManager
 import com.pegio.gymbro.domain.usecase.common.FetchCurrentUserStreamUseCase

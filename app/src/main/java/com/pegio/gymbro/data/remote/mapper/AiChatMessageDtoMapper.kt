@@ -1,26 +1,30 @@
 package com.pegio.gymbro.data.remote.mapper
 
+import com.pegio.gymbro.data.remote.mapper.util.InvalidDocumentIdException
 import com.pegio.gymbro.data.remote.model.AiChatMessageDto
 import com.pegio.gymbro.domain.core.Mapper
-import com.pegio.gymbro.domain.model.AiChatMessage
+import com.pegio.gymbro.domain.model.AiMessage
 import javax.inject.Inject
 
-class AiChatMessageDtoMapper @Inject constructor(): Mapper<AiChatMessageDto, AiChatMessage> {
-    override fun mapToDomain(data: AiChatMessageDto): AiChatMessage {
-        return AiChatMessage(
+class AiChatMessageDtoMapper @Inject constructor() : Mapper<AiChatMessageDto, AiMessage> {
+
+    override fun mapToDomain(data: AiChatMessageDto): AiMessage {
+        return AiMessage(
+            id = data.id ?: throw InvalidDocumentIdException(),
             text = data.text,
-            date = data.date,
-            imageUri = data.imageUri,
-            isFromUser = data.isFromUser
+            imageUrl = data.imageUrl,
+            isFromUser = data.fromUser,
+            timestamp = data.timestamp
         )
     }
 
-    override fun mapFromDomain(data: AiChatMessage): AiChatMessageDto {
+    override fun mapFromDomain(data: AiMessage): AiChatMessageDto {
         return AiChatMessageDto(
+            id = data.id,
             text = data.text,
-            date = data.date,
-            imageUri = data.imageUri,
-            isFromUser = data.isFromUser
+            imageUrl = data.imageUrl,
+            fromUser = data.isFromUser,
+            timestamp = data.timestamp
         )
     }
 }

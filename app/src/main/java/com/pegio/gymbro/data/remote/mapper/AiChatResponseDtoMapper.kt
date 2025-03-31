@@ -8,6 +8,12 @@ import javax.inject.Inject
 class AiChatResponseDtoMapper @Inject constructor() : ToDomainMapper<AiChatResponseDto, AiMessage> {
 
     override fun mapToDomain(data: AiChatResponseDto): AiMessage {
-        return AiMessage(text = data.choices.first().message.content)
+        return AiMessage(
+            id = "",
+            text = data.choices.first().message.content,
+            imageUrl = null,
+            isFromUser = false,
+            timestamp = System.currentTimeMillis()
+        )
     }
 }

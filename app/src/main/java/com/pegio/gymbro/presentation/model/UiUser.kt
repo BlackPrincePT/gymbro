@@ -14,16 +14,7 @@ data class UiUser(
 ) {
 
     companion object {
-        val test = UiUser(
-            id = "",
-            username = "TBCBANK",
-            age =  "94",
-            heightCm = "123",
-            weightKg = "223",
-            imgProfileUrl = null,
-            imgBackgroundUrl = null,
-            gender = Gender.MALE,
-        )
+
         val DEFAULT = UiUser(
             id = "",
             username = "Pitiful Android Developer",

@@ -1,48 +1,40 @@
 package com.pegio.gymbro.presentation.screen.ai_chat
 
 import android.net.Uri
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.paging.LOG_TAG
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
-import androidx.paging.PagingSource
 import androidx.paging.cachedIn
 import androidx.paging.map
-import com.pegio.gymbro.domain.core.Resource
+import com.pegio.gymbro.domain.core.onFailure
+import com.pegio.gymbro.domain.core.onSuccess
 import com.pegio.gymbro.domain.manager.upload.FileUploadManager
 import com.pegio.gymbro.domain.usecase.ai_chat.GetAiMessagesUseCase
 import com.pegio.gymbro.domain.usecase.ai_chat.SaveFireStoreMessagesUseCase
-import com.pegio.gymbro.domain.usecase.ai_chat.SendMessageUseCase
-import com.pegio.gymbro.domain.usecase.common.FetchCurrentUserStreamUseCase
+import com.pegio.gymbro.domain.usecase.ai_chat.SendMessageToAiUseCase
 import com.pegio.gymbro.domain.usecase.register.GetCurrentUserIdUseCase
-import com.pegio.gymbro.domain.usecase.register.SaveUserUseCase
-import com.pegio.gymbro.presentation.core.ImageUtil
-import com.pegio.gymbro.presentation.mapper.AiChatMessageMapper
-import com.pegio.gymbro.presentation.mapper.AiMessageMapper
-import com.pegio.gymbro.presentation.mapper.UiUserMapper
-import com.pegio.gymbro.presentation.model.UiAiChatMessage
+import com.pegio.gymbro.presentation.mapper.UiAiMessageMapper
+import com.pegio.gymbro.presentation.model.UiAiMessage
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class AiChatViewModel @Inject constructor(
-    private val sendMessageUseCase: SendMessageUseCase,
-    private val saveFireStoreMessagesUseCase: SaveFireStoreMessagesUseCase,
-    private val aiMessageMapper: AiMessageMapper,
-    private val aiChatMessageMapper: AiChatMessageMapper,
-    private val getAiMessagesUseCase: GetAiMessagesUseCase,
+    private val sendMessageToAi: SendMessageToAiUseCase,
+    private val saveMessage: SaveFireStoreMessagesUseCase,
+    private val uiAiMessageMapper: UiAiMessageMapper,
+    private val getAiMessages: GetAiMessagesUseCase,
     private val fileUploadManager: FileUploadManager,
-    private val imageUtil: ImageUtil,
-    private val uiUserMapper: UiUserMapper,
     getCurrentUserId: GetCurrentUserIdUseCase
 ) : ViewModel() {
 
@@ -53,75 +45,43 @@ class AiChatViewModel @Inject constructor(
     val uiEffect = _uiEffect.asSharedFlow()
 
     init {
-        observeMessages()
         getCurrentUserId()?.let { currentUserId ->
-            _uiState.update { oldState ->
-                oldState.copy(userId = currentUserId)
-            }
+            _uiState.update { oldState -> oldState.copy(userId = currentUserId) }
         }
+//        observeMessages()
     }
 
     fun onEvent(event: AiChatUiEvent) {
         when (event) {
-            is AiChatUiEvent.OnTextChanged -> {
-                _uiState.value = _uiState.value.copy(inputText = event.text)
-            }
-
+            is AiChatUiEvent.OnTextChanged -> _uiState.update { it.copy(inputText = event.text) }
             is AiChatUiEvent.OnSendMessage -> sendMessage(imageUri = event.imageUri)
         }
     }
 
+    private fun sendMessage(imageUri: Uri? = null) = viewModelScope.launch {
+        val aiMessage = uiAiMessageMapper.mapToDomain(UiAiMessage(text = uiState.value.inputText))
+        val currentUserId = uiState.value.userId
 
-    private fun sendMessage(imageUri: Uri? = null) {
-        val text = _uiState.value.inputText
-        val newMessages = _uiState.value.messages
-
-
-        val userMessage = UiAiChatMessage(text = text, isFromUser = true)
-        newMessages.add(userMessage)
-
-        _uiState.value =
-            _uiState.value.copy(messages = newMessages, inputText = "", isLoading = true)
-
-        val aiMessages = newMessages.map { aiMessageMapper.mapToDomain(it) }
-
-        viewModelScope.launch {
-            when (val response = sendMessageUseCase(aiMessages)) {
-                is Resource.Success -> {
-                    val aiResponse = response.data.text
-                    val aiMessage = UiAiChatMessage(text = aiResponse, isFromUser = false)
-                    val updatedMessages = newMessages.toMutableList()
-                    updatedMessages.add(aiMessage)
-                    _uiState.value =
-                        _uiState.value.copy(messages = updatedMessages, isLoading = false)
+        imageUri?.let {
+            fileUploadManager.enqueueFileUpload(uri = imageUri.toString())
+                .onSuccess {
+                    saveMessage(userId = currentUserId, aiChatMessage = aiMessage.copy(imageUrl = it))
                 }
-
-                is Resource.Failure -> {
-                    val updatedMessages = newMessages.filterNot { it == userMessage }
-                    _uiState.value =
-                        _uiState.value.copy(messages = updatedMessages, isLoading = false)
-                    _uiEffect.emit(AiChatUiEffect.Failure(response.error))
-                }
-            }
+        } ?: run {
+            saveMessage(userId = currentUserId, aiChatMessage = aiMessage)
         }
+
+        sendMessageToAi(aiMessages = listOf(aiMessage))
+            .onSuccess { saveMessage(userId = currentUserId, aiChatMessage = it) }
+            .onFailure { println(it) }
     }
 
-    private fun observeMessages() = viewModelScope.launch {
-        Pager(
-            config = PagingConfig(pageSize = 30),
-            pagingSourceFactory = { getAiMessagesUseCase(uiState.value.userId) }
-        )
-            .flow
-            .cachedIn(viewModelScope)
-            .collectLatest { messagesPagingData ->
-                _uiState.update { it.copy(messages = messagesPagingData.map(aiChatMessageMapper::mapFromDomain)) }
-            }
-    }
+    val test = Pager(
+        config = PagingConfig(pageSize = 30),
+        pagingSourceFactory = { getAiMessages(uiState.value.userId) }
+    )
+        .flow
+        .map { pagingData -> pagingData.map { uiAiMessageMapper.mapFromDomain(it) } }
+        .cachedIn(viewModelScope)
 
-    private fun uploadAiMessages(messages: UiAiChatMessage) {
-        saveFireStoreMessagesUseCase(
-            uiState.value.userId,
-            aiChatMessage = aiChatMessageMapper.mapToDomain(messages)
-        )
-    }
 }

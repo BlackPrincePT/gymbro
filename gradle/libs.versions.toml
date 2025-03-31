@@ -24,6 +24,7 @@ hiltNavigationCompose = "1.2.0"
 pagingRuntime = "3.3.6"
 coil = "3.1.0"
 constraintlayoutCompose = "1.1.1"
+kotlinxDatetime = "0.6.2"
 
 #Firebase
 googleServices = "4.4.2"
@@ -70,10 +71,13 @@ hilt-android-compiler = { module = "com.google.dagger:hilt-android-compiler", ve
 
 #UI
 androidx-paging-runtime = { module = "androidx.paging:paging-runtime", version.ref = "pagingRuntime" }
+androidx-paging-compose = { module = "androidx.paging:paging-compose" }
 coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coil" }
 coil-network-okhttp = { module = "io.coil-kt.coil3:coil-network-okhttp", version.ref = "coil" }
 androidx-constraintlayout-compose = { module = "androidx.constraintlayout:constraintlayout-compose", version.ref = "constraintlayoutCompose" }
 androidx-material-icons-extended = { group = "androidx.compose.material", name = "material-icons-extended" }
+kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlinxDatetime" }
+
 
 #Firebase
 firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBom" }

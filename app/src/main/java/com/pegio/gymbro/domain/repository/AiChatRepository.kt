@@ -4,6 +4,6 @@ import com.pegio.gymbro.domain.core.DataError
 import com.pegio.gymbro.domain.core.Resource
 import com.pegio.gymbro.domain.model.AiMessage
 
-interface ChatRepository {
+interface AiChatRepository {
     suspend fun sendMessage(aiMessage: List<AiMessage>): Resource<AiMessage, DataError.Network>
 }

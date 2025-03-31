@@ -6,7 +6,7 @@ import com.pegio.gymbro.presentation.model.UiUser
 import javax.inject.Inject
 
 class UiUserMapper @Inject constructor(
-    private val aiChatMessageMapper: AiChatMessageMapper
+    private val uiAiMessageMapper: UiAiMessageMapper
 ) : Mapper<UiUser, User> {
 
     override fun mapToDomain(data: UiUser): User {

@@ -1,7 +1,6 @@
 package com.pegio.gymbro.domain.core
 
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 

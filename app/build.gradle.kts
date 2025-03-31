@@ -33,21 +33,22 @@ android {
             useSupportLibrary = true
         }
 
-        buildConfigField(
-            "String",
-            "DEFAULT_WEB_CLIENT_ID",
-            gradleLocalProperties(rootDir, providers).getProperty("DEFAULT_WEB_CLIENT_ID")
-        )
+        buildConfigField("String", "GEMINI_URL", "\"https://api.openai.com/\"")
+        buildConfigField("String", "GPT_ENDPOINT", "\"v1/chat/completions\"")
     }
 
     buildTypes {
         debug {
-            buildConfigField("String", "GEMINI_URL", "\"https://api.openai.com/\"")
-            buildConfigField("String", "GPT_ENDPOINT", "\"v1/chat/completions\"")
             buildConfigField(
                 "String",
                 "API_KEY",
                 gradleLocalProperties(rootDir, providers).getProperty("API_KEY")
+            )
+
+            buildConfigField(
+                "String",
+                "DEFAULT_WEB_CLIENT_ID",
+                gradleLocalProperties(rootDir, providers).getProperty("DEFAULT_WEB_CLIENT_ID")
             )
         }
         release {
@@ -113,10 +114,12 @@ dependencies {
 
     // UI
     implementation(libs.androidx.paging.runtime)
+    implementation(libs.androidx.paging.compose)
     implementation(libs.coil.compose)
     implementation(libs.coil.network.okhttp)
     implementation(libs.androidx.constraintlayout.compose)
     implementation(libs.androidx.material.icons.extended)
+    implementation(libs.kotlinx.datetime)
 
     // Firebase
     implementation(platform(libs.firebase.bom))

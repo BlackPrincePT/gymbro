@@ -3,7 +3,6 @@ package com.pegio.gymbro.presentation.screen.ai_chat
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -13,19 +12,19 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.Send
+import androidx.compose.material.icons.filled.AttachFile
+import androidx.compose.material.icons.filled.Send
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.SnackbarHost
-import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -33,9 +32,13 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.paging.compose.LazyPagingItems
+import androidx.paging.compose.collectAsLazyPagingItems
 import com.pegio.gymbro.R
-import com.pegio.gymbro.presentation.model.UiAiChatMessage
+import com.pegio.gymbro.presentation.components.TopAppBarContent
+import com.pegio.gymbro.presentation.model.UiAiMessage
 import com.pegio.gymbro.presentation.theme.GymBroTheme
 import kotlinx.coroutines.flow.collectLatest
 
@@ -44,64 +47,79 @@ fun AiChatScreen(
     onBackClick: () -> Unit,
     viewModel: AiChatViewModel = hiltViewModel()
 ) {
-    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-    val listState = rememberLazyListState()
-    val snackBarHostState = remember { SnackbarHostState() }
-    val galleryLauncher =
-        rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri ->
-            uri?.let { viewModel.onEvent(AiChatUiEvent.OnSendMessage(imageUri = uri)) }
-        }
+    val uiState by viewModel.uiState
+        .collectAsStateWithLifecycle()
 
+    val messages = viewModel.test
+        .collectAsLazyPagingItems()
 
     LaunchedEffect(Unit) {
         viewModel.uiEffect.collectLatest { effect ->
             when (effect) {
-                is AiChatUiEffect.Failure -> {
-                    snackBarHostState.showSnackbar(effect.e.toString())
-                }
+                is AiChatUiEffect.Failure -> {}
             }
         }
     }
 
-    Column(modifier = Modifier.fillMaxSize()) {
+    Scaffold(
+        topBar = { TopAppBarContent(onBackClick) },
+        modifier = Modifier
+            .fillMaxSize()
+    ) { innerPadding ->
 
-        LazyColumn(
-            modifier = Modifier.weight(1f),
-            state = listState,
-        ) {
-            items(uiState.messages) { message ->
-                ChatBubble(message)
-            }
-            if (uiState.isLoading) {
-                item {
-                    ChatBubblePlaceholder()
-                }
-            }
-        }
-
-        LaunchedEffect(uiState.messages) {
-            listState.animateScrollToItem(uiState.messages.size)
-        }
-
-
-        SnackbarHost(
-            hostState = snackBarHostState,
+        AiChatContent(
+            state = uiState,
+            messages = messages,
+            onEvent = viewModel::onEvent,
             modifier = Modifier
-                .padding(bottom = 16.dp)
+                .padding(innerPadding)
         )
-
-        ChatInput(
-            text = uiState.inputText,
-            onTextChange = { viewModel.onEvent(AiChatUiEvent.OnTextChanged(it)) },
-            onSend = { viewModel.onEvent(AiChatUiEvent.OnSendMessage()) },
-            onImageSelect = { galleryLauncher.launch(input = "image/*") }
-        )
-
     }
 }
 
 @Composable
-fun ChatBubble(message: UiAiChatMessage) {
+private fun AiChatContent(
+    state: AiChatUiState,
+    messages: LazyPagingItems<UiAiMessage>,
+    onEvent: (AiChatUiEvent) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    val galleryLauncher =
+        rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri ->
+            uri?.let { onEvent(AiChatUiEvent.OnSendMessage(imageUri = uri)) }
+        }
+
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+    ) {
+
+        LazyColumn(
+            modifier = Modifier
+                .weight(1f)
+        ) {
+            items(messages.itemCount) { index ->
+                messages[index]?.let {
+                    ChatBubble(it)
+                }
+            }
+
+            if (state.isLoading) {
+                item { ChatBubblePlaceholder() }
+            }
+        }
+
+        ChatInput(
+            text = state.inputText,
+            onTextChange = { onEvent(AiChatUiEvent.OnTextChanged(it)) },
+            onSend = { onEvent(AiChatUiEvent.OnSendMessage()) },
+            onImageSelect = { galleryLauncher.launch(input = "image/*") }
+        )
+    }
+}
+
+@Composable
+fun ChatBubble(message: UiAiMessage) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -123,13 +141,18 @@ fun ChatBubble(message: UiAiChatMessage) {
 
 @Composable
 fun ChatBubblePlaceholder() {
-    val placeholderMessage = UiAiChatMessage(text = "Typing...", isFromUser = false)
+    val placeholderMessage = UiAiMessage(text = "Typing...", isFromUser = false)
 
     ChatBubble(message = placeholderMessage)
 }
 
 @Composable
-fun ChatInput(text: String, onTextChange: (String) -> Unit, onSend: () -> Unit,onImageSelect: () -> Unit) {
+fun ChatInput(
+    text: String,
+    onTextChange: (String) -> Unit,
+    onSend: () -> Unit,
+    onImageSelect: () -> Unit
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -138,7 +161,7 @@ fun ChatInput(text: String, onTextChange: (String) -> Unit, onSend: () -> Unit,o
     ) {
         IconButton(onClick = onImageSelect, modifier = Modifier.padding(4.dp)) {
             Icon(
-                painter = painterResource(id = R.drawable.attach_icon),
+                imageVector = Icons.Default.AttachFile,
                 contentDescription = "Attach Image",
                 tint = Color.Black,
                 modifier = Modifier.size(28.dp)
@@ -162,7 +185,7 @@ fun ChatInput(text: String, onTextChange: (String) -> Unit, onSend: () -> Unit,o
             enabled = text.isNotBlank()
         ) {
             Icon(
-                painter = painterResource(id = R.drawable.send),
+                imageVector = Icons.AutoMirrored.Default.Send,
                 contentDescription = "Send Icon",
                 tint = if (text.isNotBlank()) Color.Black else Color.Gray
             )
@@ -170,11 +193,10 @@ fun ChatInput(text: String, onTextChange: (String) -> Unit, onSend: () -> Unit,o
     }
 }
 
-
-@Preview(showBackground = true)
+@Preview
 @Composable
-fun PreviewChatScreen() {
+private fun AiChatPreview() {
     GymBroTheme {
-        AiChatScreen(onBackClick = {})
+//        AiChatContent(state = AiChatUiState(), messages = emptyList(), onEvent = {})
     }
 }

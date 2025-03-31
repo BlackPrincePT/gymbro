@@ -1,5 +1,6 @@
 package com.pegio.gymbro.data.remote.model
 
+import com.pegio.gymbro.data.remote.core.OpenAiConstants.ASSISTANT
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -15,6 +16,6 @@ data class ChoiceDto(
 
 @Serializable
 data class ResponseMessageDto(
-    @SerialName("role") val role: String = "assistant",
+    @SerialName("role") val role: String = ASSISTANT,
     @SerialName("content") val content: String
 )
