@@ -2,18 +2,18 @@ package com.pegio.gymbro.presentation.model
 
 data class UiPost(
     val id: String,
-    val postOwnerId: String,
-    val text: String,
+    val author: UiUser,
+    val content: String,
     val imageUrl: String?,
-    val upVotes: Int,
-    val downVotes: Int,
-    val commentCount: String,
-    val rating: String,
-    val date: String,
+    val upVoteCount: Int,
+    val downVoteCount: Int,
+    val commentsCount: String,
+    val averageRating: String,
+    val publishedDate: String,
 ) {
 
     val totalVotes: String
-        get() = (upVotes + downVotes).toString()
+        get() = (upVoteCount + downVoteCount).toString()
 
     val hasImage: Boolean
         get() = imageUrl != null
@@ -22,14 +22,14 @@ data class UiPost(
 
         val DEFAULT = UiPost(
             id = "",
-            postOwnerId = "",
-            text = "Hello, TBC IT Academy!",
+            author = UiUser.DEFAULT,
+            content = "Hello, TBC IT Academy!",
             imageUrl = null,
-            upVotes = 108,
-            downVotes = 53,
-            commentCount = "13",
-            rating = "3.5",
-            date = "01/04/25"
+            upVoteCount = 108,
+            downVoteCount = 53,
+            commentsCount = "13",
+            averageRating = "3.5",
+            publishedDate = "01/04/25"
         )
     }
 }
