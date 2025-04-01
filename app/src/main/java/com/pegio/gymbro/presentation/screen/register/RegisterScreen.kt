@@ -185,7 +185,7 @@ fun RegisterForm(
     }
 }
 
-@Preview
+@Preview(showBackground = true)
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
 private fun RegisterFormPreview() {

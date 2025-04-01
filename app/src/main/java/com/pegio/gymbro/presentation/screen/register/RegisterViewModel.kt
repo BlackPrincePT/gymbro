@@ -38,7 +38,6 @@ class RegisterViewModel @Inject constructor(
 
     init {
         getCurrentUserId()?.let { currentUserId ->
-            println(currentUserId)
             updateUser { copy(id = currentUserId) }
         }
     }

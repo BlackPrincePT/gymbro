@@ -84,7 +84,9 @@ class AiChatViewModel @Inject constructor(
         }
 
         sendMessageToAi(aiMessages = listOf(aiMessage))
-            .onSuccess { saveMessage(userId = currentUserId, aiChatMessage = it) }
+            .onSuccess {
+                saveMessage(userId = currentUserId, aiChatMessage = it)
+            }
             .onFailure { println(it) }
     }
 

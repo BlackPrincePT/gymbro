@@ -38,6 +38,7 @@ class AiMessagesRepositoryImpl @Inject constructor(
 
         return firestoreUtils.observeDocuments(query, AiChatMessageDto::class.java)
             .convertList(aiChatMessageDtoMapper::mapToDomain)
+            .also { println(it) }
     }
 
     override fun saveMessagesInFireStore(userId: String, aiChatMessage: AiMessage) {
