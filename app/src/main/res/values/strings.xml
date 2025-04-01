@@ -49,4 +49,6 @@
     <string name="account">Account</string>
     <string name="splash_logo">Splash logo</string>
     <string name="navigate_back">Navigate back</string>
+
+    <string name="vote_button">Vote button</string>
 </resources>
