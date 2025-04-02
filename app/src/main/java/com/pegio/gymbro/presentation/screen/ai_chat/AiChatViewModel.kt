@@ -1,6 +1,5 @@
 package com.pegio.gymbro.presentation.screen.ai_chat
 
-import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.pegio.gymbro.domain.core.onFailure
@@ -41,15 +40,22 @@ class AiChatViewModel @Inject constructor(
 
     init {
         getCurrentUserId()?.let { currentUserId ->
-            _uiState.update { oldState -> oldState.copy(userId = currentUserId) }
+            updateState { copy(userId = currentUserId) }
         }
     }
 
     fun onEvent(event: AiChatUiEvent) {
         when (event) {
-            is AiChatUiEvent.OnTextChanged -> _uiState.update { it.copy(inputText = event.text) }
-            is AiChatUiEvent.OnSendMessage -> sendMessage(imageUri = event.imageUri)
-            AiChatUiEvent.LoadMoreMessages -> loadMoreMessages()
+            is AiChatUiEvent.OnTextChanged -> updateState { copy(inputText = event.text) }
+            is AiChatUiEvent.OnImageSelected -> updateState { copy(selectedImageUri = event.imageUri) }
+            is AiChatUiEvent.OnSendMessage -> {
+                sendMessage()
+                updateState { copy(inputText = "") }
+                updateState { copy(selectedImageUri = null) }
+            }
+
+            is AiChatUiEvent.LoadMoreMessages -> loadMoreMessages()
+            is AiChatUiEvent.OnRemoveImage -> updateState { copy(selectedImageUri = null) }
         }
     }
 
@@ -57,38 +63,69 @@ class AiChatViewModel @Inject constructor(
         val currentUserId = _uiState.value.userId
         val currentMessages = _uiState.value.messages
 
-        observeAiMessagesPagingStream(userId = currentUserId, lastMessageId = _uiState.value.earliestMessageTimestamp)
+        observeAiMessagesPagingStream(
+            userId = currentUserId,
+            lastMessageId = _uiState.value.earliestMessageTimestamp
+        )
             .onSuccess {
                 updateState {
                     copy(
-                        messages =  it.map(uiAiMessageMapper::mapFromDomain).reversed().plus(currentMessages),
+                        messages = it.map(uiAiMessageMapper::mapFromDomain).reversed()
+                            .plus(currentMessages),
                         earliestMessageTimestamp = it.lastOrNull()?.timestamp
                     )
                 }
             }
-            .onFailure { /* TODO: Handle */ }
+            .onFailure {
+                sendEffect(AiChatUiEffect.Failure(error = it))
+            }
             .launchIn(viewModelScope)
     }
 
-    private fun sendMessage(imageUri: Uri? = null) = viewModelScope.launch {
+    private fun sendMessage() = viewModelScope.launch {
         val aiMessage = uiAiMessageMapper.mapToDomain(UiAiMessage(text = uiState.value.inputText))
         val currentUserId = uiState.value.userId
 
-        imageUri?.let {
-            fileUploadManager.enqueueFileUpload(uri = imageUri.toString())
+
+        _uiState.value.selectedImageUri?.let {
+            fileUploadManager.enqueueFileUpload(uri = it.toString())
                 .onSuccess {
-                    saveMessage(userId = currentUserId, aiChatMessage = aiMessage.copy(imageUrl = it))
+                    saveMessage(
+                        userId = currentUserId,
+                        aiChatMessage = aiMessage.copy(imageUrl = it)
+                    )
+                    // Necessary to create artificial sessions
+                    updateState {
+                        copy(
+                            messages = messages + uiAiMessageMapper.mapFromDomain(
+                                aiMessage.copy(
+                                    imageUrl = it
+                                )
+                            )
+                        )
+                    }
                 }
         } ?: run {
             saveMessage(userId = currentUserId, aiChatMessage = aiMessage)
+            updateState {
+                copy(messages = messages + uiAiMessageMapper.mapFromDomain(aiMessage))
+            }
         }
 
-        sendMessageToAi(aiMessages = listOf(aiMessage))
+        updateState { copy(isLoading = true) }
+
+        sendMessageToAi(aiMessages = _uiState.value.messages.map(uiAiMessageMapper::mapToDomain))
             .onSuccess {
                 saveMessage(userId = currentUserId, aiChatMessage = it)
             }
-            .onFailure { println(it) }
+            .onFailure {
+                sendEffect(AiChatUiEffect.Failure(error = it))
+            }
+            .also {
+                updateState { copy(isLoading = false) }
+            }
     }
+
 
     private fun updateState(state: AiChatUiState.() -> AiChatUiState) {
         _uiState.update(state)
