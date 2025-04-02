@@ -4,8 +4,8 @@ import com.pegio.gymbro.data.remote.api.AiChatApi
 import com.pegio.gymbro.data.remote.core.NetworkUtils
 import com.pegio.gymbro.data.remote.core.OpenAiConstants.DEFAULT_SYSTEM_MESSAGE
 import com.pegio.gymbro.data.remote.core.OpenAiConstants.SYSTEM
-import com.pegio.gymbro.data.remote.mapper.AiChatRequestDtoMapper
-import com.pegio.gymbro.data.remote.mapper.AiChatResponseDtoMapper
+import com.pegio.gymbro.data.remote.model.mapper.AiChatRequestDtoMapper
+import com.pegio.gymbro.data.remote.model.mapper.AiChatResponseDtoMapper
 import com.pegio.gymbro.data.remote.model.ContentDto
 import com.pegio.gymbro.data.remote.model.MessageDto
 import com.pegio.gymbro.domain.core.DataError

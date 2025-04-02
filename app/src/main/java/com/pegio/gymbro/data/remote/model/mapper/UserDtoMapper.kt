@@ -1,6 +1,6 @@
-package com.pegio.gymbro.data.remote.mapper
+package com.pegio.gymbro.data.remote.model.mapper
 
-import com.pegio.gymbro.data.remote.mapper.util.InvalidDocumentIdException
+import com.pegio.gymbro.data.remote.model.util.InvalidDocumentIdException
 import com.pegio.gymbro.data.remote.model.UserDto
 import com.pegio.gymbro.domain.core.Mapper
 import com.pegio.gymbro.domain.model.User

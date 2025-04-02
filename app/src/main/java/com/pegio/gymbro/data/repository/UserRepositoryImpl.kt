@@ -4,7 +4,7 @@ import com.google.firebase.Firebase
 import com.google.firebase.firestore.firestore
 import com.pegio.gymbro.data.remote.core.FirebaseConstants.USERS
 import com.pegio.gymbro.data.remote.core.FirestoreUtils
-import com.pegio.gymbro.data.remote.mapper.UserDtoMapper
+import com.pegio.gymbro.data.remote.model.mapper.UserDtoMapper
 import com.pegio.gymbro.data.remote.model.UserDto
 import com.pegio.gymbro.domain.core.DataError
 import com.pegio.gymbro.domain.core.Resource

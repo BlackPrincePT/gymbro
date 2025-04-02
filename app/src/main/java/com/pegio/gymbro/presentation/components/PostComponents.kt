@@ -40,7 +40,11 @@ import com.pegio.gymbro.presentation.model.UiPost
 
 @Composable
 private fun Post(
-    post: UiPost
+    post: UiPost,
+    onUpVoteClick: () -> Unit,
+    onDownVoteClick: () -> Unit,
+    onCommentClick: () -> Unit,
+    onRatingClick: () -> Unit
 ) {
     Card(shape = MaterialTheme.shapes.large) {
         Column(
@@ -71,7 +75,7 @@ private fun Post(
 @Composable
 private fun PostContent(
     post: UiPost,
-    onImageClick: () -> Unit = { }
+    onImageClick: () -> Unit
 ) {
     Column {
         Text(
@@ -90,6 +94,7 @@ private fun PostContent(
             contentScale = ContentScale.Inside,
             modifier = Modifier
                 .clickable { onImageClick.invoke() }
+                .fillMaxWidth()
                 .height(320.dp)
         )
     }
@@ -280,5 +285,11 @@ private fun PostActionsPreview() {
 @Preview
 @Composable
 private fun PostPreview() {
-    Post(post = UiPost.DEFAULT)
+    Post(
+        post = UiPost.DEFAULT,
+        onUpVoteClick = { },
+        onDownVoteClick = { },
+        onCommentClick = { },
+        onRatingClick = { }
+    )
 }
