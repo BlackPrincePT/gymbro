@@ -8,6 +8,7 @@ import com.pegio.gymbro.data.remote.core.OpenAiConstants.USER
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.JsonClassDiscriminator
 
 @Serializable
 data class AiChatRequestDto(
@@ -24,18 +25,18 @@ data class MessageDto(
 
 @Serializable
 @OptIn(ExperimentalSerializationApi::class)
-@kotlinx.serialization.json.JsonClassDiscriminator(discriminator = "contentType")
+@JsonClassDiscriminator("type")
 sealed class ContentDto {
 
     @Serializable
+    @SerialName(TEXT)
     data class TextContentDto(
-        @SerialName("type") val type: String = TEXT,
         @SerialName("text") val text: String
     ) : ContentDto()
 
     @Serializable
+    @SerialName(IMAGE_URL)
     data class ImageUrlContentDto(
-        @SerialName("type") val type: String = IMAGE_URL,
         @SerialName("image_url") val imageUrl: ImageUrlDto
     ) : ContentDto()
 }
