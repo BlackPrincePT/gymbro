@@ -10,5 +10,7 @@ data class PostDto(
     val upVotesInLast24Hours: Int = 0,
     val voteCount: Int = 0,
     val commentCount: Int = 0,
+    val ratingAverage: Double = 0.0,
+    val ratingCount: Int = 0,
     val timestamp: Long = 0L
 )

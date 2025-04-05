@@ -10,7 +10,7 @@ import com.pegio.gymbro.domain.usecase.ai_chat.ObserveAiMessagesPagingStreamUseC
 import com.pegio.gymbro.domain.usecase.ai_chat.SaveFireStoreMessagesUseCase
 import com.pegio.gymbro.domain.usecase.ai_chat.SendMessageToAiUseCase
 import com.pegio.gymbro.domain.usecase.register.GetCurrentUserIdUseCase
-import com.pegio.gymbro.presentation.mapper.UiAiMessageMapper
+import com.pegio.gymbro.presentation.model.mapper.UiAiMessageMapper
 import com.pegio.gymbro.presentation.model.UiAiMessage
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers

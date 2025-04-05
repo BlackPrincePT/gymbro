@@ -1,19 +1,24 @@
 package com.pegio.gymbro.presentation.screen.home
 
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.pegio.gymbro.presentation.components.AppDrawerContent
+import com.pegio.gymbro.presentation.components.CreatePost
+import com.pegio.gymbro.presentation.components.PostContent
 import com.pegio.gymbro.presentation.components.TopAppBarContent
 import com.pegio.gymbro.presentation.theme.GymBroTheme
 import kotlinx.coroutines.flow.collectLatest
@@ -25,10 +30,6 @@ fun HomeScreen(
     onSignOutSuccess: () -> Unit,
     viewModel: HomeViewModel = hiltViewModel()
 ) {
-
-    val uiState by viewModel.uiState
-        .collectAsStateWithLifecycle()
-
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
 
     LaunchedEffect(Unit) {
@@ -47,7 +48,7 @@ fun HomeScreen(
         drawerState = drawerState,
         drawerContent = {
             AppDrawerContent(
-                displayedUser = uiState.displayedUser,
+                displayedUser = viewModel.uiState.currentUser,
                 onAccountClick = { viewModel.onEvent(HomeUiEvent.OnAccountClick) },
                 onSignOutClick = { viewModel.onEvent(HomeUiEvent.OnSignOut) }
             )
@@ -60,7 +61,7 @@ fun HomeScreen(
         ) { innerPadding ->
 
             HomeContent(
-                state = uiState,
+                state = viewModel.uiState,
                 onEvent = viewModel::onEvent,
                 modifier = Modifier
                     .padding(innerPadding)
@@ -75,7 +76,32 @@ private fun HomeContent(
     onEvent: (HomeUiEvent) -> Unit,
     modifier: Modifier = Modifier
 ) {
+    LazyColumn(
+        contentPadding = PaddingValues(16.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp),
+        modifier = modifier
+            .fillMaxSize()
+    ) {
+        item {
+            CreatePost(
+                currentUser = state.currentUser,
+                onPostClick = { },
+                onProfileClick = { }
+            )
+        }
 
+        // TODO: Add stories
+
+        items(state.relevantPosts) {
+            PostContent(
+                post = it,
+                onUpVoteClick = { },
+                onDownVoteClick = { },
+                onCommentClick = { },
+                onRatingClick = { }
+            )
+        }
+    }
 }
 
 @Preview

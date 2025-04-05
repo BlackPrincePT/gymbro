@@ -8,5 +8,7 @@ data class Post(
     val upVotesInLast24Hours: Int,
     val voteCount: Int,
     val commentCount: Int,
+    val ratingAverage: Double,
+    val ratingCount: Int,
     val timestamp: Long
 )

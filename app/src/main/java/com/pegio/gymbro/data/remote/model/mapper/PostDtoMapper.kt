@@ -17,6 +17,8 @@ class PostDtoMapper @Inject constructor() : Mapper<PostDto, Post> {
             upVotesInLast24Hours = data.upVotesInLast24Hours,
             voteCount = data.voteCount,
             commentCount = data.commentCount,
+            ratingAverage = data.ratingAverage,
+            ratingCount = data.ratingCount,
             timestamp = data.timestamp
         )
     }
@@ -30,6 +32,8 @@ class PostDtoMapper @Inject constructor() : Mapper<PostDto, Post> {
             upVotesInLast24Hours = data.upVotesInLast24Hours,
             voteCount = data.voteCount,
             commentCount = data.commentCount,
+            ratingAverage = data.ratingAverage,
+            ratingCount = data.ratingCount,
             timestamp = data.timestamp
         )
     }

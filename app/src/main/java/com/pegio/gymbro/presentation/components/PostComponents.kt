@@ -39,7 +39,7 @@ import com.pegio.gymbro.R
 import com.pegio.gymbro.presentation.model.UiPost
 
 @Composable
-private fun Post(
+fun PostContent(
     post: UiPost,
     onUpVoteClick: () -> Unit,
     onDownVoteClick: () -> Unit,
@@ -159,20 +159,20 @@ private fun PostActions(
             .padding(horizontal = 16.dp)
     ) {
         VoteActions(
-            voteCount = post.totalVotes,
+            voteCount = post.voteCount,
             onUpVoteClick = onUpVoteClick,
             onDownVoteClick = onDownVoteClick
         )
 
         CommentAction(
             onClick = onCommentClick,
-            commentCount = post.commentsCount
+            commentCount = post.commentCount
         )
 
         Spacer(modifier = Modifier.weight(1f))
 
         RatingAction(
-            rating = post.averageRating,
+            rating = post.ratingAverage,
             onClick = onRatingClick
         )
     }
@@ -285,7 +285,7 @@ private fun PostActionsPreview() {
 @Preview
 @Composable
 private fun PostPreview() {
-    Post(
+    PostContent(
         post = UiPost.DEFAULT,
         onUpVoteClick = { },
         onDownVoteClick = { },

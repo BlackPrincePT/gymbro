@@ -6,6 +6,7 @@ import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.QueryDocumentSnapshot
 import com.google.firebase.firestore.firestore
 import com.pegio.gymbro.data.remote.core.FirebaseConstants.POSTS
+import com.pegio.gymbro.data.remote.core.FirebaseConstants.TIMESTAMP
 import com.pegio.gymbro.data.remote.core.FirebaseConstants.UP_VOTES_IN_LAST_24_HOURS
 import com.pegio.gymbro.data.remote.core.FirestoreUtils
 import com.pegio.gymbro.data.remote.model.PostDto
@@ -36,6 +37,7 @@ class PostRepositoryImpl @Inject constructor(
     override fun observePostsPagingStream(): Flow<Resource<List<Post>, DataError.Firestore>> {
         val query = db.collection(POSTS)
             .orderBy(UP_VOTES_IN_LAST_24_HOURS, Query.Direction.DESCENDING)
+            .orderBy(TIMESTAMP, Query.Direction.DESCENDING)
             .limit(POST_PAGE_SIZE)
             .apply { lastVisibleDocument?.let { startAfter(it) } ?: this }
 

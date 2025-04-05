@@ -5,15 +5,12 @@ data class UiPost(
     val author: UiUser,
     val content: String,
     val imageUrl: String?,
-    val upVoteCount: Int,
-    val downVoteCount: Int,
-    val commentsCount: String,
-    val averageRating: String,
-    val publishedDate: String,
+    val voteCount: String,
+    val commentCount: String,
+    val ratingAverage: String,
+    val ratingCount: String,
+    val publishedDate: String
 ) {
-
-    val totalVotes: String
-        get() = (upVoteCount + downVoteCount).toString()
 
     val hasImage: Boolean
         get() = imageUrl != null
@@ -25,10 +22,10 @@ data class UiPost(
             author = UiUser.DEFAULT,
             content = "Hello, TBC IT Academy!",
             imageUrl = null,
-            upVoteCount = 108,
-            downVoteCount = 53,
-            commentsCount = "13",
-            averageRating = "3.5",
+            voteCount = "108",
+            commentCount = "13",
+            ratingAverage = "3.5",
+            ratingCount = "23",
             publishedDate = "01/04/25"
         )
     }

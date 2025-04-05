@@ -1,4 +1,4 @@
-package com.pegio.gymbro.presentation.mapper
+package com.pegio.gymbro.presentation.model.mapper
 
 import com.pegio.gymbro.domain.core.Mapper
 import com.pegio.gymbro.domain.model.AiMessage
