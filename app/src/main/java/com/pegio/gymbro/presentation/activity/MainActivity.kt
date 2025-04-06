@@ -10,19 +10,25 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.DrawerState
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ModalDrawerSheet
 import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.pegio.gymbro.presentation.activity.components.DrawerContent
 import com.pegio.gymbro.presentation.activity.components.TopBarContent
+import com.pegio.gymbro.presentation.activity.state.MainActivityUiEffect
+import com.pegio.gymbro.presentation.activity.state.MainActivityUiEvent
+import com.pegio.gymbro.presentation.activity.state.MainActivityUiState
 import com.pegio.gymbro.presentation.navigation.EntryNavigationHost
 import com.pegio.gymbro.presentation.core.theme.GymBroTheme
 import com.pegio.gymbro.presentation.navigation.MainNavigationHost
+import com.pegio.gymbro.presentation.navigation.route.navigateToAccount
+import com.pegio.gymbro.presentation.navigation.route.navigateToAuth
+import com.pegio.gymbro.presentation.util.CollectLatestEffect
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -43,16 +49,26 @@ class MainActivity : ComponentActivity() {
                 val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
                 val coroutineScope = rememberCoroutineScope()
 
-                EntryNavigationHost(entryNavController) {
-                    AppScaffold(drawerState, viewModel) { innerPadding ->
-                        MainNavigationHost(
-                            navController = mainNavController,
-                            onSetupAppBar = viewModel::updateTopBarState,
-                            dynamicallyOpenDrawer = { coroutineScope.launch { drawerState.open() } },
-                            modifier = Modifier
-                                .padding(innerPadding)
-                        )
+                CollectLatestEffect(viewModel.uiEffect) { effect ->
+                    when (effect) {
+
+                        // Open-Close Drawer
+                        MainActivityUiEffect.OpenDrawer -> coroutineScope.launch { drawerState.open() }
+                        MainActivityUiEffect.CloseDrawer -> coroutineScope.launch { drawerState.close() }
+
+                        // Drawer
+                        MainActivityUiEffect.NavigateToAccount -> mainNavController.navigateToAccount()
+                        MainActivityUiEffect.NavigateToAuth -> entryNavController.navigateToAuth()
                     }
+                }
+
+                EntryNavigationHost(entryNavController) {
+                    MainAppContent(
+                        state = viewModel.uiState,
+                        onEvent = viewModel::onEvent,
+                        navController = mainNavController,
+                        drawerState = drawerState
+                    )
                 }
             }
         }
@@ -61,27 +77,35 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 @ExperimentalMaterial3Api
-private fun AppScaffold(
-    drawerState: DrawerState,
-    viewModel: MainViewModel,
-    content: @Composable (PaddingValues) -> Unit
+private fun MainAppContent(
+    state: MainActivityUiState,
+    onEvent: (MainActivityUiEvent) -> Unit,
+    navController: NavHostController,
+    drawerState: DrawerState
 ) {
     ModalNavigationDrawer(
         drawerState = drawerState,
         drawerContent = {
-            viewModel.currentUser?.let {
+            state.currentUser?.let {
                 DrawerContent(
                     displayedUser = it,
-                    onAccountClick = { },
-                    onSignOutClick = { }
+                    onAccountClick = { onEvent(MainActivityUiEvent.OnAccountClick) },
+                    onSignOutClick = { onEvent(MainActivityUiEvent.OnSignOutClick) }
                 )
             } ?: DrawerContent(onGoogleAuthClick = { })
         }
     ) {
         Scaffold(
-            topBar = { TopBarContent(viewModel.topBarState) },
+            topBar = { TopBarContent(state.topBarState) },
             snackbarHost = { /* TODO: Snackbar */ },
-            content = content
-        )
+        ) { innerPadding ->
+            MainNavigationHost(
+                navController = navController,
+                onSetupAppBar = { onEvent(MainActivityUiEvent.OnUpdateTopBarState(it)) },
+                dynamicallyOpenDrawer = { onEvent(MainActivityUiEvent.OnOpenDrawer) },
+                modifier = Modifier
+                    .padding(innerPadding)
+            )
+        }
     }
 }
