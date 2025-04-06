@@ -18,6 +18,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.rememberNavController
+import com.pegio.gymbro.presentation.activity.components.DrawerContent
 import com.pegio.gymbro.presentation.activity.components.TopBarContent
 import com.pegio.gymbro.presentation.navigation.EntryNavigationHost
 import com.pegio.gymbro.presentation.core.theme.GymBroTheme
@@ -43,7 +44,7 @@ class MainActivity : ComponentActivity() {
                 val coroutineScope = rememberCoroutineScope()
 
                 EntryNavigationHost(entryNavController) {
-                    AppScaffold(drawerState, viewModel.topBarState) { innerPadding ->
+                    AppScaffold(drawerState, viewModel) { innerPadding ->
                         MainNavigationHost(
                             navController = mainNavController,
                             onSetupAppBar = viewModel::updateTopBarState,
@@ -62,15 +63,23 @@ class MainActivity : ComponentActivity() {
 @ExperimentalMaterial3Api
 private fun AppScaffold(
     drawerState: DrawerState,
-    topBarState: TopBarState,
+    viewModel: MainViewModel,
     content: @Composable (PaddingValues) -> Unit
 ) {
     ModalNavigationDrawer(
         drawerState = drawerState,
-        drawerContent = { ModalDrawerSheet {  } }
+        drawerContent = {
+            viewModel.currentUser?.let {
+                DrawerContent(
+                    displayedUser = it,
+                    onAccountClick = { },
+                    onSignOutClick = { }
+                )
+            } ?: DrawerContent(onGoogleAuthClick = { })
+        }
     ) {
         Scaffold(
-            topBar = { TopBarContent(topBarState) },
+            topBar = { TopBarContent(viewModel.topBarState) },
             snackbarHost = { /* TODO: Snackbar */ },
             content = content
         )

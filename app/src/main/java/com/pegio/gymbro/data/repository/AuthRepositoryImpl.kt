@@ -7,6 +7,10 @@ import com.google.firebase.auth.GoogleAuthProvider
 import com.pegio.gymbro.domain.core.DataError
 import com.pegio.gymbro.domain.core.Resource
 import com.pegio.gymbro.domain.repository.AuthRepository
+import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
@@ -14,9 +18,20 @@ class AuthRepositoryImpl @Inject constructor(
     private val auth: FirebaseAuth
 ) : AuthRepository {
 
+    private val currentUserIdFlow = callbackFlow {
+        val listener = FirebaseAuth.AuthStateListener { auth ->
+            trySend(auth.currentUser?.uid)
+        }
+        auth.addAuthStateListener(listener)
+        awaitClose {
+            auth.removeAuthStateListener(listener)
+        }
+    }
+
     override fun hasSavedAuthSession() = auth.currentUser != null
     override fun isAnonymousSession() = auth.currentUser?.isAnonymous == true
-    override fun getCurrentUserId(): String? = auth.currentUser?.uid
+    override fun getCurrentUserId() = auth.currentUser?.uid
+    override fun observeCurrentUserId() = currentUserIdFlow
 
     override suspend fun signInWithGoogle(idToken: String): Resource<Unit, DataError.Auth> {
         val firebaseCredential = GoogleAuthProvider.getCredential(idToken, null)

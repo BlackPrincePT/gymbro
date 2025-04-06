@@ -28,7 +28,29 @@ import com.pegio.gymbro.presentation.model.UiUser
 import com.pegio.gymbro.presentation.core.theme.GymBroTheme
 
 @Composable
-fun AppDrawerContent(
+fun DrawerContent(
+    onGoogleAuthClick: () -> Unit
+) {
+    ModalDrawerSheet {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(bottom = 16.dp)
+        ) {
+            Spacer(modifier = Modifier.weight(1f))
+
+            NavigationDrawerItem(
+                label = { Text(text = stringResource(R.string.sign_in_with_google)) },
+                selected = false,
+                onClick = onGoogleAuthClick,
+                modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding)
+            )
+        }
+    }
+}
+
+@Composable
+fun DrawerContent(
     displayedUser: UiUser,
     onAccountClick: () -> Unit,
     onSignOutClick: () -> Unit
@@ -118,11 +140,9 @@ private fun AppDrawerHeader(
 @Preview
 @Composable
 private fun AppDrawerContentPreview() {
-    GymBroTheme {
-        AppDrawerContent(
-            displayedUser = UiUser.DEFAULT,
-            onAccountClick = {},
-            onSignOutClick = {}
-        )
-    }
+    DrawerContent(
+        displayedUser = UiUser.DEFAULT,
+        onAccountClick = {},
+        onSignOutClick = {}
+    )
 }

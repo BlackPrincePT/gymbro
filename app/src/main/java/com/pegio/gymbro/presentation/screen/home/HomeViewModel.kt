@@ -7,7 +7,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.pegio.gymbro.domain.core.onSuccess
 import com.pegio.gymbro.domain.usecase.common.FetchCurrentUserStreamUseCase
-import com.pegio.gymbro.domain.usecase.drawer.SignOutUseCase
 import com.pegio.gymbro.domain.usecase.home.ObserveRelevantPostsStreamUseCase
 import com.pegio.gymbro.presentation.model.mapper.UiPostMapper
 import com.pegio.gymbro.presentation.model.mapper.UiUserMapper

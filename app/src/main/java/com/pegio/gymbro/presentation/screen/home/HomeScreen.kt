@@ -8,9 +8,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ChatBubble
 import androidx.compose.material.icons.filled.Menu
-import androidx.compose.material3.DrawerValue
-import androidx.compose.material3.ModalNavigationDrawer
-import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
@@ -19,7 +16,6 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.pegio.gymbro.presentation.activity.TopBarAction
 import com.pegio.gymbro.presentation.activity.TopBarState
-import com.pegio.gymbro.presentation.activity.components.AppDrawerContent
 import com.pegio.gymbro.presentation.components.CreatePost
 import com.pegio.gymbro.presentation.components.PostContent
 import com.pegio.gymbro.presentation.core.theme.GymBroTheme
