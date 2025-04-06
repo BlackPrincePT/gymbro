@@ -37,9 +37,7 @@ class RegisterViewModel @Inject constructor(
     val uiEffect = _uiEffect.asSharedFlow()
 
     init {
-        getCurrentUserId()?.let { currentUserId ->
-            updateUser { copy(id = currentUserId) }
-        }
+        updateUser { copy(id = getCurrentUserId()) }
     }
 
     fun onEvent(event: RegisterUiEvent) {
@@ -61,7 +59,7 @@ class RegisterViewModel @Inject constructor(
         uiState.value.selectedImageUri?.let { imageUri ->
             saveUserWithProfilePhoto(uri = imageUri)
         } ?: run {
-            saveUser(uiUserMapper.mapToDomain(uiState.value.user).also { println(it) })
+            saveUser(uiUserMapper.mapToDomain(uiState.value.user))
             sendEffect(RegisterUiEffect.NavigateToHome)
         }
     }

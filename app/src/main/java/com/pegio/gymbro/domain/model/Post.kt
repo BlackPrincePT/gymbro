@@ -11,4 +11,20 @@ data class Post(
     val ratingAverage: Double,
     val ratingCount: Int,
     val timestamp: Long
-)
+) {
+    companion object {
+
+        val EMPTY = Post(
+            id = "",
+            authorId = "",
+            content = "",
+            imageUrl = null,
+            upVotesInLast24Hours = 0,
+            voteCount = 0,
+            commentCount = 0,
+            ratingAverage = 0.0,
+            ratingCount = 0,
+            timestamp = 0
+        )
+    }
+}

@@ -26,6 +26,7 @@ import kotlinx.coroutines.flow.collectLatest
 @Composable
 fun HomeScreen(
     onChatClick: () -> Unit,
+    onCreatePostClick: () -> Unit,
     onAccountClick: () -> Unit,
     onSignOutSuccess: () -> Unit,
     viewModel: HomeViewModel = hiltViewModel()
@@ -36,6 +37,8 @@ fun HomeScreen(
         viewModel.uiEffect.collectLatest { effect ->
             when (effect) {
                 HomeUiEffect.SignedOutSuccessfully -> onSignOutSuccess()
+                HomeUiEffect.NavigateToChat -> onChatClick()
+                HomeUiEffect.NavigateToCreatePost -> onCreatePostClick()
                 HomeUiEffect.NavigateToAccount -> {
                     onAccountClick()
                     drawerState.close()
@@ -55,7 +58,11 @@ fun HomeScreen(
         }
     ) {
         Scaffold(
-            topBar = { TopAppBarContent(drawerState, onChatClick) },
+            topBar = {
+                TopAppBarContent(
+                    drawerState,
+                    onChatClick = { viewModel.onEvent(HomeUiEvent.OnChatClick) })
+            },
             modifier = Modifier
                 .fillMaxSize()
         ) { innerPadding ->
@@ -85,7 +92,7 @@ private fun HomeContent(
         item {
             CreatePost(
                 currentUser = state.currentUser,
-                onPostClick = { },
+                onPostClick = { onEvent(HomeUiEvent.OnCreatePostClick) },
                 onProfileClick = { }
             )
         }

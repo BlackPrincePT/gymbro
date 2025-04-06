@@ -8,7 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.pegio.gymbro.domain.core.onSuccess
 import com.pegio.gymbro.domain.usecase.common.FetchCurrentUserStreamUseCase
 import com.pegio.gymbro.domain.usecase.drawer.SignOutUseCase
-import com.pegio.gymbro.domain.usecase.feed.ObserveRelevantPostsStreamUseCase
+import com.pegio.gymbro.domain.usecase.home.ObserveRelevantPostsStreamUseCase
 import com.pegio.gymbro.presentation.model.mapper.UiPostMapper
 import com.pegio.gymbro.presentation.model.mapper.UiUserMapper
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -42,6 +42,8 @@ class HomeViewModel @Inject constructor(
     fun onEvent(event: HomeUiEvent) {
         when (event) {
             HomeUiEvent.OnAccountClick -> sendEffect(HomeUiEffect.NavigateToAccount)
+            HomeUiEvent.OnChatClick -> sendEffect(HomeUiEffect.NavigateToChat)
+            HomeUiEvent.OnCreatePostClick -> sendEffect(HomeUiEffect.NavigateToCreatePost)
             HomeUiEvent.OnSignOut -> {
                 signOut()
                 sendEffect(HomeUiEffect.SignedOutSuccessfully)

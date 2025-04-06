@@ -13,7 +13,6 @@ import androidx.compose.material.icons.filled.FitnessCenter
 import androidx.compose.material.icons.filled.Image
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -22,16 +21,34 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.pegio.gymbro.presentation.components.TopAppBarContent
+import com.pegio.gymbro.presentation.util.CollectLatestEffect
 
 @Composable
-fun CreatePostScreen() {
+fun CreatePostScreen(
+    onDismiss: () -> Unit,
+    viewModel: CreatePostViewModel = hiltViewModel()
+) {
+    CollectLatestEffect(viewModel.uiEffect) { effect ->
+        when (effect) {
+            CreatePostUiEffect.NavigateBack -> onDismiss.invoke()
+        }
+    }
+
     Scaffold(
-        topBar = { TopAppBarContent({ }, { }) },
+        topBar = {
+            TopAppBarContent(
+                onCloseClick = { viewModel.onEvent(CreatePostUiEvent.OnCancelClick) },
+                onPostClick = { viewModel.onEvent(CreatePostUiEvent.OnPostClick) }
+            )
+        },
         modifier = Modifier
             .fillMaxSize()
     ) { innerPadding ->
         CreatePostContent(
+            state = viewModel.uiState,
+            onEvent = viewModel::onEvent,
             modifier = Modifier
                 .padding(innerPadding)
         )
@@ -40,6 +57,8 @@ fun CreatePostScreen() {
 
 @Composable
 private fun CreatePostContent(
+    state: CreatePostUiState,
+    onEvent: (CreatePostUiEvent) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -69,13 +88,14 @@ private fun CreatePostContent(
             Icon(
                 imageVector = Icons.Default.Image,
                 contentDescription = null,
-                modifier = Modifier.size(40.dp)
+                modifier = Modifier
+                    .size(40.dp)
             )
         }
 
         TextField(
-            value = "",
-            onValueChange = { },
+            value = state.postText,
+            onValueChange = { onEvent(CreatePostUiEvent.OnPostTextChange(value = it)) },
             label = { Text(text = "What's on your muscle?") },
             modifier = Modifier
                 .fillMaxWidth()
@@ -87,5 +107,5 @@ private fun CreatePostContent(
 @Preview(showBackground = true)
 @Composable
 private fun CreatePostContentPreview() {
-    CreatePostScreen()
+    CreatePostContent(state = CreatePostUiState(), onEvent = { })
 }

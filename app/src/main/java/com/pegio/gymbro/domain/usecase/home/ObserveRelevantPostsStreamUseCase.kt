@@ -1,4 +1,4 @@
-package com.pegio.gymbro.domain.usecase.feed
+package com.pegio.gymbro.domain.usecase.home
 
 import com.pegio.gymbro.domain.repository.PostRepository
 import javax.inject.Inject

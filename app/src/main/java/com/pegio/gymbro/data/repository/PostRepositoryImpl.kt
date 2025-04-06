@@ -3,7 +3,6 @@ package com.pegio.gymbro.data.repository
 import com.google.firebase.Firebase
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.Query
-import com.google.firebase.firestore.QueryDocumentSnapshot
 import com.google.firebase.firestore.firestore
 import com.pegio.gymbro.data.remote.core.FirebaseConstants.POSTS
 import com.pegio.gymbro.data.remote.core.FirebaseConstants.TIMESTAMP
@@ -32,6 +31,11 @@ class PostRepositoryImpl @Inject constructor(
 
     companion object {
         private const val POST_PAGE_SIZE: Long = 20L
+    }
+
+    override fun uploadPost(post: Post) {
+        val postDto = postDtoMapper.mapFromDomain(post)
+        db.collection(POSTS).add(postDto)
     }
 
     override fun observePostsPagingStream(): Flow<Resource<List<Post>, DataError.Firestore>> {
