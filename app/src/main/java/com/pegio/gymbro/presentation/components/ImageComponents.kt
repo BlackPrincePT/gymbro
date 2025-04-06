@@ -12,7 +12,7 @@ import com.pegio.gymbro.R
 @Composable
 fun ProfileImage(
     imageUrl: String?,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     AsyncImage(
         model = imageUrl,

@@ -4,7 +4,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -39,8 +38,12 @@ import com.pegio.gymbro.R
 import com.pegio.gymbro.presentation.model.UiPost
 
 @Composable
-private fun Post(
-    post: UiPost
+fun PostContent(
+    post: UiPost,
+    onUpVoteClick: () -> Unit,
+    onDownVoteClick: () -> Unit,
+    onCommentClick: () -> Unit,
+    onRatingClick: () -> Unit
 ) {
     Card(shape = MaterialTheme.shapes.large) {
         Column(
@@ -71,7 +74,7 @@ private fun Post(
 @Composable
 private fun PostContent(
     post: UiPost,
-    onImageClick: () -> Unit = { }
+    onImageClick: () -> Unit
 ) {
     Column {
         Text(
@@ -90,6 +93,7 @@ private fun PostContent(
             contentScale = ContentScale.Inside,
             modifier = Modifier
                 .clickable { onImageClick.invoke() }
+                .fillMaxWidth()
                 .height(320.dp)
         )
     }
@@ -154,20 +158,20 @@ private fun PostActions(
             .padding(horizontal = 16.dp)
     ) {
         VoteActions(
-            voteCount = post.totalVotes,
+            voteCount = post.voteCount,
             onUpVoteClick = onUpVoteClick,
             onDownVoteClick = onDownVoteClick
         )
 
         CommentAction(
             onClick = onCommentClick,
-            commentCount = post.commentsCount
+            commentCount = post.commentCount
         )
 
         Spacer(modifier = Modifier.weight(1f))
 
         RatingAction(
-            rating = post.averageRating,
+            rating = post.ratingAverage,
             onClick = onRatingClick
         )
     }
@@ -280,5 +284,11 @@ private fun PostActionsPreview() {
 @Preview
 @Composable
 private fun PostPreview() {
-    Post(post = UiPost.DEFAULT)
+    PostContent(
+        post = UiPost.DEFAULT,
+        onUpVoteClick = { },
+        onDownVoteClick = { },
+        onCommentClick = { },
+        onRatingClick = { }
+    )
 }

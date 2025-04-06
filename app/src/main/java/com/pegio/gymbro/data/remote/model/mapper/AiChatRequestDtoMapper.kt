@@ -1,4 +1,4 @@
-package com.pegio.gymbro.data.remote.mapper
+package com.pegio.gymbro.data.remote.model.mapper
 
 import com.pegio.gymbro.data.remote.model.AiChatRequestDto
 import com.pegio.gymbro.data.remote.model.ContentDto

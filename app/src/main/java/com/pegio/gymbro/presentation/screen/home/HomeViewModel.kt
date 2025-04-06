@@ -1,44 +1,50 @@
 package com.pegio.gymbro.presentation.screen.home
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.pegio.gymbro.domain.core.Resource
 import com.pegio.gymbro.domain.core.onSuccess
 import com.pegio.gymbro.domain.usecase.common.FetchCurrentUserStreamUseCase
 import com.pegio.gymbro.domain.usecase.drawer.SignOutUseCase
-import com.pegio.gymbro.presentation.mapper.UiUserMapper
+import com.pegio.gymbro.domain.usecase.home.ObserveRelevantPostsStreamUseCase
+import com.pegio.gymbro.presentation.model.mapper.UiPostMapper
+import com.pegio.gymbro.presentation.model.mapper.UiUserMapper
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val fetchCurrentUserStream: FetchCurrentUserStreamUseCase,
+    private val observeRelevantPostsStream: ObserveRelevantPostsStreamUseCase,
     private val signOut: SignOutUseCase,
-    private val uiUserMapper: UiUserMapper
+    private val uiUserMapper: UiUserMapper,
+    private val uiPostMapper: UiPostMapper
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow(HomeUiState())
-    val uiState = _uiState.asStateFlow()
+    var uiState by mutableStateOf(value = HomeUiState())
+        private set
 
     private val _uiEffect = MutableSharedFlow<HomeUiEffect>()
     val uiEffect = _uiEffect.asSharedFlow()
 
     init {
         observeCurrentUser()
+        loadMorePosts()
     }
 
     fun onEvent(event: HomeUiEvent) {
         when (event) {
             HomeUiEvent.OnAccountClick -> sendEffect(HomeUiEffect.NavigateToAccount)
+            HomeUiEvent.OnChatClick -> sendEffect(HomeUiEffect.NavigateToChat)
+            HomeUiEvent.OnCreatePostClick -> sendEffect(HomeUiEffect.NavigateToCreatePost)
+            HomeUiEvent.OnLoadMorePosts -> loadMorePosts()
             HomeUiEvent.OnSignOut -> {
                 signOut()
                 sendEffect(HomeUiEffect.SignedOutSuccessfully)
@@ -48,8 +54,17 @@ class HomeViewModel @Inject constructor(
 
     private fun observeCurrentUser() {
         fetchCurrentUserStream()
-            .onSuccess { user -> _uiState.update { it.copy(displayedUser = uiUserMapper.mapFromDomain(user)) } }
+            .onSuccess { updateState { copy(currentUser = uiUserMapper.mapFromDomain(it)) } }
             .launchIn(viewModelScope)
+    }
+
+    private fun loadMorePosts() = viewModelScope.launch {
+        observeRelevantPostsStream()
+            .onSuccess { updateState { copy(relevantPosts = relevantPosts.plus(it.map(uiPostMapper::mapFromDomain))) } }
+    }
+
+    private fun updateState(change: HomeUiState.() -> HomeUiState) {
+        uiState = uiState.change()
     }
 
     private fun sendEffect(effect: HomeUiEffect) {

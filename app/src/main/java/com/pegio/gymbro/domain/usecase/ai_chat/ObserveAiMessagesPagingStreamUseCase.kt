@@ -5,5 +5,5 @@ import javax.inject.Inject
 
 class ObserveAiMessagesPagingStreamUseCase @Inject constructor(private val aiMessagesRepository: AiMessagesRepository) {
     operator fun invoke(userId: String, lastMessageId: Long? = null) =
-        aiMessagesRepository.getAiMessagesPagingSource(userId, lastMessageId)
+        aiMessagesRepository.observeAiMessagesPagingStream(userId, lastMessageId)
 }

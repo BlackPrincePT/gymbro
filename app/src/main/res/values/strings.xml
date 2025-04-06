@@ -52,4 +52,5 @@
 
     <string name="vote_button">Vote button</string>
     <string name="post_image">Post image</string>
+    <string name="create_post">Create post</string>
 </resources>

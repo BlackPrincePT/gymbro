@@ -6,6 +6,6 @@ import com.pegio.gymbro.domain.model.AiMessage
 import kotlinx.coroutines.flow.Flow
 
 interface AiMessagesRepository {
-    fun getAiMessagesPagingSource(userId: String, earliestMessageTimestamp: Long?): Flow<Resource<List<AiMessage>, DataError.Firestore>>
+    fun observeAiMessagesPagingStream(userId: String, earliestMessageTimestamp: Long?): Flow<Resource<List<AiMessage>, DataError.Firestore>>
     fun saveMessagesInFireStore(userId: String, aiChatMessage: AiMessage)
 }

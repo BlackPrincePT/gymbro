@@ -4,6 +4,7 @@ import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestoreException
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.snapshots
+import com.pegio.gymbro.data.remote.model.FirestorePagingResult
 import com.pegio.gymbro.domain.core.DataError
 import com.pegio.gymbro.domain.core.Resource
 import kotlinx.coroutines.flow.Flow
@@ -34,11 +35,10 @@ class FirestoreUtils @Inject constructor() {
     fun <T> observeDocuments(query: Query, klass: Class<T>) : Flow<Resource<List<T>, DataError.Firestore>> {
         return query.snapshots()
             .map { querySnapshot ->
-                querySnapshot.toObjects(klass)
-                    .let { Resource.Success(data = it) }
+                Resource.Success(data = querySnapshot.toObjects(klass))
             }
             .catch { cause: Throwable ->
-                Resource.Failure(error = mapExceptionToFirestoreError(cause))
+                Resource.Failure(error = mapExceptionToFirestoreError(cause)).also { println(cause) }
             }
     }
 
@@ -58,12 +58,14 @@ class FirestoreUtils @Inject constructor() {
         }
     }
 
-    suspend fun <T> queryDocuments(query: Query, klass: Class<T>): Resource<List<T>, DataError.Firestore> {
+    suspend fun <T> queryDocuments(query: Query, klass: Class<T>): Resource<FirestorePagingResult<T>, DataError.Firestore> {
         return try {
-            val documentSnapshot = query.get().await()
+            val querySnapshot = query.get().await()
 
-            Resource.Success(data = documentSnapshot.toObjects(klass))
+            val objects = querySnapshot.toObjects(klass)
+            val lastDocument = querySnapshot.documents.lastOrNull()
 
+            Resource.Success(data = FirestorePagingResult(objects, lastDocument))
         } catch (e: Exception) {
             Resource.Failure(error = mapExceptionToFirestoreError(e))
         }

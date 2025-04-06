@@ -1,11 +1,10 @@
 package com.pegio.gymbro.data.repository
 
-import com.google.firebase.Firebase
-import com.google.firebase.firestore.firestore
+import com.google.firebase.firestore.FirebaseFirestore
 import com.pegio.gymbro.data.remote.core.FirebaseConstants.USERS
 import com.pegio.gymbro.data.remote.core.FirestoreUtils
-import com.pegio.gymbro.data.remote.mapper.UserDtoMapper
 import com.pegio.gymbro.data.remote.model.UserDto
+import com.pegio.gymbro.data.remote.model.mapper.UserDtoMapper
 import com.pegio.gymbro.domain.core.DataError
 import com.pegio.gymbro.domain.core.Resource
 import com.pegio.gymbro.domain.core.convert
@@ -16,11 +15,10 @@ import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 class UserRepositoryImpl @Inject constructor(
+    private val db: FirebaseFirestore,
     private val userDtoMapper: UserDtoMapper,
     private val firestoreUtils: FirestoreUtils
 ) : UserRepository {
-
-    private val db = Firebase.firestore
 
     override suspend fun fetchUser(id: String): Resource<User, DataError.Firestore> {
         val documentRef = db.collection(USERS).document(id)

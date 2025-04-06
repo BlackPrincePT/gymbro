@@ -7,17 +7,20 @@ import androidx.navigation.compose.rememberNavController
 import com.pegio.gymbro.presentation.navigation.route.AccountRoute
 import com.pegio.gymbro.presentation.navigation.route.AiChatRoute
 import com.pegio.gymbro.presentation.navigation.route.AuthRoute
+import com.pegio.gymbro.presentation.navigation.route.CreatePost
 import com.pegio.gymbro.presentation.navigation.route.HomeRoute
 import com.pegio.gymbro.presentation.navigation.route.RegisterRoute
 import com.pegio.gymbro.presentation.navigation.route.SplashRoute
 import com.pegio.gymbro.presentation.navigation.route.navigateToAccount
 import com.pegio.gymbro.presentation.navigation.route.navigateToAiChat
 import com.pegio.gymbro.presentation.navigation.route.navigateToAuth
+import com.pegio.gymbro.presentation.navigation.route.navigateToCreatePost
 import com.pegio.gymbro.presentation.navigation.route.navigateToHome
 import com.pegio.gymbro.presentation.navigation.route.navigateToRegister
 import com.pegio.gymbro.presentation.screen.account.AccountScreen
 import com.pegio.gymbro.presentation.screen.ai_chat.AiChatScreen
 import com.pegio.gymbro.presentation.screen.auth.AuthScreen
+import com.pegio.gymbro.presentation.screen.createpost.CreatePostScreen
 import com.pegio.gymbro.presentation.screen.home.HomeScreen
 import com.pegio.gymbro.presentation.screen.register.RegisterScreen
 import com.pegio.gymbro.presentation.screen.splash.SplashScreen
@@ -53,7 +56,8 @@ fun NavigationHost() {
             HomeScreen(
                 onChatClick = navController::navigateToAiChat,
                 onAccountClick = navController::navigateToAccount,
-                onSignOutSuccess = navController::navigateToAuth
+                onSignOutSuccess = navController::navigateToAuth,
+                onCreatePostClick = navController::navigateToCreatePost
             )
         }
 
@@ -63,6 +67,10 @@ fun NavigationHost() {
 
         composable<AiChatRoute> {
             AiChatScreen(onBackClick = navController::navigateUp)
+        }
+
+        composable<CreatePost> {
+            CreatePostScreen(onDismiss = navController::navigateUp)
         }
     }
 }
