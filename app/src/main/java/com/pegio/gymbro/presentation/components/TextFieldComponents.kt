@@ -3,7 +3,6 @@ package com.pegio.gymbro.presentation.components
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -16,7 +15,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.pegio.gymbro.domain.core.Error
 import com.pegio.gymbro.domain.core.ValidationError
-import com.pegio.gymbro.presentation.core.toStringResId
+import com.pegio.gymbro.presentation.util.toStringResId
 
 @Composable
 fun FormTextField(

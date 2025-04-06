@@ -1,4 +1,4 @@
-package com.pegio.gymbro.presentation.components
+package com.pegio.gymbro.presentation.activity.components
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -22,8 +22,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.pegio.gymbro.R
+import com.pegio.gymbro.presentation.components.BackgroundImage
+import com.pegio.gymbro.presentation.components.ProfileImage
 import com.pegio.gymbro.presentation.model.UiUser
-import com.pegio.gymbro.presentation.theme.GymBroTheme
+import com.pegio.gymbro.presentation.core.theme.GymBroTheme
 
 @Composable
 fun AppDrawerContent(

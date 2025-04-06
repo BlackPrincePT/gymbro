@@ -24,15 +24,12 @@ import androidx.compose.material.icons.filled.AttachFile
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -46,9 +43,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
 import com.pegio.gymbro.R
-import com.pegio.gymbro.presentation.components.TopAppBarContent
+import com.pegio.gymbro.presentation.core.theme.GymBroTheme
 import com.pegio.gymbro.presentation.model.UiAiMessage
-import com.pegio.gymbro.presentation.theme.GymBroTheme
 import kotlinx.coroutines.flow.collectLatest
 
 @Composable
@@ -70,20 +66,11 @@ fun AiChatScreen(
         }
     }
 
-    Scaffold(
-        topBar = { TopAppBarContent(onBackClick) },
-        snackbarHost = { SnackbarHost(hostState = snackBarHostState) },
+    AiChatContent(
+        state = uiState,
+        onEvent = viewModel::onEvent,
         modifier = Modifier
-            .fillMaxSize()
-    ) { innerPadding ->
-
-        AiChatContent(
-            state = uiState,
-            onEvent = viewModel::onEvent,
-            modifier = Modifier
-                .padding(innerPadding)
-        )
-    }
+    )
 }
 
 @Composable
@@ -145,7 +132,7 @@ private fun AiChatContent(
                 )
 
                 IconButton(
-                    onClick = {  onEvent(AiChatUiEvent.OnRemoveImage) },
+                    onClick = { onEvent(AiChatUiEvent.OnRemoveImage) },
                     modifier = Modifier
                         .align(Alignment.TopEnd)
                         .size(24.dp)

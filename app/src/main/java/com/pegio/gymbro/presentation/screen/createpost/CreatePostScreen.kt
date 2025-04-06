@@ -16,7 +16,6 @@ import androidx.compose.material.icons.filled.Image
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
@@ -26,8 +25,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil3.compose.AsyncImage
-import com.pegio.gymbro.presentation.components.TopAppBarContent
-import com.pegio.gymbro.presentation.screen.account.AccountUiEvent
 import com.pegio.gymbro.presentation.util.CollectLatestEffect
 
 @Composable
@@ -41,23 +38,11 @@ fun CreatePostScreen(
         }
     }
 
-    Scaffold(
-        topBar = {
-            TopAppBarContent(
-                onCloseClick = { viewModel.onEvent(CreatePostUiEvent.OnCancelClick) },
-                onPostClick = { viewModel.onEvent(CreatePostUiEvent.OnPostClick) }
-            )
-        },
+    CreatePostContent(
+        state = viewModel.uiState,
+        onEvent = viewModel::onEvent,
         modifier = Modifier
-            .fillMaxSize()
-    ) { innerPadding ->
-        CreatePostContent(
-            state = viewModel.uiState,
-            onEvent = viewModel::onEvent,
-            modifier = Modifier
-                .padding(innerPadding)
-        )
-    }
+    )
 }
 
 @Composable

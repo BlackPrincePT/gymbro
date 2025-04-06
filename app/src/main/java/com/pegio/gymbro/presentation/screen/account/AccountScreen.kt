@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -24,8 +23,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.pegio.gymbro.presentation.components.ProfileImage
-import com.pegio.gymbro.presentation.components.TopAppBarContent
-import com.pegio.gymbro.presentation.theme.GymBroTheme
+import com.pegio.gymbro.presentation.core.theme.GymBroTheme
 import kotlinx.coroutines.flow.collectLatest
 
 @Composable
@@ -42,19 +40,11 @@ fun AccountScreen(
         }
     }
 
-    Scaffold(
-        topBar = { TopAppBarContent(onBackClick) },
+    AccountContent(
+        state = uiState,
+        onEvent = viewModel::onEvent,
         modifier = Modifier
-            .fillMaxSize()
-    ) { innerPadding ->
-
-        AccountContent(
-            state = uiState,
-            onEvent = viewModel::onEvent,
-            modifier = Modifier
-                .padding(innerPadding)
-        )
-    }
+    )
 }
 
 @Composable

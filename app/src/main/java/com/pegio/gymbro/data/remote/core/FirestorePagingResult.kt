@@ -1,4 +1,4 @@
-package com.pegio.gymbro.data.remote.model
+package com.pegio.gymbro.data.remote.core
 
 import com.google.firebase.firestore.DocumentSnapshot
 

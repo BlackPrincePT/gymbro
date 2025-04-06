@@ -42,7 +42,7 @@ import com.pegio.gymbro.domain.model.User
 import com.pegio.gymbro.presentation.components.DropdownMenu
 import com.pegio.gymbro.presentation.components.FormTextField
 import com.pegio.gymbro.presentation.components.ProfileImage
-import com.pegio.gymbro.presentation.theme.GymBroTheme
+import com.pegio.gymbro.presentation.core.theme.GymBroTheme
 import kotlinx.coroutines.flow.collectLatest
 
 @Composable

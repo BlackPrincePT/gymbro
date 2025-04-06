@@ -23,7 +23,6 @@ import javax.inject.Inject
 class HomeViewModel @Inject constructor(
     private val fetchCurrentUserStream: FetchCurrentUserStreamUseCase,
     private val observeRelevantPostsStream: ObserveRelevantPostsStreamUseCase,
-    private val signOut: SignOutUseCase,
     private val uiUserMapper: UiUserMapper,
     private val uiPostMapper: UiPostMapper
 ) : ViewModel() {
@@ -41,14 +40,12 @@ class HomeViewModel @Inject constructor(
 
     fun onEvent(event: HomeUiEvent) {
         when (event) {
-            HomeUiEvent.OnAccountClick -> sendEffect(HomeUiEffect.NavigateToAccount)
-            HomeUiEvent.OnChatClick -> sendEffect(HomeUiEffect.NavigateToChat)
             HomeUiEvent.OnCreatePostClick -> sendEffect(HomeUiEffect.NavigateToCreatePost)
             HomeUiEvent.OnLoadMorePosts -> loadMorePosts()
-            HomeUiEvent.OnSignOut -> {
-                signOut()
-                sendEffect(HomeUiEffect.SignedOutSuccessfully)
-            }
+
+            // Top Bar
+            HomeUiEvent.OnDrawerClick -> sendEffect(HomeUiEffect.OpenDrawer)
+            HomeUiEvent.OnChatClick -> sendEffect(HomeUiEffect.NavigateToChat)
         }
     }
 

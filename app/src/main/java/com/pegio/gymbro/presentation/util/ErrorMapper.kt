@@ -1,4 +1,4 @@
-package com.pegio.gymbro.presentation.core
+package com.pegio.gymbro.presentation.util
 
 import com.pegio.gymbro.R
 import com.pegio.gymbro.domain.core.DataError
