@@ -5,7 +5,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.pegio.gymbro.domain.core.onFailure
 import com.pegio.gymbro.domain.core.onSuccess
 import com.pegio.gymbro.domain.usecase.common.FetchCurrentUserStreamUseCase
 import com.pegio.gymbro.domain.usecase.drawer.SignOutUseCase
@@ -16,7 +15,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -38,7 +36,7 @@ class HomeViewModel @Inject constructor(
 
     init {
         observeCurrentUser()
-        observePosts()
+        loadMorePosts()
     }
 
     fun onEvent(event: HomeUiEvent) {
@@ -46,7 +44,7 @@ class HomeViewModel @Inject constructor(
             HomeUiEvent.OnAccountClick -> sendEffect(HomeUiEffect.NavigateToAccount)
             HomeUiEvent.OnChatClick -> sendEffect(HomeUiEffect.NavigateToChat)
             HomeUiEvent.OnCreatePostClick -> sendEffect(HomeUiEffect.NavigateToCreatePost)
-            HomeUiEvent.OnLoadMorePosts -> observePosts()
+            HomeUiEvent.OnLoadMorePosts -> loadMorePosts()
             HomeUiEvent.OnSignOut -> {
                 signOut()
                 sendEffect(HomeUiEffect.SignedOutSuccessfully)
@@ -60,10 +58,9 @@ class HomeViewModel @Inject constructor(
             .launchIn(viewModelScope)
     }
 
-    private fun observePosts() {
+    private fun loadMorePosts() = viewModelScope.launch {
         observeRelevantPostsStream()
-            .onSuccess { updateState { copy(relevantPosts = it.map(uiPostMapper::mapFromDomain)) } }
-            .launchIn(viewModelScope)
+            .onSuccess { updateState { copy(relevantPosts = relevantPosts.plus(it.map(uiPostMapper::mapFromDomain))) } }
     }
 
     private fun updateState(change: HomeUiState.() -> HomeUiState) {

@@ -1,5 +1,10 @@
 package com.pegio.gymbro.di
 
+import com.google.firebase.Firebase
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.auth
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.firestore
 import com.pegio.gymbro.BuildConfig
 import com.pegio.gymbro.data.remote.api.AiChatApi
 import dagger.Module
@@ -20,6 +25,12 @@ object NetworkModule {
 
     @Provides
     @Singleton
+    fun provideChatApi(retrofit: Retrofit): AiChatApi {
+        return retrofit.create(AiChatApi::class.java)
+    }
+
+    @Provides
+    @Singleton
     fun provideRetrofit(): Retrofit {
         val json = Json {
             encodeDefaults = true
@@ -34,7 +45,9 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun provideChatApi(retrofit: Retrofit): AiChatApi {
-        return retrofit.create(AiChatApi::class.java)
-    }
+    fun provideFirebaseAuth(): FirebaseAuth = Firebase.auth
+
+    @Provides
+    @Singleton
+    fun provideFirebaseFirestore(): FirebaseFirestore = Firebase.firestore
 }
