@@ -56,7 +56,10 @@ fun MainNavigationHost(
         }
 
         composable<CreatePostRoute> {
-            CreatePostScreen(onDismiss = navController::navigateUp)
+            CreatePostScreen(
+                onDismiss = navController::navigateUp,
+                onSetupTopBar = onSetupAppBar
+            )
         }
     }
 }
