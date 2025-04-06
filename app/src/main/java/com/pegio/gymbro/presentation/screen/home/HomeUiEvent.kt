@@ -5,4 +5,5 @@ sealed interface HomeUiEvent {
     data object OnAccountClick: HomeUiEvent
     data object OnSignOut : HomeUiEvent
     data object OnCreatePostClick: HomeUiEvent
+    data object OnLoadMorePosts: HomeUiEvent
 }

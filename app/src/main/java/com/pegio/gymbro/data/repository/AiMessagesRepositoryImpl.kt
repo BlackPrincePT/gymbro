@@ -28,7 +28,7 @@ class AiMessagesRepositoryImpl @Inject constructor(
 
     private val db = Firebase.firestore
 
-    private var lastVisibleDocument: DocumentSnapshot? = null
+    private var lastVisibleTimestamp: Long? = Long.MAX_VALUE
 
     companion object {
         private const val MESSAGES_PAGE_SIZE: Long = 30L
@@ -40,14 +40,11 @@ class AiMessagesRepositoryImpl @Inject constructor(
             .collection(AI_MESSAGES)
             .orderBy(TIMESTAMP, Query.Direction.DESCENDING)
             .startAfter(earliestMessageTimestamp)
-//            .apply { lastVisibleDocument?.let { startAfter(it) } ?: startAfter(earliestMessageTimestamp) }
             .limit(MESSAGES_PAGE_SIZE)
 
         return firestoreUtils.observeDocuments(query, AiChatMessageDto::class.java)
-            .convert { result ->
-                lastVisibleDocument = result.lastDocument
-                result.documents.map(aiChatMessageDtoMapper::mapToDomain)
-            }
+            .onSuccess { lastVisibleTimestamp = it.lastOrNull()?.timestamp }
+            .convertList(aiChatMessageDtoMapper::mapToDomain)
     }
 
     override fun saveMessagesInFireStore(userId: String, aiChatMessage: AiMessage) {

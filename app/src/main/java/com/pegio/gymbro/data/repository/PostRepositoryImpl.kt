@@ -27,7 +27,7 @@ class PostRepositoryImpl @Inject constructor(
 
     private val db = Firebase.firestore
 
-    private var lastVisibleDocument: DocumentSnapshot? = null
+    private var lastVisibleTimestamp: Long? = Long.MAX_VALUE
 
     companion object {
         private const val POST_PAGE_SIZE: Long = 20L
@@ -42,12 +42,11 @@ class PostRepositoryImpl @Inject constructor(
         val query = db.collection(POSTS)
             .orderBy(UP_VOTES_IN_LAST_24_HOURS, Query.Direction.DESCENDING)
             .orderBy(TIMESTAMP, Query.Direction.DESCENDING)
+            .startAfter(lastVisibleTimestamp)
             .limit(POST_PAGE_SIZE)
-            .apply { lastVisibleDocument?.let { startAfter(it) } ?: this }
 
         return firestoreUtils.observeDocuments(query, PostDto::class.java)
-            .onSuccess { lastVisibleDocument = it.lastDocument }
-            .convert { it.documents }
+            .onSuccess { lastVisibleTimestamp = it.lastOrNull()?.timestamp }
             .convertList(postDtoMapper::mapToDomain)
     }
 }

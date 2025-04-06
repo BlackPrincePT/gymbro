@@ -3,9 +3,7 @@ package com.pegio.gymbro.data.remote.core
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestoreException
 import com.google.firebase.firestore.Query
-import com.google.firebase.firestore.QueryDocumentSnapshot
 import com.google.firebase.firestore.snapshots
-import com.pegio.gymbro.data.remote.model.FirestorePagingResult
 import com.pegio.gymbro.domain.core.DataError
 import com.pegio.gymbro.domain.core.Resource
 import kotlinx.coroutines.flow.Flow
@@ -33,16 +31,13 @@ class FirestoreUtils @Inject constructor() {
             }
     }
 
-    fun <T> observeDocuments(query: Query, klass: Class<T>) : Flow<Resource<FirestorePagingResult<T>, DataError.Firestore>> {
+    fun <T> observeDocuments(query: Query, klass: Class<T>) : Flow<Resource<List<T>, DataError.Firestore>> {
         return query.snapshots()
             .map { querySnapshot ->
-                querySnapshot.toObjects(klass)
-                    .let {
-                        Resource.Success(data = FirestorePagingResult(documents = it, lastDocument = querySnapshot.last()))
-                    }
+                Resource.Success(data = querySnapshot.toObjects(klass))
             }
             .catch { cause: Throwable ->
-                Resource.Failure(error = mapExceptionToFirestoreError(cause))
+                Resource.Failure(error = mapExceptionToFirestoreError(cause)).also { println(cause) }
             }
     }
 

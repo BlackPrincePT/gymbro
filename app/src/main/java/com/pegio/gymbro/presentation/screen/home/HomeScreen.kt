@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.Scaffold
@@ -20,6 +21,7 @@ import com.pegio.gymbro.presentation.components.AppDrawerContent
 import com.pegio.gymbro.presentation.components.CreatePost
 import com.pegio.gymbro.presentation.components.PostContent
 import com.pegio.gymbro.presentation.components.TopAppBarContent
+import com.pegio.gymbro.presentation.screen.ai_chat.AiChatUiEvent
 import com.pegio.gymbro.presentation.theme.GymBroTheme
 import kotlinx.coroutines.flow.collectLatest
 

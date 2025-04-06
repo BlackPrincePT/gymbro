@@ -1,5 +1,7 @@
 package com.pegio.gymbro.presentation.screen.createpost
 
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -13,6 +15,7 @@ import androidx.compose.material.icons.filled.FitnessCenter
 import androidx.compose.material.icons.filled.Image
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -22,7 +25,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import coil3.compose.AsyncImage
 import com.pegio.gymbro.presentation.components.TopAppBarContent
+import com.pegio.gymbro.presentation.screen.account.AccountUiEvent
 import com.pegio.gymbro.presentation.util.CollectLatestEffect
 
 @Composable
@@ -61,6 +66,11 @@ private fun CreatePostContent(
     onEvent: (CreatePostUiEvent) -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val galleryLauncher =
+        rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri ->
+            uri?.let { onEvent(CreatePostUiEvent.OnPhotoSelected(imageUri = uri)) }
+        }
+
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -85,12 +95,14 @@ private fun CreatePostContent(
 
             Spacer(modifier = Modifier.weight(1f))
 
-            Icon(
-                imageVector = Icons.Default.Image,
-                contentDescription = null,
-                modifier = Modifier
-                    .size(40.dp)
-            )
+            IconButton(onClick = { galleryLauncher.launch(input = "image/*") }) {
+                Icon(
+                    imageVector = Icons.Default.Image,
+                    contentDescription = null,
+                    modifier = Modifier
+                        .size(40.dp)
+                )
+            }
         }
 
         TextField(
@@ -99,8 +111,14 @@ private fun CreatePostContent(
             label = { Text(text = "What's on your muscle?") },
             modifier = Modifier
                 .fillMaxWidth()
-                .weight(1f)
         )
+
+        state.imageUri?.let {
+            AsyncImage(
+                model = it,
+                contentDescription = null
+            )
+        }
     }
 }
 

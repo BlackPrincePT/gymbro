@@ -12,6 +12,5 @@ object FirebaseConstants {
      */
     const val USERNAME = "username"
     const val TIMESTAMP = "timestamp"
-
     const val UP_VOTES_IN_LAST_24_HOURS = "upVotesInLast24Hours"
 }
