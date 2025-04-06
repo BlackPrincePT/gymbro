@@ -42,11 +42,17 @@ fun MainNavigationHost(
         }
 
         composable<AccountRoute> {
-            AccountScreen(onBackClick = navController::navigateUp)
+            AccountScreen(
+                onBackClick = navController::navigateUp,
+                onSetupTopBar = onSetupAppBar
+            )
         }
 
         composable<AiChatRoute> {
-            AiChatScreen(onBackClick = navController::navigateUp)
+            AiChatScreen(
+                onBackClick = navController::navigateUp,
+                onSetupTopBar = onSetupAppBar
+            )
         }
 
         composable<CreatePostRoute> {

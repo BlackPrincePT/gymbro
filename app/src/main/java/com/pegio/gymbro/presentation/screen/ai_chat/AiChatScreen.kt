@@ -19,6 +19,7 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.Send
 import androidx.compose.material.icons.filled.AttachFile
 import androidx.compose.material.icons.filled.Close
@@ -43,31 +44,32 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
 import com.pegio.gymbro.R
+import com.pegio.gymbro.presentation.activity.TopBarAction
+import com.pegio.gymbro.presentation.activity.TopBarState
 import com.pegio.gymbro.presentation.core.theme.GymBroTheme
 import com.pegio.gymbro.presentation.model.UiAiMessage
+import com.pegio.gymbro.presentation.screen.account.AccountUiEvent
+import com.pegio.gymbro.presentation.util.CollectLatestEffect
 import kotlinx.coroutines.flow.collectLatest
 
 @Composable
 fun AiChatScreen(
     onBackClick: () -> Unit,
+    onSetupTopBar: (TopBarState) -> Unit,
     viewModel: AiChatViewModel = hiltViewModel()
 ) {
-    val uiState by viewModel.uiState
-        .collectAsStateWithLifecycle()
-    val snackBarHostState = remember { SnackbarHostState() }
 
-    LaunchedEffect(Unit) {
-        viewModel.uiEffect.collectLatest { effect ->
-            when (effect) {
-                is AiChatUiEffect.Failure -> {
-                    snackBarHostState.showSnackbar(message = effect.error.toString())
-                }
-            }
+    SetupTopBar(onSetupTopBar, viewModel::onEvent)
+
+    CollectLatestEffect(viewModel.uiEffect) { effect ->
+        when (effect) {
+            is AiChatUiEffect.Failure -> { }
+            AiChatUiEffect.NavigateBack -> onBackClick.invoke()
         }
     }
 
     AiChatContent(
-        state = uiState,
+        state = viewModel.uiState,
         onEvent = viewModel::onEvent,
         modifier = Modifier
     )
@@ -247,6 +249,23 @@ fun ChatInput(
                 tint = if (text.isNotBlank()) Color.Black else Color.Gray
             )
         }
+    }
+}
+
+@Composable
+private fun SetupTopBar(
+    onSetupTopBar: (TopBarState) -> Unit,
+    onEvent: (AiChatUiEvent) -> Unit
+) {
+    LaunchedEffect(Unit) {
+        onSetupTopBar(
+            TopBarState(
+                navigationIcon = TopBarAction(
+                    icon = Icons.AutoMirrored.Default.ArrowBack,
+                    onClick = { onEvent(AiChatUiEvent.OnBackClick) }
+                )
+            )
+        )
     }
 }
 

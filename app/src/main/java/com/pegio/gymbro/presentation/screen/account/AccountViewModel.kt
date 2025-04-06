@@ -1,6 +1,9 @@
 package com.pegio.gymbro.presentation.screen.account
 
 import android.net.Uri
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.pegio.gymbro.domain.core.onSuccess
@@ -8,6 +11,7 @@ import com.pegio.gymbro.domain.manager.upload.FileUploadManager
 import com.pegio.gymbro.domain.usecase.common.FetchCurrentUserStreamUseCase
 import com.pegio.gymbro.domain.usecase.register.SaveUserUseCase
 import com.pegio.gymbro.presentation.model.mapper.UiUserMapper
+import com.pegio.gymbro.presentation.screen.home.HomeUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -27,8 +31,8 @@ class AccountViewModel @Inject constructor(
     private val uiUserMapper: UiUserMapper
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow(AccountUiState())
-    val uiState = _uiState.asStateFlow()
+    var uiState by mutableStateOf(AccountUiState())
+        private set
 
     private val _uiEffect = MutableSharedFlow<AccountUiEffect>()
     val uiEffect = _uiEffect.asSharedFlow()
@@ -44,6 +48,9 @@ class AccountViewModel @Inject constructor(
                 deleteExistingProfileImage()
                 uploadProfileImageUrl(url = event.imageUrl)
             }
+
+            // Top Bar
+            AccountUiEvent.OnBackClick -> sendEffect(AccountUiEffect.NavigateBack)
         }
     }
 
@@ -53,19 +60,23 @@ class AccountViewModel @Inject constructor(
     }
 
     private fun uploadProfileImageUrl(url: String) {
-        uiState.value.user.copy(imgProfileUrl = url)
+        uiState.user.copy(imgProfileUrl = url)
             .let { saveUser(uiUserMapper.mapToDomain(it)) }
     }
 
     private fun deleteExistingProfileImage() {
-        val currentProfileImageUrl = uiState.value.user.imgProfileUrl ?: return
+        val currentProfileImageUrl = uiState.user.imgProfileUrl ?: return
         fileUploadManager.deleteFile(currentProfileImageUrl)
     }
 
     private fun observeCurrentUser() {
         fetchCurrentUserStream()
-            .onSuccess { user -> _uiState.update { it.copy(user = uiUserMapper.mapFromDomain(user)) } }
+            .onSuccess { user -> updateState { copy(user = uiUserMapper.mapFromDomain(user)) } }
             .launchIn(viewModelScope)
+    }
+
+    private fun updateState(change: AccountUiState.() -> AccountUiState) {
+        uiState = uiState.change()
     }
 
     private fun sendEffect(effect: AccountUiEffect) {

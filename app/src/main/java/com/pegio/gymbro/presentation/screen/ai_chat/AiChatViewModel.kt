@@ -1,5 +1,8 @@
 package com.pegio.gymbro.presentation.screen.ai_chat
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.pegio.gymbro.domain.core.onFailure
@@ -32,8 +35,8 @@ class AiChatViewModel @Inject constructor(
     getCurrentUserId: GetCurrentUserIdUseCase
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow(AiChatUiState())
-    val uiState = _uiState.asStateFlow()
+    var uiState by mutableStateOf(AiChatUiState())
+        private set
 
     private val _uiEffect = MutableSharedFlow<AiChatUiEffect>()
     val uiEffect = _uiEffect.asSharedFlow()
@@ -56,22 +59,22 @@ class AiChatViewModel @Inject constructor(
 
             is AiChatUiEvent.LoadMoreMessages -> loadMoreMessages()
             is AiChatUiEvent.OnRemoveImage -> updateState { copy(selectedImageUri = null) }
+
+            // Top Bar
+            AiChatUiEvent.OnBackClick -> sendEffect(AiChatUiEffect.NavigateBack)
         }
     }
 
     private fun loadMoreMessages() {
-        val currentUserId = _uiState.value.userId
-        val currentMessages = _uiState.value.messages
-
         observeAiMessagesPagingStream(
-            userId = currentUserId,
-            lastMessageId = _uiState.value.earliestMessageTimestamp
+            userId = uiState.userId,
+            lastMessageId = uiState.earliestMessageTimestamp
         )
             .onSuccess {
                 updateState {
                     copy(
                         messages = it.map(uiAiMessageMapper::mapFromDomain).reversed()
-                            .plus(currentMessages),
+                            .plus(uiState.messages),
                         earliestMessageTimestamp = it.lastOrNull()?.timestamp
                     )
                 }
@@ -83,11 +86,11 @@ class AiChatViewModel @Inject constructor(
     }
 
     private fun sendMessage() = viewModelScope.launch {
-        val aiMessage = uiAiMessageMapper.mapToDomain(UiAiMessage(text = uiState.value.inputText))
-        val currentUserId = uiState.value.userId
+        val aiMessage = uiAiMessageMapper.mapToDomain(UiAiMessage(text = uiState.inputText))
+        val currentUserId = uiState.userId
 
 
-        _uiState.value.selectedImageUri?.let {
+        uiState.selectedImageUri?.let {
             fileUploadManager.enqueueFileUpload(uri = it.toString())
                 .onSuccess {
                     saveMessage(
@@ -114,7 +117,7 @@ class AiChatViewModel @Inject constructor(
 
         updateState { copy(isLoading = true) }
 
-        sendMessageToAi(aiMessages = _uiState.value.messages.map(uiAiMessageMapper::mapToDomain))
+        sendMessageToAi(aiMessages = uiState.messages.map(uiAiMessageMapper::mapToDomain))
             .onSuccess {
                 saveMessage(userId = currentUserId, aiChatMessage = it)
             }
@@ -127,8 +130,8 @@ class AiChatViewModel @Inject constructor(
     }
 
 
-    private fun updateState(state: AiChatUiState.() -> AiChatUiState) {
-        _uiState.update(state)
+    private fun updateState(change: AiChatUiState.() -> AiChatUiState) {
+        uiState = uiState.change()
     }
 
     private fun sendEffect(effect: AiChatUiEffect) {

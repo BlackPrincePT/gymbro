@@ -8,4 +8,7 @@ sealed interface AiChatUiEvent {
     data class OnSendMessage(val imageUri: Uri? = null) : AiChatUiEvent
     data object OnRemoveImage : AiChatUiEvent
     data object LoadMoreMessages: AiChatUiEvent
+
+    // Top Bar
+    data object OnBackClick: AiChatUiEvent
 }
