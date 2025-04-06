@@ -1,5 +1,6 @@
 package com.pegio.gymbro.presentation.screen.ai_chat
 
+import android.net.Uri
 import com.pegio.gymbro.presentation.model.UiAiMessage
 
 data class AiChatUiState(
@@ -7,5 +8,6 @@ data class AiChatUiState(
     val isLoading: Boolean = false,
     val messages: List<UiAiMessage> = emptyList(),
     val earliestMessageTimestamp: Long? = Long.MAX_VALUE,
-    val inputText: String = ""
+    val inputText: String = "",
+    val selectedImageUri: Uri? = null
 )
