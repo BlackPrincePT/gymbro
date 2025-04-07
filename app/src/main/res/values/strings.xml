@@ -54,4 +54,9 @@
     <string name="post_image">Post image</string>
     <string name="create_post">Create post</string>
     <string name="sign_in_with_google">Sign in with google</string>
+    <string name="send_icon">Send Icon</string>
+    <string name="attach_image">Attach Image</string>
+    <string name="typing">Typing...</string>
+    <string name="chat_image">Chat Image</string>
+    <string name="remove_image">Remove Image</string>
 </resources>

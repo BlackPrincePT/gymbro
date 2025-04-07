@@ -1,9 +1,9 @@
 package com.pegio.gymbro.presentation.screen.ai_chat
 
-import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -16,7 +16,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -57,7 +56,7 @@ fun AiChatScreen(
 
     CollectLatestEffect(viewModel.uiEffect) { effect ->
         when (effect) {
-            is AiChatUiEffect.Failure -> { }
+            is AiChatUiEffect.Failure -> {}
             AiChatUiEffect.NavigateBack -> onBackClick.invoke()
         }
     }
@@ -89,68 +88,76 @@ private fun AiChatContent(
 
     LaunchedEffect(listState.firstVisibleItemIndex) {
         if (listState.firstVisibleItemIndex == 0) {
-            Log.d("loading", "")
             onEvent(AiChatUiEvent.LoadMoreMessages)
         }
     }
 
-    Column(
-        modifier = modifier
-            .fillMaxSize()
-    ) {
-
-        LazyColumn(
-            state = listState,
-            modifier = Modifier
-                .weight(1f)
+    Box(modifier = modifier.fillMaxSize()) {
+        Column(
+            modifier = modifier
+                .fillMaxSize()
         ) {
-            items(state.messages) { message ->
-                ChatBubble(message)
-            }
 
-            if (state.isLoading) {
-                item { ChatBubblePlaceholder() }
-            }
-        }
-        state.selectedImageUri?.let { uri ->
-            Box(
+            LazyColumn(
+                state = listState,
                 modifier = Modifier
-                    .fillMaxWidth(0.7f)
-                    .height(100.dp)
-                    .clip(RoundedCornerShape(8.dp))
+                    .weight(1f)
             ) {
-                AsyncImage(
-                    model = uri,
-                    contentDescription = "Selected Image",
-                    modifier = Modifier
-                        .fillMaxSize(),
-                    contentScale = ContentScale.Crop
-                )
+                items(state.messages) { message ->
+                    ChatBubble(message)
+                }
 
-                IconButton(
-                    onClick = { onEvent(AiChatUiEvent.OnRemoveImage) },
-                    modifier = Modifier
-                        .align(Alignment.TopEnd)
-                        .size(24.dp)
-                        .background(Color.Red, CircleShape)
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Close,
-                        contentDescription = "Remove Image",
-                        tint = Color.White
-                    )
+                if (state.isLoading) {
+                    item { ChatBubblePlaceholder() }
                 }
             }
+            state.selectedImageUri?.let { uri ->
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth(0.25f)
+                        .height(90.dp)
+                        .clip(RoundedCornerShape(8.dp))
+                ) {
+                    AsyncImage(
+                        model = uri,
+                        contentDescription = null,
+                        modifier = Modifier
+                            .fillMaxSize(),
+                        contentScale = ContentScale.Crop
+                    )
+
+                    IconButton(
+                        onClick = { onEvent(AiChatUiEvent.OnRemoveImage) },
+                        modifier = Modifier
+                            .align(Alignment.TopEnd)
+                            .size(20.dp)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Close,
+                            contentDescription = stringResource(R.string.remove_image),
+                            tint = Color.Red
+                        )
+                    }
+                }
+            }
+
+
+
+            ChatInput(
+                text = state.inputText,
+                onTextChange = { onEvent(AiChatUiEvent.OnTextChanged(it)) },
+                onSend = { onEvent(AiChatUiEvent.OnSendMessage()) },
+                onImageSelect = { galleryLauncher.launch(input = "image/*") }
+            )
         }
-
-
-
-        ChatInput(
-            text = state.inputText,
-            onTextChange = { onEvent(AiChatUiEvent.OnTextChanged(it)) },
-            onSend = { onEvent(AiChatUiEvent.OnSendMessage()) },
-            onImageSelect = { galleryLauncher.launch(input = "image/*") }
-        )
+        // Placeholder loading this needs to be improved
+        if (state.isLoading) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .clickable(enabled = true, onClick = {})
+            )
+        }
     }
 }
 
@@ -173,9 +180,9 @@ fun ChatBubble(message: UiAiMessage) {
             if (message.imageUrl != null) {
                 AsyncImage(
                     model = message.imageUrl,
-                    contentDescription = "Chat Image",
+                    contentDescription = stringResource(R.string.chat_image),
                     modifier = Modifier
-                        .fillMaxWidth(0.7f)
+                        .fillMaxWidth(0.69f)
                         .height(200.dp)
                         .clip(RoundedCornerShape(8.dp)),
                     contentScale = ContentScale.Crop
@@ -194,7 +201,7 @@ fun ChatBubble(message: UiAiMessage) {
 
 @Composable
 fun ChatBubblePlaceholder() {
-    val placeholderMessage = UiAiMessage(text = "Typing...", isFromUser = false)
+    val placeholderMessage = UiAiMessage(text = stringResource(R.string.typing), isFromUser = false)
 
     ChatBubble(message = placeholderMessage)
 }
@@ -215,7 +222,7 @@ fun ChatInput(
         IconButton(onClick = onImageSelect, modifier = Modifier.padding(4.dp)) {
             Icon(
                 imageVector = Icons.Default.AttachFile,
-                contentDescription = "Attach Image",
+                contentDescription = stringResource(R.string.attach_image),
                 tint = Color.Black,
                 modifier = Modifier.size(28.dp)
             )
@@ -239,7 +246,7 @@ fun ChatInput(
         ) {
             Icon(
                 imageVector = Icons.AutoMirrored.Default.Send,
-                contentDescription = "Send Icon",
+                contentDescription = stringResource(R.string.send_icon),
                 tint = if (text.isNotBlank()) Color.Black else Color.Gray
             )
         }
@@ -263,10 +270,10 @@ private fun SetupTopBar(
     }
 }
 
-@Preview
+@Preview(showBackground = true)
 @Composable
 private fun AiChatPreview() {
     GymBroTheme {
-//        AiChatContent(state = AiChatUiState(), messages = emptyList(), onEvent = {})
+        AiChatContent(state = AiChatUiState(), onEvent = {})
     }
 }

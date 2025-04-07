@@ -8,9 +8,7 @@ import com.pegio.gymbro.domain.core.DataError
 import com.pegio.gymbro.domain.core.Resource
 import com.pegio.gymbro.domain.repository.AuthRepository
 import kotlinx.coroutines.channels.awaitClose
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
-import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 

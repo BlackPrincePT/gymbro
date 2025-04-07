@@ -12,16 +12,13 @@ import com.pegio.gymbro.domain.usecase.ai_chat.ObserveAiMessagesPagingStreamUseC
 import com.pegio.gymbro.domain.usecase.ai_chat.SaveFireStoreMessagesUseCase
 import com.pegio.gymbro.domain.usecase.ai_chat.SendMessageToAiUseCase
 import com.pegio.gymbro.domain.usecase.register.GetCurrentUserIdUseCase
-import com.pegio.gymbro.presentation.model.mapper.UiAiMessageMapper
 import com.pegio.gymbro.presentation.model.UiAiMessage
+import com.pegio.gymbro.presentation.model.mapper.UiAiMessageMapper
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -42,7 +39,7 @@ class AiChatViewModel @Inject constructor(
     val uiEffect = _uiEffect.asSharedFlow()
 
     init {
-        getCurrentUserId()?.let { currentUserId ->
+        getCurrentUserId().let { currentUserId ->
             updateState { copy(userId = currentUserId) }
         }
     }
@@ -66,6 +63,9 @@ class AiChatViewModel @Inject constructor(
     }
 
     private fun loadMoreMessages() {
+        // Declare current messages before updating state PRINCE PETER DONT TOUCH IT
+        val currentMessages = uiState.messages
+
         observeAiMessagesPagingStream(
             userId = uiState.userId,
             lastMessageId = uiState.earliestMessageTimestamp
@@ -74,7 +74,7 @@ class AiChatViewModel @Inject constructor(
                 updateState {
                     copy(
                         messages = it.map(uiAiMessageMapper::mapFromDomain).reversed()
-                            .plus(uiState.messages),
+                            .plus(currentMessages),
                         earliestMessageTimestamp = it.lastOrNull()?.timestamp
                     )
                 }
@@ -85,13 +85,14 @@ class AiChatViewModel @Inject constructor(
             .launchIn(viewModelScope)
     }
 
+
     private fun sendMessage() = viewModelScope.launch {
         val aiMessage = uiAiMessageMapper.mapToDomain(UiAiMessage(text = uiState.inputText))
         val currentUserId = uiState.userId
 
 
-        uiState.selectedImageUri?.let {
-            fileUploadManager.enqueueFileUpload(uri = it.toString())
+        uiState.selectedImageUri?.let { uri ->
+            fileUploadManager.enqueueFileUpload(uri = uri.toString())
                 .onSuccess {
                     saveMessage(
                         userId = currentUserId,
