@@ -10,51 +10,44 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.Scaffold
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.pegio.gymbro.presentation.activity.TopBarAction
+import com.pegio.gymbro.presentation.activity.TopBarState
 import com.pegio.gymbro.presentation.components.ProfileImage
-import com.pegio.gymbro.presentation.components.TopAppBarContent
-import com.pegio.gymbro.presentation.theme.GymBroTheme
-import kotlinx.coroutines.flow.collectLatest
+import com.pegio.gymbro.presentation.core.theme.GymBroTheme
+import com.pegio.gymbro.presentation.util.CollectLatestEffect
 
 @Composable
 fun AccountScreen(
     onBackClick: () -> Unit,
+    onSetupTopBar: (TopBarState) -> Unit,
     viewModel: AccountViewModel = hiltViewModel()
 ) {
-    val uiState by viewModel.uiState
-        .collectAsStateWithLifecycle()
+    SetupTopBar(onSetupTopBar, viewModel::onEvent)
 
-    LaunchedEffect(Unit) {
-        viewModel.uiEffect.collectLatest { effect ->
-
+    CollectLatestEffect(viewModel.uiEffect) { effect ->
+        when (effect) {
+            AccountUiEffect.NavigateBack -> onBackClick.invoke()
         }
     }
 
-    Scaffold(
-        topBar = { TopAppBarContent(onBackClick) },
+    AccountContent(
+        state = viewModel.uiState,
+        onEvent = viewModel::onEvent,
         modifier = Modifier
-            .fillMaxSize()
-    ) { innerPadding ->
-
-        AccountContent(
-            state = uiState,
-            onEvent = viewModel::onEvent,
-            modifier = Modifier
-                .padding(innerPadding)
-        )
-    }
+    )
 }
 
 @Composable
@@ -91,6 +84,23 @@ private fun AccountContent(
                 Text(text = "Edit your profile picture")
             }
         }
+    }
+}
+
+@Composable
+private fun SetupTopBar(
+    onSetupTopBar: (TopBarState) -> Unit,
+    onEvent: (AccountUiEvent) -> Unit
+) {
+    LaunchedEffect(Unit) {
+        onSetupTopBar(
+            TopBarState(
+                navigationIcon = TopBarAction(
+                    icon = Icons.AutoMirrored.Default.ArrowBack,
+                    onClick = { onEvent(AccountUiEvent.OnBackClick) }
+                )
+            )
+        )
     }
 }
 

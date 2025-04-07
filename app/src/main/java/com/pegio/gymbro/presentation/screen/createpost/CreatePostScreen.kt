@@ -11,53 +11,48 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.Send
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.FitnessCenter
 import androidx.compose.material.icons.filled.Image
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil3.compose.AsyncImage
-import com.pegio.gymbro.presentation.components.TopAppBarContent
-import com.pegio.gymbro.presentation.screen.account.AccountUiEvent
+import com.pegio.gymbro.presentation.activity.TopBarAction
+import com.pegio.gymbro.presentation.activity.TopBarState
+import com.pegio.gymbro.presentation.screen.ai_chat.AiChatUiEvent
 import com.pegio.gymbro.presentation.util.CollectLatestEffect
 
 @Composable
 fun CreatePostScreen(
     onDismiss: () -> Unit,
+    onSetupTopBar: (TopBarState) -> Unit,
     viewModel: CreatePostViewModel = hiltViewModel()
 ) {
+    SetupTopBar(onSetupTopBar, viewModel::onEvent)
+
     CollectLatestEffect(viewModel.uiEffect) { effect ->
         when (effect) {
             CreatePostUiEffect.NavigateBack -> onDismiss.invoke()
         }
     }
 
-    Scaffold(
-        topBar = {
-            TopAppBarContent(
-                onCloseClick = { viewModel.onEvent(CreatePostUiEvent.OnCancelClick) },
-                onPostClick = { viewModel.onEvent(CreatePostUiEvent.OnPostClick) }
-            )
-        },
+    CreatePostContent(
+        state = viewModel.uiState,
+        onEvent = viewModel::onEvent,
         modifier = Modifier
-            .fillMaxSize()
-    ) { innerPadding ->
-        CreatePostContent(
-            state = viewModel.uiState,
-            onEvent = viewModel::onEvent,
-            modifier = Modifier
-                .padding(innerPadding)
-        )
-    }
+    )
 }
 
 @Composable
@@ -119,6 +114,29 @@ private fun CreatePostContent(
                 contentDescription = null
             )
         }
+    }
+}
+
+@Composable
+private fun SetupTopBar(
+    onSetupTopBar: (TopBarState) -> Unit,
+    onEvent: (CreatePostUiEvent) -> Unit
+) {
+    LaunchedEffect(Unit) {
+        onSetupTopBar(
+            TopBarState(
+                navigationIcon = TopBarAction(
+                    icon = Icons.Default.Close,
+                    onClick = { onEvent(CreatePostUiEvent.OnCancelClick) }
+                ),
+                actions = listOf(
+                    TopBarAction(
+                        icon = Icons.AutoMirrored.Default.Send,
+                        onClick = { onEvent(CreatePostUiEvent.OnPostClick) }
+                    )
+                )
+            )
+        )
     }
 }
 

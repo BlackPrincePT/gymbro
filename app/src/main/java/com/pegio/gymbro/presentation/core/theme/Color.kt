@@ -1,4 +1,4 @@
-package com.pegio.gymbro.presentation.theme
+package com.pegio.gymbro.presentation.core.theme
 
 import androidx.compose.ui.graphics.Color
 
