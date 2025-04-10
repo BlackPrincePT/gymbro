@@ -2,7 +2,7 @@ package com.pegio.gymbro.data.repository
 
 import android.util.Log
 import com.google.firebase.firestore.FirebaseFirestore
-import com.pegio.gymbro.data.remote.core.FirebaseConstants.LEVEL
+import com.pegio.gymbro.data.remote.core.FirebaseConstants.WORKOUT_ORDER
 import com.pegio.gymbro.data.remote.core.FirebaseConstants.WORKOUT_PLANS
 import com.pegio.gymbro.data.remote.core.FirestoreUtils
 import com.pegio.gymbro.data.remote.model.WorkoutPlanDto
@@ -28,7 +28,7 @@ class WorkoutPlanRepositoryImpl @Inject constructor(
 
     override fun observeWorkoutPlansPagingStream(lastVisibleTitle: String?): Flow<Resource<List<WorkoutPlan>, DataError.Firestore>> {
         val query = db.collection(WORKOUT_PLANS)
-//            .orderBy(LEVEL)
+            .orderBy(WORKOUT_ORDER)
             .limit(WORKOUT_PLANS_PAGE_SIZE)
 
 //        if (!lastVisibleTitle.isNullOrEmpty()) {

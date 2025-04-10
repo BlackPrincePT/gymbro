@@ -11,9 +11,7 @@ import com.pegio.gymbro.presentation.navigation.route.AiChatRoute
 import com.pegio.gymbro.presentation.navigation.route.CreatePostRoute
 import com.pegio.gymbro.presentation.navigation.route.HomeRoute
 import com.pegio.gymbro.presentation.navigation.route.WorkoutPlanRoute
-import com.pegio.gymbro.presentation.navigation.route.navigateToAccount
 import com.pegio.gymbro.presentation.navigation.route.navigateToAiChat
-import com.pegio.gymbro.presentation.navigation.route.navigateToAuth
 import com.pegio.gymbro.presentation.navigation.route.navigateToCreatePost
 import com.pegio.gymbro.presentation.screen.account.AccountScreen
 import com.pegio.gymbro.presentation.screen.ai_chat.AiChatScreen
@@ -30,7 +28,7 @@ fun MainNavigationHost(
 ) {
     NavHost(
         navController = navController,
-        startDestination = WorkoutPlanRoute,
+        startDestination = HomeRoute,
         modifier = modifier
     ) {
 
@@ -65,7 +63,8 @@ fun MainNavigationHost(
         }
         composable<WorkoutPlanRoute> {
             WorkoutPlanScreen(
-
+                onBackClick = navController::navigateUp,
+                onSetupTopBar = onSetupAppBar
             )
         }
     }

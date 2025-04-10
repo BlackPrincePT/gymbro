@@ -53,6 +53,7 @@ fun DrawerContent(
 fun DrawerContent(
     displayedUser: UiUser,
     onAccountClick: () -> Unit,
+    onWorkoutPlanClick: () -> Unit,
     onSignOutClick: () -> Unit
 ) {
     ModalDrawerSheet {
@@ -72,6 +73,13 @@ fun DrawerContent(
                 label = { Text(text = stringResource(R.string.account)) },
                 selected = false,
                 onClick = onAccountClick,
+                modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding)
+            )
+
+            NavigationDrawerItem(
+                label = { Text(text = stringResource(R.string.built_in_workout_plans)) },
+                selected = false,
+                onClick = onWorkoutPlanClick,
                 modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding)
             )
 
@@ -143,6 +151,7 @@ private fun AppDrawerContentPreview() {
     DrawerContent(
         displayedUser = UiUser.DEFAULT,
         onAccountClick = {},
+        onWorkoutPlanClick = {},
         onSignOutClick = {}
     )
 }
