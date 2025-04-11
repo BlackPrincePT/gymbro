@@ -55,6 +55,10 @@ class MainViewModel @Inject constructor(
                 sendEffect(MainActivityUiEffect.NavigateToAccount)
                 sendEffect(MainActivityUiEffect.CloseDrawer)
             }
+            MainActivityUiEvent.OnWorkoutPlanClick -> {
+                sendEffect(MainActivityUiEffect.NavigateToWorkoutPlan)
+                sendEffect(MainActivityUiEffect.CloseDrawer)
+            }
             MainActivityUiEvent.OnSignOutClick -> {
                 signOut()
                 sendEffect(MainActivityUiEffect.NavigateToAuth)

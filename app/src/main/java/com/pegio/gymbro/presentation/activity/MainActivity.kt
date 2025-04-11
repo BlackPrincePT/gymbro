@@ -5,7 +5,6 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.DrawerState
 import androidx.compose.material3.DrawerValue
@@ -28,6 +27,7 @@ import com.pegio.gymbro.presentation.core.theme.GymBroTheme
 import com.pegio.gymbro.presentation.navigation.MainNavigationHost
 import com.pegio.gymbro.presentation.navigation.route.navigateToAccount
 import com.pegio.gymbro.presentation.navigation.route.navigateToAuth
+import com.pegio.gymbro.presentation.navigation.route.navigateToWorkoutPlan
 import com.pegio.gymbro.presentation.util.CollectLatestEffect
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -58,6 +58,7 @@ class MainActivity : ComponentActivity() {
 
                         // Drawer
                         MainActivityUiEffect.NavigateToAccount -> mainNavController.navigateToAccount()
+                        MainActivityUiEffect.NavigateToWorkoutPlan -> mainNavController.navigateToWorkoutPlan()
                         MainActivityUiEffect.NavigateToAuth -> entryNavController.navigateToAuth()
                     }
                 }
@@ -90,6 +91,7 @@ private fun MainAppContent(
                 DrawerContent(
                     displayedUser = it,
                     onAccountClick = { onEvent(MainActivityUiEvent.OnAccountClick) },
+                    onWorkoutPlanClick = {onEvent(MainActivityUiEvent.OnWorkoutPlanClick)},
                     onSignOutClick = { onEvent(MainActivityUiEvent.OnSignOutClick) }
                 )
             } ?: DrawerContent(onGoogleAuthClick = { })
