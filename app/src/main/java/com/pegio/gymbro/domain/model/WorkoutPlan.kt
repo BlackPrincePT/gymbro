@@ -9,9 +9,10 @@ data class WorkoutPlan(
     val duration: String,
     val intensity: String,
     val imageUrl: String
-)
-enum class DifficultyLevel {
-    EASY,
-    MEDIUM,
-    HARD
+) {
+    enum class DifficultyLevel {
+        EASY,
+        MEDIUM,
+        HARD
+    }
 }

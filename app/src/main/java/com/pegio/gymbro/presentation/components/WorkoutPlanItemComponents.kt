@@ -24,6 +24,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
@@ -37,7 +38,7 @@ fun WorkoutPlanItemComponents(workoutPlan: UiWorkoutPlan) {
             .padding(horizontal = 16.dp, vertical = 10.dp)
             .fillMaxWidth(),
         shape = RoundedCornerShape(16.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
     ) {
         Column(modifier = Modifier.fillMaxWidth()) {
@@ -101,4 +102,20 @@ fun WorkoutPlanItemComponents(workoutPlan: UiWorkoutPlan) {
             Spacer(modifier = Modifier.height(10.dp))
         }
     }
+}
+
+@Preview
+@Composable
+private fun WorkoutPlanItemView(){
+    WorkoutPlanItemComponents(
+        workoutPlan =  UiWorkoutPlan(
+            id = "1",
+            title = "Beginner Plan",
+            description = "Designed for those with some experience. Mix of strength and cardio to push your limits.",
+            difficulty = "Easy",
+            duration = "4 days/week - 45 minutes per session",
+            intensity = "Low",
+            imageUrl = "https://avatars.githubusercontent.com/u/172249902?v=4"
+        ),
+    )
 }

@@ -64,7 +64,8 @@ fun MainNavigationHost(
         composable<WorkoutPlanRoute> {
             WorkoutPlanScreen(
                 onBackClick = navController::navigateUp,
-                onSetupTopBar = onSetupAppBar
+                onInfoClick = navController::navigateToAiChat,
+                onSetupTopBar = onSetupAppBar,
             )
         }
     }

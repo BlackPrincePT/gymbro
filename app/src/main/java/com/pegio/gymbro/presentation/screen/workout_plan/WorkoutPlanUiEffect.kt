@@ -4,5 +4,6 @@ import com.pegio.gymbro.domain.core.Error
 
 sealed interface WorkoutPlanUiEffect {
     data class Failure(val error: Error) : WorkoutPlanUiEffect
+    data object NavigateToAiChat: WorkoutPlanUiEffect
     data object NavigateBack: WorkoutPlanUiEffect
 }

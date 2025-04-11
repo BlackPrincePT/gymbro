@@ -37,6 +37,7 @@ class WorkoutPlanViewModel @Inject constructor(
             }
 
             WorkoutPlanUiEvent.OnBackClick -> sendEffect(WorkoutPlanUiEffect.NavigateBack)
+            WorkoutPlanUiEvent.OnInfoClick -> sendEffect(WorkoutPlanUiEffect.NavigateToAiChat)
         }
     }
 
