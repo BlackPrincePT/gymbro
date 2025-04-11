@@ -36,9 +36,9 @@ gradlePlugin {
             id = libs.plugins.gymbro.android.compose.get().pluginId
             implementationClass = "AndroidComposeConventionPlugin"
         }
-        register("androidFeature") {
-            id = libs.plugins.gymbro.android.feature.get().pluginId
-            implementationClass = "AndroidFeatureConventionPlugin"
+        register("androidPresentation") {
+            id = libs.plugins.gymbro.android.presentation.get().pluginId
+            implementationClass = "AndroidPresentationConventionPlugin"
         }
         register("hilt") {
             id = libs.plugins.gymbro.hilt.get().pluginId

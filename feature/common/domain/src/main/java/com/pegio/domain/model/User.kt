@@ -1,4 +1,4 @@
-package com.pegio.gymbro.domain.model
+package com.pegio.domain.model
 
 data class User(
     val id: String,

@@ -28,7 +28,12 @@ include(":app")
 
 // Core
 include(":core:common")
+include(":core:designsystem")
+include(":core:firestore")
 
 // Feature
-include(":feature:auth")
-include(":core:designsystem")
+include(":feature:common:data")
+include(":feature:common:domain")
+
+include(":feature:auth:domain")
+include(":core:firebaseauth")

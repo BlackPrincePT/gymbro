@@ -148,5 +148,7 @@ google-services = { id = "com.google.gms.google-services", version.ref = "google
 gymbro-android-library = { id = "gymbro.android.library", version = "unspecified" }
 gymbro-jvm-library = { id = "gymbro.jvm.library", version = "unspecified" }
 gymbro-android-compose = { id = "gymbro.android.compose", version = "unspecified" }
-gymbro-android-feature = { id = "gymbro.android.feature", version = "unspecified" }
+gymbro-android-data = { id = "gymbro.android.data", version = "unspecified" }
+gymbro-android-domain = { id = "gymbro.android.domain", version = "unspecified" }
+gymbro-android-presentation = { id = "gymbro.android.presentation", version = "unspecified" }
 gymbro-hilt = { id = "gymbro.hilt", version = "unspecified" }
