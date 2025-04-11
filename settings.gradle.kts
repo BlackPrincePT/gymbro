@@ -1,4 +1,7 @@
 pluginManagement {
+
+    includeBuild("build-logic")
+
     repositories {
         google {
             content {
@@ -20,5 +23,12 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "gymbro"
+
 include(":app")
- 
+
+// Core
+include(":core:common")
+
+// Feature
+include(":feature:auth")
+include(":core:designsystem")
