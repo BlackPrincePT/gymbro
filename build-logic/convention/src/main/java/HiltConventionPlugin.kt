@@ -1,5 +1,5 @@
-import com.pegio.convention.implementation
-import com.pegio.convention.ksp
+import com.pegio.convention.scriptImplementation
+import com.pegio.convention.scriptKsp
 import com.pegio.convention.libs
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -13,8 +13,8 @@ class HiltConventionPlugin : Plugin<Project> {
             apply(plugin = "com.google.dagger.hilt.android")
 
             dependencies {
-                implementation(libs.findLibrary("hilt-android").get())
-                ksp(libs.findLibrary("hilt-android-compiler").get())
+                scriptImplementation(libs.findLibrary("hilt-android").get())
+                scriptKsp(libs.findLibrary("hilt-android-compiler").get())
             }
         }
     }

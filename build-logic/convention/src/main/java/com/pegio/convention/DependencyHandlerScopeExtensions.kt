@@ -2,26 +2,26 @@ package com.pegio.convention
 
 import org.gradle.kotlin.dsl.DependencyHandlerScope
 
-fun DependencyHandlerScope.implementation(dependency: Any) {
+fun DependencyHandlerScope.scriptImplementation(dependency: Any) {
     "implementation"(dependency)
 }
 
-fun DependencyHandlerScope.kapt(dependency: Any) {
+fun DependencyHandlerScope.scriptKapt(dependency: Any) {
     "kapt"(dependency)
 }
 
-fun DependencyHandlerScope.ksp(dependency: Any) {
+fun DependencyHandlerScope.scriptKsp(dependency: Any) {
     "ksp"(dependency)
 }
 
-fun DependencyHandlerScope.testImplementation(dependency: Any) {
+fun DependencyHandlerScope.scriptTestImplementation(dependency: Any) {
     "testImplementation"(dependency)
 }
 
-fun DependencyHandlerScope.androidTestImplementation(dependency: Any) {
+fun DependencyHandlerScope.scriptAndroidTestImplementation(dependency: Any) {
     "androidTestImplementation"(dependency)
 }
 
-fun DependencyHandlerScope.debugImplementation(dependency: Any) {
+fun DependencyHandlerScope.scriptDebugImplementation(dependency: Any) {
     "debugImplementation"(dependency)
 }

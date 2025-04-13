@@ -1,4 +1,4 @@
-import com.pegio.convention.implementation
+import com.pegio.convention.scriptImplementation
 import com.pegio.convention.libs
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -14,13 +14,15 @@ class AndroidPresentationConventionPlugin : Plugin<Project> {
             apply(plugin = "org.jetbrains.kotlin.plugin.serialization")
 
             dependencies {
-                implementation(project(":core:designsystem"))
-                implementation(project(":feature:common"))
+                scriptImplementation(project(":core:common"))
+                scriptImplementation(project(":core:designsystem"))
+                scriptImplementation(project(":feature:common:domain"))
+                scriptImplementation(project(":feature:common:presentation"))
 
-                implementation(libs.findLibrary("androidx-ui").get())
-                implementation(libs.findLibrary("androidx-ui-graphics").get())
-                implementation(libs.findLibrary("androidx-hilt-navigation-compose").get())
-                implementation(libs.findLibrary("kotlinx-serialization-json").get())
+                scriptImplementation(libs.findLibrary("androidx-ui").get())
+                scriptImplementation(libs.findLibrary("androidx-ui-graphics").get())
+                scriptImplementation(libs.findLibrary("androidx-hilt-navigation-compose").get())
+                scriptImplementation(libs.findLibrary("kotlinx-serialization-json").get())
             }
         }
     }

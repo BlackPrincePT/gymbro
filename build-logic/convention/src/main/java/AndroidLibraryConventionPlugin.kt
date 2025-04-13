@@ -1,8 +1,8 @@
 import com.android.build.gradle.LibraryExtension
-import com.pegio.convention.androidTestImplementation
+import com.pegio.convention.scriptAndroidTestImplementation
 import com.pegio.convention.configureKotlinAndroid
 import com.pegio.convention.libs
-import com.pegio.convention.testImplementation
+import com.pegio.convention.scriptTestImplementation
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.apply
@@ -27,9 +27,9 @@ class AndroidLibraryConventionPlugin : Plugin<Project> {
             }
 
             dependencies {
-                testImplementation(libs.findLibrary("junit").get())
-                androidTestImplementation(libs.findLibrary("androidx-junit").get())
-                androidTestImplementation(libs.findLibrary("androidx-espresso-core").get())
+                scriptTestImplementation(libs.findLibrary("junit").get())
+                scriptAndroidTestImplementation(libs.findLibrary("androidx-junit").get())
+                scriptAndroidTestImplementation(libs.findLibrary("androidx-espresso-core").get())
             }
         }
     }

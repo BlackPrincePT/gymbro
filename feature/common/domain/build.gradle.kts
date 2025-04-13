@@ -1,7 +1,14 @@
 plugins {
-    alias(libs.plugins.gymbro.jvm.library)
+    alias(libs.plugins.gymbro.android.library)
+}
+
+android {
+    namespace = "com.pegio.domain"
 }
 
 dependencies {
-    api(project(":core:common"))
+    implementation(project(":core:common"))
+    implementation(project(":core:datastore"))
+
+    implementation(libs.javax.inject)
 }

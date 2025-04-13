@@ -11,7 +11,7 @@ import com.pegio.gymbro.domain.manager.upload.FileUploadManager
 import com.pegio.gymbro.domain.usecase.ai_chat.ObserveAiMessagesPagingStreamUseCase
 import com.pegio.gymbro.domain.usecase.ai_chat.SaveFireStoreMessagesUseCase
 import com.pegio.gymbro.domain.usecase.ai_chat.SendMessageToAiUseCase
-import com.pegio.gymbro.domain.usecase.register.GetCurrentUserIdUseCase
+import com.pegio.gymbro.domain.usecase.common.GetCurrentUserIdUseCase
 import com.pegio.gymbro.presentation.model.UiAiMessage
 import com.pegio.gymbro.presentation.model.mapper.UiAiMessageMapper
 import dagger.hilt.android.lifecycle.HiltViewModel

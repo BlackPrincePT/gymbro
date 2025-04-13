@@ -8,8 +8,9 @@ android {
 }
 
 dependencies {
+    implementation(project(":core:common"))
     implementation(project(":core:firestore"))
-    implementation(project(":core:firebaseauth"))
+    implementation(project(":feature:common:domain"))
 
-    api(project(":feature:common:domain"))
+    implementation(libs.firebase.auth) // FIXME PLEASE
 }

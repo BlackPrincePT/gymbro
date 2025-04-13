@@ -121,8 +121,8 @@ dependencies {
 
     // Firebase
     implementation(platform(libs.firebase.bom))
-    implementation(libs.firebase.auth)
-    implementation(libs.firebase.firestore)
+    implementation(libs.firebase.auth) // +
+    implementation(libs.firebase.firestore) // +
     implementation(libs.firebase.storage.ktx)
     implementation(libs.androidx.credentials)
     implementation(libs.androidx.credentials.play.services.auth)
@@ -135,9 +135,9 @@ dependencies {
     implementation(libs.logging.interceptor)
 
     // Cache
-    implementation(libs.androidx.datastore.preferences)
+    implementation(libs.androidx.datastore.preferences) // +
 
     // Task
-    implementation(libs.androidx.work.runtime)
-    implementation(libs.androidx.hilt.work)
+    implementation(libs.androidx.work.runtime) // +
+    implementation(libs.androidx.hilt.work) // +
 }

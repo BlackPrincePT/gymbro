@@ -13,10 +13,7 @@
         </DropdownSelection>
         <DialogSelection />
       </SelectionState>
-      <SelectionState runConfigName="MainActivity">
-        <option name="selectionMode" value="DROPDOWN" />
-      </SelectionState>
-      <SelectionState runConfigName="AiChatPreview">
+      <SelectionState runConfigName="core.firestore">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
     </selectionStates>

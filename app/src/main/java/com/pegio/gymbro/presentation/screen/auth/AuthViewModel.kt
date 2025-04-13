@@ -12,11 +12,10 @@ import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential.Companion.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL
 import com.pegio.gymbro.BuildConfig
 import com.pegio.gymbro.domain.core.DataError
-import com.pegio.gymbro.domain.core.Resource
 import com.pegio.gymbro.domain.core.onFailure
 import com.pegio.gymbro.domain.core.onSuccess
-import com.pegio.gymbro.domain.usecase.auth.SignInAnonymouslyUseCase
-import com.pegio.gymbro.domain.usecase.auth.SignInWithGoogleUseCase
+import com.pegio.gymbro.domain.usecase.common.SignInAnonymouslyUseCase
+import com.pegio.gymbro.domain.usecase.common.SignInWithGoogleUseCase
 import com.pegio.gymbro.domain.usecase.common.CheckUserRegistrationStatusUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CancellationException

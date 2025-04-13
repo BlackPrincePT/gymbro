@@ -36,6 +36,14 @@ gradlePlugin {
             id = libs.plugins.gymbro.android.compose.get().pluginId
             implementationClass = "AndroidComposeConventionPlugin"
         }
+        register("androidData") {
+            id = libs.plugins.gymbro.android.data.get().pluginId
+            implementationClass = "AndroidDataConventionPlugin"
+        }
+        register("androidDomain") {
+            id = libs.plugins.gymbro.android.domain.get().pluginId
+            implementationClass = "AndroidDomainConventionPlugin"
+        }
         register("androidPresentation") {
             id = libs.plugins.gymbro.android.presentation.get().pluginId
             implementationClass = "AndroidPresentationConventionPlugin"
