@@ -9,17 +9,13 @@ import androidx.lifecycle.viewModelScope
 import com.pegio.gymbro.domain.core.onSuccess
 import com.pegio.gymbro.domain.manager.upload.FileUploadManager
 import com.pegio.gymbro.domain.usecase.common.FetchCurrentUserStreamUseCase
-import com.pegio.gymbro.domain.usecase.register.SaveUserUseCase
+import com.pegio.gymbro.domain.usecase.common.SaveUserUseCase
 import com.pegio.gymbro.presentation.model.mapper.UiUserMapper
-import com.pegio.gymbro.presentation.screen.home.HomeUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 

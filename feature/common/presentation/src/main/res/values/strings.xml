@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Generic fallback error message -->
+    <string name="feature_common_presentation_error_generic">An error occurred. Please try again later.</string>
+
+    <!-- Network errors -->
+    <string name="feature_common_presentation_error_no_connection">No internet connection. Please check your network settings.</string>
+    <string name="feature_common_presentation_error_timeout">The request timed out. Please try again.</string>
+    <string name="feature_common_presentation_error_unauthorized">You are not authorized. Please log in again.</string>
+    <string name="feature_common_presentation_error_forbidden">Access forbidden. You do not have permission to perform this action.</string>
+    <string name="feature_common_presentation_error_not_found">The requested resource was not found.</string>
+
+    <!-- Auth errors -->
+    <string name="feature_common_presentation_error_invalid_credential">Invalid credentials provided.</string>
+    <string name="feature_common_presentation_error_invalid_user">User account not found or invalid.</string>
+    <string name="feature_common_presentation_error_unauthenticated">Your session has expired. Please log in again.</string>
+
+    <!-- Firestore errors -->
+    <string name="feature_common_presentation_error_document_not_found">The requested document could not be found.</string>
+    <string name="feature_common_presentation_error_permission_denied">Permission denied to access the requested resource.</string>
+
+    <!-- Username Errors -->
+    <string name="feature_common_presentation_error_username_empty">Username cannot be empty.</string>
+    <string name="feature_common_presentation_error_username_too_short">Username is too short. Please choose a longer username.</string>
+
+    <!-- Age Errors -->
+    <string name="feature_common_presentation_error_age_invalid">Age must be greater than zero.</string>
+    <string name="feature_common_presentation_error_age_too_young">You must be at least 18 years old.</string>
+
+    <!-- Gender Errors -->
+    <string name="feature_common_presentation_error_gender_empty">Gender cannot be empty.</string>
+    <string name="feature_common_presentation_error_gender_invalid">The gender provided is invalid.</string>
+
+    <!-- Height Errors -->
+    <string name="feature_common_presentation_error_height_invalid">The height value provided is invalid.</string>
+    <string name="feature_common_presentation_error_height_too_low">The height is below the acceptable threshold.</string>
+
+    <!-- Weight Errors -->
+    <string name="feature_common_presentation_error_weight_invalid">The weight value provided is invalid.</string>
+    <string name="feature_common_presentation_error_weight_too_low">The weight is below the acceptable threshold.</string>
+</resources>

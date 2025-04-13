@@ -6,12 +6,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.pegio.gymbro.domain.core.onFailure
 import com.pegio.gymbro.domain.core.onSuccess
 import com.pegio.gymbro.domain.manager.upload.FileUploadManager
 import com.pegio.gymbro.domain.model.Post
 import com.pegio.gymbro.domain.usecase.createpost.UploadPostUseCase
-import com.pegio.gymbro.domain.usecase.register.GetCurrentUserIdUseCase
+import com.pegio.gymbro.domain.usecase.common.GetCurrentUserIdUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow

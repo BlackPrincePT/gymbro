@@ -7,9 +7,14 @@ plugins {
     alias(libs.plugins.kapt) apply false
     alias(libs.plugins.ksp) apply false
 
+    // Module
+    alias(libs.plugins.jetbrains.kotlin.jvm) apply false
+    alias(libs.plugins.android.library) apply false
+
+    // Serialization
     alias(libs.plugins.kotlin.serialization) apply false
 
-    // DI
+    // Hilt
     alias(libs.plugins.dagger.hilt.android) apply false
 
     // Firebase

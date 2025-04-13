@@ -7,8 +7,8 @@ import com.pegio.gymbro.domain.core.withError
 import com.pegio.gymbro.domain.core.onSuccess
 import com.pegio.gymbro.domain.manager.upload.FileUploadManager
 import com.pegio.gymbro.domain.usecase.aggregator.FormValidatorUseCases
-import com.pegio.gymbro.domain.usecase.register.GetCurrentUserIdUseCase
-import com.pegio.gymbro.domain.usecase.register.SaveUserUseCase
+import com.pegio.gymbro.domain.usecase.common.GetCurrentUserIdUseCase
+import com.pegio.gymbro.domain.usecase.common.SaveUserUseCase
 import com.pegio.gymbro.presentation.model.mapper.UiUserMapper
 import com.pegio.gymbro.presentation.model.UiUser
 import dagger.hilt.android.lifecycle.HiltViewModel
