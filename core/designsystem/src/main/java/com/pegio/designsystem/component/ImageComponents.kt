@@ -1,5 +1,6 @@
 package com.pegio.designsystem.component
 
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -31,6 +32,19 @@ fun BackgroundImage(
         contentDescription = null,
         fallback = ColorPainter(Color.LightGray),
         contentScale = ContentScale.FillWidth,
+        modifier = modifier
+    )
+}
+
+@Composable
+fun MessageImage(
+    imageUrl: String?,
+    modifier: Modifier = Modifier
+){
+    AsyncImage(
+        model = imageUrl,
+        contentDescription = null,
+        contentScale = ContentScale.Crop,
         modifier = modifier
     )
 }
