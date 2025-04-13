@@ -13,6 +13,7 @@ class AndroidDomainConventionPlugin : Plugin<Project> {
 
             dependencies {
                 scriptImplementation(project(":core:common"))
+                scriptImplementation(project(":core:model"))
                 scriptImplementation(project(":feature:common:domain"))
 
                 scriptImplementation(libs.findLibrary("javax-inject").get())

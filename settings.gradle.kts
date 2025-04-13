@@ -31,16 +31,21 @@ include(":core:common")
 include(":core:designsystem")
 include(":core:firestore")
 include(":core:datastore")
+include(":core:uploadmanager")
 
 // Feature
 include(":feature:common:data")
-
-include(":feature:auth:presentation")
-
-include(":feature:splash:presentation")
+include(":feature:common:domain")
+include(":feature:common:presentation")
 
 include(":feature:splash:domain")
-include(":feature:common:domain")
+include(":feature:splash:presentation")
+
 include(":feature:auth:domain")
-include(":core:uploadmanager")
-include(":feature:common:presentation")
+include(":feature:auth:presentation")
+
+include(":feature:aichat:data")
+include(":feature:aichat:domain")
+include(":feature:aichat:presentation")
+include(":core:network")
+include(":core:model")

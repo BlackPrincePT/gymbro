@@ -26,15 +26,27 @@
             <option value="$PROJECT_DIR$/build-logic/convention" />
             <option value="$PROJECT_DIR$/core" />
             <option value="$PROJECT_DIR$/core/common" />
+            <option value="$PROJECT_DIR$/core/datastore" />
             <option value="$PROJECT_DIR$/core/designsystem" />
-            <option value="$PROJECT_DIR$/core/firebaseauth" />
             <option value="$PROJECT_DIR$/core/firestore" />
+            <option value="$PROJECT_DIR$/core/model" />
+            <option value="$PROJECT_DIR$/core/network" />
+            <option value="$PROJECT_DIR$/core/uploadmanager" />
             <option value="$PROJECT_DIR$/feature" />
+            <option value="$PROJECT_DIR$/feature/aichat" />
+            <option value="$PROJECT_DIR$/feature/aichat/data" />
+            <option value="$PROJECT_DIR$/feature/aichat/domain" />
+            <option value="$PROJECT_DIR$/feature/aichat/presentation" />
             <option value="$PROJECT_DIR$/feature/auth" />
             <option value="$PROJECT_DIR$/feature/auth/domain" />
+            <option value="$PROJECT_DIR$/feature/auth/presentation" />
             <option value="$PROJECT_DIR$/feature/common" />
             <option value="$PROJECT_DIR$/feature/common/data" />
             <option value="$PROJECT_DIR$/feature/common/domain" />
+            <option value="$PROJECT_DIR$/feature/common/presentation" />
+            <option value="$PROJECT_DIR$/feature/splash" />
+            <option value="$PROJECT_DIR$/feature/splash/domain" />
+            <option value="$PROJECT_DIR$/feature/splash/presentation" />
           </set>
         </option>
         <option name="resolveExternalAnnotations" value="false" />

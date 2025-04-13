@@ -15,6 +15,7 @@ class AndroidPresentationConventionPlugin : Plugin<Project> {
 
             dependencies {
                 scriptImplementation(project(":core:common"))
+                scriptImplementation(project(":core:model"))
                 scriptImplementation(project(":core:designsystem"))
                 scriptImplementation(project(":feature:common:domain"))
                 scriptImplementation(project(":feature:common:presentation"))
