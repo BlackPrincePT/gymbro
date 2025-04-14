@@ -53,3 +53,8 @@ include(":feature:aichat:presentation")
 include(":feature:feed:data")
 include(":feature:feed:domain")
 include(":feature:feed:presentation")
+
+
+include(":feature:workout:data")
+include(":feature:workout:domain")
+include(":feature:workout:presentation")
