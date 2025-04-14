@@ -1,6 +1,6 @@
 package com.pegio.domain.usecase
 
-import com.example.model.Post
+import com.pegio.model.Post
 import com.pegio.domain.repository.PostRepository
 import javax.inject.Inject
 

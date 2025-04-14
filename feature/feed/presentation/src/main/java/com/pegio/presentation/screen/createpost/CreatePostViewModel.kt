@@ -6,7 +6,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.model.Post
+import com.pegio.model.Post
 import com.pegio.common.core.onSuccess
 import com.pegio.domain.usecase.GetCurrentUserIdUseCase
 import com.pegio.domain.usecase.UploadPostUseCase

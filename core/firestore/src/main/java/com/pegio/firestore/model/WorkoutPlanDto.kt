@@ -1,6 +1,6 @@
 package com.pegio.firestore.model
 
-import com.example.model.WorkoutPlan.DifficultyLevel
+import com.pegio.model.WorkoutPlan.DifficultyLevel
 import com.google.firebase.firestore.DocumentId
 
 data class WorkoutPlanDto(

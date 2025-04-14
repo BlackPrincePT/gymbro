@@ -5,8 +5,8 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.example.presentation.screen.ai_chat.AiChatScreen
-import com.example.presentation.screen.workout_plan.WorkoutPlanScreen
+import com.pegio.presentation.screen.ai_chat.AiChatScreen
+import com.pegio.presentation.screen.workout_plan.WorkoutPlanScreen
 import com.pegio.gymbro.presentation.activity.TopBarState
 import com.pegio.gymbro.presentation.navigation.route.AccountRoute
 import com.pegio.gymbro.presentation.navigation.route.AiChatRoute
