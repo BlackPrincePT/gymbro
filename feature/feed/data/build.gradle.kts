@@ -7,7 +7,6 @@ android {
 }
 
 dependencies {
-    implementation(project(":core:network"))
     implementation(project(":core:firestore"))
-    implementation(project(":feature:aichat:domain"))
+    implementation(project(":feature:feed:domain"))
 }

@@ -7,7 +7,7 @@ plugins {
 }
 
 android {
-    namespace = "com.example.network"
+    namespace = "com.pegio.network"
 
     buildTypes {
         defaultConfig {

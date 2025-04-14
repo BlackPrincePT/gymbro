@@ -1,7 +1,7 @@
 package com.example.network.di
 
-import com.example.network.BuildConfig
 import com.example.network.service.AiChatService
+import com.pegio.network.BuildConfig
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

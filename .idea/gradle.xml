@@ -44,6 +44,10 @@
             <option value="$PROJECT_DIR$/feature/common/data" />
             <option value="$PROJECT_DIR$/feature/common/domain" />
             <option value="$PROJECT_DIR$/feature/common/presentation" />
+            <option value="$PROJECT_DIR$/feature/feed" />
+            <option value="$PROJECT_DIR$/feature/feed/data" />
+            <option value="$PROJECT_DIR$/feature/feed/domain" />
+            <option value="$PROJECT_DIR$/feature/feed/presentation" />
             <option value="$PROJECT_DIR$/feature/splash" />
             <option value="$PROJECT_DIR$/feature/splash/domain" />
             <option value="$PROJECT_DIR$/feature/splash/presentation" />

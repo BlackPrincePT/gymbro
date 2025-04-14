@@ -7,8 +7,7 @@ android {
 }
 
 dependencies {
-    implementation(project(":core:uploadmanager"))
-    implementation(project(":feature:aichat:domain"))
+    implementation(project(":feature:feed:domain"))
 
     implementation(libs.kotlinx.datetime)
 }
