@@ -28,9 +28,11 @@ include(":app")
 
 // Core
 include(":core:common")
+include(":core:model")
 include(":core:designsystem")
-include(":core:firestore")
 include(":core:datastore")
+include(":core:network")
+include(":core:firestore")
 include(":core:uploadmanager")
 
 // Feature
@@ -47,5 +49,7 @@ include(":feature:auth:presentation")
 include(":feature:aichat:data")
 include(":feature:aichat:domain")
 include(":feature:aichat:presentation")
-include(":core:network")
-include(":core:model")
+
+include(":feature:feed:data")
+include(":feature:feed:domain")
+include(":feature:feed:presentation")
