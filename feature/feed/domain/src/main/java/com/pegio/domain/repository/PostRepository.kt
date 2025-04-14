@@ -1,6 +1,6 @@
 package com.pegio.domain.repository
 
-import com.example.model.Post
+import com.pegio.model.Post
 import com.pegio.common.core.DataError
 import com.pegio.common.core.Resource
 

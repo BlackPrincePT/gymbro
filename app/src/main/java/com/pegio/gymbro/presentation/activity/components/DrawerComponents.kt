@@ -21,11 +21,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.constraintlayout.compose.ConstraintLayout
+import com.pegio.designsystem.component.BackgroundImage
+import com.pegio.designsystem.component.ProfileImage
 import com.pegio.gymbro.R
-import com.pegio.gymbro.presentation.components.BackgroundImage
-import com.pegio.gymbro.presentation.components.ProfileImage
-import com.pegio.gymbro.presentation.model.UiUser
-import com.pegio.gymbro.presentation.core.theme.GymBroTheme
+import com.pegio.presentation.model.UiUser
 
 @Composable
 fun DrawerContent(

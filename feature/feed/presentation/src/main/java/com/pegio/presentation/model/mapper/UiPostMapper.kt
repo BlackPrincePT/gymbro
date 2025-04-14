@@ -1,6 +1,6 @@
 package com.pegio.presentation.model.mapper
 
-import com.example.model.Post
+import com.pegio.model.Post
 import com.pegio.common.core.FromDomainMapper
 import com.pegio.presentation.model.UiPost
 import com.pegio.presentation.model.UiUser

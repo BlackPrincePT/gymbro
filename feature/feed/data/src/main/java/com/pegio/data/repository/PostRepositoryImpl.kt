@@ -1,6 +1,6 @@
 package com.pegio.data.repository
 
-import com.example.model.Post
+import com.pegio.model.Post
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query

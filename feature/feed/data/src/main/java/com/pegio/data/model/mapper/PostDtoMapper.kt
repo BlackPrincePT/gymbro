@@ -1,6 +1,6 @@
 package com.pegio.data.model.mapper
 
-import com.example.model.Post
+import com.pegio.model.Post
 import com.pegio.common.core.Mapper
 import com.pegio.firestore.model.PostDto
 import javax.inject.Inject

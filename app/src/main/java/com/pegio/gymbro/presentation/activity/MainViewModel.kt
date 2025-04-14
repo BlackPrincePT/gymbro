@@ -5,26 +5,21 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.pegio.gymbro.domain.core.onSuccess
-import com.pegio.gymbro.domain.usecase.common.FetchCurrentUserStreamUseCase
-import com.pegio.gymbro.domain.usecase.drawer.SignOutUseCase
 import com.pegio.gymbro.presentation.activity.state.MainActivityUiEffect
 import com.pegio.gymbro.presentation.activity.state.MainActivityUiEvent
 import com.pegio.gymbro.presentation.activity.state.MainActivityUiState
-import com.pegio.gymbro.presentation.model.UiUser
-import com.pegio.gymbro.presentation.model.mapper.UiUserMapper
+import com.pegio.presentation.model.mapper.UiUserMapper
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
-import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
-    private val signOut: SignOutUseCase,
-    observeCurrentUserStream: FetchCurrentUserStreamUseCase,
+//    private val signOut: SignOutUseCase,
+//    observeCurrentUserStream: FetchCurrentUserStreamUseCase,
     uiUserMapper: UiUserMapper
 ) : ViewModel() {
 
@@ -35,9 +30,9 @@ class MainViewModel @Inject constructor(
     val uiEffect = _uiEffect.asSharedFlow()
 
     init {
-        observeCurrentUserStream()
-            .onSuccess { updateState { copy(currentUser = uiUserMapper.mapFromDomain(it)) } }
-            .launchIn(viewModelScope)
+//        observeCurrentUserStream()
+//            .onSuccess { updateState { copy(currentUser = uiUserMapper.mapFromDomain(it)) } }
+//            .launchIn(viewModelScope)
     }
 
     fun onEvent(event: MainActivityUiEvent) {
@@ -60,7 +55,7 @@ class MainViewModel @Inject constructor(
                 sendEffect(MainActivityUiEffect.CloseDrawer)
             }
             MainActivityUiEvent.OnSignOutClick -> {
-                signOut()
+//                signOut()
                 sendEffect(MainActivityUiEffect.NavigateToAuth)
                 sendEffect(MainActivityUiEffect.CloseDrawer)
             }

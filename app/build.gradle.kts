@@ -10,8 +10,8 @@ plugins {
 
     alias(libs.plugins.kotlin.serialization)
 
-    // DI
-    alias(libs.plugins.dagger.hilt.android)
+    // Hilt
+    alias(libs.plugins.gymbro.hilt)
 
     // Firebase
     alias(libs.plugins.google.services)
@@ -85,6 +85,24 @@ kapt {
 }
 
 dependencies {
+    implementation(project(":core:common"))
+    implementation(project(":core:model"))
+    implementation(project(":core:designsystem"))
+
+
+    implementation(project(":feature:common:data"))
+    implementation(project(":feature:aichat:data"))
+    implementation(project(":feature:feed:data"))
+    implementation(project(":feature:settings:data"))
+    implementation(project(":feature:workout:data"))
+
+    implementation(project(":feature:common:presentation"))
+    implementation(project(":feature:aichat:presentation"))
+    implementation(project(":feature:auth:presentation"))
+    implementation(project(":feature:feed:presentation"))
+    implementation(project(":feature:settings:presentation"))
+    implementation(project(":feature:splash:presentation"))
+    implementation(project(":feature:workout:presentation"))
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
@@ -107,10 +125,9 @@ dependencies {
     // Navigation
     implementation(libs.navigation.compose)
 
-    // DI
-    implementation(libs.hilt.android)
+    // Hilt
     implementation(libs.androidx.hilt.navigation.compose)
-    kapt(libs.hilt.android.compiler)
+    implementation(libs.androidx.hilt.work)
 
     // UI
     implementation(libs.coil.compose)
@@ -118,26 +135,4 @@ dependencies {
     implementation(libs.androidx.constraintlayout.compose)
     implementation(libs.androidx.material.icons.extended)
     implementation(libs.kotlinx.datetime)
-
-    // Firebase
-    implementation(platform(libs.firebase.bom))
-    implementation(libs.firebase.auth) // +
-    implementation(libs.firebase.firestore) // +
-    implementation(libs.firebase.storage.ktx)
-    implementation(libs.androidx.credentials)
-    implementation(libs.androidx.credentials.play.services.auth)
-    implementation(libs.googleid)
-
-    // Network
-    implementation(libs.retrofit)
-    implementation(libs.converter.kotlinx.serialization)
-    implementation(libs.okhttp)
-    implementation(libs.logging.interceptor)
-
-    // Cache
-    implementation(libs.androidx.datastore.preferences) // +
-
-    // Task
-    implementation(libs.androidx.work.runtime) // +
-    implementation(libs.androidx.hilt.work) // +
 }

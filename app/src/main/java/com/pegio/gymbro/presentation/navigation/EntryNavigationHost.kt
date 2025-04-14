@@ -11,9 +11,9 @@ import com.pegio.gymbro.presentation.navigation.route.SplashRoute
 import com.pegio.gymbro.presentation.navigation.route.navigateToAuth
 import com.pegio.gymbro.presentation.navigation.route.navigateToMain
 import com.pegio.gymbro.presentation.navigation.route.navigateToRegister
-import com.pegio.gymbro.presentation.screen.auth.AuthScreen
-import com.pegio.gymbro.presentation.screen.register.RegisterScreen
-import com.pegio.gymbro.presentation.screen.splash.SplashScreen
+import com.pegio.presentation.screen.auth.AuthScreen
+import com.pegio.presentation.screen.register.RegisterScreen
+import com.pegio.presentation.splash.SplashScreen
 
 @Composable
 fun EntryNavigationHost(

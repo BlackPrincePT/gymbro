@@ -7,6 +7,7 @@ android {
 }
 
 dependencies {
+    implementation(project(":core:uploadmanager"))
     implementation(project(":feature:feed:domain"))
 
     implementation(libs.kotlinx.datetime)
