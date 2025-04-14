@@ -1,7 +1,7 @@
 package com.pegio.gymbro.presentation.activity.state
 
 import com.pegio.gymbro.presentation.activity.TopBarState
-import com.pegio.gymbro.presentation.model.UiUser
+import com.pegio.presentation.model.UiUser
 
 data class MainActivityUiState(
     val topBarState: TopBarState = TopBarState(),

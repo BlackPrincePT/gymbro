@@ -12,7 +12,7 @@ import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
-class AuthRepositoryImpl() : AuthRepository {
+internal class AuthRepositoryImpl @Inject constructor() : AuthRepository {
 
     private val auth = FirebaseAuth.getInstance()
 

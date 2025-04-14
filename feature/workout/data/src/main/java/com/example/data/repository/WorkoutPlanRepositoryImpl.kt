@@ -1,6 +1,5 @@
 package com.example.data.repository
 
-
 import com.example.data.model.mapper.WorkoutPlanDtoMapper
 import com.example.domain.repository.WorkoutPlanRepository
 import com.example.model.WorkoutPlan
@@ -15,8 +14,7 @@ import com.pegio.firestore.util.FirestoreUtils
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
-
-class WorkoutPlanRepositoryImpl @Inject constructor(
+internal class WorkoutPlanRepositoryImpl @Inject constructor(
     private val db: FirebaseFirestore,
     private val firestoreUtils: FirestoreUtils,
     private val workoutPlanDtoMapper: WorkoutPlanDtoMapper

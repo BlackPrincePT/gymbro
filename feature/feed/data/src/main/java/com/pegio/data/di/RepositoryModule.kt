@@ -9,8 +9,8 @@ import dagger.hilt.components.SingletonComponent
 
 @Module
 @InstallIn(SingletonComponent::class)
-internal interface RepositoryModule {
+internal abstract class RepositoryModule {
 
     @Binds
-    fun bind(impl: PostRepositoryImpl): PostRepository
+    abstract fun bind(impl: PostRepositoryImpl): PostRepository
 }

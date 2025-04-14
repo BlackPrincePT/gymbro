@@ -12,7 +12,7 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class DefaultNetworkDataSource @Inject constructor(
+internal class DefaultNetworkDataSource @Inject constructor(
     private val aiChatService: AiChatService,
     private val aiChatResponseDtoMapper: AiChatResponseDtoMapper,
     private val networkUtils: NetworkUtils

@@ -17,18 +17,18 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import com.pegio.designsystem.theme.GymBroTheme
 import com.pegio.gymbro.presentation.activity.components.DrawerContent
 import com.pegio.gymbro.presentation.activity.components.TopBarContent
 import com.pegio.gymbro.presentation.activity.state.MainActivityUiEffect
 import com.pegio.gymbro.presentation.activity.state.MainActivityUiEvent
 import com.pegio.gymbro.presentation.activity.state.MainActivityUiState
 import com.pegio.gymbro.presentation.navigation.EntryNavigationHost
-import com.pegio.gymbro.presentation.core.theme.GymBroTheme
 import com.pegio.gymbro.presentation.navigation.MainNavigationHost
 import com.pegio.gymbro.presentation.navigation.route.navigateToAccount
 import com.pegio.gymbro.presentation.navigation.route.navigateToAuth
 import com.pegio.gymbro.presentation.navigation.route.navigateToWorkoutPlan
-import com.pegio.gymbro.presentation.util.CollectLatestEffect
+import com.pegio.presentation.util.CollectLatestEffect
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
