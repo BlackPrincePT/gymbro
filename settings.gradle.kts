@@ -58,3 +58,7 @@ include(":feature:feed:presentation")
 include(":feature:workout:data")
 include(":feature:workout:domain")
 include(":feature:workout:presentation")
+
+include(":feature:settings:data")
+include(":feature:settings:domain")
+include(":feature:settings:presentation")
