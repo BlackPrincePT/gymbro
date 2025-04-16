@@ -10,7 +10,7 @@ import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
 
-class NetworkUtils @Inject constructor() {
+class NetworkUtils @Inject internal constructor() {
 
     suspend fun <T> handleHttpRequest(apiCall: suspend () -> Response<T>): Resource<T, DataError.Network> {
         return try {

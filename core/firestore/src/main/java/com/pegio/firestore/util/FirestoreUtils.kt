@@ -13,7 +13,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
-class FirestoreUtils @Inject constructor() {
+class FirestoreUtils @Inject internal constructor() {
 
     fun <T> observeDocument(documentRef: DocumentReference, klass: Class<T>): Flow<Resource<T, DataError.Firestore>> {
         return documentRef.snapshots()

@@ -27,38 +27,22 @@ rootProject.name = "gymbro"
 include(":app")
 
 // Core
-include(":core:common")
+include(":core:data")
 include(":core:model")
-include(":core:designsystem")
-include(":core:datastore")
+include(":core:common")
+include(":core:domain")
 include(":core:network")
+include(":core:datastore")
 include(":core:firestore")
+include(":core:designsystem")
 include(":core:uploadmanager")
 
 // Feature
-include(":feature:common:data")
-include(":feature:common:domain")
-include(":feature:common:presentation")
-
-include(":feature:splash:domain")
-include(":feature:splash:presentation")
-
-include(":feature:auth:domain")
-include(":feature:auth:presentation")
-
-include(":feature:aichat:data")
-include(":feature:aichat:domain")
-include(":feature:aichat:presentation")
-
-include(":feature:feed:data")
-include(":feature:feed:domain")
-include(":feature:feed:presentation")
-
-
-include(":feature:workout:data")
-include(":feature:workout:domain")
-include(":feature:workout:presentation")
-
-include(":feature:settings:data")
-include(":feature:settings:domain")
-include(":feature:settings:presentation")
+include(":feature")
+include(":feature:aichat")
+include(":feature:auth")
+include(":feature:common")
+include(":feature:feed")
+include(":feature:settings")
+include(":feature:splash")
+include(":feature:workout")
