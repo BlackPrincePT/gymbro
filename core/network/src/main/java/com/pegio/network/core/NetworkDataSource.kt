@@ -7,4 +7,5 @@ import com.pegio.common.core.Resource
 
 interface NetworkDataSource {
     suspend fun sendMessage(aiChatRequestDto: AiChatRequestDto): Resource<AiMessage, DataError.Network>
+
 }
