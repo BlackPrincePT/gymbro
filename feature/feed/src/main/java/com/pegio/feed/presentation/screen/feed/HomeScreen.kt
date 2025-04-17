@@ -5,11 +5,17 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ChatBubble
+import androidx.compose.material.icons.filled.Menu
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.pegio.common.presentation.state.TopBarAction
+import com.pegio.common.presentation.state.TopBarState
 import com.pegio.feed.presentation.component.CreatePost
 import com.pegio.feed.presentation.component.PostContent
 import com.pegio.common.presentation.util.CollectLatestEffect
@@ -19,11 +25,11 @@ fun HomeScreen(
     onCreatePostClick: () -> Unit,
     onChatClick: () -> Unit,
     onDrawerClick: () -> Unit,
-//    onSetupTopBar: (TopBarState) -> Unit,
+    onSetupTopBar: (TopBarState) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: HomeViewModel = hiltViewModel()
 ) {
-//    SetupTopBar(onSetupTopBar, viewModel::onEvent)
+    SetupTopBar(onSetupTopBar, viewModel::onEvent)
 
     CollectLatestEffect(viewModel.uiEffect) { effect ->
         when (effect) {
@@ -76,28 +82,28 @@ private fun HomeContent(
     }
 }
 
-//@Composable
-//private fun SetupTopBar(
-//    onSetupTopBar: (TopBarState) -> Unit,
-//    onEvent: (HomeUiEvent) -> Unit
-//) {
-//    LaunchedEffect(Unit) {
-//        onSetupTopBar(
-//            TopBarState(
-//                navigationIcon = TopBarAction(
-//                    icon = Icons.Default.Menu,
-//                    onClick = { onEvent(HomeUiEvent.OnDrawerClick) }
-//                ),
-//                actions = listOf(
-//                    TopBarAction(
-//                        icon = Icons.Default.ChatBubble,
-//                        onClick = { onEvent(HomeUiEvent.OnChatClick) }
-//                    )
-//                )
-//            )
-//        )
-//    }
-//}
+@Composable
+private fun SetupTopBar(
+    onSetupTopBar: (TopBarState) -> Unit,
+    onEvent: (HomeUiEvent) -> Unit
+) {
+    LaunchedEffect(Unit) {
+        onSetupTopBar(
+            TopBarState(
+                navigationIcon = TopBarAction(
+                    icon = Icons.Default.Menu,
+                    onClick = { onEvent(HomeUiEvent.OnDrawerClick) }
+                ),
+                actions = listOf(
+                    TopBarAction(
+                        icon = Icons.Default.ChatBubble,
+                        onClick = { onEvent(HomeUiEvent.OnChatClick) }
+                    )
+                )
+            )
+        )
+    }
+}
 
 @Preview
 @Composable

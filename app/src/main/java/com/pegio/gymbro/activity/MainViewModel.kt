@@ -5,7 +5,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.pegio.common.core.onSuccess
 import com.pegio.common.presentation.model.mapper.UiUserMapper
+import com.pegio.domain.usecase.account.SignOutUseCase
+import com.pegio.domain.usecase.common.FetchCurrentUserStreamUseCase
 import com.pegio.gymbro.activity.state.MainActivityUiEffect
 import com.pegio.gymbro.activity.state.MainActivityUiEvent
 import com.pegio.gymbro.activity.state.MainActivityUiState
@@ -13,13 +16,14 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
-//    private val signOut: SignOutUseCase,
-//    observeCurrentUserStream: FetchCurrentUserStreamUseCase,
+    private val signOut: SignOutUseCase,
+    observeCurrentUserStream: FetchCurrentUserStreamUseCase,
     uiUserMapper: UiUserMapper
 ) : ViewModel() {
 
@@ -30,9 +34,9 @@ class MainViewModel @Inject constructor(
     val uiEffect = _uiEffect.asSharedFlow()
 
     init {
-//        observeCurrentUserStream()
-//            .onSuccess { updateState { copy(currentUser = uiUserMapper.mapFromDomain(it)) } }
-//            .launchIn(viewModelScope)
+        observeCurrentUserStream()
+            .onSuccess { updateState { copy(currentUser = uiUserMapper.mapFromDomain(it)) } }
+            .launchIn(viewModelScope)
     }
 
     fun onEvent(event: MainActivityUiEvent) {

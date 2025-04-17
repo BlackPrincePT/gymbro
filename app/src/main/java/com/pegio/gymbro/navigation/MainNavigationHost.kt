@@ -8,7 +8,7 @@ import androidx.navigation.compose.composable
 import com.pegio.aichat.presentation.screen.ai_chat.AiChatScreen
 import com.pegio.feed.presentation.screen.createpost.CreatePostScreen
 import com.pegio.feed.presentation.screen.feed.HomeScreen
-import com.pegio.gymbro.activity.TopBarState
+import com.pegio.common.presentation.state.TopBarState
 import com.pegio.gymbro.navigation.route.AccountRoute
 import com.pegio.gymbro.navigation.route.AiChatRoute
 import com.pegio.gymbro.navigation.route.CreatePostRoute
@@ -37,35 +37,35 @@ fun MainNavigationHost(
                 onCreatePostClick = navController::navigateToCreatePost,
                 onChatClick = navController::navigateToAiChat,
                 onDrawerClick = dynamicallyOpenDrawer,
-//                onSetupTopBar = onSetupAppBar
+                onSetupTopBar = onSetupAppBar
             )
         }
 
         composable<AccountRoute> {
             AccountScreen(
                 onBackClick = navController::navigateUp,
-//                onSetupTopBar = onSetupAppBar
+                onSetupTopBar = onSetupAppBar
             )
         }
 
         composable<AiChatRoute> {
             AiChatScreen(
                 onBackClick = navController::navigateUp,
-//                onSetupTopBar = onSetupAppBar
+                onSetupTopBar = onSetupAppBar
             )
         }
 
         composable<CreatePostRoute> {
             CreatePostScreen(
                 onDismiss = navController::navigateUp,
-//                onSetupTopBar = onSetupAppBar
+                onSetupTopBar = onSetupAppBar
             )
         }
         composable<WorkoutPlanRoute> {
             WorkoutPlanScreen(
                 onBackClick = navController::navigateUp,
                 onInfoClick = navController::navigateToAiChat,
-//                onSetupTopBar = onSetupAppBar,
+                onSetupTopBar = onSetupAppBar,
             )
         }
     }

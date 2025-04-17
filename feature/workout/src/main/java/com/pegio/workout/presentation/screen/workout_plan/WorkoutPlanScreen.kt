@@ -3,11 +3,15 @@ package com.pegio.workout.presentation.screen.workout_plan
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.pegio.common.presentation.state.TopBarAction
+import com.pegio.common.presentation.state.TopBarState
 import com.pegio.workout.presentation.components.TipCardComponents
 import com.pegio.workout.presentation.components.WorkoutPlanItemComponents
 import com.pegio.workout.presentation.model.UiWorkoutPlan
@@ -18,10 +22,10 @@ fun WorkoutPlanScreen(
     viewModel: WorkoutPlanViewModel = hiltViewModel(),
     onBackClick: () -> Unit,
     onInfoClick: () -> Unit,
-//    onSetupTopBar: (TopBarState) -> Unit
+    onSetupTopBar: (TopBarState) -> Unit
 ) {
 
-//    SetupTopBar(onSetupTopBar, viewModel::onEvent)
+    SetupTopBar(onSetupTopBar, viewModel::onEvent)
 
     LaunchedEffect(Unit) {
         viewModel.onEvent(WorkoutPlanUiEvent.LoadInitialPlans)
@@ -63,22 +67,22 @@ fun WorkoutPlanContent(
 }
 
 
-//@Composable
-//private fun SetupTopBar(
-//    onSetupTopBar: (TopBarState) -> Unit,
-//    onEvent: (WorkoutPlanUiEvent) -> Unit
-//) {
-//    LaunchedEffect(Unit) {
-//        onSetupTopBar(
-//            TopBarState(
-//                navigationIcon = TopBarAction(
-//                    icon = Icons.AutoMirrored.Default.ArrowBack,
-//                    onClick = { onEvent(WorkoutPlanUiEvent.OnBackClick) }
-//                )
-//            )
-//        )
-//    }
-//}
+@Composable
+private fun SetupTopBar(
+    onSetupTopBar: (TopBarState) -> Unit,
+    onEvent: (WorkoutPlanUiEvent) -> Unit
+) {
+    LaunchedEffect(Unit) {
+        onSetupTopBar(
+            TopBarState(
+                navigationIcon = TopBarAction(
+                    icon = Icons.AutoMirrored.Default.ArrowBack,
+                    onClick = { onEvent(WorkoutPlanUiEvent.OnBackClick) }
+                )
+            )
+        )
+    }
+}
 
 @Preview(showBackground = true)
 @Composable

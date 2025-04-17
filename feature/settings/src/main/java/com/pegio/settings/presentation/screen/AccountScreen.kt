@@ -10,25 +10,30 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.pegio.common.presentation.state.TopBarAction
+import com.pegio.common.presentation.state.TopBarState
 import com.pegio.designsystem.component.ProfileImage
 import com.pegio.common.presentation.util.CollectLatestEffect
 
 @Composable
 fun AccountScreen(
     onBackClick: () -> Unit,
-//    onSetupTopBar: (TopBarState) -> Unit,
+    onSetupTopBar: (TopBarState) -> Unit,
     viewModel: AccountViewModel = hiltViewModel()
 ) {
-//    SetupTopBar(onSetupTopBar, viewModel::onEvent)
+    SetupTopBar(onSetupTopBar, viewModel::onEvent)
 
     CollectLatestEffect(viewModel.uiEffect) { effect ->
         when (effect) {
@@ -80,22 +85,22 @@ private fun AccountContent(
     }
 }
 
-//@Composable
-//private fun SetupTopBar(
-//    onSetupTopBar: (TopBarState) -> Unit,
-//    onEvent: (AccountUiEvent) -> Unit
-//) {
-//    LaunchedEffect(Unit) {
-//        onSetupTopBar(
-//            TopBarState(
-//                navigationIcon = TopBarAction(
-//                    icon = Icons.AutoMirrored.Default.ArrowBack,
-//                    onClick = { onEvent(AccountUiEvent.OnBackClick) }
-//                )
-//            )
-//        )
-//    }
-//}
+@Composable
+private fun SetupTopBar(
+    onSetupTopBar: (TopBarState) -> Unit,
+    onEvent: (AccountUiEvent) -> Unit
+) {
+    LaunchedEffect(Unit) {
+        onSetupTopBar(
+            TopBarState(
+                navigationIcon = TopBarAction(
+                    icon = Icons.AutoMirrored.Default.ArrowBack,
+                    onClick = { onEvent(AccountUiEvent.OnBackClick) }
+                )
+            )
+        )
+    }
+}
 
 @Preview
 @Composable

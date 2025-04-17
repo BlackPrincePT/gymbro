@@ -18,6 +18,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.Send
 import androidx.compose.material.icons.filled.AttachFile
 import androidx.compose.material.icons.filled.Close
@@ -35,17 +36,19 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.pegio.aichat.presentation.model.UiAiMessage
+import com.pegio.common.presentation.state.TopBarAction
+import com.pegio.common.presentation.state.TopBarState
 import com.pegio.designsystem.component.MessageImage
 import com.pegio.common.presentation.util.CollectLatestEffect
 
 @Composable
 fun AiChatScreen(
     onBackClick: () -> Unit,
-//    onSetupTopBar: (TopBarState) -> Unit,
+    onSetupTopBar: (TopBarState) -> Unit,
     viewModel: AiChatViewModel = hiltViewModel()
 ) {
 
-//    SetupTopBar(onSetupTopBar, viewModel::onEvent)
+    SetupTopBar(onSetupTopBar, viewModel::onEvent)
 
     CollectLatestEffect(viewModel.uiEffect) { effect ->
         when (effect) {
@@ -242,22 +245,22 @@ fun ChatInput(
     }
 }
 
-//@Composable
-//private fun SetupTopBar(
-//    onSetupTopBar: (TopBarState) -> Unit,
-//    onEvent: (AiChatUiEvent) -> Unit
-//) {
-//    LaunchedEffect(Unit) {
-//        onSetupTopBar(
-//            TopBarState(
-//                navigationIcon = TopBarAction(
-//                    icon = Icons.AutoMirrored.Default.ArrowBack,
-//                    onClick = { onEvent(AiChatUiEvent.OnBackClick) }
-//                )
-//            )
-//        )
-//    }
-//}
+@Composable
+private fun SetupTopBar(
+    onSetupTopBar: (TopBarState) -> Unit,
+    onEvent: (AiChatUiEvent) -> Unit
+) {
+    LaunchedEffect(Unit) {
+        onSetupTopBar(
+            TopBarState(
+                navigationIcon = TopBarAction(
+                    icon = Icons.AutoMirrored.Default.ArrowBack,
+                    onClick = { onEvent(AiChatUiEvent.OnBackClick) }
+                )
+            )
+        )
+    }
+}
 
 @Preview(showBackground = true)
 @Composable

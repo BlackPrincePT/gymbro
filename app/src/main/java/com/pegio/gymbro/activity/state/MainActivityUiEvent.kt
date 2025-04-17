@@ -1,6 +1,6 @@
 package com.pegio.gymbro.activity.state
 
-import com.pegio.gymbro.activity.TopBarState
+import com.pegio.common.presentation.state.TopBarState
 
 sealed interface MainActivityUiEvent {
 

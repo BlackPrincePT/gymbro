@@ -1,4 +1,4 @@
-package com.pegio.gymbro.activity
+package com.pegio.common.presentation.state
 
 data class TopBarState(
     val title: String = "",

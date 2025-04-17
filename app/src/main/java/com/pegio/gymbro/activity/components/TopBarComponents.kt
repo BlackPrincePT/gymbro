@@ -6,7 +6,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
-import com.pegio.gymbro.activity.TopBarState
+import com.pegio.common.presentation.state.TopBarState
 
 @Composable
 @ExperimentalMaterial3Api
