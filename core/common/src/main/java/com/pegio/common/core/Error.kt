@@ -20,6 +20,7 @@ sealed interface DataError : Error {
         INVALID_CREDENTIAL,     // Inform the user their credentials are incorrect.
         INVALID_USER,           // Alert about issues with the user account.
         UNAUTHENTICATED,        // Force re-authentication.
+        CANCELLED,              // Google options cancelled.
         UNKNOWN                 // A fallback for any Firebase Auth errors not explicitly handled.
     }
 
