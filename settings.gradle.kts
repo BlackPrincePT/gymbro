@@ -28,7 +28,6 @@ include(":app")
 
 // Core
 include(":core:auth")
-include(":core:data")
 include(":core:model")
 include(":core:common")
 include(":core:domain")

@@ -10,7 +10,8 @@ android {
 dependencies {
     implementation(project(":core:common"))
     implementation(project(":core:model"))
+    implementation(project(":core:domain"))
 
-    api(platform(libs.firebase.bom))
-    api(libs.firebase.firestore)
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.firestore)
 }

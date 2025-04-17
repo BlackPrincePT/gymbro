@@ -15,10 +15,10 @@ class FetchCurrentUserStreamUseCase @Inject constructor(
     private val userRepository: UserRepository
 ) {
     operator fun invoke(): Flow<Resource<User, DataError.Firestore>> {
-        return authRepository.observeCurrentUserId()
+        return authRepository.getCurrentUserStream()
             .filterNotNull()
-            .flatMapLatest { currentUserId ->
-                userRepository.fetchUserSteam(id = currentUserId)
+            .flatMapLatest { currentUser ->
+                userRepository.fetchUserSteam(id = currentUser.id)
             }
     }
 }

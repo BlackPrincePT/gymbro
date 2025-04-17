@@ -1,4 +1,4 @@
-package com.pegio.data.repository
+package com.pegio.firestore.repository
 
 import com.pegio.firestore.model.mapper.AiChatMessageDtoMapper
 import com.pegio.domain.repository.AiMessagesRepository

@@ -1,4 +1,4 @@
-package com.pegio.data.repository
+package com.pegio.firestore.repository
 
 import com.pegio.model.Post
 import com.google.firebase.firestore.DocumentSnapshot

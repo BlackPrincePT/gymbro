@@ -1,4 +1,4 @@
-package com.pegio.auth.core
+package com.pegio.auth.repository
 
 import android.content.Context
 import androidx.credentials.Credential
@@ -13,6 +13,7 @@ import com.google.firebase.auth.FirebaseAuthInvalidUserException
 import com.google.firebase.auth.GoogleAuthProvider
 import com.pegio.common.core.DataError
 import com.pegio.common.core.Resource
+import com.pegio.domain.repository.AuthRepository
 import com.pegio.model.User
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.channels.awaitClose
@@ -24,10 +25,10 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-internal class FirebaseAuthHandler @Inject constructor(
+internal class FirebaseAuthRepository @Inject constructor(
     private val auth: FirebaseAuth,
     private val getCredentialRequest: GetCredentialRequest
-) : AuthHandler {
+) : AuthRepository {
 
     private val currentUserFlow = callbackFlow {
         val listener = FirebaseAuth.AuthStateListener { auth ->

@@ -1,4 +1,4 @@
-package com.pegio.data.repository
+package com.pegio.firestore.repository
 
 import com.google.firebase.firestore.FirebaseFirestore
 import com.pegio.common.core.DataError
