@@ -10,6 +10,12 @@ data class User(
     val imgProfileUrl: String?,
     val imgBackgroundUrl: String?
 ) {
+
+    data class Auth(
+        val id: String,
+        val isAnonymous: Boolean
+    )
+
     enum class Gender {
         MALE,
         FEMALE

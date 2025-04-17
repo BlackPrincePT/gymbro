@@ -1,24 +1,14 @@
 package com.pegio.auth.presentation.screen.auth
 
 import android.content.Context
-import androidx.credentials.Credential
-import androidx.credentials.CredentialManager
-import androidx.credentials.CustomCredential
-import androidx.credentials.GetCredentialRequest
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.google.android.libraries.identity.googleid.GetSignInWithGoogleOption
-import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
-import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential.Companion.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL
-import com.pegio.auth.BuildConfig
-import com.pegio.common.core.DataError
 import com.pegio.common.core.onFailure
 import com.pegio.common.core.onSuccess
 import com.pegio.domain.usecase.auth.SignInAnonymouslyUseCase
 import com.pegio.domain.usecase.common.CheckUserRegistrationStatusUseCase
-import com.pegio.domain.usecase.common.SignInWithGoogleUseCase
+import com.pegio.domain.usecase.common.LaunchGoogleAuthOptionsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -29,7 +19,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AuthViewModel @Inject constructor(
-    private val signInWithGoogle: SignInWithGoogleUseCase,
+    private val launchGoogleAuthOptions: LaunchGoogleAuthOptionsUseCase,
     private val signInAnonymously: SignInAnonymouslyUseCase,
     private val checkUserRegistrationStatus: CheckUserRegistrationStatusUseCase
 ) : ViewModel() {
@@ -42,41 +32,15 @@ class AuthViewModel @Inject constructor(
 
     fun onEvent(event: AuthUiEvent) {
         when (event) {
-            is AuthUiEvent.OnLaunchGoogleAuthOptions -> launchGoogleAuthOptions(context = event.context)
+            is AuthUiEvent.OnLaunchGoogleAuthOptions -> handleLaunchGoogleAuthOptions(context = event.context)
             AuthUiEvent.OnContinueAsGuest -> continueAsGuest()
         }
     }
 
-    private fun launchGoogleAuthOptions(context: Context) = viewModelScope.launch {
-        try {
-            val signInWithGoogleOption = GetSignInWithGoogleOption
-                .Builder(BuildConfig.DEFAULT_WEB_CLIENT_ID)
-                .build()
-
-            val request = GetCredentialRequest.Builder()
-                .addCredentialOption(signInWithGoogleOption)
-                .build()
-
-            val result = CredentialManager.create(context)
-                .getCredential(request = request, context = context)
-
-            createTokenWithCredentials(result.credential)
-
-        } catch (e: CancellationException) {
-            throw e // Propagate coroutine cancellations immediately.
-        }
-    }
-
-    private suspend fun createTokenWithCredentials(credential: Credential) {
-        if (credential is CustomCredential && credential.type == TYPE_GOOGLE_ID_TOKEN_CREDENTIAL) {
-            val googleIdTokenCredential = GoogleIdTokenCredential.createFrom(credential.data)
-
-            signInWithGoogle(googleIdTokenCredential.idToken)
-                .onSuccess { checkForSavedAuthState() }
-                .onFailure { sendEffect(AuthUiEffect.Failure(error = it)) }
-        } else {
-            sendEffect(AuthUiEffect.Failure(error = DataError.Auth.INVALID_CREDENTIAL))
-        }
+    private fun handleLaunchGoogleAuthOptions(context: Context) = viewModelScope.launch {
+        launchGoogleAuthOptions(context)
+            .onSuccess { checkForSavedAuthState() }
+            .onFailure { sendEffect(AuthUiEffect.Failure(error = it)) }
     }
 
     private fun continueAsGuest() = viewModelScope.launch {
@@ -88,7 +52,8 @@ class AuthViewModel @Inject constructor(
     private fun checkForSavedAuthState() = viewModelScope.launch {
         checkUserRegistrationStatus()
             .onSuccess { isComplete ->
-                val navigationEffect = if (isComplete) AuthUiEffect.NavigateToHome else AuthUiEffect.NavigateToRegister
+                val navigationEffect =
+                    if (isComplete) AuthUiEffect.NavigateToHome else AuthUiEffect.NavigateToRegister
                 sendEffect(navigationEffect)
             }
     }

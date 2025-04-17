@@ -27,7 +27,7 @@ rootProject.name = "gymbro"
 include(":app")
 
 // Core
-include(":core:data")
+include(":core:auth")
 include(":core:model")
 include(":core:common")
 include(":core:domain")
@@ -38,7 +38,6 @@ include(":core:designsystem")
 include(":core:uploadmanager")
 
 // Feature
-include(":feature")
 include(":feature:aichat")
 include(":feature:auth")
 include(":feature:common")

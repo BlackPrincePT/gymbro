@@ -15,19 +15,19 @@ class CheckUserRegistrationStatusUseCase @Inject constructor(
     private val cacheManager: CacheManager
 ) {
     suspend operator fun invoke(): Resource<Boolean, DataError.Auth> {
-        val currentUserId = authRepository.getCurrentUserId()
+        val currentUserId = authRepository.getCurrentUser()?.id
             ?: run { authRepository.signOut(); return Resource.Failure(error = DataError.Auth.UNAUTHENTICATED) }
 
         val registrationComplete = isRegistrationComplete(currentUserId)
             ?: run { authRepository.signOut(); return Resource.Failure(error = DataError.Auth.UNAUTHENTICATED) }
 
-        val isAnonymous = authRepository.isAnonymousSession()
+        val isAnonymous = authRepository.getCurrentUser()?.isAnonymous == true
         return Resource.Success(data = isAnonymous || registrationComplete)
     }
 
 
     private suspend fun isRegistrationComplete(currentUserId: String): Boolean? {
-        if (cacheManager.observe<Boolean>(key = PreferenceKey.AuthState).first() == true)
+        if (cacheManager.observe(key = PreferenceKey.AuthState).first() == true)
             return true
 
         return when (val resource = userRepository.fetchUser(id = currentUserId)) {

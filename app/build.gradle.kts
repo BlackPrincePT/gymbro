@@ -85,11 +85,14 @@ kapt {
 }
 
 dependencies {
-    implementation(project(":core:data"))
     implementation(project(":core:model"))
     implementation(project(":core:common"))
     implementation(project(":core:domain"))
     implementation(project(":core:designsystem"))
+
+    implementation(project(":core:auth"))
+    implementation(project(":core:firestore"))
+    implementation(project(":core:network"))
 
     implementation(project(":feature:common"))
     implementation(project(":feature:aichat"))
