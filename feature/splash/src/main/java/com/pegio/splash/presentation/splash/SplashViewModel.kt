@@ -3,6 +3,7 @@ package com.pegio.splash.presentation.splash
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.pegio.common.core.onSuccess
+import com.pegio.domain.usecase.common.CheckUserRegistrationStatusUseCase
 import com.pegio.domain.usecase.splash.HasSavedAuthSessionUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -12,9 +13,9 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class SplashViewModel @Inject constructor(
+internal class SplashViewModel @Inject constructor(
     private val hasSavedAuthSession: HasSavedAuthSessionUseCase,
-    private val checkUserRegistrationStatus: com.pegio.domain.usecase.common.CheckUserRegistrationStatusUseCase
+    private val checkUserRegistrationStatus: CheckUserRegistrationStatusUseCase
 ) : ViewModel() {
 
     private val _uiEffect = Channel<SplashUiEffect>()
@@ -28,7 +29,8 @@ class SplashViewModel @Inject constructor(
         if (hasSavedAuthSession()) {
             checkUserRegistrationStatus()
                 .onSuccess { isComplete ->
-                    val navigationEffect = if (isComplete) SplashUiEffect.NavigateToHome else SplashUiEffect.NavigateToRegister
+                    val navigationEffect =
+                        if (isComplete) SplashUiEffect.NavigateToHome else SplashUiEffect.NavigateToRegister
                     sendEffect(navigationEffect)
                 }
         } else {
