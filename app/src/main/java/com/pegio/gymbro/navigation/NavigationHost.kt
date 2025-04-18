@@ -80,7 +80,8 @@ fun NavigationHost(
         composable<AiChatRoute> {
             AiChatScreen(
                 onBackClick = navController::navigateUp,
-                onSetupTopBar = onSetupAppBar
+                onSetupTopBar = onSetupAppBar,
+                onShowSnackbar = onShowSnackbar
             )
         }
 
