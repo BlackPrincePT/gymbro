@@ -20,11 +20,15 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarResult.ActionPerformed
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.pegio.auth.presentation.screen.auth.navigation.AuthRoute
 import com.pegio.auth.presentation.screen.auth.navigation.navigateToAuth
 import com.pegio.common.presentation.util.CollectLatestEffect
 import com.pegio.designsystem.theme.GymBroTheme
@@ -33,8 +37,9 @@ import com.pegio.gymbro.activity.components.TopBarContent
 import com.pegio.gymbro.activity.state.MainActivityUiEffect
 import com.pegio.gymbro.activity.state.MainActivityUiEvent
 import com.pegio.gymbro.activity.state.MainActivityUiState
-import com.pegio.gymbro.navigation.EntryNavigationHost
-import com.pegio.gymbro.navigation.MainNavigationHost
+import com.pegio.gymbro.navigation.NavigationHost
+import com.pegio.gymbro.navigation.route.RegisterRoute
+import com.pegio.gymbro.navigation.route.SplashRoute
 import com.pegio.gymbro.navigation.route.navigateToAccount
 import com.pegio.gymbro.navigation.route.navigateToWorkoutPlan
 import dagger.hilt.android.AndroidEntryPoint
@@ -51,12 +56,20 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             GymBroTheme {
-                val entryNavController = rememberNavController()
-                val mainNavController = rememberNavController()
+                val navController = rememberNavController()
 
                 val snackbarHostState = remember { SnackbarHostState() }
                 val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
                 val coroutineScope = rememberCoroutineScope()
+
+                val navBackStackEntry by navController.currentBackStackEntryAsState()
+                val currentRoute = navBackStackEntry?.destination?.route
+
+                val isEntryScreenDisplayed = currentRoute in listOf(
+                    SplashRoute::class.qualifiedName,
+                    AuthRoute::class.qualifiedName,
+                    RegisterRoute::class.qualifiedName
+                )
 
                 CollectLatestEffect(viewModel.uiEffect) { effect ->
                     when (effect) {
@@ -66,27 +79,20 @@ class MainActivity : ComponentActivity() {
                         MainActivityUiEffect.CloseDrawer -> coroutineScope.launch { drawerState.close() }
 
                         // Drawer
-                        MainActivityUiEffect.NavigateToAccount -> mainNavController.navigateToAccount()
-                        MainActivityUiEffect.NavigateToWorkoutPlan -> mainNavController.navigateToWorkoutPlan()
-                        MainActivityUiEffect.NavigateToAuth -> entryNavController.navigateToAuth()
+                        MainActivityUiEffect.NavigateToAccount -> navController.navigateToAccount()
+                        MainActivityUiEffect.NavigateToWorkoutPlan -> navController.navigateToWorkoutPlan()
+                        MainActivityUiEffect.NavigateToAuth -> navController.navigateToAuth()
                     }
                 }
 
-                // FIXME: SNACKBAR DOESN'T WORK BECAUSE NO SCAFFOLD FOR ENTRY
-                EntryNavigationHost(
-                    navController = entryNavController,
-                    onShowSnackbar = { message, action ->
-                        true //TODO
-                    }
-                ) {
-                    MainAppContent(
-                        state = viewModel.uiState,
-                        onEvent = viewModel::onEvent,
-                        navController = mainNavController,
-                        snackbarHostState = snackbarHostState,
-                        drawerState = drawerState
-                    )
-                }
+                AppContent(
+                    state = viewModel.uiState,
+                    onEvent = viewModel::onEvent,
+                    navController = navController,
+                    snackbarHostState = snackbarHostState,
+                    drawerState = drawerState,
+                    isEntryScreenDisplayed = isEntryScreenDisplayed
+                )
             }
         }
     }
@@ -94,15 +100,17 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 @ExperimentalMaterial3Api
-private fun MainAppContent(
+private fun AppContent(
     state: MainActivityUiState,
     onEvent: (MainActivityUiEvent) -> Unit,
     navController: NavHostController,
     snackbarHostState: SnackbarHostState,
-    drawerState: DrawerState
+    drawerState: DrawerState,
+    isEntryScreenDisplayed: Boolean
 ) {
     ModalNavigationDrawer(
         drawerState = drawerState,
+        gesturesEnabled = isEntryScreenDisplayed.not(),
         drawerContent = {
             state.currentUser?.let {
                 DrawerContent(
@@ -115,7 +123,7 @@ private fun MainAppContent(
         }
     ) {
         Scaffold(
-            topBar = { TopBarContent(state.topBarState) },
+            topBar = { if (isEntryScreenDisplayed.not()) TopBarContent(state.topBarState) },
             snackbarHost = {
                 SnackbarHost(
                     hostState = snackbarHostState,
@@ -124,7 +132,7 @@ private fun MainAppContent(
                 )
             },
         ) { innerPadding ->
-            MainNavigationHost(
+            NavigationHost(
                 navController = navController,
                 onSetupAppBar = { onEvent(MainActivityUiEvent.OnUpdateTopBarState(it)) },
                 dynamicallyOpenDrawer = { onEvent(MainActivityUiEvent.OnOpenDrawer) },
@@ -132,7 +140,7 @@ private fun MainAppContent(
                     snackbarHostState.showSnackbar(
                         message = message,
                         actionLabel = action,
-                        duration = Short,
+                        duration = Short
                     ) == ActionPerformed
                 },
                 modifier = Modifier

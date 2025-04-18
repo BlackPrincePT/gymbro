@@ -8,7 +8,7 @@ import com.pegio.common.presentation.util.popNavigate
 import kotlinx.serialization.Serializable
 
 @Serializable
-internal data object AuthRoute
+data object AuthRoute
 
 fun NavController.navigateToAuth() = popNavigate(route = AuthRoute)
 
