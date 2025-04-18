@@ -76,11 +76,7 @@ class MainActivity : ComponentActivity() {
                 EntryNavigationHost(
                     navController = entryNavController,
                     onShowSnackbar = { message, action ->
-                        snackbarHostState.showSnackbar(
-                            message = message,
-                            actionLabel = action,
-                            duration = Short,
-                        ) == ActionPerformed
+                        true //TODO
                     }
                 ) {
                     MainAppContent(

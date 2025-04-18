@@ -54,7 +54,7 @@ private inline fun <reified T : KotlinBaseExtension> Project.configureKotlin() =
         jvmTarget = JvmTarget.JVM_11
         allWarningsAsErrors = warningsAsErrors
 
-        // Enable experimental coroutines APIs, including Flow
         freeCompilerArgs.add("-opt-in=kotlinx.coroutines.ExperimentalCoroutinesApi")
+        freeCompilerArgs.add("-opt-in=androidx.compose.material3.ExperimentalMaterial3Api")
     }
 }
