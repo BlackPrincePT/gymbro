@@ -12,5 +12,8 @@ dependencies {
     implementation(project(":core:domain"))
     implementation(project(":core:designsystem"))
 
+    api(libs.navigation.compose)
+
     implementation(libs.javax.inject)
+    implementation(libs.androidx.hilt.navigation.compose)
 }

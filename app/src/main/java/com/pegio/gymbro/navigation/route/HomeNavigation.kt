@@ -1,7 +1,7 @@
 package com.pegio.gymbro.navigation.route
 
 import androidx.navigation.NavController
-import com.pegio.gymbro.navigation.popNavigate
+import com.pegio.common.presentation.util.popNavigate
 import kotlinx.serialization.Serializable
 
 @Serializable

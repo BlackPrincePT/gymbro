@@ -1,4 +1,4 @@
-package com.pegio.gymbro.navigation
+package com.pegio.common.presentation.util
 
 import androidx.navigation.NavController
 

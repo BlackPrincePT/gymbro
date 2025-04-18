@@ -7,50 +7,54 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import kotlinx.coroutines.flow.collectLatest
+import com.pegio.auth.presentation.screen.auth.state.AuthUiEffect
+import com.pegio.auth.presentation.screen.auth.state.AuthUiEvent
+import com.pegio.auth.presentation.screen.auth.state.AuthUiState
+import com.pegio.common.presentation.util.CollectLatestEffect
 
 @Composable
-fun AuthScreen(
-    onAuthSuccessAndRegistrationComplete: () -> Unit,
-    onAuthSuccessButRegistrationIncomplete: () -> Unit,
+internal fun AuthScreen(
+    onAuthSuccess: () -> Unit,
+    onRegistrationRequired: () -> Unit,
+    onShowSnackbar: suspend (String, String?) -> Boolean,
     viewModel: AuthViewModel = hiltViewModel()
 ) {
-    val uiState by viewModel.uiState
-        .collectAsStateWithLifecycle()
+    val context = LocalContext.current
 
-    LaunchedEffect(Unit) {
-        viewModel.uiEffect.collectLatest { effect ->
-            when (effect) {
-                AuthUiEffect.NavigateToHome -> onAuthSuccessAndRegistrationComplete()
-                AuthUiEffect.NavigateToRegister -> onAuthSuccessButRegistrationIncomplete()
-                is AuthUiEffect.Failure -> {}
-            }
+    CollectLatestEffect(viewModel.uiEffect) { effect ->
+        when (effect) {
+            AuthUiEffect.NavigateToHome -> onAuthSuccess()
+            AuthUiEffect.NavigateToRegister -> onRegistrationRequired()
+            is AuthUiEffect.Failure -> onShowSnackbar(context.getString(effect.errorRes), null)
         }
     }
 
-    AuthOptions(state = uiState, onEvent = viewModel::onEvent)
+    AuthOptions(state = viewModel.uiState, onEvent = viewModel::onEvent)
 }
 
 @Composable
-fun AuthOptions(
+private fun AuthOptions(
     state: AuthUiState,
     onEvent: (AuthUiEvent) -> Unit
 ) {
     val context = LocalContext.current
 
     Box(modifier = Modifier.fillMaxSize()) {
+
+        if (state.isLoading)
+            CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+
         Column(modifier = Modifier.align(alignment = Alignment.BottomCenter)) {
 
             val buttonModifier = Modifier
@@ -59,6 +63,7 @@ fun AuthOptions(
 
             Button(
                 onClick = { onEvent(AuthUiEvent.OnContinueAsGuest) },
+                enabled = !state.isLoading,
                 modifier = buttonModifier
             ) {
                 Text("Continue as Guest")
@@ -66,6 +71,7 @@ fun AuthOptions(
 
             Button(
                 onClick = { onEvent(AuthUiEvent.OnLaunchGoogleAuthOptions(context)) },
+                enabled = !state.isLoading,
                 modifier = buttonModifier
             ) {
                 Text("Sign in with Google")
@@ -81,6 +87,6 @@ fun AuthOptions(
 private fun AuthOptionsPreview() {
     AuthOptions(
         state = AuthUiState(),
-        onEvent = {}
+        onEvent = { }
     )
 }

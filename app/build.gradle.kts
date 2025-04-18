@@ -32,25 +32,9 @@ android {
         vectorDrawables {
             useSupportLibrary = true
         }
-
-        buildConfigField("String", "GEMINI_URL", "\"https://api.openai.com/\"")
-        buildConfigField("String", "GPT_ENDPOINT", "\"v1/chat/completions\"")
     }
 
     buildTypes {
-        debug {
-            buildConfigField(
-                "String",
-                "API_KEY",
-                gradleLocalProperties(rootDir, providers).getProperty("API_KEY")
-            )
-
-            buildConfigField(
-                "String",
-                "DEFAULT_WEB_CLIENT_ID",
-                gradleLocalProperties(rootDir, providers).getProperty("DEFAULT_WEB_CLIENT_ID")
-            )
-        }
         release {
             isMinifyEnabled = false
             proguardFiles(
@@ -68,7 +52,6 @@ android {
     }
     buildFeatures {
         compose = true
-        buildConfig = true
     }
     composeOptions {
         kotlinCompilerExtensionVersion = "1.5.1"
@@ -119,9 +102,6 @@ dependencies {
     debugImplementation(libs.androidx.ui.test.manifest)
 
     implementation(libs.kotlinx.serialization.json)
-
-    // Navigation
-    implementation(libs.navigation.compose)
 
     // Hilt
     implementation(libs.androidx.hilt.navigation.compose)

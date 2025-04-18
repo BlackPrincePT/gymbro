@@ -59,7 +59,7 @@ class MainViewModel @Inject constructor(
                 sendEffect(MainActivityUiEffect.CloseDrawer)
             }
             MainActivityUiEvent.OnSignOutClick -> {
-//                signOut()
+                signOut()
                 sendEffect(MainActivityUiEffect.NavigateToAuth)
                 sendEffect(MainActivityUiEffect.CloseDrawer)
             }
