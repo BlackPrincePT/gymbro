@@ -11,17 +11,16 @@ import com.pegio.auth.presentation.screen.auth.navigation.navigateToAuth
 import com.pegio.auth.presentation.screen.register.RegisterScreen
 import com.pegio.common.presentation.state.TopBarState
 import com.pegio.feed.presentation.screen.createpost.CreatePostScreen
-import com.pegio.feed.presentation.screen.feed.HomeScreen
+import com.pegio.feed.presentation.screen.feed.navigation.feedScreen
+import com.pegio.feed.presentation.screen.feed.navigation.popNavigateToFeed
 import com.pegio.gymbro.navigation.route.AccountRoute
 import com.pegio.gymbro.navigation.route.AiChatRoute
 import com.pegio.gymbro.navigation.route.CreatePostRoute
-import com.pegio.gymbro.navigation.route.HomeRoute
 import com.pegio.gymbro.navigation.route.RegisterRoute
 import com.pegio.gymbro.navigation.route.SplashRoute
 import com.pegio.gymbro.navigation.route.WorkoutPlanRoute
 import com.pegio.gymbro.navigation.route.navigateToAiChat
 import com.pegio.gymbro.navigation.route.navigateToCreatePost
-import com.pegio.gymbro.navigation.route.navigateToHome
 import com.pegio.gymbro.navigation.route.navigateToRegister
 import com.pegio.settings.presentation.screen.AccountScreen
 import com.pegio.splash.presentation.splash.SplashScreen
@@ -45,30 +44,28 @@ fun NavigationHost(
             SplashScreen(
                 onUserNotAuthenticated = navController::navigateToAuth,
                 onRegistrationIncomplete = navController::navigateToRegister,
-                onUserAuthenticatedAndRegistrationComplete = navController::navigateToHome
+                onUserAuthenticatedAndRegistrationComplete = navController::popNavigateToFeed
             )
         }
 
         authScreen(
-            onAuthSuccess = navController::navigateToHome,
+            onAuthSuccess = navController::popNavigateToFeed,
             onRegistrationRequired = navController::navigateToRegister,
             onShowSnackbar = onShowSnackbar
         )
 
         composable<RegisterRoute> {
             RegisterScreen(
-                onRegisterSuccess = navController::navigateToHome
+                onRegisterSuccess = navController::popNavigateToFeed
             )
         }
 
-        composable<HomeRoute> {
-            HomeScreen(
-                onCreatePostClick = navController::navigateToCreatePost,
-                onChatClick = navController::navigateToAiChat,
-                onDrawerClick = dynamicallyOpenDrawer,
-                onSetupTopBar = onSetupAppBar
-            )
-        }
+        feedScreen(
+            onCreatePostClick = navController::navigateToCreatePost,
+            onChatClick = navController::navigateToAiChat,
+            onOpenDrawerClick = dynamicallyOpenDrawer,
+            onSetupTopBar = onSetupAppBar
+        )
 
         composable<AccountRoute> {
             AccountScreen(

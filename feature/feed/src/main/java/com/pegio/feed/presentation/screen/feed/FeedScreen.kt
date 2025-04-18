@@ -1,15 +1,19 @@
 package com.pegio.feed.presentation.screen.feed
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ChatBubble
 import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -19,51 +23,51 @@ import com.pegio.common.presentation.state.TopBarState
 import com.pegio.feed.presentation.component.CreatePost
 import com.pegio.feed.presentation.component.PostContent
 import com.pegio.common.presentation.util.CollectLatestEffect
+import com.pegio.feed.presentation.screen.feed.state.FeedUiEffect
+import com.pegio.feed.presentation.screen.feed.state.FeedUiEvent
+import com.pegio.feed.presentation.screen.feed.state.FeedUiState
 
 @Composable
-fun HomeScreen(
+internal fun FeedScreen(
     onCreatePostClick: () -> Unit,
     onChatClick: () -> Unit,
-    onDrawerClick: () -> Unit,
+    onOpenDrawerClick: () -> Unit,
     onSetupTopBar: (TopBarState) -> Unit,
-    modifier: Modifier = Modifier,
-    viewModel: HomeViewModel = hiltViewModel()
+    viewModel: FeedViewModel = hiltViewModel()
 ) {
     SetupTopBar(onSetupTopBar, viewModel::onEvent)
 
     CollectLatestEffect(viewModel.uiEffect) { effect ->
         when (effect) {
-            HomeUiEffect.NavigateToCreatePost -> onCreatePostClick()
+            FeedUiEffect.NavigateToCreatePost -> onCreatePostClick()
 
             // Top Bar
-            HomeUiEffect.OpenDrawer -> onDrawerClick()
-            HomeUiEffect.NavigateToChat -> onChatClick()
+            FeedUiEffect.OpenDrawer -> onOpenDrawerClick()
+            FeedUiEffect.NavigateToChat -> onChatClick()
         }
     }
 
-    HomeContent(
+    FeedContent(
         state = viewModel.uiState,
-        onEvent = viewModel::onEvent,
-        modifier = modifier
+        onEvent = viewModel::onEvent
     )
 }
 
 @Composable
-private fun HomeContent(
-    state: HomeUiState,
-    onEvent: (HomeUiEvent) -> Unit,
-    modifier: Modifier = Modifier
+private fun FeedContent(
+    state: FeedUiState,
+    onEvent: (FeedUiEvent) -> Unit
 ) {
     LazyColumn(
         contentPadding = PaddingValues(16.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp),
-        modifier = modifier
+        modifier = Modifier
             .fillMaxSize()
     ) {
         item {
             CreatePost(
                 currentUser = state.currentUser,
-                onPostClick = { onEvent(HomeUiEvent.OnCreatePostClick) },
+                onPostClick = { onEvent(FeedUiEvent.OnCreatePostClick) },
                 onProfileClick = { }
             )
         }
@@ -79,25 +83,32 @@ private fun HomeContent(
                 onRatingClick = { }
             )
         }
+
+        if (state.isLoading)
+            item {
+                Box(modifier = Modifier.fillMaxWidth()) {
+                    CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+                }
+            }
     }
 }
 
 @Composable
 private fun SetupTopBar(
     onSetupTopBar: (TopBarState) -> Unit,
-    onEvent: (HomeUiEvent) -> Unit
+    onEvent: (FeedUiEvent) -> Unit
 ) {
     LaunchedEffect(Unit) {
         onSetupTopBar(
             TopBarState(
                 navigationIcon = TopBarAction(
                     icon = Icons.Default.Menu,
-                    onClick = { onEvent(HomeUiEvent.OnDrawerClick) }
+                    onClick = { onEvent(FeedUiEvent.OnDrawerClick) }
                 ),
                 actions = listOf(
                     TopBarAction(
                         icon = Icons.Default.ChatBubble,
-                        onClick = { onEvent(HomeUiEvent.OnChatClick) }
+                        onClick = { onEvent(FeedUiEvent.OnChatClick) }
                     )
                 )
             )
@@ -107,6 +118,6 @@ private fun SetupTopBar(
 
 @Preview
 @Composable
-private fun HomeContentPreview() {
-    HomeContent(state = HomeUiState(), onEvent = { })
+private fun FeedContentPreview() {
+    FeedContent(state = FeedUiState(), onEvent = { })
 }
