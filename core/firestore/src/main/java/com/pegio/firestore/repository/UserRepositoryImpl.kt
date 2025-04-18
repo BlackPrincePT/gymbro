@@ -20,7 +20,7 @@ internal class UserRepositoryImpl @Inject constructor(
     private val firestoreUtils: FirestoreUtils
 ) : UserRepository {
 
-    override suspend fun fetchUser(id: String): Resource<User, DataError.Firestore> {
+    override suspend fun fetchUserById(id: String): Resource<User, DataError.Firestore> {
         val documentRef = db.collection(USERS).document(id)
 
         val result = firestoreUtils.readDocument(documentRef, UserDto::class.java)
@@ -28,7 +28,7 @@ internal class UserRepositoryImpl @Inject constructor(
         return result.map(userDtoMapper::mapToDomain)
     }
 
-    override fun fetchUserSteam(id: String): Flow<Resource<User, DataError.Firestore>> {
+    override fun fetchUserSteamById(id: String): Flow<Resource<User, DataError.Firestore>> {
         val documentRef = db.collection(USERS).document(id)
 
         val result = firestoreUtils.observeDocument(documentRef, UserDto::class.java)

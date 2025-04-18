@@ -5,7 +5,7 @@ import com.pegio.common.core.onSuccess
 import com.pegio.common.presentation.core.BaseViewModel
 import com.pegio.common.presentation.model.mapper.UiUserMapper
 import com.pegio.domain.usecase.common.FetchCurrentUserStreamUseCase
-import com.pegio.domain.usecase.post.FetchRelevantPostsUseCase
+import com.pegio.domain.usecase.feed.FetchNextRelevantPostsPageUseCase
 import com.pegio.feed.presentation.model.mapper.UiPostMapper
 import com.pegio.feed.presentation.screen.feed.state.FeedUiEffect
 import com.pegio.feed.presentation.screen.feed.state.FeedUiEvent
@@ -17,7 +17,7 @@ import javax.inject.Inject
 @HiltViewModel
 class FeedViewModel @Inject constructor(
     private val fetchCurrentUserStream: FetchCurrentUserStreamUseCase,
-    private val fetchRelevantPosts: FetchRelevantPostsUseCase,
+    private val fetchNextRelevantPostsPage: FetchNextRelevantPostsPageUseCase,
     private val uiUserMapper: UiUserMapper,
     private val uiPostMapper: UiPostMapper
 ) : BaseViewModel<FeedUiState, FeedUiEffect, FeedUiEvent>(initialState = FeedUiState()) {
@@ -47,9 +47,9 @@ class FeedViewModel @Inject constructor(
     }
 
     private fun loadMorePosts() = launchWithLoading {
-        fetchRelevantPosts()
-            .onSuccess { posts ->
-                val fetchedPosts = posts.map(uiPostMapper::mapFromDomain)
+        fetchNextRelevantPostsPage()
+            .onSuccess {
+                val fetchedPosts = it.map(uiPostMapper::mapFromDomain)
                 updateState { copy(relevantPosts = relevantPosts.plus(fetchedPosts)) }
             }
     }

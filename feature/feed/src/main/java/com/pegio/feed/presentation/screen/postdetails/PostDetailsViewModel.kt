@@ -1,6 +1,9 @@
 package com.pegio.feed.presentation.screen.postdetails
 
 import com.pegio.common.presentation.core.BaseViewModel
+import com.pegio.domain.usecase.common.FetchUserByIdUseCase
+import com.pegio.domain.usecase.feed.FetchNextCommentsPageUseCase
+import com.pegio.domain.usecase.feed.WriteCommentUseCase
 import com.pegio.feed.presentation.screen.postdetails.state.PostDetailsUiEffect
 import com.pegio.feed.presentation.screen.postdetails.state.PostDetailsUiEvent
 import com.pegio.feed.presentation.screen.postdetails.state.PostDetailsUiState
@@ -9,7 +12,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class PostDetailsViewModel @Inject constructor(
-
+    private val writeComment: WriteCommentUseCase,
+    private val fetchNextCommentsPage: FetchNextCommentsPageUseCase
 ) : BaseViewModel<PostDetailsUiState, PostDetailsUiEffect, PostDetailsUiEvent>(initialState = PostDetailsUiState()) {
 
     init {

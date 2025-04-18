@@ -23,6 +23,8 @@ internal fun PostDetailsScreen(
 
     CollectLatestEffect(viewModel.uiEffect) { effect ->
         when (effect) {
+
+            // Navigation
             PostDetailsUiEffect.NavigateBack -> onBackClick()
         }
     }

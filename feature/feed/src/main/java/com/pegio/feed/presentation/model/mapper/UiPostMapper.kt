@@ -1,9 +1,11 @@
 package com.pegio.feed.presentation.model.mapper
 
-import com.pegio.model.Post
 import com.pegio.common.core.FromDomainMapper
-import com.pegio.feed.presentation.model.UiPost
 import com.pegio.common.presentation.model.UiUser
+import com.pegio.common.presentation.model.mapper.UiUserMapper
+import com.pegio.feed.presentation.model.UiPost
+import com.pegio.model.Post
+import com.pegio.model.User
 import kotlinx.datetime.Instant
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toJavaLocalDateTime
@@ -11,19 +13,22 @@ import kotlinx.datetime.toLocalDateTime
 import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 
-class UiPostMapper @Inject constructor() : FromDomainMapper<UiPost, Post> {
+class UiPostMapper @Inject constructor(
+    private val uiUserMapper: UiUserMapper
+) : FromDomainMapper<UiPost, Pair<Post, User?>> {
 
-    override fun mapFromDomain(data: Post): UiPost {
+    override fun mapFromDomain(data: Pair<Post, User?>): UiPost {
+        val (post, author) = data
         return UiPost(
-            id = data.id,
-            author = UiUser.DEFAULT,
-            content = data.content,
-            imageUrl = data.imageUrl,
-            voteCount = data.voteCount.toString(),
-            commentCount = data.commentCount.toString(),
-            ratingAverage = data.ratingAverage.toString(),
-            ratingCount = data.ratingCount.toString(),
-            publishedDate = convertEpochToString(data.timestamp)
+            id = post.id,
+            author = author?.let(uiUserMapper::mapFromDomain) ?: UiUser.EMPTY,
+            content = post.content,
+            imageUrl = post.imageUrl,
+            voteCount = post.voteCount.toString(),
+            commentCount = post.commentCount.toString(),
+            ratingAverage = post.ratingAverage.toString(),
+            ratingCount = post.ratingCount.toString(),
+            publishedDate = convertEpochToString(post.timestamp)
         )
     }
 

@@ -6,7 +6,7 @@ import com.pegio.model.User
 import kotlinx.coroutines.flow.Flow
 
 interface UserRepository {
-    suspend fun fetchUser(id: String): Resource<User, DataError.Firestore>
-    fun fetchUserSteam(id: String): Flow<Resource<User, DataError.Firestore>>
+    suspend fun fetchUserById(id: String): Resource<User, DataError.Firestore>
+    fun fetchUserSteamById(id: String): Flow<Resource<User, DataError.Firestore>>
     fun saveUser(user: User)
 }
