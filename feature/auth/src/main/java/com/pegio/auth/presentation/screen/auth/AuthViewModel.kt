@@ -1,6 +1,9 @@
 package com.pegio.auth.presentation.screen.auth
 
 import android.content.Context
+import com.pegio.auth.presentation.screen.auth.state.AuthUiEffect
+import com.pegio.auth.presentation.screen.auth.state.AuthUiEvent
+import com.pegio.auth.presentation.screen.auth.state.AuthUiState
 import com.pegio.common.core.onFailure
 import com.pegio.common.core.onSuccess
 import com.pegio.common.core.onSuccessAsync

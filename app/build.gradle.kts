@@ -120,9 +120,6 @@ dependencies {
 
     implementation(libs.kotlinx.serialization.json)
 
-    // Navigation
-    implementation(libs.navigation.compose)
-
     // Hilt
     implementation(libs.androidx.hilt.navigation.compose)
     implementation(libs.androidx.hilt.work)

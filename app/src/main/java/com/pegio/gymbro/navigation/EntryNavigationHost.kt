@@ -4,13 +4,12 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.pegio.auth.presentation.screen.auth.AuthScreen
+import com.pegio.auth.presentation.screen.auth.navigation.authScreen
+import com.pegio.auth.presentation.screen.auth.navigation.navigateToAuth
 import com.pegio.auth.presentation.screen.register.RegisterScreen
-import com.pegio.gymbro.navigation.route.AuthRoute
 import com.pegio.gymbro.navigation.route.MainRoute
 import com.pegio.gymbro.navigation.route.RegisterRoute
 import com.pegio.gymbro.navigation.route.SplashRoute
-import com.pegio.gymbro.navigation.route.navigateToAuth
 import com.pegio.gymbro.navigation.route.navigateToMain
 import com.pegio.gymbro.navigation.route.navigateToRegister
 import com.pegio.splash.presentation.splash.SplashScreen
@@ -30,12 +29,10 @@ fun EntryNavigationHost(
             )
         }
 
-        composable<AuthRoute> {
-            AuthScreen(
-                onAuthSuccessAndRegistrationComplete = navController::navigateToMain,
-                onAuthSuccessButRegistrationIncomplete = navController::navigateToRegister
-            )
-        }
+        authScreen(
+            navigateToHome = navController::navigateToMain,
+            navigateToRegister = navController::navigateToRegister
+        )
 
         composable<RegisterRoute> {
             RegisterScreen(

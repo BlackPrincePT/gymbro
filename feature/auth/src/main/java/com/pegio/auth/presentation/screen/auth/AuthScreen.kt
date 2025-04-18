@@ -1,6 +1,6 @@
 package com.pegio.auth.presentation.screen.auth
 
-import androidx.compose.foundation.layout.Box
+ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -10,28 +10,27 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.pegio.common.presentation.util.CollectLatestEffect
-import kotlinx.coroutines.flow.collectLatest
+ import com.pegio.auth.presentation.screen.auth.state.AuthUiEffect
+ import com.pegio.auth.presentation.screen.auth.state.AuthUiEvent
+ import com.pegio.auth.presentation.screen.auth.state.AuthUiState
+ import com.pegio.common.presentation.util.CollectLatestEffect
 
 @Composable
 fun AuthScreen(
-    onAuthSuccessAndRegistrationComplete: () -> Unit,
-    onAuthSuccessButRegistrationIncomplete: () -> Unit,
+    navigateToHome: () -> Unit,
+    navigateToRegister: () -> Unit,
     viewModel: AuthViewModel = hiltViewModel()
 ) {
     CollectLatestEffect(viewModel.uiEffect) { effect ->
         when (effect) {
-            AuthUiEffect.NavigateToHome -> onAuthSuccessAndRegistrationComplete()
-            AuthUiEffect.NavigateToRegister -> onAuthSuccessButRegistrationIncomplete()
+            AuthUiEffect.NavigateToHome -> navigateToHome()
+            AuthUiEffect.NavigateToRegister -> navigateToRegister()
             is AuthUiEffect.Failure -> {}
         }
     }
@@ -40,7 +39,7 @@ fun AuthScreen(
 }
 
 @Composable
-fun AuthOptions(
+private fun AuthOptions(
     state: AuthUiState,
     onEvent: (AuthUiEvent) -> Unit
 ) {
@@ -77,6 +76,6 @@ fun AuthOptions(
 private fun AuthOptionsPreview() {
     AuthOptions(
         state = AuthUiState(),
-        onEvent = {}
+        onEvent = { }
     )
 }
