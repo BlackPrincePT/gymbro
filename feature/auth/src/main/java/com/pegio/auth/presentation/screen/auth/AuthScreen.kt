@@ -19,6 +19,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.pegio.common.presentation.util.CollectLatestEffect
 import kotlinx.coroutines.flow.collectLatest
 
 @Composable
@@ -27,20 +28,15 @@ fun AuthScreen(
     onAuthSuccessButRegistrationIncomplete: () -> Unit,
     viewModel: AuthViewModel = hiltViewModel()
 ) {
-    val uiState by viewModel.uiState
-        .collectAsStateWithLifecycle()
-
-    LaunchedEffect(Unit) {
-        viewModel.uiEffect.collectLatest { effect ->
-            when (effect) {
-                AuthUiEffect.NavigateToHome -> onAuthSuccessAndRegistrationComplete()
-                AuthUiEffect.NavigateToRegister -> onAuthSuccessButRegistrationIncomplete()
-                is AuthUiEffect.Failure -> {}
-            }
+    CollectLatestEffect(viewModel.uiEffect) { effect ->
+        when (effect) {
+            AuthUiEffect.NavigateToHome -> onAuthSuccessAndRegistrationComplete()
+            AuthUiEffect.NavigateToRegister -> onAuthSuccessButRegistrationIncomplete()
+            is AuthUiEffect.Failure -> {}
         }
     }
 
-    AuthOptions(state = uiState, onEvent = viewModel::onEvent)
+    AuthOptions(state = viewModel.uiState, onEvent = viewModel::onEvent)
 }
 
 @Composable

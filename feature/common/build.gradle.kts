@@ -13,4 +13,5 @@ dependencies {
     implementation(project(":core:designsystem"))
 
     implementation(libs.javax.inject)
+    implementation(libs.androidx.hilt.navigation.compose)
 }
