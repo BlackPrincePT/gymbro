@@ -13,7 +13,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.tooling.preview.Preview
+ import androidx.compose.ui.res.stringResource
+ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
  import com.pegio.auth.presentation.screen.auth.state.AuthUiEffect
@@ -22,16 +23,19 @@ import androidx.hilt.navigation.compose.hiltViewModel
  import com.pegio.common.presentation.util.CollectLatestEffect
 
 @Composable
-fun AuthScreen(
-    navigateToHome: () -> Unit,
-    navigateToRegister: () -> Unit,
+internal fun AuthScreen(
+    onAuthSuccess: () -> Unit,
+    onRegistrationRequired: () -> Unit,
+    onShowSnackbar: suspend (String, String?) -> Boolean,
     viewModel: AuthViewModel = hiltViewModel()
 ) {
+    val context = LocalContext.current
+
     CollectLatestEffect(viewModel.uiEffect) { effect ->
         when (effect) {
-            AuthUiEffect.NavigateToHome -> navigateToHome()
-            AuthUiEffect.NavigateToRegister -> navigateToRegister()
-            is AuthUiEffect.Failure -> {}
+            AuthUiEffect.NavigateToHome -> onAuthSuccess()
+            AuthUiEffect.NavigateToRegister -> onRegistrationRequired()
+            is AuthUiEffect.Failure -> onShowSnackbar(context.getString(effect.errorRes), null)
         }
     }
 

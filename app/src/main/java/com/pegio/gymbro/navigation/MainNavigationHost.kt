@@ -23,6 +23,7 @@ import com.pegio.workout.presentation.screen.workout_plan.WorkoutPlanScreen
 fun MainNavigationHost(
     navController: NavHostController,
     onSetupAppBar: (TopBarState) -> Unit,
+    onShowSnackbar: suspend (String, String?) -> Boolean,
     dynamicallyOpenDrawer: () -> Unit,
     modifier: Modifier = Modifier
 ) {

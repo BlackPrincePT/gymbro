@@ -5,18 +5,27 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawing
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material3.DrawerState
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarDuration.Short
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.SnackbarResult.ActionPerformed
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import com.pegio.auth.presentation.screen.auth.navigation.navigateToAuth
 import com.pegio.common.presentation.util.CollectLatestEffect
 import com.pegio.designsystem.theme.GymBroTheme
 import com.pegio.gymbro.activity.components.DrawerContent
@@ -27,7 +36,6 @@ import com.pegio.gymbro.activity.state.MainActivityUiState
 import com.pegio.gymbro.navigation.EntryNavigationHost
 import com.pegio.gymbro.navigation.MainNavigationHost
 import com.pegio.gymbro.navigation.route.navigateToAccount
-import com.pegio.gymbro.navigation.route.navigateToAuth
 import com.pegio.gymbro.navigation.route.navigateToWorkoutPlan
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -46,6 +54,7 @@ class MainActivity : ComponentActivity() {
                 val entryNavController = rememberNavController()
                 val mainNavController = rememberNavController()
 
+                val snackbarHostState = remember { SnackbarHostState() }
                 val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
                 val coroutineScope = rememberCoroutineScope()
 
@@ -63,11 +72,22 @@ class MainActivity : ComponentActivity() {
                     }
                 }
 
-                EntryNavigationHost(entryNavController) {
+                // FIXME: SNACKBAR DOESN'T WORK BECAUSE NO SCAFFOLD FOR ENTRY
+                EntryNavigationHost(
+                    navController = entryNavController,
+                    onShowSnackbar = { message, action ->
+                        snackbarHostState.showSnackbar(
+                            message = message,
+                            actionLabel = action,
+                            duration = Short,
+                        ) == ActionPerformed
+                    }
+                ) {
                     MainAppContent(
                         state = viewModel.uiState,
                         onEvent = viewModel::onEvent,
                         navController = mainNavController,
+                        snackbarHostState = snackbarHostState,
                         drawerState = drawerState
                     )
                 }
@@ -82,6 +102,7 @@ private fun MainAppContent(
     state: MainActivityUiState,
     onEvent: (MainActivityUiEvent) -> Unit,
     navController: NavHostController,
+    snackbarHostState: SnackbarHostState,
     drawerState: DrawerState
 ) {
     ModalNavigationDrawer(
@@ -91,7 +112,7 @@ private fun MainAppContent(
                 DrawerContent(
                     displayedUser = it,
                     onAccountClick = { onEvent(MainActivityUiEvent.OnAccountClick) },
-                    onWorkoutPlanClick = {onEvent(MainActivityUiEvent.OnWorkoutPlanClick)},
+                    onWorkoutPlanClick = { onEvent(MainActivityUiEvent.OnWorkoutPlanClick) },
                     onSignOutClick = { onEvent(MainActivityUiEvent.OnSignOutClick) }
                 )
             } ?: DrawerContent(onGoogleAuthClick = { })
@@ -99,12 +120,25 @@ private fun MainAppContent(
     ) {
         Scaffold(
             topBar = { TopBarContent(state.topBarState) },
-            snackbarHost = { /* TODO: Snackbar */ },
+            snackbarHost = {
+                SnackbarHost(
+                    hostState = snackbarHostState,
+                    modifier = Modifier
+                        .windowInsetsPadding(WindowInsets.safeDrawing),
+                )
+            },
         ) { innerPadding ->
             MainNavigationHost(
                 navController = navController,
                 onSetupAppBar = { onEvent(MainActivityUiEvent.OnUpdateTopBarState(it)) },
                 dynamicallyOpenDrawer = { onEvent(MainActivityUiEvent.OnOpenDrawer) },
+                onShowSnackbar = { message, action ->
+                    snackbarHostState.showSnackbar(
+                        message = message,
+                        actionLabel = action,
+                        duration = Short,
+                    ) == ActionPerformed
+                },
                 modifier = Modifier
                     .padding(innerPadding)
             )

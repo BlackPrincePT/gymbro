@@ -13,13 +13,15 @@ internal data object AuthRoute
 fun NavController.navigateToAuth() = popNavigate(route = AuthRoute)
 
 fun NavGraphBuilder.authScreen(
-    navigateToHome: () -> Unit,
-    navigateToRegister: () -> Unit,
+    onAuthSuccess: () -> Unit,
+    onRegistrationRequired: () -> Unit,
+    onShowSnackbar: suspend (String, String?) -> Boolean
 ) {
     composable<AuthRoute> {
         AuthScreen(
-            navigateToHome = navigateToHome,
-            navigateToRegister = navigateToRegister
+            onAuthSuccess = onAuthSuccess,
+            onRegistrationRequired = onRegistrationRequired,
+            onShowSnackbar = onShowSnackbar
         )
     }
 }

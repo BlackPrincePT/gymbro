@@ -1,9 +1,9 @@
 package com.pegio.auth.presentation.screen.auth.state
 
-import com.pegio.common.core.Error
+import androidx.annotation.StringRes
 
 sealed interface AuthUiEffect {
-    data object NavigateToRegister: AuthUiEffect
-    data object NavigateToHome: AuthUiEffect
-    data class Failure(val error: Error) : AuthUiEffect
+    data object NavigateToRegister : AuthUiEffect
+    data object NavigateToHome : AuthUiEffect
+    data class Failure(@StringRes val errorRes: Int) : AuthUiEffect
 }

@@ -8,6 +8,7 @@ import com.pegio.common.core.onFailure
 import com.pegio.common.core.onSuccess
 import com.pegio.common.core.onSuccessAsync
 import com.pegio.common.presentation.core.BaseViewModel
+import com.pegio.common.presentation.util.toStringResId
 import com.pegio.domain.usecase.auth.SignInAnonymouslyUseCase
 import com.pegio.domain.usecase.common.CheckUserRegistrationStatusUseCase
 import com.pegio.domain.usecase.common.LaunchGoogleAuthOptionsUseCase
@@ -33,13 +34,13 @@ class AuthViewModel @Inject constructor(
     private fun handleLaunchGoogleAuthOptions(context: Context) = launchWithLoading {
         launchGoogleAuthOptions(context)
             .onSuccessAsync { checkForSavedAuthState() }
-            .onFailure { sendEffect(AuthUiEffect.Failure(error = it)) }
+            .onFailure { sendEffect(AuthUiEffect.Failure(errorRes = it.toStringResId())) }
     }
 
     private fun handleSignInAnonymously() = launchWithLoading {
         signInAnonymously()
             .onSuccess { sendEffect(AuthUiEffect.NavigateToHome) }
-            .onFailure { sendEffect(AuthUiEffect.Failure(error = it)) }
+            .onFailure { sendEffect(AuthUiEffect.Failure(errorRes = it.toStringResId())) }
     }
 
     private suspend fun checkForSavedAuthState() {
@@ -48,6 +49,6 @@ class AuthViewModel @Inject constructor(
                 val navigationEffect = if (isComplete) AuthUiEffect.NavigateToHome else AuthUiEffect.NavigateToRegister
                 sendEffect(navigationEffect)
             }
-            .onFailure {  } // TODO: SHOW SNACKBAR
+            .onFailure { sendEffect(AuthUiEffect.Failure(errorRes = it.toStringResId())) }
     }
 }

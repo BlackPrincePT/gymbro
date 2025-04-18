@@ -17,6 +17,7 @@ import com.pegio.splash.presentation.splash.SplashScreen
 @Composable
 fun EntryNavigationHost(
     navController: NavHostController,
+    onShowSnackbar: suspend (String, String?) -> Boolean,
     mainNavigationHost: @Composable () -> Unit
 ) {
     NavHost(navController = navController, startDestination = SplashRoute) {
@@ -30,8 +31,9 @@ fun EntryNavigationHost(
         }
 
         authScreen(
-            navigateToHome = navController::navigateToMain,
-            navigateToRegister = navController::navigateToRegister
+            onAuthSuccess = navController::navigateToMain,
+            onRegistrationRequired = navController::navigateToRegister,
+            onShowSnackbar = onShowSnackbar
         )
 
         composable<RegisterRoute> {
