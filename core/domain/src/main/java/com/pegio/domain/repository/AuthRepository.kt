@@ -4,7 +4,6 @@ import android.content.Context
 import com.pegio.common.core.DataError
 import com.pegio.common.core.Resource
 import com.pegio.model.User
-import kotlinx.coroutines.flow.Flow
 
 interface AuthRepository {
     fun getCurrentUser(): User.Auth?

@@ -11,7 +11,6 @@ import kotlinx.serialization.Serializable
 @Serializable
 data object FeedRoute
 
-fun NavController.navigateToFeed() = navigate(route = FeedRoute)
 fun NavController.popNavigateToFeed() = popNavigate(route = FeedRoute)
 
 fun NavGraphBuilder.feedScreen(

@@ -6,8 +6,6 @@ import com.pegio.common.core.SessionError
 import com.pegio.common.core.asFailure
 import com.pegio.common.core.asSuccess
 import com.pegio.common.core.getOrElse
-import com.pegio.common.core.onFailure
-import com.pegio.common.core.onSuccess
 import com.pegio.domain.repository.AuthRepository
 import com.pegio.domain.repository.PostRepository
 import com.pegio.model.Post

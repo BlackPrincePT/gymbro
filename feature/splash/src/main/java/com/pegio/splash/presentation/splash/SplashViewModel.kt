@@ -6,7 +6,6 @@ import com.pegio.common.core.SessionError
 import com.pegio.common.core.onFailure
 import com.pegio.common.core.onSuccess
 import com.pegio.domain.usecase.common.GetCurrentUserUseCase
-import com.pegio.domain.usecase.splash.HasSavedAuthSessionUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel

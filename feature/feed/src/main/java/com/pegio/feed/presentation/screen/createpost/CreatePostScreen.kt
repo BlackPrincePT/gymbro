@@ -25,14 +25,13 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.pegio.common.presentation.state.TopBarAction
 import com.pegio.common.presentation.state.TopBarState
-import com.pegio.designsystem.component.ProfileImage
 import com.pegio.common.presentation.util.CollectLatestEffect
+import com.pegio.designsystem.component.ProfileImage
 import com.pegio.feed.presentation.screen.createpost.state.CreatePostUiEffect
 import com.pegio.feed.presentation.screen.createpost.state.CreatePostUiEvent
 import com.pegio.feed.presentation.screen.createpost.state.CreatePostUiState
