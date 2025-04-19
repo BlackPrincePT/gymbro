@@ -1,6 +1,6 @@
 package com.pegio.firestore.core
 
-object FirestoreConstants {
+internal object FirestoreConstants {
     const val USERS = "users"
     const val AI_MESSAGES = "ai_messages"
     const val WORKOUT_PLANS = "workout_plans"

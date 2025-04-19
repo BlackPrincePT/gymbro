@@ -2,10 +2,13 @@ package com.pegio.feed.presentation.screen.postdetails.state
 
 sealed interface PostDetailsUiEvent {
 
-    // Comment
-    data class OnCommentTextChange(val value: String) : PostDetailsUiEvent
-    data object OnCommentSubmit : PostDetailsUiEvent
-
     // TopBar
     data object OnBackClick : PostDetailsUiEvent
+
+    // Main
+    data object OnCommentSubmitClick : PostDetailsUiEvent
+    data object OnLoadMoreCommentsClick : PostDetailsUiEvent
+
+    // Compose State
+    data class OnCommentTextChange(val value: String) : PostDetailsUiEvent
 }

@@ -56,10 +56,10 @@ class UploadManager @Inject constructor(
             WorkInfo.State.SUCCEEDED -> {
                 workInfo.outputData.getString(RESULT_URL)
                     ?.let { url -> Resource.Success(data = url) }
-                    ?: Resource.Failure(error = DataError.Firestore.UNKNOWN)
+                    ?: Resource.Failure(error = DataError.Firestore.Unknown)
             }
 
-            else -> Resource.Failure(error = DataError.Firestore.UNKNOWN)
+            else -> Resource.Failure(error = DataError.Firestore.Unknown)
         }
     }
 }

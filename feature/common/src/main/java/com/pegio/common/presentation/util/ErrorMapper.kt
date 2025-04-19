@@ -15,6 +15,7 @@ private fun DataError.toStringResId(): Int = when (this) {
     is DataError.Network -> this.toStringResId()
     is DataError.Auth -> this.toStringResId()
     is DataError.Firestore -> this.toStringResId()
+    else -> R.string.feature_common_presentation_error_generic
 }
 
 private fun ValidationError.toStringResId(): Int = when (this) {
@@ -42,9 +43,9 @@ private fun DataError.Auth.toStringResId(): Int = when (this) {
 }
 
 private fun DataError.Firestore.toStringResId(): Int = when (this) {
-    DataError.Firestore.DOCUMENT_NOT_FOUND -> R.string.feature_common_presentation_error_document_not_found
-    DataError.Firestore.PERMISSION_DENIED -> R.string.feature_common_presentation_error_permission_denied
-    DataError.Firestore.UNAUTHENTICATED -> R.string.feature_common_presentation_error_unauthenticated
+    DataError.Firestore.DocumentNotFound -> R.string.feature_common_presentation_error_document_not_found
+    DataError.Firestore.PermissionDenied -> R.string.feature_common_presentation_error_permission_denied
+    DataError.Firestore.Unauthenticated -> R.string.feature_common_presentation_error_unauthenticated
     else -> R.string.feature_common_presentation_error_generic
 }
 

@@ -8,20 +8,20 @@ import com.pegio.common.core.DataError
 import com.pegio.common.core.Resource
 import com.pegio.common.core.asFailure
 import com.pegio.common.core.asSuccess
-import com.pegio.firestore.model.FirestorePagingResult
+import com.pegio.firestore.core.FirestorePagingResult
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
-class FirestoreUtils @Inject internal constructor() {
+internal class FirestoreUtils @Inject constructor() {
 
     fun <T> observeDocument(documentRef: DocumentReference, klass: Class<T>): Flow<Resource<T, DataError.Firestore>> {
         return documentRef.snapshots()
             .map { documentSnapshot ->
                 documentSnapshot.toObject(klass)?.asSuccess()
-                    ?: DataError.Firestore.DOCUMENT_NOT_FOUND.asFailure()
+                    ?: DataError.Firestore.DocumentNotFound.asFailure()
             }
             .catch { cause: Throwable ->
                 mapExceptionToFirestoreError(cause).asFailure()
@@ -43,7 +43,7 @@ class FirestoreUtils @Inject internal constructor() {
             val documentSnapshot = documentRef.get().await()
 
             documentSnapshot.toObject(klass)?.asSuccess()
-                ?: DataError.Firestore.DOCUMENT_NOT_FOUND.asFailure()
+                ?: DataError.Firestore.DocumentNotFound.asFailure()
         } catch (e: Exception) {
             mapExceptionToFirestoreError(e).asFailure()
         }
@@ -65,18 +65,18 @@ class FirestoreUtils @Inject internal constructor() {
     private fun mapExceptionToFirestoreError(e: Throwable): DataError.Firestore {
         return when (e) {
             is FirebaseFirestoreException -> mapFirebaseCodeToError(e)
-            else -> DataError.Firestore.UNKNOWN
+            else -> DataError.Firestore.Unknown
         }
     }
 
     private fun mapFirebaseCodeToError(exception: FirebaseFirestoreException): DataError.Firestore {
         return when (exception.code) {
-            FirebaseFirestoreException.Code.NOT_FOUND -> DataError.Firestore.DOCUMENT_NOT_FOUND
-            FirebaseFirestoreException.Code.PERMISSION_DENIED -> DataError.Firestore.PERMISSION_DENIED
-            FirebaseFirestoreException.Code.INTERNAL -> DataError.Firestore.INTERNAL
-            FirebaseFirestoreException.Code.UNAVAILABLE -> DataError.Firestore.UNAVAILABLE
-            FirebaseFirestoreException.Code.UNAUTHENTICATED -> DataError.Firestore.UNAUTHENTICATED
-            else -> DataError.Firestore.UNKNOWN
+            FirebaseFirestoreException.Code.NOT_FOUND -> DataError.Firestore.DocumentNotFound
+            FirebaseFirestoreException.Code.PERMISSION_DENIED -> DataError.Firestore.PermissionDenied
+            FirebaseFirestoreException.Code.INTERNAL -> DataError.Firestore.Internal
+            FirebaseFirestoreException.Code.UNAVAILABLE -> DataError.Firestore.Unavailable
+            FirebaseFirestoreException.Code.UNAUTHENTICATED -> DataError.Firestore.Unauthenticated
+            else -> DataError.Firestore.Unknown
         }
     }
 }

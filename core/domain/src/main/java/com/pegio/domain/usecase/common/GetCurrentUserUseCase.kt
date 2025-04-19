@@ -27,7 +27,7 @@ class GetCurrentUserUseCase @Inject constructor(
             .errorOrElse { return it.asSuccess() }
             .let { error ->
                 return when (error) {
-                    DataError.Firestore.DOCUMENT_NOT_FOUND -> SessionError.RegistrationIncomplete
+                    DataError.Firestore.DocumentNotFound -> SessionError.RegistrationIncomplete
                     else -> SessionError.Unknown
                 }
                     .asFailure()

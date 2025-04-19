@@ -4,7 +4,4 @@ sealed interface PostDetailsUiEffect {
 
     // Navigation
     data object NavigateBack : PostDetailsUiEffect
-
-    // Snackbar
-    data object Show
 }

@@ -4,10 +4,10 @@ interface Error
 interface Retryable
 
 sealed interface SessionError : Error {
-    data object Unauthenticated : SessionError, Retryable
-    data object RegistrationIncomplete : SessionError, Retryable
-    data object AnonymousUser: SessionError
-    data object Unknown: SessionError
+    data object Unauthenticated : SessionError
+    data object RegistrationIncomplete : SessionError
+    data object AnonymousUser : SessionError
+    data object Unknown : SessionError
 }
 
 sealed interface DataError : Error {
@@ -32,13 +32,17 @@ sealed interface DataError : Error {
         UNKNOWN                 // A fallback for any Firebase Auth errors not explicitly handled.
     }
 
-    enum class Firestore : DataError {
-        DOCUMENT_NOT_FOUND,     // Typically handled by showing a "not found" UI.
-        PERMISSION_DENIED,      // Show a message about lacking access rights.
-        UNAUTHENTICATED,        // Handle re-authentication if needed.
-        INTERNAL,               // Display a generic error message.
-        UNAVAILABLE,            // Alert the user about connectivity or server issues.
-        UNKNOWN                 // For any other Firestore errors not explicitly caught.
+    sealed interface Firestore : DataError {
+        data object DocumentNotFound : Firestore
+        data object PermissionDenied : Firestore
+        data object Unauthenticated : Firestore
+        data object Internal : Firestore
+        data object Unavailable : Firestore
+        data object Unknown : Firestore
+    }
+
+    enum class Pagination: DataError {
+        END_OF_PAGINATION_REACHED
     }
 }
 
