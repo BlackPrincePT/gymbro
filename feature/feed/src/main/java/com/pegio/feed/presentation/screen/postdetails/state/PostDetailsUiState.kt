@@ -7,10 +7,12 @@ data class PostDetailsUiState(
 
     // Loading
     val isLoading: Boolean = false,
+    val loadingMoreComments: Boolean = false,
 
-    // Post
+    // Main
     val displayedPost: UiPost = UiPost.DEFAULT,
     val comments: List<UiPostComment> = emptyList(),
+    val endOfCommentsReached: Boolean = false,
 
     // Compose State
     val commentText: String = ""

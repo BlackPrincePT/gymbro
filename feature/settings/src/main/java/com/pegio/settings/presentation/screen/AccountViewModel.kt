@@ -13,13 +13,13 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
-import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class AccountViewModel @Inject constructor(
-    private val fetchCurrentUserStream: com.pegio.domain.usecase.common.FetchCurrentUserStreamUseCase,
+    private val fetchCurrentUserStream: com.pegio.domain.usecase.common.GetCurrentUserStreamUseCase,
     private val fileUploadManager: FileUploadManager,
     private val saveUser: com.pegio.domain.usecase.common.SaveUserUseCase,
     private val uiUserMapper: UiUserMapper
@@ -63,10 +63,9 @@ class AccountViewModel @Inject constructor(
         fileUploadManager.deleteFile(currentProfileImageUrl)
     }
 
-    private fun observeCurrentUser() {
+    private fun observeCurrentUser() = viewModelScope.launch {
         fetchCurrentUserStream()
-            .onSuccess { user -> updateState { copy(user = uiUserMapper.mapFromDomain(user)) } }
-            .launchIn(viewModelScope)
+            .collectLatest { updateState { copy(user = uiUserMapper.mapFromDomain(it)) } }
     }
 
     private fun updateState(change: AccountUiState.() -> AccountUiState) {

@@ -1,14 +1,19 @@
 package com.pegio.feed.presentation.screen.postdetails
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -70,7 +75,7 @@ private fun PostDetailsContent(
                 value = state.commentText,
                 onValueChange = { onEvent(PostDetailsUiEvent.OnCommentTextChange(it)) },
                 label = stringResource(R.string.feature_feed_write_a_comment),
-                onSubmit = { onEvent(PostDetailsUiEvent.OnCommentSubmit) },
+                onSubmit = { onEvent(PostDetailsUiEvent.OnCommentSubmitClick) },
                 modifier = Modifier
                     .fillMaxWidth()
             )
@@ -83,6 +88,26 @@ private fun PostDetailsContent(
                 commentText = comment.content,
                 commentDate = comment.date
             )
+        }
+
+        if (state.endOfCommentsReached.not()) {
+            item {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                ) {
+                    if (state.loadingMoreComments)
+                        CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+                    else
+                        TextButton(
+                            onClick = { onEvent(PostDetailsUiEvent.OnLoadMoreCommentsClick) },
+                            modifier = Modifier
+                                .align(Alignment.Center)
+                        ) {
+                            Text(text = "Load more comments")
+                        }
+                }
+            }
         }
     }
 }

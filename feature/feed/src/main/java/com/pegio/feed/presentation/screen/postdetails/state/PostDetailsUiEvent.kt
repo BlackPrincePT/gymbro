@@ -5,7 +5,10 @@ sealed interface PostDetailsUiEvent {
     // TopBar
     data object OnBackClick : PostDetailsUiEvent
 
-    // Comment
+    // Main
+    data object OnCommentSubmitClick : PostDetailsUiEvent
+    data object OnLoadMoreCommentsClick : PostDetailsUiEvent
+
+    // Compose State
     data class OnCommentTextChange(val value: String) : PostDetailsUiEvent
-    data object OnCommentSubmit : PostDetailsUiEvent
 }

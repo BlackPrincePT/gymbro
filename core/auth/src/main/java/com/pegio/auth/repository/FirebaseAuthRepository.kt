@@ -39,9 +39,7 @@ internal class FirebaseAuthRepository @Inject constructor(
     }
 
     override fun getCurrentUser(): User.Auth? {
-        return auth.currentUser?.run {
-            User.Auth(id = uid, isAnonymous = isAnonymous)
-        }
+        return auth.currentUser?.run { User.Auth(id = uid, isAnonymous = isAnonymous) }
     }
 
     override fun getCurrentUserStream(): Flow<User.Auth?> {
@@ -52,11 +50,11 @@ internal class FirebaseAuthRepository @Inject constructor(
         }
     }
 
-    override fun signOut() {
-        auth.signOut()
-    }
+    override fun signOut() = auth.signOut()
+
 
     // ========= Sign in anonymously ========= \\
+
 
     override suspend fun signInAnonymously(): Resource<Unit, DataError.Auth> {
         return try {
@@ -67,7 +65,9 @@ internal class FirebaseAuthRepository @Inject constructor(
         }
     }
 
+
     // ========= Sign in with Google ========= \\
+
 
     override suspend fun launchGoogleAuthOptions(context: Context): Resource<Unit, DataError.Auth> {
         return try {

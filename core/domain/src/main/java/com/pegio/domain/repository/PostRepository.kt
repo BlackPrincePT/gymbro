@@ -11,5 +11,6 @@ interface PostRepository {
 
     // Fetch
     suspend fun fetchPostById(id: String): Resource<Post, DataError.Firestore>
-    suspend fun fetchNextRelevantPostsPage(): Resource<List<Post>, DataError.Firestore>
+    suspend fun fetchNextRelevantPostsPage(): Resource<List<Post>, DataError>
+    fun resetPagination()
 }

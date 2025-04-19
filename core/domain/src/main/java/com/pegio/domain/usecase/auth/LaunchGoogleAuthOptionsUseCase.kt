@@ -1,4 +1,4 @@
-package com.pegio.domain.usecase.common
+package com.pegio.domain.usecase.auth
 
 import android.content.Context
 import com.pegio.domain.repository.AuthRepository

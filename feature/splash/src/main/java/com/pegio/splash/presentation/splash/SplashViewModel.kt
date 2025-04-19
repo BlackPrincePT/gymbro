@@ -2,9 +2,10 @@ package com.pegio.splash.presentation.splash
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.pegio.common.core.SessionError
+import com.pegio.common.core.onFailure
 import com.pegio.common.core.onSuccess
-import com.pegio.domain.usecase.common.CheckUserRegistrationStatusUseCase
-import com.pegio.domain.usecase.splash.HasSavedAuthSessionUseCase
+import com.pegio.domain.usecase.common.GetCurrentUserUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
@@ -14,8 +15,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SplashViewModel @Inject constructor(
-    private val hasSavedAuthSession: HasSavedAuthSessionUseCase,
-    private val checkUserRegistrationStatus: CheckUserRegistrationStatusUseCase
+    private val getCurrentUser: GetCurrentUserUseCase
 ) : ViewModel() {
 
     private val _uiEffect = Channel<SplashUiEffect>()
@@ -26,16 +26,16 @@ class SplashViewModel @Inject constructor(
     }
 
     private fun checkForSavedAuthState() = viewModelScope.launch {
-        if (hasSavedAuthSession()) {
-            checkUserRegistrationStatus()
-                .onSuccess { isComplete ->
-                    val navigationEffect =
-                        if (isComplete) SplashUiEffect.NavigateToHome else SplashUiEffect.NavigateToRegister
-                    sendEffect(navigationEffect)
+        getCurrentUser()
+            .onSuccess { sendEffect(SplashUiEffect.NavigateToHome) }
+            .onFailure { error ->
+                when (error) {
+                    SessionError.AnonymousUser -> sendEffect(SplashUiEffect.NavigateToHome)
+                    SessionError.RegistrationIncomplete -> sendEffect(SplashUiEffect.NavigateToRegister)
+                    SessionError.Unauthenticated -> sendEffect(SplashUiEffect.NavigateToAuth)
+                    SessionError.Unknown -> throw Exception("SplashViewModel: $error") // TODO HANDLE PROPERLY
                 }
-        } else {
-            sendEffect(SplashUiEffect.NavigateToAuth)
-        }
+            }
     }
 
     private fun sendEffect(effect: SplashUiEffect) {
