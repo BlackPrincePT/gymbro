@@ -38,8 +38,8 @@ class AiChatViewModel @Inject constructor(
             is AiChatUiEvent.OnTextChanged -> updateState { copy(inputText = event.text) }
             is AiChatUiEvent.OnImageSelected -> updateState { copy(selectedImageUri = event.imageUri) }
             is AiChatUiEvent.OnSendMessage -> onSendMessage()
-            is AiChatUiEvent.LoadMoreMessages -> loadMoreMessages()
-            is AiChatUiEvent.OnRemoveImage -> updateState { copy(selectedImageUri = null) }
+            AiChatUiEvent.LoadMoreMessages -> loadMoreMessages()
+            AiChatUiEvent.OnRemoveImage -> updateState { copy(selectedImageUri = null) }
 
             // Top Bar
             AiChatUiEvent.OnBackClick -> sendEffect(AiChatUiEffect.NavigateBack)
@@ -118,7 +118,6 @@ class AiChatViewModel @Inject constructor(
             }
     }
 
-
     private suspend fun sendAiResponse(userId: String) {
         val domainMessages = uiState.messages.map(uiAiMessageMapper::mapToDomain)
 
@@ -138,8 +137,7 @@ class AiChatViewModel @Inject constructor(
         }
     }
 
-
-    override fun setLoading(isLoading: Boolean) = updateState { copy(isLoading = isLoading) }
-
-
+    override fun setLoading(isLoading: Boolean) {
+        updateState { copy(isLoading = isLoading) }
+    }
 }

@@ -96,6 +96,7 @@ fun NavigationHost(
             WorkoutPlanScreen(
                 onBackClick = navController::navigateUp,
                 onInfoClick = navController::navigateToAiChat,
+                onShowSnackbar = onShowSnackbar,
                 onSetupTopBar = onSetupAppBar,
             )
         }
