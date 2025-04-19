@@ -85,7 +85,8 @@ fun NavigationHost(
         composable<AiChatRoute> {
             AiChatScreen(
                 onBackClick = navController::navigateUp,
-                onSetupTopBar = onSetupAppBar
+                onSetupTopBar = onSetupAppBar,
+                onShowSnackbar = onShowSnackbar
             )
         }
 
@@ -100,6 +101,7 @@ fun NavigationHost(
             WorkoutPlanScreen(
                 onBackClick = navController::navigateUp,
                 onInfoClick = navController::navigateToAiChat,
+                onShowSnackbar = onShowSnackbar,
                 onSetupTopBar = onSetupAppBar,
             )
         }

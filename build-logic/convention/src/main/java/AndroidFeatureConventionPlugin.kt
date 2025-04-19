@@ -1,5 +1,6 @@
 import com.pegio.convention.scriptImplementation
 import com.pegio.convention.libs
+import com.pegio.convention.scriptTestImplementation
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.apply
@@ -24,6 +25,9 @@ class AndroidFeatureConventionPlugin : Plugin<Project> {
                 scriptImplementation(libs.findLibrary("androidx-ui-graphics").get())
                 scriptImplementation(libs.findLibrary("androidx-hilt-navigation-compose").get())
                 scriptImplementation(libs.findLibrary("kotlinx-serialization-json").get())
+
+                scriptTestImplementation(libs.findLibrary("mockk").get())
+                scriptTestImplementation(libs.findLibrary("kotlinx-coroutines-test").get())
             }
         }
     }
