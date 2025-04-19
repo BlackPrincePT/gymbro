@@ -7,6 +7,7 @@ data class PostDetailsUiState(
 
     // Loading
     val isLoading: Boolean = false,
+    val loadingMoreComments: Boolean = false,
 
     // Main
     val displayedPost: UiPost = UiPost.DEFAULT,

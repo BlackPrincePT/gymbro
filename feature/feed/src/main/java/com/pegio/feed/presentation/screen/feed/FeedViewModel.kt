@@ -1,6 +1,7 @@
 package com.pegio.feed.presentation.screen.feed
 
 import androidx.lifecycle.viewModelScope
+import com.pegio.common.core.DataError
 import com.pegio.common.core.getOrElse
 import com.pegio.common.core.onFailure
 import com.pegio.common.core.onSuccess
@@ -52,12 +53,23 @@ class FeedViewModel @Inject constructor(
             .collectLatest { updateState { copy(currentUser = uiUserMapper.mapFromDomain(it)) } }
     }
 
-    private fun loadMorePosts() = launchWithLoading {
-        fetchNextRelevantPostsPage()
-            .onSuccess {
-                val fetchedPosts = it.map(uiPostMapper::mapFromDomain)
-                updateState { copy(relevantPosts = relevantPosts.plus(fetchedPosts)) }
-            }
-            .onFailure { /* TODO: HANDLE */ }
+    private fun loadMorePosts() {
+        if (uiState.endOfPostsReached) return
+
+        launchWithLoading {
+            fetchNextRelevantPostsPage()
+                .onSuccess { fetchedPosts ->
+                    val combinedPosts = fetchedPosts.map(uiPostMapper::mapFromDomain)
+                    updateState { copy(relevantPosts = relevantPosts.plus(combinedPosts)) }
+                }
+                .onFailure { error ->
+                    when (error) {
+                        DataError.Pagination.END_OF_PAGINATION_REACHED ->
+                            updateState { copy(endOfPostsReached = true) }
+
+                        else -> {} // TODO HANDLE BETTER
+                    }
+                }
+        }
     }
 }

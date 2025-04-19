@@ -56,6 +56,8 @@ class PostDetailsViewModel @Inject constructor(
 
     override fun setLoading(isLoading: Boolean) = updateState { copy(isLoading = isLoading) }
 
+    private fun setLoadingMoreComments(isLoading: Boolean) = updateState { copy(loadingMoreComments = isLoading) }
+
     private fun handleCommentSubmit() = viewModelScope.launch {
         writeComment(content = uiState.commentText, postId = postId)
             .onSuccess { comment ->
@@ -68,20 +70,24 @@ class PostDetailsViewModel @Inject constructor(
             }
     }
 
-    private fun loadMoreComments() = launchWithLoading {
-        fetchNextCommentsPage(postId)
-            .onSuccess { fetchedComments ->
-                val combinedComments = fetchedComments.map(uiPostCommentMapper::mapFromDomain)
-                updateState { copy(comments = comments.plus(combinedComments)) }
-            }
-            .onFailure { error ->
-                when (error) {
-                    DataError.Pagination.END_OF_PAGINATION_REACHED ->
-                        updateState { copy(endOfCommentsReached = true) }
+    private fun loadMoreComments() {
+        if (uiState.endOfCommentsReached) return
 
-                    else -> {}
+        launchWithLoading(::setLoadingMoreComments) {
+            fetchNextCommentsPage(postId)
+                .onSuccess { fetchedComments ->
+                    val combinedComments = fetchedComments.map(uiPostCommentMapper::mapFromDomain)
+                    updateState { copy(comments = comments.plus(combinedComments)) }
                 }
-            }
+                .onFailure { error ->
+                    when (error) {
+                        DataError.Pagination.END_OF_PAGINATION_REACHED ->
+                            updateState { copy(endOfCommentsReached = true) }
+
+                        else -> {} // TODO HANDLE BETTER
+                    }
+                }
+        }
     }
 
     private fun fetchCurrentPost() = launchWithLoading {
