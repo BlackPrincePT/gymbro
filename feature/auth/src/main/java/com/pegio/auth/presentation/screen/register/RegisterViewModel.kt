@@ -8,6 +8,8 @@ import com.pegio.common.core.onSuccess
 import com.pegio.common.presentation.model.UiUser
 import com.pegio.common.presentation.model.mapper.UiUserMapper
 import com.pegio.common.presentation.util.toStringResId
+import com.pegio.domain.usecase.aggregator.FormValidatorUseCases
+import com.pegio.domain.usecase.common.SaveUserUseCase
 import com.pegio.uploadmanager.core.FileUploadManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -21,11 +23,10 @@ import javax.inject.Inject
 
 @HiltViewModel
 class RegisterViewModel @Inject constructor(
-    private val saveUser: com.pegio.domain.usecase.common.SaveUserUseCase,
+    private val saveUser: SaveUserUseCase,
     private val uiUserMapper: UiUserMapper,
     private val fileUploadManager: FileUploadManager,
-    private val formValidator: com.pegio.domain.usecase.aggregator.FormValidatorUseCases,
-    getCurrentUserId: com.pegio.domain.usecase.common.GetCurrentUserIdUseCase
+    private val formValidator: FormValidatorUseCases,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(RegisterUiState())
@@ -35,7 +36,7 @@ class RegisterViewModel @Inject constructor(
     val uiEffect = _uiEffect.asSharedFlow()
 
     init {
-        updateUser { copy(id = getCurrentUserId()) }
+//        updateUser { copy(id = getCurrentUserId()) }
     }
 
     fun onEvent(event: RegisterUiEvent) {
@@ -77,23 +78,23 @@ class RegisterViewModel @Inject constructor(
 
         formValidator.validateUsername(currentUser.username)
             .errorOrNull()
-            .also { updateError { copy(username = it?.toStringResId()) }; isValid = it == null }
+            .let { updateError { copy(username = it?.toStringResId()) }; isValid = it == null }
 
         formValidator.validateAge(ageString = currentUser.age)
             .errorOrNull()
-            .also { updateError { copy(age = it?.toStringResId()) }; isValid = it == null }
+            .let { updateError { copy(age = it?.toStringResId()) }; isValid = it == null }
 
         formValidator.validateGender(gender = currentUser.gender)
             .errorOrNull()
-            .also { updateError { copy(gender = it?.toStringResId()) }; isValid = it == null }
+            .let { updateError { copy(gender = it?.toStringResId()) }; isValid = it == null }
 
         formValidator.validateHeight(heightString = currentUser.heightCm)
             .errorOrNull()
-            .also { updateError { copy(height = it?.toStringResId()) }; isValid = it == null }
+            .let { updateError { copy(height = it?.toStringResId()) }; isValid = it == null }
 
         formValidator.validateWeight(weightString = currentUser.weightKg)
             .errorOrNull()
-            .also { updateError { copy(weight = it?.toStringResId()) }; isValid = it == null }
+            .let { updateError { copy(weight = it?.toStringResId()) }; isValid = it == null }
 
         return isValid
     }

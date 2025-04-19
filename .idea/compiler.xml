@@ -3,6 +3,7 @@
   <component name="CompilerConfiguration">
     <bytecodeTargetLevel target="11">
       <module name="gymbro.core.data" target="17" />
+      <module name="gymbro.core.session" target="17" />
       <module name="gymbro.feature.aichat.data" target="17" />
       <module name="gymbro.feature.aichat.domain" target="17" />
       <module name="gymbro.feature.aichat.presentation" target="17" />

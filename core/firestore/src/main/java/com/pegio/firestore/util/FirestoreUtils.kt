@@ -6,7 +6,8 @@ import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.snapshots
 import com.pegio.common.core.DataError
 import com.pegio.common.core.Resource
-import com.pegio.common.core.asResource
+import com.pegio.common.core.asFailure
+import com.pegio.common.core.asSuccess
 import com.pegio.firestore.model.FirestorePagingResult
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
@@ -19,21 +20,21 @@ class FirestoreUtils @Inject internal constructor() {
     fun <T> observeDocument(documentRef: DocumentReference, klass: Class<T>): Flow<Resource<T, DataError.Firestore>> {
         return documentRef.snapshots()
             .map { documentSnapshot ->
-                documentSnapshot.toObject(klass)?.asResource()
-                    ?: DataError.Firestore.DOCUMENT_NOT_FOUND.asResource()
+                documentSnapshot.toObject(klass)?.asSuccess()
+                    ?: DataError.Firestore.DOCUMENT_NOT_FOUND.asFailure()
             }
             .catch { cause: Throwable ->
-                mapExceptionToFirestoreError(cause).asResource()
+                mapExceptionToFirestoreError(cause).asFailure()
             }
     }
 
     fun <T> observeDocuments(query: Query, klass: Class<T>): Flow<Resource<List<T>, DataError.Firestore>> {
         return query.snapshots()
             .map { querySnapshot ->
-                querySnapshot.toObjects(klass).asResource()
+                querySnapshot.toObjects(klass).asSuccess()
             }
             .catch { cause: Throwable ->
-                mapExceptionToFirestoreError(cause).asResource()
+                mapExceptionToFirestoreError(cause).asFailure()
             }
     }
 
@@ -41,10 +42,10 @@ class FirestoreUtils @Inject internal constructor() {
         return try {
             val documentSnapshot = documentRef.get().await()
 
-            documentSnapshot.toObject(klass)?.asResource()
-                ?: DataError.Firestore.DOCUMENT_NOT_FOUND.asResource()
+            documentSnapshot.toObject(klass)?.asSuccess()
+                ?: DataError.Firestore.DOCUMENT_NOT_FOUND.asFailure()
         } catch (e: Exception) {
-            mapExceptionToFirestoreError(e).asResource()
+            mapExceptionToFirestoreError(e).asFailure()
         }
     }
 
@@ -55,9 +56,9 @@ class FirestoreUtils @Inject internal constructor() {
             val objects = querySnapshot.toObjects(klass)
             val lastDocument = querySnapshot.documents.lastOrNull()
 
-            FirestorePagingResult(objects, lastDocument).asResource()
+            FirestorePagingResult(objects, lastDocument).asSuccess()
         } catch (e: Exception) {
-            mapExceptionToFirestoreError(e).asResource()
+            mapExceptionToFirestoreError(e).asFailure()
         }
     }
 

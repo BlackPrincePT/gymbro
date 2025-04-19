@@ -5,7 +5,6 @@ import androidx.navigation.toRoute
 import com.pegio.common.core.onFailure
 import com.pegio.common.core.onSuccess
 import com.pegio.common.presentation.core.BaseViewModel
-import com.pegio.domain.usecase.common.GetCurrentUserIdUseCase
 import com.pegio.domain.usecase.feed.FetchNextCommentsPageUseCase
 import com.pegio.domain.usecase.feed.FetchPostByIdUseCase
 import com.pegio.domain.usecase.feed.WriteCommentUseCase
@@ -22,7 +21,6 @@ import javax.inject.Inject
 class PostDetailsViewModel @Inject constructor(
     private val fetchPostById: FetchPostByIdUseCase,
     private val writeComment: WriteCommentUseCase,
-    private val getCurrentUserId: GetCurrentUserIdUseCase,
     private val fetchNextCommentsPage: FetchNextCommentsPageUseCase,
     private val uiPostMapper: UiPostMapper,
     private val uiPostCommentMapper: UiPostCommentMapper,

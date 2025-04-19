@@ -6,6 +6,7 @@ interface Retryable
 sealed interface SessionError : Error {
     data object Unauthenticated : SessionError, Retryable
     data object RegistrationIncomplete : SessionError, Retryable
+    data object AnonymousUser: SessionError
     data object Unknown: SessionError
 }
 
@@ -33,7 +34,6 @@ sealed interface DataError : Error {
 
     enum class Firestore : DataError {
         DOCUMENT_NOT_FOUND,     // Typically handled by showing a "not found" UI.
-        DOCUMENT_PARSE_FAILED,  // Handle illegal document model.
         PERMISSION_DENIED,      // Show a message about lacking access rights.
         UNAUTHENTICATED,        // Handle re-authentication if needed.
         INTERNAL,               // Display a generic error message.

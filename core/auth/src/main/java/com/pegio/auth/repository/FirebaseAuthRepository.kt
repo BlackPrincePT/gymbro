@@ -30,29 +30,15 @@ internal class FirebaseAuthRepository @Inject constructor(
     private val getCredentialRequest: GetCredentialRequest
 ) : AuthRepository {
 
-    private val currentUserFlow = callbackFlow {
-        val listener = FirebaseAuth.AuthStateListener { auth ->
-            trySend(auth.currentUser)
-        }
-        auth.addAuthStateListener(listener)
-        awaitClose { auth.removeAuthStateListener(listener) }
-    }
-
     override fun getCurrentUser(): User.Auth? {
         return auth.currentUser?.run { User.Auth(id = uid, isAnonymous = isAnonymous) }
     }
 
-    override fun getCurrentUserStream(): Flow<User.Auth?> {
-        return currentUserFlow.map { user ->
-            user?.run { User.Auth(id = uid, isAnonymous = isAnonymous) }
-        }
-    }
+    override fun signOut() = auth.signOut()
 
-    override fun signOut() {
-        auth.signOut()
-    }
 
     // ========= Sign in anonymously ========= \\
+
 
     override suspend fun signInAnonymously(): Resource<Unit, DataError.Auth> {
         return try {
@@ -63,7 +49,9 @@ internal class FirebaseAuthRepository @Inject constructor(
         }
     }
 
+
     // ========= Sign in with Google ========= \\
+
 
     override suspend fun launchGoogleAuthOptions(context: Context): Resource<Unit, DataError.Auth> {
         return try {

@@ -27,8 +27,7 @@ class AiChatViewModel @Inject constructor(
     private val saveMessage: SaveFireStoreMessagesUseCase,
     private val observeAiMessagesPagingStream: ObserveAiMessagesPagingStreamUseCase,
     private val fileUploadManager: FileUploadManager,
-    private val uiAiMessageMapper: UiAiMessageMapper,
-    getCurrentUserId: com.pegio.domain.usecase.common.GetCurrentUserIdUseCase
+    private val uiAiMessageMapper: UiAiMessageMapper
 ) : ViewModel() {
 
     var uiState by mutableStateOf(AiChatUiState())
@@ -38,9 +37,9 @@ class AiChatViewModel @Inject constructor(
     val uiEffect = _uiEffect.asSharedFlow()
 
     init {
-        getCurrentUserId().let { currentUserId ->
-            updateState { copy(userId = currentUserId) }
-        }
+//        getCurrentUserId().let { currentUserId ->
+//            updateState { copy(userId = currentUserId) }
+//        }
     }
 
     fun onEvent(event: AiChatUiEvent) {

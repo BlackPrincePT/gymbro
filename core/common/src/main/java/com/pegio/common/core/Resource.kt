@@ -2,8 +2,6 @@ package com.pegio.common.core
 
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flatMapConcat
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlin.contracts.ExperimentalContracts
@@ -18,8 +16,8 @@ sealed interface Resource<out D, out E : Error> {
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
 
-fun <D> D.asResource() = Resource.Success(data = this)
-fun <E : Error> E.asResource() = Resource.Failure(error = this)
+fun <D> D.asSuccess() = Resource.Success(data = this)
+fun <E : Error> E.asFailure() = Resource.Failure(error = this)
 
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */

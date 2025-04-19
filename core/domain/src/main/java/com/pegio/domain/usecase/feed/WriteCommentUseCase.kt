@@ -2,7 +2,8 @@ package com.pegio.domain.usecase.feed
 
 import com.pegio.common.core.DataError
 import com.pegio.common.core.Resource
-import com.pegio.common.core.asResource
+import com.pegio.common.core.asFailure
+import com.pegio.common.core.asSuccess
 import com.pegio.domain.repository.AuthRepository
 import com.pegio.domain.repository.PostCommentRepository
 import com.pegio.model.PostComment
@@ -23,7 +24,7 @@ class WriteCommentUseCase @Inject constructor(
 
             postCommentRepository.writeComment(newComment, postId)
 
-            newComment.asResource()
-        } ?: DataError.Auth.UNAUTHENTICATED.asResource()
+            newComment.asSuccess()
+        } ?: DataError.Auth.UNAUTHENTICATED.asFailure()
     }
 }

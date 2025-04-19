@@ -1,23 +1,25 @@
 package com.pegio.feed.presentation.screen.feed
 
 import androidx.lifecycle.viewModelScope
+import com.pegio.common.core.getOrElse
 import com.pegio.common.core.onFailure
 import com.pegio.common.core.onSuccess
 import com.pegio.common.presentation.core.BaseViewModel
 import com.pegio.common.presentation.model.mapper.UiUserMapper
-import com.pegio.domain.usecase.common.FetchCurrentUserStreamUseCase
+import com.pegio.domain.usecase.common.GetCurrentUserStreamUseCase
 import com.pegio.domain.usecase.feed.FetchNextRelevantPostsPageUseCase
 import com.pegio.feed.presentation.model.mapper.UiPostMapper
 import com.pegio.feed.presentation.screen.feed.state.FeedUiEffect
 import com.pegio.feed.presentation.screen.feed.state.FeedUiEvent
 import com.pegio.feed.presentation.screen.feed.state.FeedUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class FeedViewModel @Inject constructor(
-    private val fetchCurrentUserStream: FetchCurrentUserStreamUseCase,
+    private val fetchCurrentUserStream: GetCurrentUserStreamUseCase,
     private val fetchNextRelevantPostsPage: FetchNextRelevantPostsPageUseCase,
     private val uiUserMapper: UiUserMapper,
     private val uiPostMapper: UiPostMapper
@@ -44,10 +46,10 @@ class FeedViewModel @Inject constructor(
 
     override fun setLoading(isLoading: Boolean) = updateState { copy(isLoading = isLoading) }
 
-    private fun observeCurrentUser() {
+    private fun observeCurrentUser() = viewModelScope.launch {
         fetchCurrentUserStream()
-            .onSuccess { updateState { copy(currentUser = uiUserMapper.mapFromDomain(it)) } }
-            .launchIn(viewModelScope)
+            .getOrElse { return@launch }
+            .collectLatest { updateState { copy(currentUser = uiUserMapper.mapFromDomain(it)) } }
     }
 
     private fun loadMorePosts() = launchWithLoading {

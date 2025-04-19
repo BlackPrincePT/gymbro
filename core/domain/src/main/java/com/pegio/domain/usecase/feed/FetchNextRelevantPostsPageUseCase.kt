@@ -1,6 +1,7 @@
 package com.pegio.domain.usecase.feed
 
-import com.pegio.common.core.asResource
+import com.pegio.common.core.asFailure
+import com.pegio.common.core.asSuccess
 import com.pegio.common.core.getOrElse
 import com.pegio.common.core.getOrNull
 import com.pegio.common.core.retryableCall
@@ -17,7 +18,7 @@ class FetchNextRelevantPostsPageUseCase @Inject constructor(
 ) {
     suspend operator fun invoke() = coroutineScope {
         postRepository.fetchNextRelevantPostsPage()
-            .getOrElse { return@coroutineScope it.asResource() }
+            .getOrElse { return@coroutineScope it.asFailure() }
             .map { post ->
                 async {
                     retryableCall { userRepository.fetchUserById(id = post.authorId) }
@@ -26,6 +27,6 @@ class FetchNextRelevantPostsPageUseCase @Inject constructor(
                 }
             }
             .awaitAll()
-            .asResource()
+            .asSuccess()
     }
 }

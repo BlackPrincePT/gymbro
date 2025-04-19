@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
@@ -36,7 +35,7 @@ internal fun AuthScreen(
         when (effect) {
             AuthUiEffect.NavigateToHome -> onAuthSuccess()
             AuthUiEffect.NavigateToRegister -> onRegistrationRequired()
-            is AuthUiEffect.Failure -> onShowSnackbar(context.getString(effect.errorRes), null)
+            is AuthUiEffect.ShowSnackbar -> onShowSnackbar(context.getString(effect.errorRes), null)
         }
     }
 
