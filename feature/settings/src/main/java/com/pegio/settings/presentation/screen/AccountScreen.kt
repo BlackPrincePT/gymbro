@@ -70,7 +70,7 @@ private fun AccountContent(
                 .padding(top = 32.dp)
         ) {
             ProfileImage(
-                imageUrl = state.user.imgProfileUrl,
+                imageUrl = state.user.avatarUrl,
                 modifier = Modifier
                     .clip(CircleShape)
                     .size(64.dp)

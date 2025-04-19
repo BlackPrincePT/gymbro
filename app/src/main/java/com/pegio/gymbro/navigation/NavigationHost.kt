@@ -13,6 +13,8 @@ import com.pegio.common.presentation.state.TopBarState
 import com.pegio.feed.presentation.screen.createpost.CreatePostScreen
 import com.pegio.feed.presentation.screen.feed.navigation.feedScreen
 import com.pegio.feed.presentation.screen.feed.navigation.popNavigateToFeed
+import com.pegio.feed.presentation.screen.postdetails.navigation.navigateToPostDetails
+import com.pegio.feed.presentation.screen.postdetails.navigation.postDetailsScreen
 import com.pegio.gymbro.navigation.route.AccountRoute
 import com.pegio.gymbro.navigation.route.AiChatRoute
 import com.pegio.gymbro.navigation.route.CreatePostRoute
@@ -62,8 +64,14 @@ fun NavigationHost(
 
         feedScreen(
             onCreatePostClick = navController::navigateToCreatePost,
+            onShowPostDetails = navController::navigateToPostDetails,
             onChatClick = navController::navigateToAiChat,
             onOpenDrawerClick = dynamicallyOpenDrawer,
+            onSetupTopBar = onSetupAppBar
+        )
+
+        postDetailsScreen(
+            onBackClick = navController::navigateUp,
             onSetupTopBar = onSetupAppBar
         )
 

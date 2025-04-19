@@ -1,8 +1,7 @@
 package com.pegio.feed.presentation.screen.postdetails.state
 
-import com.pegio.common.presentation.model.UiUser
-import com.pegio.feed.presentation.model.UiComment
 import com.pegio.feed.presentation.model.UiPost
+import com.pegio.feed.presentation.model.UiPostComment
 
 data class PostDetailsUiState(
 
@@ -10,7 +9,9 @@ data class PostDetailsUiState(
     val isLoading: Boolean = false,
 
     // Post
-    val postAuthor: UiUser? = null,
-    val displayedPost: UiPost? = null,
-    val comments: List<UiComment> = emptyList()
+    val displayedPost: UiPost = UiPost.DEFAULT,
+    val comments: List<UiPostComment> = emptyList(),
+
+    // Compose State
+    val commentText: String = ""
 )

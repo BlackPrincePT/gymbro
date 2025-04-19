@@ -1,6 +1,7 @@
 package com.pegio.feed.presentation.screen.feed
 
 import androidx.lifecycle.viewModelScope
+import com.pegio.common.core.onFailure
 import com.pegio.common.core.onSuccess
 import com.pegio.common.presentation.core.BaseViewModel
 import com.pegio.common.presentation.model.mapper.UiUserMapper
@@ -29,12 +30,15 @@ class FeedViewModel @Inject constructor(
 
     override fun onEvent(event: FeedUiEvent) {
         when (event) {
-            FeedUiEvent.OnCreatePostClick -> sendEffect(FeedUiEffect.NavigateToCreatePost)
             FeedUiEvent.OnLoadMorePosts -> loadMorePosts()
 
             // Top Bar
             FeedUiEvent.OnDrawerClick -> sendEffect(FeedUiEffect.OpenDrawer)
             FeedUiEvent.OnChatClick -> sendEffect(FeedUiEffect.NavigateToChat)
+
+            // Navigation
+            FeedUiEvent.OnCreatePostClick -> sendEffect(FeedUiEffect.NavigateToCreatePost)
+            is FeedUiEvent.OnPostCommentClick -> sendEffect(FeedUiEffect.NavigateToPostDetails(event.postId))
         }
     }
 
@@ -52,5 +56,6 @@ class FeedViewModel @Inject constructor(
                 val fetchedPosts = it.map(uiPostMapper::mapFromDomain)
                 updateState { copy(relevantPosts = relevantPosts.plus(fetchedPosts)) }
             }
+            .onFailure { /* TODO: HANDLE */ }
     }
 }

@@ -7,26 +7,22 @@ import com.pegio.common.core.onFailure
 import com.pegio.domain.repository.PostRepository
 import com.pegio.domain.repository.UserRepository
 import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
 import javax.inject.Inject
 
-class FetchNextRelevantPostsPageUseCase @Inject constructor(
+class FetchPostByIdUseCase @Inject constructor(
     private val postRepository: PostRepository,
     private val userRepository: UserRepository
 ) {
-    suspend operator fun invoke() = coroutineScope {
-         postRepository.fetchNextRelevantPostsPage()
+    suspend operator fun invoke(id: String) = coroutineScope {
+        postRepository.fetchPostById(id)
             .onFailure { return@coroutineScope it.asResource() }
             .get()
-            .map { post ->
-                async {
-                    userRepository.fetchUserById(id = post.authorId)
-                        .getOrNull() // TODO: IMPLEMENT RETRY POLICY
-                        .let { post to it }
-                }
+            .let { post ->
+                userRepository.fetchUserById(id = post.authorId)
+                    .getOrNull()
+                    .let { post to it }
             }
-            .awaitAll()
             .asResource()
     }
 }

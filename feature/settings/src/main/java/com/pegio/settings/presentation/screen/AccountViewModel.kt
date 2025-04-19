@@ -54,12 +54,12 @@ class AccountViewModel @Inject constructor(
     }
 
     private fun uploadProfileImageUrl(url: String) {
-        uiState.user.copy(imgProfileUrl = url)
+        uiState.user.copy(avatarUrl = url)
             .let { saveUser(uiUserMapper.mapToDomain(it)) }
     }
 
     private fun deleteExistingProfileImage() {
-        val currentProfileImageUrl = uiState.user.imgProfileUrl ?: return
+        val currentProfileImageUrl = uiState.user.avatarUrl ?: return
         fileUploadManager.deleteFile(currentProfileImageUrl)
     }
 

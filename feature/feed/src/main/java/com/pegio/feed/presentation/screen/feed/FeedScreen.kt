@@ -2,9 +2,9 @@ package com.pegio.feed.presentation.screen.feed
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
@@ -20,9 +20,9 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.pegio.common.presentation.state.TopBarAction
 import com.pegio.common.presentation.state.TopBarState
+import com.pegio.common.presentation.util.CollectLatestEffect
 import com.pegio.feed.presentation.component.CreatePost
 import com.pegio.feed.presentation.component.PostContent
-import com.pegio.common.presentation.util.CollectLatestEffect
 import com.pegio.feed.presentation.screen.feed.state.FeedUiEffect
 import com.pegio.feed.presentation.screen.feed.state.FeedUiEvent
 import com.pegio.feed.presentation.screen.feed.state.FeedUiState
@@ -30,6 +30,7 @@ import com.pegio.feed.presentation.screen.feed.state.FeedUiState
 @Composable
 internal fun FeedScreen(
     onCreatePostClick: () -> Unit,
+    onShowPostDetails: (String) -> Unit,
     onChatClick: () -> Unit,
     onOpenDrawerClick: () -> Unit,
     onSetupTopBar: (TopBarState) -> Unit,
@@ -39,11 +40,14 @@ internal fun FeedScreen(
 
     CollectLatestEffect(viewModel.uiEffect) { effect ->
         when (effect) {
-            FeedUiEffect.NavigateToCreatePost -> onCreatePostClick()
 
             // Top Bar
             FeedUiEffect.OpenDrawer -> onOpenDrawerClick()
             FeedUiEffect.NavigateToChat -> onChatClick()
+
+            // Navigation
+            FeedUiEffect.NavigateToCreatePost -> onCreatePostClick()
+            is FeedUiEffect.NavigateToPostDetails -> onShowPostDetails(effect.postId)
         }
     }
 
@@ -59,7 +63,6 @@ private fun FeedContent(
     onEvent: (FeedUiEvent) -> Unit
 ) {
     LazyColumn(
-        contentPadding = PaddingValues(16.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp),
         modifier = Modifier
             .fillMaxSize()
@@ -68,18 +71,20 @@ private fun FeedContent(
             CreatePost(
                 currentUser = state.currentUser,
                 onPostClick = { onEvent(FeedUiEvent.OnCreatePostClick) },
-                onProfileClick = { }
+                onProfileClick = { },
+                modifier = Modifier
+                    .padding(8.dp)
             )
         }
 
         // TODO: Add stories
 
-        items(state.relevantPosts) {
+        items(state.relevantPosts) { post ->
             PostContent(
-                post = it,
+                post = post,
                 onUpVoteClick = { },
                 onDownVoteClick = { },
-                onCommentClick = { },
+                onCommentClick = { onEvent(FeedUiEvent.OnPostCommentClick(postId = post.id)).also { println(post) } },
                 onRatingClick = { }
             )
         }
@@ -116,7 +121,7 @@ private fun SetupTopBar(
     }
 }
 
-@Preview
+@Preview(showBackground = true)
 @Composable
 private fun FeedContentPreview() {
     FeedContent(state = FeedUiState(), onEvent = { })

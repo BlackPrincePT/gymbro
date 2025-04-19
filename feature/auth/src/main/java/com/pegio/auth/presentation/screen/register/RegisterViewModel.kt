@@ -65,7 +65,7 @@ class RegisterViewModel @Inject constructor(
     private fun saveUserWithProfilePhoto(uri: Uri) = viewModelScope.launch {
         fileUploadManager.enqueueFileUpload(uri.toString())
             .onSuccess {
-                saveUser(uiUserMapper.mapToDomain(uiState.value.user.copy(imgProfileUrl = it)))
+                saveUser(uiUserMapper.mapToDomain(uiState.value.user.copy(avatarUrl = it)))
                 sendEffect(RegisterUiEffect.NavigateToHome)
             }
     }

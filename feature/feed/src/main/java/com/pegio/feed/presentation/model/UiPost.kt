@@ -22,7 +22,7 @@ data class UiPost(
         val DEFAULT = UiPost(
             id = "",
             author = UiUser.DEFAULT,
-            content = "Hello, TBC IT Academy!",
+            content = "My name is Patrick Bateman. I'm 27 years old.",
             imageUrl = null,
             voteCount = "108",
             commentCount = "13",

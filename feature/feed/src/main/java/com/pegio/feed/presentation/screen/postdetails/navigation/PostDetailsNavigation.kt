@@ -8,9 +8,9 @@ import com.pegio.feed.presentation.screen.postdetails.PostDetailsScreen
 import kotlinx.serialization.Serializable
 
 @Serializable
-data object PostDetailsRoute
+data class PostDetailsRoute(val postId: String)
 
-fun NavController.navigateToFeed() = navigate(route = PostDetailsRoute)
+fun NavController.navigateToPostDetails(postId: String) = navigate(route = PostDetailsRoute(postId))
 
 fun NavGraphBuilder.postDetailsScreen(
     onBackClick: () -> Unit,
