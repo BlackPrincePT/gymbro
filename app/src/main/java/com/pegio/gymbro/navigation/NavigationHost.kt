@@ -5,7 +5,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.pegio.aichat.presentation.screen.ai_chat.AiChatScreen
+import com.pegio.aichat.presentation.screen.aichat.AiChatScreen
 import com.pegio.auth.presentation.screen.auth.navigation.authScreen
 import com.pegio.auth.presentation.screen.auth.navigation.navigateToAuth
 import com.pegio.auth.presentation.screen.register.RegisterScreen

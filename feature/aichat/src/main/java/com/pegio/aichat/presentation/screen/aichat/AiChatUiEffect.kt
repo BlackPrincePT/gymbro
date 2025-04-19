@@ -1,4 +1,4 @@
-package com.pegio.aichat.presentation.screen.ai_chat
+package com.pegio.aichat.presentation.screen.aichat
 
 import com.pegio.common.core.Error
 

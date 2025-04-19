@@ -1,4 +1,4 @@
-package com.pegio.aichat.presentation.screen.ai_chat
+package com.pegio.aichat.presentation.screen.aichat
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -12,6 +12,8 @@ import com.pegio.common.core.onSuccess
 import com.pegio.domain.usecase.aichat.ObserveAiMessagesPagingStreamUseCase
 import com.pegio.domain.usecase.aichat.SaveFireStoreMessagesUseCase
 import com.pegio.domain.usecase.aichat.SendMessageToAiUseCase
+import com.pegio.domain.usecase.common.GetCurrentAuthUserUseCase
+import com.pegio.domain.usecase.common.GetCurrentUserUseCase
 import com.pegio.uploadmanager.core.FileUploadManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -27,7 +29,8 @@ class AiChatViewModel @Inject constructor(
     private val saveMessage: SaveFireStoreMessagesUseCase,
     private val observeAiMessagesPagingStream: ObserveAiMessagesPagingStreamUseCase,
     private val fileUploadManager: FileUploadManager,
-    private val uiAiMessageMapper: UiAiMessageMapper
+    private val uiAiMessageMapper: UiAiMessageMapper,
+    getCurrentAuthUser: GetCurrentAuthUserUseCase
 ) : ViewModel() {
 
     var uiState by mutableStateOf(AiChatUiState())
@@ -37,9 +40,9 @@ class AiChatViewModel @Inject constructor(
     val uiEffect = _uiEffect.asSharedFlow()
 
     init {
-//        getCurrentUserId().let { currentUserId ->
-//            updateState { copy(userId = currentUserId) }
-//        }
+        getCurrentAuthUser()?.let { currentUser ->
+            updateState { copy(userId = currentUser.id) }
+        }
     }
 
     fun onEvent(event: AiChatUiEvent) {
@@ -61,7 +64,8 @@ class AiChatViewModel @Inject constructor(
     }
 
     private fun loadMoreMessages() {
-        // Declare current messages before updating state PRINCE PETER DONT TOUCH IT
+        // Declare current messages before updating state PRINCE PETER DON'T TOUCH IT
+        // KISS ME BABY ONE MORE TIMEEEEE!
         val currentMessages = uiState.messages
 
         observeAiMessagesPagingStream(
