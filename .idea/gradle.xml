@@ -33,6 +33,7 @@
             <option value="$PROJECT_DIR$/core/firestore" />
             <option value="$PROJECT_DIR$/core/model" />
             <option value="$PROJECT_DIR$/core/network" />
+            <option value="$PROJECT_DIR$/core/session" />
             <option value="$PROJECT_DIR$/core/uploadmanager" />
             <option value="$PROJECT_DIR$/feature" />
             <option value="$PROJECT_DIR$/feature/aichat" />

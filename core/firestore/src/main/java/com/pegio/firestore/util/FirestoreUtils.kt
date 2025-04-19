@@ -6,6 +6,7 @@ import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.snapshots
 import com.pegio.common.core.DataError
 import com.pegio.common.core.Resource
+import com.pegio.common.core.asResource
 import com.pegio.firestore.model.FirestorePagingResult
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
@@ -18,27 +19,21 @@ class FirestoreUtils @Inject internal constructor() {
     fun <T> observeDocument(documentRef: DocumentReference, klass: Class<T>): Flow<Resource<T, DataError.Firestore>> {
         return documentRef.snapshots()
             .map { documentSnapshot ->
-
-                if (documentSnapshot.exists()) {
-                    documentSnapshot.toObject(klass)?.let {
-                        Resource.Success(data = it)
-                    } ?: Resource.Failure(error = DataError.Firestore.DOCUMENT_PARSE_FAILED)
-                } else {
-                    Resource.Failure(error = DataError.Firestore.DOCUMENT_NOT_FOUND)
-                }
+                documentSnapshot.toObject(klass)?.asResource()
+                    ?: DataError.Firestore.DOCUMENT_NOT_FOUND.asResource()
             }
             .catch { cause: Throwable ->
-                Resource.Failure(error = mapExceptionToFirestoreError(cause))
+                mapExceptionToFirestoreError(cause).asResource()
             }
     }
 
-    fun <T> observeDocuments(query: Query, klass: Class<T>) : Flow<Resource<List<T>, DataError.Firestore>> {
+    fun <T> observeDocuments(query: Query, klass: Class<T>): Flow<Resource<List<T>, DataError.Firestore>> {
         return query.snapshots()
             .map { querySnapshot ->
-                Resource.Success(data = querySnapshot.toObjects(klass))
+                querySnapshot.toObjects(klass).asResource()
             }
             .catch { cause: Throwable ->
-                Resource.Failure(error = mapExceptionToFirestoreError(cause)).also { println(cause) }
+                mapExceptionToFirestoreError(cause).asResource()
             }
     }
 
@@ -46,15 +41,10 @@ class FirestoreUtils @Inject internal constructor() {
         return try {
             val documentSnapshot = documentRef.get().await()
 
-            if (documentSnapshot.exists()) {
-                documentSnapshot.toObject(klass)?.let {
-                    Resource.Success(data = it)
-                } ?: Resource.Failure(error = DataError.Firestore.DOCUMENT_PARSE_FAILED)
-            } else {
-                Resource.Failure(error = DataError.Firestore.DOCUMENT_NOT_FOUND)
-            }
+            documentSnapshot.toObject(klass)?.asResource()
+                ?: DataError.Firestore.DOCUMENT_NOT_FOUND.asResource()
         } catch (e: Exception) {
-            Resource.Failure(error = mapExceptionToFirestoreError(e))
+            mapExceptionToFirestoreError(e).asResource()
         }
     }
 
@@ -65,21 +55,21 @@ class FirestoreUtils @Inject internal constructor() {
             val objects = querySnapshot.toObjects(klass)
             val lastDocument = querySnapshot.documents.lastOrNull()
 
-            Resource.Success(data = FirestorePagingResult(objects, lastDocument))
+            FirestorePagingResult(objects, lastDocument).asResource()
         } catch (e: Exception) {
-            Resource.Failure(error = mapExceptionToFirestoreError(e))
+            mapExceptionToFirestoreError(e).asResource()
         }
     }
 
     private fun mapExceptionToFirestoreError(e: Throwable): DataError.Firestore {
         return when (e) {
-            is FirebaseFirestoreException -> mapFirebaseCodeToError(e.code)
+            is FirebaseFirestoreException -> mapFirebaseCodeToError(e)
             else -> DataError.Firestore.UNKNOWN
         }
     }
 
-    private fun mapFirebaseCodeToError(code: FirebaseFirestoreException.Code): DataError.Firestore {
-        return when (code) {
+    private fun mapFirebaseCodeToError(exception: FirebaseFirestoreException): DataError.Firestore {
+        return when (exception.code) {
             FirebaseFirestoreException.Code.NOT_FOUND -> DataError.Firestore.DOCUMENT_NOT_FOUND
             FirebaseFirestoreException.Code.PERMISSION_DENIED -> DataError.Firestore.PERMISSION_DENIED
             FirebaseFirestoreException.Code.INTERNAL -> DataError.Firestore.INTERNAL

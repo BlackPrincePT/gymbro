@@ -39,16 +39,12 @@ internal class FirebaseAuthRepository @Inject constructor(
     }
 
     override fun getCurrentUser(): User.Auth? {
-        return auth.currentUser?.run {
-            User.Auth(id = uid, isAnonymous = isAnonymous)
-        }
+        return auth.currentUser?.run { User.Auth(id = uid, isAnonymous = isAnonymous) }
     }
 
     override fun getCurrentUserStream(): Flow<User.Auth?> {
         return currentUserFlow.map { user ->
-            user?.run {
-                User.Auth(id = uid, isAnonymous = isAnonymous)
-            }
+            user?.run { User.Auth(id = uid, isAnonymous = isAnonymous) }
         }
     }
 

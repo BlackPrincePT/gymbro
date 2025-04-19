@@ -1,9 +1,9 @@
 package com.pegio.domain.usecase.feed
 
 import com.pegio.common.core.asResource
-import com.pegio.common.core.get
+import com.pegio.common.core.getOrElse
 import com.pegio.common.core.getOrNull
-import com.pegio.common.core.onFailure
+import com.pegio.common.core.retryableCall
 import com.pegio.domain.repository.PostRepository
 import com.pegio.domain.repository.UserRepository
 import kotlinx.coroutines.async
@@ -16,13 +16,12 @@ class FetchNextRelevantPostsPageUseCase @Inject constructor(
     private val userRepository: UserRepository
 ) {
     suspend operator fun invoke() = coroutineScope {
-         postRepository.fetchNextRelevantPostsPage()
-            .onFailure { return@coroutineScope it.asResource() }
-            .get()
+        postRepository.fetchNextRelevantPostsPage()
+            .getOrElse { return@coroutineScope it.asResource() }
             .map { post ->
                 async {
-                    userRepository.fetchUserById(id = post.authorId)
-                        .getOrNull() // TODO: IMPLEMENT RETRY POLICY
+                    retryableCall { userRepository.fetchUserById(id = post.authorId) }
+                        .getOrNull()
                         .let { post to it }
                 }
             }

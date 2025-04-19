@@ -8,6 +8,7 @@ import com.pegio.common.core.ValidationError
 fun Error.toStringResId(): Int = when (this) {
     is DataError -> this.toStringResId()
     is ValidationError -> this.toStringResId()
+    else -> R.string.feature_common_presentation_error_generic
 }
 
 private fun DataError.toStringResId(): Int = when (this) {

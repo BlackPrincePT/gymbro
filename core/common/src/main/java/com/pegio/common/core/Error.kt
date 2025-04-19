@@ -1,6 +1,13 @@
 package com.pegio.common.core
 
-sealed interface Error
+interface Error
+interface Retryable
+
+sealed interface SessionError : Error {
+    data object Unauthenticated : SessionError, Retryable
+    data object RegistrationIncomplete : SessionError, Retryable
+    data object Unknown: SessionError
+}
 
 sealed interface DataError : Error {
 

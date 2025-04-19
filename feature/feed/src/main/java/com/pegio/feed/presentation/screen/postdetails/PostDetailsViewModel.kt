@@ -15,9 +15,7 @@ import com.pegio.feed.presentation.screen.postdetails.navigation.PostDetailsRout
 import com.pegio.feed.presentation.screen.postdetails.state.PostDetailsUiEffect
 import com.pegio.feed.presentation.screen.postdetails.state.PostDetailsUiEvent
 import com.pegio.feed.presentation.screen.postdetails.state.PostDetailsUiState
-import com.pegio.model.PostComment
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.coroutineScope
 import javax.inject.Inject
 
 @HiltViewModel
