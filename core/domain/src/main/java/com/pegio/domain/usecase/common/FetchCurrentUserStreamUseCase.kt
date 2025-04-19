@@ -18,7 +18,7 @@ class FetchCurrentUserStreamUseCase @Inject constructor(
         return authRepository.getCurrentUserStream()
             .filterNotNull()
             .flatMapLatest { currentUser ->
-                userRepository.fetchUserSteam(id = currentUser.id)
+                userRepository.fetchUserSteamById(id = currentUser.id)
             }
     }
 }

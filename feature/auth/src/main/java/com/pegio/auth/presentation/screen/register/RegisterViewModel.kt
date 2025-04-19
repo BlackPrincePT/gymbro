@@ -3,8 +3,8 @@ package com.pegio.auth.presentation.screen.register
 import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.pegio.common.core.errorOrNull
 import com.pegio.common.core.onSuccess
-import com.pegio.common.core.withError
 import com.pegio.common.presentation.model.UiUser
 import com.pegio.common.presentation.model.mapper.UiUserMapper
 import com.pegio.common.presentation.util.toStringResId
@@ -65,7 +65,7 @@ class RegisterViewModel @Inject constructor(
     private fun saveUserWithProfilePhoto(uri: Uri) = viewModelScope.launch {
         fileUploadManager.enqueueFileUpload(uri.toString())
             .onSuccess {
-                saveUser(uiUserMapper.mapToDomain(uiState.value.user.copy(imgProfileUrl = it)))
+                saveUser(uiUserMapper.mapToDomain(uiState.value.user.copy(avatarUrl = it)))
                 sendEffect(RegisterUiEffect.NavigateToHome)
             }
     }
@@ -76,19 +76,24 @@ class RegisterViewModel @Inject constructor(
         var isValid = true
 
         formValidator.validateUsername(currentUser.username)
-            .withError { updateError { copy(username = it?.toStringResId()) }; isValid = it == null }
+            .errorOrNull()
+            .also { updateError { copy(username = it?.toStringResId()) }; isValid = it == null }
 
         formValidator.validateAge(ageString = currentUser.age)
-            .withError { updateError { copy(age = it?.toStringResId()) }; isValid = it == null }
+            .errorOrNull()
+            .also { updateError { copy(age = it?.toStringResId()) }; isValid = it == null }
 
         formValidator.validateGender(gender = currentUser.gender)
-            .withError { updateError { copy(gender = it?.toStringResId()) }; isValid = it == null }
+            .errorOrNull()
+            .also { updateError { copy(gender = it?.toStringResId()) }; isValid = it == null }
 
         formValidator.validateHeight(heightString = currentUser.heightCm)
-            .withError { updateError { copy(height = it?.toStringResId()) }; isValid = it == null }
+            .errorOrNull()
+            .also { updateError { copy(height = it?.toStringResId()) }; isValid = it == null }
 
         formValidator.validateWeight(weightString = currentUser.weightKg)
-            .withError { updateError { copy(weight = it?.toStringResId()) }; isValid = it == null }
+            .errorOrNull()
+            .also { updateError { copy(weight = it?.toStringResId()) }; isValid = it == null }
 
         return isValid
     }

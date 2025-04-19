@@ -120,7 +120,7 @@ private fun AppDrawerHeader(
         )
 
         ProfileImage(
-            imageUrl = user.imgProfileUrl,
+            imageUrl = user.avatarUrl,
             modifier = Modifier
                 .clip(CircleShape)
                 .size(64.dp)

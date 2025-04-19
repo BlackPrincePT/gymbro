@@ -11,19 +11,26 @@ sealed interface Resource<out D, out E : Error> {
 
 // ====== State ====== \\
 
-val <D, E : Error> Resource<D, E>.isSuccess: Boolean
+inline val <D, E : Error> Resource<D, E>.isSuccess: Boolean
     get() = this is Resource.Success
 
-val <D, E : Error> Resource<D, E>.isFailure: Boolean
+inline val <D, E : Error> Resource<D, E>.isFailure: Boolean
     get() = this is Resource.Failure
+
+// ====== Create ====== \\
+
+fun <D> D.asResource() = Resource.Success(data = this)
+fun <E : Error> E.asResource() = Resource.Failure(error = this)
 
 // ====== Access ====== \\
 
-fun <D> Resource<D, *>.getOrNull(): D? = (this as? Resource.Success)?.data
+fun <D> Resource<D, *>.get() = (this as Resource.Success).data
+fun <D> Resource<D, *>.getOrNull() = (this as? Resource.Success)?.data
+fun <D> Resource<D, *>.getOrElse(default: D) = getOrNull() ?: default
 
-fun <E : Error> Resource<*, E>.errorOrNull(): E? = (this as? Resource.Failure)?.error
-
-fun <D, E : Error> Resource<D, E>.getOrElse(default: D): D = getOrNull() ?: default
+fun <E : Error> Resource<*, E>.error() = (this as Resource.Failure).error
+fun <E : Error> Resource<*, E>.errorOrNull() = (this as? Resource.Failure)?.error
+fun <E : Error> Resource<*, E>.errorOrElse(default: E) = errorOrNull() ?: default
 
 // ====== Mapper ====== \\
 
@@ -52,62 +59,34 @@ fun <T, D, E : Error> Flow<Resource<List<D>, E>>.convertList(transform: (D) -> T
     }
 }
 
-// ====== Handle ====== \\
+// ====== Handler ====== \\
 
-fun <D, E : Error> Resource<D, E>.onSuccess(action: (D) -> Unit): Resource<D, E> {
+inline fun <D, E : Error> Resource<D, E>.onSuccess(action: (D) -> Unit): Resource<D, E> {
     if (this is Resource.Success)
         action(data)
 
     return this
 }
 
-fun <D, E : Error> Resource<D, E>.onFailure(action: (E) -> Unit): Resource<D, E> {
+inline fun <D, E : Error> Resource<D, E>.onFailure(action: (E) -> Unit): Resource<D, E> {
     if (this is Resource.Failure)
         action(error)
 
     return this
 }
 
-suspend fun <D, E : Error> Resource<D, E>.onSuccessAsync(action: suspend (D) -> Unit): Resource<D, E> {
+suspend inline fun <D, E : Error> Resource<D, E>.onSuccessAsync(noinline action: suspend (D) -> Unit): Resource<D, E> {
     if (this is Resource.Success)
         action(data)
 
     return this
 }
 
-suspend fun <D, E : Error> Resource<D, E>.onFailureAsync(action: suspend (E) -> Unit): Resource<D, E> {
+suspend inline fun <D, E : Error> Resource<D, E>.onFailureAsync(noinline action: suspend (E) -> Unit): Resource<D, E> {
     if (this is Resource.Failure)
         action(error)
 
     return this
-}
-
-fun <D> Resource<D, *>.withData(action: (D?) -> Unit) {
-    when (this) {
-        is Resource.Success -> action(data)
-        is Resource.Failure -> action(null)
-    }
-}
-
-fun <E : Error> Resource<*, E>.withError(action: (E?) -> Unit) {
-    when (this) {
-        is Resource.Success -> action(null)
-        is Resource.Failure -> action(error)
-    }
-}
-
-suspend fun <D> Resource<D, *>.withDataAsync(action: suspend (D?) -> Unit) {
-    when (this) {
-        is Resource.Success -> action(data)
-        is Resource.Failure -> action(null)
-    }
-}
-
-suspend fun <E : Error> Resource<*, E>.withErrorAsync(action: suspend (E?) -> Unit) {
-    when (this) {
-        is Resource.Success -> action(null)
-        is Resource.Failure -> action(error)
-    }
 }
 
 fun <D, E : Error> Flow<Resource<D, E>>.onSuccess(action: suspend (D) -> Unit): Flow<Resource<D, E>> {

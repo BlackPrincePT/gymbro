@@ -1,4 +1,4 @@
-package com.pegio.domain.usecase.post
+package com.pegio.domain.usecase.feed
 
 import com.pegio.model.Post
 import com.pegio.domain.repository.PostRepository

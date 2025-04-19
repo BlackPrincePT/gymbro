@@ -9,7 +9,7 @@ data class UiUser(
     val gender: Gender?,
     val heightCm: String,
     val weightKg: String,
-    val imgProfileUrl: String?,
+    val avatarUrl: String?,
     val imgBackgroundUrl: String?,
 ) {
 
@@ -22,7 +22,7 @@ data class UiUser(
             gender = Gender.MALE,
             heightCm = "180",
             weightKg = "75",
-            imgProfileUrl = null,
+            avatarUrl = null,
             imgBackgroundUrl = null,
         )
 
@@ -33,7 +33,7 @@ data class UiUser(
             gender = null,
             heightCm = "",
             weightKg = "",
-            imgProfileUrl = null,
+            avatarUrl = null,
             imgBackgroundUrl = null
         )
     }

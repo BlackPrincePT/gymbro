@@ -15,7 +15,7 @@ class UiUserMapper @Inject constructor() : Mapper<UiUser, User> {
             gender = data.gender ?: User.Gender.MALE, // FIXME PLEASE
             heightCm = data.heightCm.toInt(),
             weightKg = data.weightKg.toInt(),
-            imgProfileUrl = data.imgProfileUrl,
+            imgProfileUrl = data.avatarUrl,
             imgBackgroundUrl = data.imgBackgroundUrl,
         )
     }
@@ -28,7 +28,7 @@ class UiUserMapper @Inject constructor() : Mapper<UiUser, User> {
             gender = data.gender,
             heightCm = data.heightCm.toString(),
             weightKg = data.weightKg.toString(),
-            imgProfileUrl = data.imgProfileUrl,
+            avatarUrl = data.imgProfileUrl,
             imgBackgroundUrl = data.imgBackgroundUrl,
         )
     }

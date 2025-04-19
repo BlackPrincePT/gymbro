@@ -16,7 +16,7 @@ fun PostImage(
         model = imageUrl,
         contentDescription = null,
         fallback = ColorPainter(Color.Gray),
-        contentScale = ContentScale.Inside,
+        contentScale = ContentScale.Crop,
         modifier = modifier
     )
 }

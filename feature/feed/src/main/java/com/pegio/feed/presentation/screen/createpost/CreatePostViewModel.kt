@@ -8,7 +8,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.pegio.model.Post
 import com.pegio.common.core.onSuccess
-import com.pegio.domain.usecase.post.UploadPostUseCase
+import com.pegio.domain.usecase.feed.UploadPostUseCase
 import com.pegio.uploadmanager.core.FileUploadManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers

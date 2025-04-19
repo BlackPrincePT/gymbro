@@ -35,7 +35,7 @@ class CheckUserRegistrationStatusUseCase @Inject constructor(
 
         cacheManager.observe(key = registrationStateKey).firstOrNull()?.let { return it }
 
-        return when (val result = userRepository.fetchUser(id = currentUserId)) {
+        return when (val result = userRepository.fetchUserById(id = currentUserId)) {
             is Resource.Success -> {
                 cacheManager.save(key = registrationStateKey, true)
                 true

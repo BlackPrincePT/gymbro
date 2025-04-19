@@ -12,6 +12,7 @@ data class Post(
     val ratingCount: Int,
     val timestamp: Long
 ) {
+
     companion object {
 
         val EMPTY = Post(

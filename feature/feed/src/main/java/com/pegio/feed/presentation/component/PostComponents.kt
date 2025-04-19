@@ -14,11 +14,13 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Comment
 import androidx.compose.material.icons.filled.ArrowDownward
 import androidx.compose.material.icons.filled.ArrowUpward
+import androidx.compose.material.icons.filled.Image
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -30,39 +32,38 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.pegio.common.presentation.model.UiUser
 import com.pegio.designsystem.component.PostImage
 import com.pegio.designsystem.component.ProfileImage
 import com.pegio.feed.presentation.model.UiPost
 
 @Composable
-fun PostContent(
+internal fun PostContent(
     post: UiPost,
     onUpVoteClick: () -> Unit,
     onDownVoteClick: () -> Unit,
     onCommentClick: () -> Unit,
     onRatingClick: () -> Unit
 ) {
-    Card(shape = MaterialTheme.shapes.large) {
-        Column(
-            modifier = Modifier
-                .padding(vertical = 8.dp)
-        ) {
-            PostHeader(post, onProfileClick = { })
+    Column(
+        modifier = Modifier
+            .padding(vertical = 8.dp)
+    ) {
+        PostHeader(post, onProfileClick = { })
 
-            Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(8.dp))
 
-            PostContent(post, onImageClick = { })
+        PostContent(post)
 
-            Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(8.dp))
 
-            PostActions(
-                post = post,
-                onUpVoteClick = { },
-                onDownVoteClick = { },
-                onCommentClick = { },
-                onRatingClick = { }
-            )
-        }
+        PostActions(
+            post = post,
+            onUpVoteClick = onUpVoteClick,
+            onDownVoteClick = onDownVoteClick,
+            onCommentClick = onCommentClick,
+            onRatingClick = onRatingClick
+        )
     }
 }
 
@@ -70,8 +71,7 @@ fun PostContent(
 
 @Composable
 private fun PostContent(
-    post: UiPost,
-    onImageClick: () -> Unit
+    post: UiPost
 ) {
     Column {
         Text(
@@ -81,15 +81,16 @@ private fun PostContent(
                 .padding(horizontal = 16.dp)
         )
 
-        Spacer(modifier = Modifier.height(4.dp))
+        if (post.hasImage) {
+            Spacer(modifier = Modifier.height(4.dp))
 
-        PostImage(
-            imageUrl = post.imageUrl,
-            modifier = Modifier
-                .clickable { onImageClick.invoke() }
-                .fillMaxWidth()
-                .height(320.dp)
-        )
+            PostImage(
+                imageUrl = post.imageUrl,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(320.dp)
+            )
+        }
     }
 }
 
@@ -107,7 +108,7 @@ private fun PostHeader(
             .padding(horizontal = 16.dp)
     ) {
         ProfileImage(
-            imageUrl = post.author.imgProfileUrl,
+            imageUrl = post.author.avatarUrl,
             modifier = Modifier
                 .size(40.dp)
                 .clip(CircleShape)
@@ -198,10 +199,9 @@ private fun CommentAction(
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
-            .clickable { onClick.invoke() }
     ) {
         PostAction(
-            onClick = { },
+            onClick = onClick,
             imageVector = Icons.AutoMirrored.Default.Comment
         )
 
@@ -252,6 +252,53 @@ private fun PostAction(
     }
 }
 
+// ====== ====== Create ====== ====== \\
+
+@Composable
+internal fun CreatePost(
+    currentUser: UiUser,
+    onPostClick: () -> Unit,
+    onProfileClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Surface(
+        shape = MaterialTheme.shapes.large,
+        modifier = modifier
+            .fillMaxWidth()
+            .clickable { onPostClick() }
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier
+                .padding(12.dp)
+        ) {
+            ProfileImage(
+                imageUrl = currentUser.avatarUrl,
+                modifier = Modifier
+                    .clip(CircleShape)
+                    .size(40.dp)
+                    .clickable { onProfileClick.invoke() }
+            )
+
+            Spacer(modifier = Modifier.width(12.dp))
+
+            Text(
+                text = "What's on your muscles?",
+                color = Color.Gray,
+                style = MaterialTheme.typography.bodyMedium
+            )
+
+            Spacer(modifier = Modifier.weight(1f))
+
+            Icon(
+                imageVector = Icons.Default.Image,
+                contentDescription = null,
+                modifier = Modifier.size(40.dp)
+            )
+        }
+    }
+}
+
 // ====== ====== Preview ====== ====== \\
 
 @Preview
@@ -284,5 +331,15 @@ private fun PostPreview() {
         onDownVoteClick = { },
         onCommentClick = { },
         onRatingClick = { }
+    )
+}
+
+@Preview
+@Composable
+private fun CreatePostPreview() {
+    CreatePost(
+        currentUser = UiUser.DEFAULT,
+        onPostClick = { },
+        onProfileClick = { }
     )
 }
