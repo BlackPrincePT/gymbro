@@ -3,14 +3,12 @@ package com.pegio.aichat.presentation.screen.aichat
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -19,41 +17,45 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.automirrored.filled.Send
-import androidx.compose.material.icons.filled.AttachFile
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.pegio.aichat.presentation.component.AttachImageButton
+import com.pegio.aichat.presentation.component.InputTextField
+import com.pegio.aichat.presentation.component.SendButton
 import com.pegio.aichat.presentation.model.UiAiMessage
 import com.pegio.common.presentation.state.TopBarAction
 import com.pegio.common.presentation.state.TopBarState
-import com.pegio.designsystem.component.MessageImage
 import com.pegio.common.presentation.util.CollectLatestEffect
+import com.pegio.designsystem.component.MessageImage
 
 @Composable
 fun AiChatScreen(
     onBackClick: () -> Unit,
     onSetupTopBar: (TopBarState) -> Unit,
+    onShowSnackbar: suspend (String, String?) -> Boolean,
     viewModel: AiChatViewModel = hiltViewModel()
 ) {
 
     SetupTopBar(onSetupTopBar, viewModel::onEvent)
+    val context = LocalContext.current
 
     CollectLatestEffect(viewModel.uiEffect) { effect ->
         when (effect) {
-            is AiChatUiEffect.Failure -> {}
-            AiChatUiEffect.NavigateBack -> onBackClick.invoke()
+            is AiChatUiEffect.Failure -> onShowSnackbar(context.getString(effect.errorRes), null)
+            AiChatUiEffect.NavigateBack -> onBackClick()
         }
     }
 
@@ -127,7 +129,7 @@ private fun AiChatContent(
                     ) {
                         Icon(
                             imageVector = Icons.Default.Close,
-                            contentDescription = "stringResource(R.string.remove_image)",
+                            contentDescription = "Remove image",
                             tint = Color.Red
                         )
                     }
@@ -135,20 +137,12 @@ private fun AiChatContent(
             }
 
 
-
             ChatInput(
                 text = state.inputText,
                 onTextChange = { onEvent(AiChatUiEvent.OnTextChanged(it)) },
                 onSend = { onEvent(AiChatUiEvent.OnSendMessage()) },
-                onImageSelect = { galleryLauncher.launch("image/*") }
-            )
-        }
-        // Placeholder loading this needs to be improved
-        if (state.isLoading) {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .clickable(enabled = true, onClick = {})
+                onImageSelect = { galleryLauncher.launch("image/*") },
+                isLoading = state.isLoading
             )
         }
     }
@@ -170,6 +164,22 @@ fun ChatBubble(message: UiAiMessage) {
                 )
                 .padding(8.dp)
         ) {
+            if (message.isUploading) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth(0.69f)
+                        .height(200.dp)
+                        .clip(RoundedCornerShape(8.dp)),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator(
+                        color = Color.White,
+                        strokeWidth = 2.dp,
+                        modifier = Modifier.size(36.dp)
+                    )
+                }
+            }
+
             if (message.imageUrl != null) {
                 MessageImage(
                     imageUrl = message.imageUrl,
@@ -193,7 +203,7 @@ fun ChatBubble(message: UiAiMessage) {
 @Composable
 fun ChatBubblePlaceholder() {
     val placeholderMessage =
-        UiAiMessage(text = "stringResource(R.string.typing)", isFromUser = false)
+        UiAiMessage(text = "Typing...", isFromUser = false)
 
     ChatBubble(message = placeholderMessage)
 }
@@ -203,7 +213,8 @@ fun ChatInput(
     text: String,
     onTextChange: (String) -> Unit,
     onSend: () -> Unit,
-    onImageSelect: () -> Unit
+    onImageSelect: () -> Unit,
+    isLoading: Boolean
 ) {
     Row(
         modifier = Modifier
@@ -211,39 +222,17 @@ fun ChatInput(
             .background(Color.LightGray, RoundedCornerShape(3.dp)),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        IconButton(onClick = onImageSelect, modifier = Modifier.padding(4.dp)) {
-            Icon(
-                imageVector = Icons.Default.AttachFile,
-                contentDescription = "R.string.attach_image",
-                tint = Color.Black,
-                modifier = Modifier.size(28.dp)
-            )
-        }
-
-        TextField(
-            value = text,
-            onValueChange = onTextChange,
-            modifier = Modifier
-                .weight(1f)
-                .padding(start = 10.dp, top = 12.dp, bottom = 12.dp)
-                .heightIn(min = 56.dp, max = 56.dp),
-
-            singleLine = true,
-            placeholder = { Text("stringResource(R.string.chat_hint)") }
+        AttachImageButton(onImageSelect = onImageSelect)
+        InputTextField(
+            text = text,
+            onTextChange = onTextChange,
+            placeholder = "Type a message…",
+            modifier = Modifier.weight(1f)
         )
-        IconButton(
-            onClick = onSend,
-            modifier = Modifier.padding(10.dp),
-            enabled = text.isNotBlank()
-        ) {
-            Icon(
-                imageVector = Icons.AutoMirrored.Default.Send,
-                contentDescription = "stringResource(R.string.send_icon)",
-                tint = if (text.isNotBlank()) Color.Black else Color.Gray
-            )
-        }
+        SendButton(text = text, onSend = onSend, isLoading = isLoading)
     }
 }
+
 
 @Composable
 private fun SetupTopBar(

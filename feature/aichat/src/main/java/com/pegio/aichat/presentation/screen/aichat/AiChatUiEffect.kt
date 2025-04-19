@@ -1,9 +1,9 @@
 package com.pegio.aichat.presentation.screen.aichat
 
-import com.pegio.common.core.Error
+import androidx.annotation.StringRes
 
 sealed interface AiChatUiEffect {
-    data class Failure(val error: Error) : AiChatUiEffect
+    data class Failure(@StringRes val errorRes: Int) : AiChatUiEffect
 
     // Top Bar
     data object NavigateBack: AiChatUiEffect

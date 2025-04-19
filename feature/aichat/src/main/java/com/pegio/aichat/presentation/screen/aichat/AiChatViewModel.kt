@@ -1,26 +1,19 @@
-package com.pegio.aichat.presentation.screen.aichat
+package com.pegio.aichat.presentation.screen.ai_chat
 
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
-import androidx.lifecycle.ViewModel
+import android.net.Uri
 import androidx.lifecycle.viewModelScope
 import com.pegio.aichat.presentation.model.UiAiMessage
 import com.pegio.aichat.presentation.model.mapper.UiAiMessageMapper
 import com.pegio.common.core.onFailure
 import com.pegio.common.core.onSuccess
+import com.pegio.common.presentation.core.BaseViewModel
+import com.pegio.common.presentation.util.toStringResId
 import com.pegio.domain.usecase.aichat.ObserveAiMessagesPagingStreamUseCase
 import com.pegio.domain.usecase.aichat.SaveFireStoreMessagesUseCase
 import com.pegio.domain.usecase.aichat.SendMessageToAiUseCase
-import com.pegio.domain.usecase.common.GetCurrentAuthUserUseCase
-import com.pegio.domain.usecase.common.GetCurrentUserUseCase
 import com.pegio.uploadmanager.core.FileUploadManager
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -30,33 +23,23 @@ class AiChatViewModel @Inject constructor(
     private val observeAiMessagesPagingStream: ObserveAiMessagesPagingStreamUseCase,
     private val fileUploadManager: FileUploadManager,
     private val uiAiMessageMapper: UiAiMessageMapper,
-    getCurrentAuthUser: GetCurrentAuthUserUseCase
-) : ViewModel() {
+    getCurrentUserId: com.pegio.domain.usecase.common.GetCurrentUserIdUseCase
+) : BaseViewModel<AiChatUiState, AiChatUiEffect, AiChatUiEvent>(initialState = AiChatUiState()) {
 
-    var uiState by mutableStateOf(AiChatUiState())
-        private set
-
-    private val _uiEffect = MutableSharedFlow<AiChatUiEffect>()
-    val uiEffect = _uiEffect.asSharedFlow()
 
     init {
-        getCurrentAuthUser()?.let { currentUser ->
-            updateState { copy(userId = currentUser.id) }
+        getCurrentUserId().let { currentUserId ->
+            updateState { copy(userId = currentUserId) }
         }
     }
 
-    fun onEvent(event: AiChatUiEvent) {
+    override fun onEvent(event: AiChatUiEvent) {
         when (event) {
             is AiChatUiEvent.OnTextChanged -> updateState { copy(inputText = event.text) }
             is AiChatUiEvent.OnImageSelected -> updateState { copy(selectedImageUri = event.imageUri) }
-            is AiChatUiEvent.OnSendMessage -> {
-                sendMessage()
-                updateState { copy(inputText = "") }
-                updateState { copy(selectedImageUri = null) }
-            }
-
-            is AiChatUiEvent.LoadMoreMessages -> loadMoreMessages()
-            is AiChatUiEvent.OnRemoveImage -> updateState { copy(selectedImageUri = null) }
+            is AiChatUiEvent.OnSendMessage -> onSendMessage()
+            AiChatUiEvent.LoadMoreMessages -> loadMoreMessages()
+            AiChatUiEvent.OnRemoveImage -> updateState { copy(selectedImageUri = null) }
 
             // Top Bar
             AiChatUiEvent.OnBackClick -> sendEffect(AiChatUiEffect.NavigateBack)
@@ -64,8 +47,6 @@ class AiChatViewModel @Inject constructor(
     }
 
     private fun loadMoreMessages() {
-        // Declare current messages before updating state PRINCE PETER DON'T TOUCH IT
-        // KISS ME BABY ONE MORE TIMEEEEE!
         val currentMessages = uiState.messages
 
         observeAiMessagesPagingStream(
@@ -82,64 +63,81 @@ class AiChatViewModel @Inject constructor(
                 }
             }
             .onFailure {
-                sendEffect(AiChatUiEffect.Failure(error = it))
+                sendEffect(AiChatUiEffect.Failure(errorRes = it.toStringResId()))
             }
             .launchIn(viewModelScope)
     }
 
-
-    private fun sendMessage() = viewModelScope.launch {
-        val aiMessage = uiAiMessageMapper.mapToDomain(UiAiMessage(text = uiState.inputText))
+    private fun sendMessage() = launchWithLoading {
         val currentUserId = uiState.userId
+        val uiMessage = UiAiMessage(
+            text = uiState.inputText,
+            isUploading = uiState.selectedImageUri != null
+        )
 
+        if (uiState.selectedImageUri != null) {
+            val pendingMessage = uiMessage.copy(isUploading = true)
+            updateState { copy(messages = messages + pendingMessage) }
 
-        uiState.selectedImageUri?.let { uri ->
-            fileUploadManager.enqueueFileUpload(uri = uri.toString())
-                .onSuccess {
-                    saveMessage(
-                        userId = currentUserId,
-                        aiChatMessage = aiMessage.copy(imageUrl = it)
-                    )
-                    // Necessary to create artificial sessions
-                    updateState {
-                        copy(
-                            messages = messages + uiAiMessageMapper.mapFromDomain(
-                                aiMessage.copy(
-                                    imageUrl = it
-                                )
-                            )
-                        )
-                    }
-                }
-        } ?: run {
-            saveMessage(userId = currentUserId, aiChatMessage = aiMessage)
-            updateState {
-                copy(messages = messages + uiAiMessageMapper.mapFromDomain(aiMessage))
-            }
+            handleImageMessage(
+                uri = uiState.selectedImageUri!!,
+                uiMessage = uiMessage,
+                userId = currentUserId
+            )
+        } else {
+            handleTextMessage(uiMessage = uiMessage, userId = currentUserId)
         }
 
-        updateState { copy(isLoading = true) }
+        sendAiResponse(currentUserId)
+    }
 
-        sendMessageToAi(aiMessages = uiState.messages.map(uiAiMessageMapper::mapToDomain))
-            .onSuccess {
-                saveMessage(userId = currentUserId, aiChatMessage = it)
+
+    private fun handleTextMessage(uiMessage: UiAiMessage, userId: String) {
+        val domainMessage = uiAiMessageMapper.mapToDomain(uiMessage)
+
+        saveMessage(userId = userId, aiChatMessage = domainMessage)
+        updateState {
+            copy(messages = messages + uiMessage)
+        }
+    }
+
+    private suspend fun handleImageMessage(uri: Uri, uiMessage: UiAiMessage, userId: String) {
+        fileUploadManager.enqueueFileUpload(uri.toString())
+            .onSuccess { imageUrl ->
+                val messageWithImage = uiMessage.copy(imageUrl = imageUrl)
+                val domainMessage = uiAiMessageMapper.mapToDomain(messageWithImage)
+
+                saveMessage(userId = userId, aiChatMessage = domainMessage)
+                updateState {
+                    copy(messages = messages + messageWithImage)
+                }
             }
             .onFailure {
-                sendEffect(AiChatUiEffect.Failure(error = it))
-            }
-            .also {
-                updateState { copy(isLoading = false) }
+                sendEffect(AiChatUiEffect.Failure(errorRes = it.toStringResId()))
+                setLoading(false)
             }
     }
 
+    private suspend fun sendAiResponse(userId: String) {
+        val domainMessages = uiState.messages.map(uiAiMessageMapper::mapToDomain)
 
-    private fun updateState(change: AiChatUiState.() -> AiChatUiState) {
-        uiState = uiState.change()
+        sendMessageToAi(aiMessages = domainMessages)
+            .onSuccess { responseMessage ->
+                saveMessage(userId = userId, aiChatMessage = responseMessage)
+            }
+            .onFailure {
+                sendEffect(AiChatUiEffect.Failure(errorRes = it.toStringResId()))
+            }
     }
 
-    private fun sendEffect(effect: AiChatUiEffect) {
-        viewModelScope.launch(Dispatchers.Main.immediate) {
-            _uiEffect.emit(effect)
+    private fun onSendMessage() {
+        sendMessage()
+        updateState {
+            copy(inputText = "", selectedImageUri = null)
         }
+    }
+
+    override fun setLoading(isLoading: Boolean) {
+        updateState { copy(isLoading = isLoading) }
     }
 }
