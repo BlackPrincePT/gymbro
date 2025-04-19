@@ -56,16 +56,18 @@ class PostDetailsViewModel @Inject constructor(
 
     override fun setLoading(isLoading: Boolean) = updateState { copy(isLoading = isLoading) }
 
-    private fun setLoadingMoreComments(isLoading: Boolean) = updateState { copy(loadingMoreComments = isLoading) }
+    private fun setLoadingMoreComments(isLoading: Boolean) =
+        updateState { copy(loadingMoreComments = isLoading) }
 
     private fun handleCommentSubmit() = viewModelScope.launch {
         writeComment(content = uiState.commentText, postId = postId)
             .onSuccess { comment ->
+                updateState { copy(commentText = "") }
                 getCurrentUser()
                     .onSuccess { currentUser ->
                         val uiComment =
                             uiPostCommentMapper.mapFromDomain(data = comment to currentUser)
-                        updateState { copy(comments = comments.plus(uiComment)) }
+                        updateState { copy(comments = listOf(uiComment) + comments) }
                     }
             }
     }

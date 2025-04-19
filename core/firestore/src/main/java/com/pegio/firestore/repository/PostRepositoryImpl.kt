@@ -24,11 +24,15 @@ internal class PostRepositoryImpl @Inject constructor(
 ) : PostRepository {
 
     private companion object {
-        const val POST_PAGE_SIZE: Long = 20L
+        const val POST_PAGE_SIZE: Long = 10L
     }
 
     private val postsPagingSource =
         FirestorePagingSource(POST_PAGE_SIZE, PostDto::class.java, firestoreUtils)
+
+    override fun resetPagination() {
+        postsPagingSource.resetPagination()
+    }
 
     override fun uploadPost(post: Post) {
         val postDto = postDtoMapper.mapFromDomain(post)

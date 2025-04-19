@@ -6,7 +6,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.pegio.common.core.getOrElse
 import com.pegio.common.core.onSuccess
 import com.pegio.common.presentation.model.mapper.UiUserMapper
 import com.pegio.uploadmanager.core.FileUploadManager
@@ -66,7 +65,6 @@ class AccountViewModel @Inject constructor(
 
     private fun observeCurrentUser() = viewModelScope.launch {
         fetchCurrentUserStream()
-            .getOrElse { return@launch }
             .collectLatest { updateState { copy(user = uiUserMapper.mapFromDomain(it)) } }
     }
 

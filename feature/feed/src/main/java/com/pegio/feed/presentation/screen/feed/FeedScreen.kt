@@ -1,19 +1,17 @@
 package com.pegio.feed.presentation.screen.feed
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ChatBubble
 import androidx.compose.material.icons.filled.Menu
-import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.pulltorefresh.pullToRefresh
+import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -62,10 +60,17 @@ private fun FeedContent(
     state: FeedUiState,
     onEvent: (FeedUiEvent) -> Unit
 ) {
+    val refreshState = rememberPullToRefreshState()
+
     LazyColumn(
         verticalArrangement = Arrangement.spacedBy(12.dp),
         modifier = Modifier
             .fillMaxSize()
+            .pullToRefresh(
+                isRefreshing = state.isLoading,
+                onRefresh = { onEvent(FeedUiEvent.OnPostsRefresh) },
+                state = refreshState
+            )
     ) {
         item {
             CreatePost(
@@ -84,17 +89,17 @@ private fun FeedContent(
                 post = post,
                 onUpVoteClick = { },
                 onDownVoteClick = { },
-                onCommentClick = { onEvent(FeedUiEvent.OnPostCommentClick(postId = post.id)).also { println(post) } },
+                onCommentClick = { onEvent(FeedUiEvent.OnPostCommentClick(postId = post.id)) },
                 onRatingClick = { }
             )
         }
 
-        if (state.isLoading)
-            item {
-                Box(modifier = Modifier.fillMaxWidth()) {
-                    CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
-                }
-            }
+//        if (state.isLoading)
+//            item {
+//                Box(modifier = Modifier.fillMaxWidth()) {
+//                    CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+//                }
+//            }
     }
 }
 

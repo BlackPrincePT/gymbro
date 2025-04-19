@@ -12,7 +12,6 @@ internal class FirestorePagingSource<T>(
     private val klass: Class<T>,
     private val firestoreUtils: FirestoreUtils
 ) {
-
     private var lastVisibleDocument: DocumentSnapshot? = null
     private var isEndOfList: Boolean = false
 
@@ -35,7 +34,7 @@ internal class FirestorePagingSource<T>(
                 if (pagingResult.objects.size < pageSize)
                     isEndOfList = true
 
-                pagingResult.objects
+                pagingResult.objects.also { println(it) }
             }
     }
 }

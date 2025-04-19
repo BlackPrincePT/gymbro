@@ -1,7 +1,6 @@
 package com.pegio.gymbro.activity
 
 import androidx.lifecycle.viewModelScope
-import com.pegio.common.core.getOrElse
 import com.pegio.common.presentation.core.BaseViewModel
 import com.pegio.common.presentation.model.mapper.UiUserMapper
 import com.pegio.domain.usecase.account.SignOutUseCase
@@ -43,7 +42,6 @@ class MainViewModel @Inject constructor(
 
     private fun observeCurrentUser() = viewModelScope.launch {
         getCurrentUserStream()
-            .getOrElse { return@launch }
             .collectLatest { updateState { copy(currentUser = uiUserMapper.mapFromDomain(it)) } }
     }
 
