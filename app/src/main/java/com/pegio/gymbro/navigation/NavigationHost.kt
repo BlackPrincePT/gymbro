@@ -16,6 +16,7 @@ import com.pegio.feed.presentation.screen.feed.navigation.feedScreen
 import com.pegio.feed.presentation.screen.feed.navigation.popNavigateToFeed
 import com.pegio.feed.presentation.screen.postdetails.navigation.navigateToPostDetails
 import com.pegio.feed.presentation.screen.postdetails.navigation.postDetailsScreen
+import com.pegio.feed.presentation.screen.profile.navigation.profileScreen
 import com.pegio.gymbro.navigation.route.AccountRoute
 import com.pegio.gymbro.navigation.route.AiChatRoute
 import com.pegio.gymbro.navigation.route.RegisterRoute
@@ -104,6 +105,12 @@ fun NavigationHost(
         postDetailsScreen(
             onBackClick = navController::navigateUp,
             onSetupTopBar = onSetupAppBar
+        )
+
+        profileScreen(
+            onBackClick = navController::navigateUp,
+            onSetupTopBar = onSetupAppBar,
+            onShowSnackbar = onShowSnackbar
         )
     }
 }
