@@ -58,6 +58,7 @@ internal class FirestoreUtils @Inject constructor() {
 
             FirestorePagingResult(objects, lastDocument).asSuccess()
         } catch (e: Exception) {
+            println(e)
             mapExceptionToFirestoreError(e).asFailure()
         }
     }

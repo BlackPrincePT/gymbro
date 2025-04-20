@@ -63,6 +63,7 @@ private fun PostDetailsContent(
         item {
             PostContent(
                 post = state.displayedPost,
+                onProfileClick = { },
                 onUpVoteClick = { },
                 onDownVoteClick = { },
                 onCommentClick = { },

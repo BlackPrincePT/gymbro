@@ -28,8 +28,9 @@ import com.pegio.feed.presentation.screen.feed.state.FeedUiState
 @Composable
 internal fun FeedScreen(
     onCreatePostClick: () -> Unit,
-    onShowPostDetails: (String) -> Unit,
     onChatClick: () -> Unit,
+    onShowPostDetails: (String) -> Unit,
+    onUserProfileClick: (String) -> Unit,
     onOpenDrawerClick: () -> Unit,
     onSetupTopBar: (TopBarState) -> Unit,
     viewModel: FeedViewModel = hiltViewModel()
@@ -46,6 +47,7 @@ internal fun FeedScreen(
             // Navigation
             FeedUiEffect.NavigateToCreatePost -> onCreatePostClick()
             is FeedUiEffect.NavigateToPostDetails -> onShowPostDetails(effect.postId)
+            is FeedUiEffect.NavigateToUserProfile -> onUserProfileClick(effect.userId)
         }
     }
 
@@ -76,7 +78,7 @@ private fun FeedContent(
             CreatePost(
                 currentUser = state.currentUser,
                 onPostClick = { onEvent(FeedUiEvent.OnCreatePostClick) },
-                onProfileClick = { },
+                onProfileClick = { onEvent(FeedUiEvent.OnUserProfileClick(userId = state.currentUser.id)) },
                 modifier = Modifier
                     .padding(8.dp)
             )
@@ -87,6 +89,7 @@ private fun FeedContent(
         items(state.relevantPosts) { post ->
             PostContent(
                 post = post,
+                onProfileClick = { onEvent(FeedUiEvent.OnUserProfileClick(userId = post.author.id)) },
                 onUpVoteClick = { },
                 onDownVoteClick = { },
                 onCommentClick = { onEvent(FeedUiEvent.OnPostCommentClick(postId = post.id)) },

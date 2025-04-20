@@ -9,4 +9,5 @@ sealed interface FeedUiEffect {
     // Navigation
     data object NavigateToCreatePost : FeedUiEffect
     data class NavigateToPostDetails(val postId: String) : FeedUiEffect
+    data class NavigateToUserProfile(val userId: String) : FeedUiEffect
 }

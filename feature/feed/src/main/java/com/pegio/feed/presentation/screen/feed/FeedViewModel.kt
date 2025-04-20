@@ -37,11 +37,13 @@ class FeedViewModel @Inject constructor(
 
             // Main
             FeedUiEvent.OnLoadMorePosts -> loadMorePosts()
-            FeedUiEvent.OnPostsRefresh -> { } // FIXME DOESN'T WORK
+            FeedUiEvent.OnPostsRefresh -> {} // FIXME DOESN'T WORK
 
             // Navigation
             FeedUiEvent.OnCreatePostClick -> sendEffect(FeedUiEffect.NavigateToCreatePost)
             is FeedUiEvent.OnPostCommentClick -> sendEffect(FeedUiEffect.NavigateToPostDetails(event.postId))
+            is FeedUiEvent.OnUserProfileClick -> sendEffect(FeedUiEffect.NavigateToUserProfile(event.userId))
+
 
             // Top Bar
             FeedUiEvent.OnDrawerClick -> sendEffect(FeedUiEffect.OpenDrawer)

@@ -39,6 +39,7 @@ import com.pegio.feed.presentation.model.UiPost
 @Composable
 internal fun PostContent(
     post: UiPost,
+    onProfileClick: () -> Unit,
     onUpVoteClick: () -> Unit,
     onDownVoteClick: () -> Unit,
     onCommentClick: () -> Unit,
@@ -48,7 +49,7 @@ internal fun PostContent(
         modifier = Modifier
             .padding(vertical = 8.dp)
     ) {
-        PostHeader(post, onProfileClick = { })
+        PostHeader(post, onProfileClick)
 
         Spacer(modifier = Modifier.height(8.dp))
 
@@ -326,6 +327,7 @@ private fun PostActionsPreview() {
 private fun PostPreview() {
     PostContent(
         post = UiPost.DEFAULT,
+        onProfileClick = { },
         onUpVoteClick = { },
         onDownVoteClick = { },
         onCommentClick = { },

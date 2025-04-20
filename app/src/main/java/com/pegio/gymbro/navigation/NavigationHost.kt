@@ -16,6 +16,7 @@ import com.pegio.feed.presentation.screen.feed.navigation.feedScreen
 import com.pegio.feed.presentation.screen.feed.navigation.popNavigateToFeed
 import com.pegio.feed.presentation.screen.postdetails.navigation.navigateToPostDetails
 import com.pegio.feed.presentation.screen.postdetails.navigation.postDetailsScreen
+import com.pegio.feed.presentation.screen.profile.navigation.navigateToProfile
 import com.pegio.feed.presentation.screen.profile.navigation.profileScreen
 import com.pegio.gymbro.navigation.route.AccountRoute
 import com.pegio.gymbro.navigation.route.AiChatRoute
@@ -91,6 +92,7 @@ fun NavigationHost(
         feedScreen(
             onCreatePostClick = navController::navigateToCreatePost,
             onShowPostDetails = navController::navigateToPostDetails,
+            onPostAuthorClick = navController::navigateToProfile,
             onChatClick = navController::navigateToAiChat,
             onOpenDrawerClick = dynamicallyOpenDrawer,
             onSetupTopBar = onSetupAppBar

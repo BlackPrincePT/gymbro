@@ -31,7 +31,6 @@ hiltNavigationCompose = "1.2.0"
 #UI
 pagingRuntime = "3.3.6"
 coil = "3.1.0"
-constraintlayoutCompose = "1.1.1"
 kotlinxDatetime = "0.6.2"
 
 #Firebase
@@ -80,7 +79,6 @@ androidx-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-man
 androidx-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
 androidx-material3 = { group = "androidx.compose.material3", name = "material3" }
 androidx-material-icons-extended = { group = "androidx.compose.material", name = "material-icons-extended" }
-androidx-constraintlayout-compose = { module = "androidx.constraintlayout:constraintlayout-compose", version.ref = "constraintlayoutCompose" }
 navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "composeNavigation" }
 
 #Gradle

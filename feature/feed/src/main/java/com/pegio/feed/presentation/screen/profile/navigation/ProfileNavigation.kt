@@ -8,9 +8,9 @@ import com.pegio.feed.presentation.screen.profile.ProfileScreen
 import kotlinx.serialization.Serializable
 
 @Serializable
-data object ProfileRoute
+data class ProfileRoute(val userId: String)
 
-fun NavController.navigateToProfile() = navigate(ProfileRoute)
+fun NavController.navigateToProfile(userId: String) = navigate(ProfileRoute(userId))
 
 fun NavGraphBuilder.profileScreen(
     onBackClick: () -> Unit,
