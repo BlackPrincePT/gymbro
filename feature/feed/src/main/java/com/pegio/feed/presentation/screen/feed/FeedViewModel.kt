@@ -29,7 +29,6 @@ class FeedViewModel @Inject constructor(
 
     init {
         observeCurrentUser()
-        loadMorePosts()
     }
 
     override fun onEvent(event: FeedUiEvent) {

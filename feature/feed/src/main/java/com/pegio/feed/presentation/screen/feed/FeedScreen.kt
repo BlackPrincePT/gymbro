@@ -3,13 +3,10 @@ package com.pegio.feed.presentation.screen.feed
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ChatBubble
 import androidx.compose.material.icons.filled.Menu
-import androidx.compose.material3.pulltorefresh.pullToRefresh
-import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
@@ -19,6 +16,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.pegio.common.presentation.state.TopBarAction
 import com.pegio.common.presentation.state.TopBarState
 import com.pegio.common.presentation.util.CollectLatestEffect
+import com.pegio.common.presentation.util.PagingColumn
 import com.pegio.feed.presentation.component.CreatePost
 import com.pegio.feed.presentation.component.PostContent
 import com.pegio.feed.presentation.screen.feed.state.FeedUiEffect
@@ -62,17 +60,13 @@ private fun FeedContent(
     state: FeedUiState,
     onEvent: (FeedUiEvent) -> Unit
 ) {
-    val refreshState = rememberPullToRefreshState()
-
-    LazyColumn(
+    PagingColumn(
+        itemCount = state.relevantPosts.size,
+        isLoading = state.isLoading,
+        onLoadAnotherPage = { onEvent(FeedUiEvent.OnLoadMorePosts) },
         verticalArrangement = Arrangement.spacedBy(12.dp),
         modifier = Modifier
             .fillMaxSize()
-            .pullToRefresh(
-                isRefreshing = state.isLoading,
-                onRefresh = { onEvent(FeedUiEvent.OnPostsRefresh) },
-                state = refreshState
-            )
     ) {
         item {
             CreatePost(
@@ -96,13 +90,6 @@ private fun FeedContent(
                 onRatingClick = { }
             )
         }
-
-//        if (state.isLoading)
-//            item {
-//                Box(modifier = Modifier.fillMaxWidth()) {
-//                    CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
-//                }
-//            }
     }
 }
 
