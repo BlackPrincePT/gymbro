@@ -35,6 +35,7 @@ import com.pegio.common.presentation.model.UiUser
 import com.pegio.designsystem.component.PostImage
 import com.pegio.designsystem.component.ProfileImage
 import com.pegio.feed.presentation.model.UiPost
+import com.pegio.model.Vote
 
 @Composable
 internal fun PostContent(
@@ -154,6 +155,7 @@ private fun PostActions(
     ) {
         VoteActions(
             voteCount = post.voteCount,
+            currentUserVote = post.currentUserVote,
             onUpVoteClick = onUpVoteClick,
             onDownVoteClick = onDownVoteClick
         )
@@ -175,11 +177,15 @@ private fun PostActions(
 @Composable
 private fun VoteActions(
     voteCount: String,
+    currentUserVote: Vote?,
     onUpVoteClick: () -> Unit,
     onDownVoteClick: () -> Unit
 ) {
+    val upVoteTint = if (currentUserVote?.vote == Vote.Type.UP_VOTE) Color.Blue else Color.Gray
+    val downVoteTint = if (currentUserVote?.vote == Vote.Type.DOWN_VOTE) Color.Blue else Color.Gray
+
     Row(verticalAlignment = Alignment.CenterVertically) {
-        PostAction(onUpVoteClick, Icons.Default.ArrowUpward)
+        PostAction(onUpVoteClick, Icons.Default.ArrowUpward, upVoteTint)
 
         Text(
             text = voteCount,
@@ -187,7 +193,7 @@ private fun VoteActions(
             fontSize = 16.sp
         )
 
-        PostAction(onDownVoteClick, Icons.Default.ArrowDownward)
+        PostAction(onDownVoteClick, Icons.Default.ArrowDownward, downVoteTint)
     }
 }
 
@@ -239,13 +245,14 @@ private fun RatingAction(
 @Composable
 private fun PostAction(
     onClick: () -> Unit,
-    imageVector: ImageVector
+    imageVector: ImageVector,
+    tint: Color = Color.Gray
 ) {
     IconButton(onClick = onClick) {
         Icon(
             imageVector = imageVector,
             contentDescription = null,
-            tint = Color.Gray,
+            tint = tint,
             modifier = Modifier
                 .size(24.dp)
         )

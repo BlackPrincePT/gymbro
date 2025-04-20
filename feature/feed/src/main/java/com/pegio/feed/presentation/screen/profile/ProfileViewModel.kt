@@ -48,7 +48,6 @@ class ProfileViewModel @Inject constructor(
 
                 fetchLatestUserPosts(authorId = user.id)
                     .getOrElse { return@launchWithLoading } // TODO HANDLE PROPERLY
-                    .map { it to user }
                     .map(uiPostMapper::mapFromDomain)
                     .let { updateState { copy(userPosts = it) } }
             }

@@ -4,11 +4,13 @@ import com.pegio.domain.repository.AiMessagesRepository
 import com.pegio.domain.repository.PostCommentRepository
 import com.pegio.domain.repository.PostRepository
 import com.pegio.domain.repository.UserRepository
+import com.pegio.domain.repository.VoteRepository
 import com.pegio.domain.repository.WorkoutPlanRepository
 import com.pegio.firestore.repository.AiMessagesRepositoryImpl
 import com.pegio.firestore.repository.PostCommentRepositoryImpl
 import com.pegio.firestore.repository.PostRepositoryImpl
 import com.pegio.firestore.repository.UserRepositoryImpl
+import com.pegio.firestore.repository.VoteRepositoryImpl
 import com.pegio.firestore.repository.WorkoutPlanRepositoryImpl
 import dagger.Binds
 import dagger.Module
@@ -30,6 +32,9 @@ internal abstract class RepositoryModule {
 
     @Binds
     abstract fun bindPostCommentRepository(impl: PostCommentRepositoryImpl): PostCommentRepository
+
+    @Binds
+    abstract fun bindVoteRepository(impl: VoteRepositoryImpl): VoteRepository
 
     @Binds
     abstract fun bindWorkoutPlanRepository(impl: WorkoutPlanRepositoryImpl): WorkoutPlanRepository

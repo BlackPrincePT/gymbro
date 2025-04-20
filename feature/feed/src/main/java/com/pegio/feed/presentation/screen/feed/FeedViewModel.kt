@@ -9,10 +9,12 @@ import com.pegio.common.presentation.model.mapper.UiUserMapper
 import com.pegio.domain.usecase.common.GetCurrentUserStreamUseCase
 import com.pegio.domain.usecase.feed.FetchNextRelevantPostsPageUseCase
 import com.pegio.domain.usecase.feed.ResetPostPaginationUseCase
+import com.pegio.domain.usecase.feed.VotePostUseCase
 import com.pegio.feed.presentation.model.mapper.UiPostMapper
 import com.pegio.feed.presentation.screen.feed.state.FeedUiEffect
 import com.pegio.feed.presentation.screen.feed.state.FeedUiEvent
 import com.pegio.feed.presentation.screen.feed.state.FeedUiState
+import com.pegio.model.Vote
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -22,6 +24,7 @@ import javax.inject.Inject
 class FeedViewModel @Inject constructor(
     private val fetchCurrentUserStream: GetCurrentUserStreamUseCase,
     private val fetchNextRelevantPostsPage: FetchNextRelevantPostsPageUseCase,
+    private val votePost: VotePostUseCase,
     private val resetPagination: ResetPostPaginationUseCase,
     private val uiUserMapper: UiUserMapper,
     private val uiPostMapper: UiPostMapper
@@ -37,6 +40,8 @@ class FeedViewModel @Inject constructor(
             // Main
             FeedUiEvent.OnLoadMorePosts -> loadMorePosts()
             FeedUiEvent.OnPostsRefresh -> {} // FIXME DOESN'T WORK
+            is FeedUiEvent.OnPostVote -> handlePostVote(event.postId, event.voteType)
+
 
             // Navigation
             FeedUiEvent.OnCreatePostClick -> sendEffect(FeedUiEffect.NavigateToCreatePost)
@@ -56,6 +61,31 @@ class FeedViewModel @Inject constructor(
         fetchCurrentUserStream()
             .collectLatest { updateState { copy(currentUser = uiUserMapper.mapFromDomain(it)) } }
     }
+
+    private fun handlePostVote(postId: String, voteType: Vote.Type) {
+        val index = uiState.relevantPosts.indexOfFirst { it.id == postId }
+        if (index < 0) return
+
+        val post = uiState.relevantPosts[index]
+
+        if (post.currentUserVote != null) {
+            // TODO HANDLE CHANGING VOTE
+            return
+        }
+
+        votePost(postId, voteType)
+            .onFailure { } // TODO HANDLE FAILURE
+            .onSuccess { vote ->
+                val updatedPosts = uiState.relevantPosts.toMutableList()
+                updatedPosts[index] = post.copy(
+                    currentUserVote = vote,
+                    voteCount = (post.voteCount.toInt() + voteType.value).toString()
+                )
+
+                updateState { copy(relevantPosts = updatedPosts) }
+            }
+    }
+
 
     private fun refreshPosts() {
         updateState { copy(relevantPosts = emptyList(), endOfPostsReached = false) }

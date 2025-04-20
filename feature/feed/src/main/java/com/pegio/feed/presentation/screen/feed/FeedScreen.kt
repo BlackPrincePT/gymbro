@@ -22,6 +22,7 @@ import com.pegio.feed.presentation.component.PostContent
 import com.pegio.feed.presentation.screen.feed.state.FeedUiEffect
 import com.pegio.feed.presentation.screen.feed.state.FeedUiEvent
 import com.pegio.feed.presentation.screen.feed.state.FeedUiState
+import com.pegio.model.Vote
 
 @Composable
 internal fun FeedScreen(
@@ -84,8 +85,8 @@ private fun FeedContent(
             PostContent(
                 post = post,
                 onProfileClick = { onEvent(FeedUiEvent.OnUserProfileClick(userId = post.author.id)) },
-                onUpVoteClick = { },
-                onDownVoteClick = { },
+                onUpVoteClick = { onEvent(FeedUiEvent.OnPostVote(post.id, Vote.Type.UP_VOTE)) },
+                onDownVoteClick = { onEvent(FeedUiEvent.OnPostVote(post.id, Vote.Type.DOWN_VOTE)) },
                 onCommentClick = { onEvent(FeedUiEvent.OnPostCommentClick(postId = post.id)) },
                 onRatingClick = { }
             )

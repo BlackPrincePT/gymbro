@@ -7,6 +7,7 @@ internal object FirestoreConstants {
 
     const val POSTS = "posts"
     const val COMMENTS = "comments"
+    const val VOTES = "votes"
 
     /**
      * Document Parameters

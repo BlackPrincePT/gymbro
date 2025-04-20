@@ -5,11 +5,11 @@ import com.pegio.common.core.Mapper
 import com.pegio.firestore.model.PostDto
 import javax.inject.Inject
 
-class PostDtoMapper @Inject constructor() : Mapper<PostDto, Post> {
+internal class PostDtoMapper @Inject constructor() : Mapper<PostDto, Post> {
 
     override fun mapToDomain(data: PostDto): Post {
         return Post(
-            id = data.id ?: throw Exception(),
+            id = data.id ?: throw IllegalStateException(),
             authorId = data.authorId,
             content = data.content,
             imageUrl = data.imageUrl,

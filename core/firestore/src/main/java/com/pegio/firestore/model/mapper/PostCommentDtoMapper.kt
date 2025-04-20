@@ -5,11 +5,11 @@ import com.pegio.firestore.model.PostCommentDto
 import com.pegio.model.PostComment
 import javax.inject.Inject
 
-class PostCommentDtoMapper @Inject constructor() : Mapper<PostCommentDto, PostComment> {
+internal class PostCommentDtoMapper @Inject constructor() : Mapper<PostCommentDto, PostComment> {
 
     override fun mapToDomain(data: PostCommentDto): PostComment {
         return PostComment(
-            id = data.id ?: throw Exception(),
+            id = data.id ?: throw IllegalStateException(),
             authorId = data.authorId,
             content = data.content,
             timestamp = data.timestamp

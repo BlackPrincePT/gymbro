@@ -5,7 +5,7 @@ import com.pegio.common.core.Mapper
 import com.pegio.firestore.model.WorkoutPlanDto
 import javax.inject.Inject
 
-class WorkoutPlanDtoMapper @Inject constructor() : Mapper<WorkoutPlanDto, WorkoutPlan> {
+internal class WorkoutPlanDtoMapper @Inject constructor() : Mapper<WorkoutPlanDto, WorkoutPlan> {
 
     override fun mapToDomain(data: WorkoutPlanDto): WorkoutPlan {
         return WorkoutPlan(
