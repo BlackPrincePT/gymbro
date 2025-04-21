@@ -20,7 +20,6 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import io.mockk.mockk
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
@@ -105,7 +104,7 @@ class WorkoutPlanViewModelTest {
     @Test
     fun `given use case failure, when LoadInitialPlans is triggered, then failure effect is emitted`() = runTest {
         // Given
-        val error = DataError.Firestore.UNKNOWN
+        val error = DataError.Firestore.Unknown
         coEvery { observeWorkoutPlansPagingStreamUseCase.invoke() } returns flow {
             emit(Resource.Failure(error))
         }

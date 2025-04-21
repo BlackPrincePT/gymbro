@@ -21,10 +21,12 @@ import com.pegio.gymbro.navigation.route.AiChatRoute
 import com.pegio.gymbro.navigation.route.RegisterRoute
 import com.pegio.gymbro.navigation.route.SplashRoute
 import com.pegio.gymbro.navigation.route.WorkoutPlanRoute
+import com.pegio.gymbro.navigation.route.WorkoutRoute
 import com.pegio.gymbro.navigation.route.navigateToAiChat
 import com.pegio.gymbro.navigation.route.navigateToRegister
 import com.pegio.settings.presentation.screen.AccountScreen
 import com.pegio.splash.presentation.splash.SplashScreen
+import com.pegio.workout.presentation.screen.workout.WorkoutScreen
 import com.pegio.workout.presentation.screen.workout_plan.WorkoutPlanScreen
 
 @Composable
@@ -37,7 +39,7 @@ fun NavigationHost(
 ) {
     NavHost(
         navController = navController,
-        startDestination = SplashRoute,
+        startDestination = WorkoutRoute,
         modifier = modifier
     ) {
 
@@ -80,6 +82,14 @@ fun NavigationHost(
             WorkoutPlanScreen(
                 onBackClick = navController::navigateUp,
                 onInfoClick = navController::navigateToAiChat,
+                onShowSnackbar = onShowSnackbar,
+                onSetupTopBar = onSetupAppBar,
+            )
+        }
+
+        composable<WorkoutRoute> {
+            WorkoutScreen(
+                onBackClick = navController::navigateUp,
                 onShowSnackbar = onShowSnackbar,
                 onSetupTopBar = onSetupAppBar,
             )

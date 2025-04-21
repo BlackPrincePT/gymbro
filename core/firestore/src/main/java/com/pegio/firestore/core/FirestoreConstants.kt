@@ -4,6 +4,7 @@ internal object FirestoreConstants {
     const val USERS = "users"
     const val AI_MESSAGES = "ai_messages"
     const val WORKOUT_PLANS = "workout_plans"
+    const val WORKOUTS = "workouts"
 
     const val POSTS = "posts"
     const val COMMENTS = "comments"
