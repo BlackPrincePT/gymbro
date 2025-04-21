@@ -1,6 +1,5 @@
 package com.pegio.workout.presentation.screen.workout_plan
 
-import android.util.Log
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -10,13 +9,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.toLowerCase
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.pegio.common.presentation.state.TopBarAction
 import com.pegio.common.presentation.state.TopBarState
-import com.pegio.workout.presentation.components.TipCardComponents
-import com.pegio.workout.presentation.components.WorkoutPlanItemComponents
+import com.pegio.workout.presentation.component.TipCardComponents
+import com.pegio.workout.presentation.component.WorkoutPlanItemComponents
 import com.pegio.workout.presentation.model.UiWorkoutPlan
 import com.pegio.common.presentation.util.CollectLatestEffect
 

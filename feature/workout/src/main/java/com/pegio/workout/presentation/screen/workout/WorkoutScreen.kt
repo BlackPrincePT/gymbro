@@ -14,7 +14,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.pegio.common.presentation.state.TopBarAction
 import com.pegio.common.presentation.state.TopBarState
 import com.pegio.common.presentation.util.CollectLatestEffect
-import com.pegio.workout.presentation.components.WorkoutDetails
+import com.pegio.workout.presentation.component.WorkoutDetails
 
 
 @Composable
