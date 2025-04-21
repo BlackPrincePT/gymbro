@@ -67,11 +67,10 @@ class FeedViewModel @Inject constructor(
         if (index < 0) return
 
         val post = uiState.relevantPosts[index]
-
         var updatedVoteCount = post.voteCount.toInt() + voteType.value
 
         if (post.currentUserVote != null)
-            updatedVoteCount -= post.currentUserVote.vote.value
+            updatedVoteCount -= post.currentUserVote.type.value
 
         votePost(postId, voteType)
             .onFailure { } // TODO HANDLE FAILURE

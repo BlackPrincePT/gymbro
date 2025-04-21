@@ -41,8 +41,7 @@ import com.pegio.model.Vote
 internal fun PostContent(
     post: UiPost,
     onProfileClick: () -> Unit,
-    onUpVoteClick: () -> Unit,
-    onDownVoteClick: () -> Unit,
+    onVoteClick: (Vote.Type) -> Unit,
     onCommentClick: () -> Unit,
     onRatingClick: () -> Unit
 ) {
@@ -60,8 +59,7 @@ internal fun PostContent(
 
         PostActions(
             post = post,
-            onUpVoteClick = onUpVoteClick,
-            onDownVoteClick = onDownVoteClick,
+            onVoteClick = onVoteClick,
             onCommentClick = onCommentClick,
             onRatingClick = onRatingClick
         )
@@ -142,8 +140,7 @@ private fun PostHeader(
 @Composable
 private fun PostActions(
     post: UiPost,
-    onUpVoteClick: () -> Unit,
-    onDownVoteClick: () -> Unit,
+    onVoteClick: (Vote.Type) -> Unit,
     onCommentClick: () -> Unit,
     onRatingClick: () -> Unit
 ) {
@@ -156,8 +153,7 @@ private fun PostActions(
         VoteActions(
             voteCount = post.voteCount,
             currentUserVote = post.currentUserVote,
-            onUpVoteClick = onUpVoteClick,
-            onDownVoteClick = onDownVoteClick
+            onVoteClick = onVoteClick,
         )
 
         CommentAction(
@@ -178,14 +174,17 @@ private fun PostActions(
 private fun VoteActions(
     voteCount: String,
     currentUserVote: Vote?,
-    onUpVoteClick: () -> Unit,
-    onDownVoteClick: () -> Unit
+    onVoteClick: (Vote.Type) -> Unit
 ) {
-    val upVoteTint = if (currentUserVote?.vote == Vote.Type.UP_VOTE) Color.Blue else Color.Gray
-    val downVoteTint = if (currentUserVote?.vote == Vote.Type.DOWN_VOTE) Color.Blue else Color.Gray
+    val upVoteTint = if (currentUserVote?.type == Vote.Type.UP_VOTE) Color.Blue else Color.Gray
+    val downVoteTint = if (currentUserVote?.type == Vote.Type.DOWN_VOTE) Color.Blue else Color.Gray
 
     Row(verticalAlignment = Alignment.CenterVertically) {
-        PostAction(onUpVoteClick, Icons.Default.ArrowUpward, upVoteTint)
+        PostAction(
+            onClick = { onVoteClick(Vote.Type.UP_VOTE) },
+            Icons.Default.ArrowUpward,
+            upVoteTint
+        )
 
         Text(
             text = voteCount,
@@ -193,7 +192,11 @@ private fun VoteActions(
             fontSize = 16.sp
         )
 
-        PostAction(onDownVoteClick, Icons.Default.ArrowDownward, downVoteTint)
+        PostAction(
+            onClick = { onVoteClick(Vote.Type.DOWN_VOTE) },
+            Icons.Default.ArrowDownward,
+            downVoteTint
+        )
     }
 }
 
@@ -322,8 +325,7 @@ private fun PostHeaderPreview() {
 private fun PostActionsPreview() {
     PostActions(
         post = UiPost.DEFAULT,
-        onUpVoteClick = { },
-        onDownVoteClick = { },
+        onVoteClick = { },
         onCommentClick = { },
         onRatingClick = { }
     )
@@ -335,8 +337,7 @@ private fun PostPreview() {
     PostContent(
         post = UiPost.DEFAULT,
         onProfileClick = { },
-        onUpVoteClick = { },
-        onDownVoteClick = { },
+        onVoteClick = { },
         onCommentClick = { },
         onRatingClick = { }
     )

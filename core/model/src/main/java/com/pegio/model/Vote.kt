@@ -2,7 +2,7 @@ package com.pegio.model
 
 data class Vote(
     val voterId: String,
-    val vote: Type,
+    val type: Type,
     val timestamp: Long
 ) {
 

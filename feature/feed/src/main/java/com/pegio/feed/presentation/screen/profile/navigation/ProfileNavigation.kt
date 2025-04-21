@@ -20,8 +20,7 @@ fun NavGraphBuilder.profileScreen(
     composable<ProfileRoute> {
         ProfileScreen(
             onBackClick = onBackClick,
-            onSetupTopBar = onSetupTopBar,
-            onShowSnackbar = onShowSnackbar
+            onSetupTopBar = onSetupTopBar
         )
     }
 }

@@ -10,7 +10,7 @@ internal class VoteDtoMapper @Inject constructor() : Mapper<VoteDto, Vote> {
     override fun mapToDomain(data: VoteDto): Vote {
         return Vote(
             voterId = data.id ?: throw IllegalStateException(),
-            vote = Vote.Type.valueOf(value = data.vote),
+            type = Vote.Type.valueOf(value = data.vote),
             timestamp = data.timestamp
         )
     }
@@ -18,7 +18,7 @@ internal class VoteDtoMapper @Inject constructor() : Mapper<VoteDto, Vote> {
     override fun mapFromDomain(data: Vote): VoteDto {
         return VoteDto(
             id = data.voterId,
-            vote = data.vote.value,
+            vote = data.type.value,
             timestamp = data.timestamp
         )
     }

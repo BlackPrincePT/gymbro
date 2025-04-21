@@ -10,6 +10,7 @@ import com.pegio.common.presentation.core.BaseViewModel
 import com.pegio.domain.usecase.common.GetCurrentUserUseCase
 import com.pegio.domain.usecase.feed.FetchNextCommentsPageUseCase
 import com.pegio.domain.usecase.feed.FetchPostByIdUseCase
+import com.pegio.domain.usecase.feed.VotePostUseCase
 import com.pegio.domain.usecase.feed.WriteCommentUseCase
 import com.pegio.feed.presentation.model.mapper.UiPostCommentMapper
 import com.pegio.feed.presentation.model.mapper.UiPostMapper
@@ -17,6 +18,7 @@ import com.pegio.feed.presentation.screen.postdetails.navigation.PostDetailsRout
 import com.pegio.feed.presentation.screen.postdetails.state.PostDetailsUiEffect
 import com.pegio.feed.presentation.screen.postdetails.state.PostDetailsUiEvent
 import com.pegio.feed.presentation.screen.postdetails.state.PostDetailsUiState
+import com.pegio.model.Vote
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -24,6 +26,7 @@ import javax.inject.Inject
 @HiltViewModel
 class PostDetailsViewModel @Inject constructor(
     private val fetchPostById: FetchPostByIdUseCase,
+    private val votePost: VotePostUseCase,
     private val writeComment: WriteCommentUseCase,
     private val fetchNextCommentsPage: FetchNextCommentsPageUseCase,
     private val getCurrentUser: GetCurrentUserUseCase,
@@ -48,6 +51,7 @@ class PostDetailsViewModel @Inject constructor(
             // Main
             PostDetailsUiEvent.OnCommentSubmitClick -> handleCommentSubmit()
             PostDetailsUiEvent.OnLoadMoreCommentsClick -> loadMoreComments()
+            is PostDetailsUiEvent.OnPostVote -> handlePostVote(event.voteType)
 
             // Compose State
             is PostDetailsUiEvent.OnCommentTextChange -> updateState { copy(commentText = event.value) }
@@ -58,6 +62,23 @@ class PostDetailsViewModel @Inject constructor(
 
     private fun setLoadingMoreComments(isLoading: Boolean) =
         updateState { copy(loadingMoreComments = isLoading) }
+
+    private fun handlePostVote(voteType: Vote.Type) {
+        val post = uiState.displayedPost
+        var updatedVoteCount = post.voteCount.toInt() + voteType.value
+
+        if (post.currentUserVote != null)
+            updatedVoteCount -= post.currentUserVote.type.value
+
+        votePost(postId, voteType)
+            .onFailure { } // TODO HANDLE FAILURE
+            .onSuccess { vote ->
+                val updatedPost =
+                    post.copy(currentUserVote = vote, voteCount = updatedVoteCount.toString())
+
+                updateState { copy(displayedPost = updatedPost) }
+            }
+    }
 
     private fun handleCommentSubmit() = viewModelScope.launch {
         writeComment(content = uiState.commentText, postId = postId)

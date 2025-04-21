@@ -64,8 +64,7 @@ private fun PostDetailsContent(
             PostContent(
                 post = state.displayedPost,
                 onProfileClick = { },
-                onUpVoteClick = { },
-                onDownVoteClick = { },
+                onVoteClick = { onEvent(PostDetailsUiEvent.OnPostVote(voteType = it)) },
                 onCommentClick = { },
                 onRatingClick = { }
             )

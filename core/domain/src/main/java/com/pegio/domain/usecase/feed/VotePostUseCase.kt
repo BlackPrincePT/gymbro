@@ -22,7 +22,7 @@ class VotePostUseCase @Inject constructor(
 
         val vote = Vote(
             voterId = currentUser.id,
-            vote = voteType,
+            type = voteType,
             timestamp = System.currentTimeMillis()
         )
 

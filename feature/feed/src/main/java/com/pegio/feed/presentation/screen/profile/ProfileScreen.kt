@@ -38,7 +38,6 @@ import com.pegio.designsystem.component.ProfileImage
 import com.pegio.feed.presentation.component.CreatePost
 import com.pegio.feed.presentation.component.PostContent
 import com.pegio.feed.presentation.model.UiPost
-import com.pegio.feed.presentation.screen.postdetails.state.PostDetailsUiEvent
 import com.pegio.feed.presentation.screen.profile.state.ProfileUiEffect
 import com.pegio.feed.presentation.screen.profile.state.ProfileUiEvent
 import com.pegio.feed.presentation.screen.profile.state.ProfileUiState
@@ -47,7 +46,6 @@ import com.pegio.feed.presentation.screen.profile.state.ProfileUiState
 internal fun ProfileScreen(
     onBackClick: () -> Unit,
     onSetupTopBar: (TopBarState) -> Unit,
-    onShowSnackbar: suspend (String, String?) -> Boolean,
     viewModel: ProfileViewModel = hiltViewModel()
 ) {
     SetupTopBar(onSetupTopBar, viewModel::onEvent)
@@ -93,8 +91,7 @@ private fun ProfileContent(
             PostContent(
                 post = post,
                 onProfileClick = { },
-                onUpVoteClick = { },
-                onDownVoteClick = { },
+                onVoteClick = { },
                 onCommentClick = { },
                 onRatingClick = { }
             )
