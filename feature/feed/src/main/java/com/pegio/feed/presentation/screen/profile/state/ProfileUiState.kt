@@ -10,5 +10,6 @@ data class ProfileUiState(
 
     // Main
     val displayedUser: UiUser = UiUser.EMPTY,
-    val userPosts: List<UiPost> = emptyList()
+    val userPosts: List<UiPost> = emptyList(),
+    val endOfPostsReached: Boolean = false
 )

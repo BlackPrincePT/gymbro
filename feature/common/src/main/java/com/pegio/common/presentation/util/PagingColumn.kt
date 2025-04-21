@@ -20,10 +20,10 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun PagingColumn(
     itemCount: Int,
-    loadIndex: Int = 1,
     isLoading: Boolean,
     onLoadAnotherPage: () -> Unit,
     modifier: Modifier = Modifier,
+    loadIndex: Int = 1,
     state: LazyListState = rememberLazyListState(),
     contentPadding: PaddingValues = PaddingValues(0.dp),
     reverseLayout: Boolean = false,

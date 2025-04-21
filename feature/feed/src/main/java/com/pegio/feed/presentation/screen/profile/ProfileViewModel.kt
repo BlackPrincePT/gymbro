@@ -2,6 +2,7 @@ package com.pegio.feed.presentation.screen.profile
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.navigation.toRoute
+import com.pegio.common.core.DataError
 import com.pegio.common.core.getOrElse
 import com.pegio.common.core.onFailure
 import com.pegio.common.core.onSuccess
@@ -42,6 +43,7 @@ class ProfileViewModel @Inject constructor(
 
             // Main
             is ProfileUiEvent.OnPostVote -> handlePostVote(event.postId, event.voteType)
+            ProfileUiEvent.OnLoadMorePosts -> loadMorePosts()
 
             // Top Bar
             ProfileUiEvent.OnBackClick -> sendEffect(ProfileUiEffect.NavigateBack)
@@ -77,14 +79,27 @@ class ProfileViewModel @Inject constructor(
     private fun loadProfileInfo() = launchWithLoading {
         fetchUserById(id = userId)
             .onFailure { return@launchWithLoading } // TODO HANDLE PROPERLY
-            .onSuccess { user ->
-                updateState { copy(displayedUser = uiUserMapper.mapFromDomain(user)) }
+            .onSuccess { updateState { copy(displayedUser = uiUserMapper.mapFromDomain(it)) } }
+    }
 
-                fetchLatestUserPosts(authorId = user.id)
-                    .getOrElse { return@launchWithLoading } // TODO HANDLE PROPERLY
-                    .map(uiPostMapper::mapFromDomain)
-                    .let { updateState { copy(userPosts = it) } }
-            }
+    private fun loadMorePosts() {
+        val userId = uiState.displayedUser.id
+        if (uiState.endOfPostsReached || userId.isEmpty()) return
+
+        launchWithLoading {
+            fetchLatestUserPosts(authorId = userId)
+                .getOrElse { error ->
+                    when (error) {
+                        DataError.Pagination.END_OF_PAGINATION_REACHED ->
+                            updateState { copy(endOfPostsReached = true) }
+
+                        else -> {} // TODO HANDLE BETTER
+                    }
+                    return@launchWithLoading
+                }
+                .map(uiPostMapper::mapFromDomain)
+                .let { updateState { copy(userPosts = it) } }
+        }
     }
 
     private fun updatePost(index: Int, newVote: Vote?, difference: Int) {

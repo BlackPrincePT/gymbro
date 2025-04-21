@@ -33,6 +33,7 @@ import com.pegio.common.presentation.model.UiUser
 import com.pegio.common.presentation.state.TopBarAction
 import com.pegio.common.presentation.state.TopBarState
 import com.pegio.common.presentation.util.CollectLatestEffect
+import com.pegio.common.presentation.util.PagingColumn
 import com.pegio.designsystem.component.BackgroundImage
 import com.pegio.designsystem.component.ProfileImage
 import com.pegio.feed.presentation.component.CreatePost
@@ -66,7 +67,10 @@ private fun ProfileContent(
     state: ProfileUiState,
     onEvent: (ProfileUiEvent) -> Unit
 ) {
-    LazyColumn(
+    PagingColumn(
+        itemCount = state.userPosts.size,
+        isLoading = state.isLoading,
+        onLoadAnotherPage = { onEvent(ProfileUiEvent.OnLoadMorePosts) },
         verticalArrangement = Arrangement.spacedBy(12.dp),
         modifier = Modifier
             .fillMaxSize()
