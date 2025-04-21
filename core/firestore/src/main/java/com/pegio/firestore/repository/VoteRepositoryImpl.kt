@@ -24,6 +24,10 @@ internal class VoteRepositoryImpl @Inject constructor(
         db.collection(POSTS).document(postId).collection(VOTES).document(vote.voterId).set(voteDto)
     }
 
+    override fun deleteVote(postId: String, voterId: String) {
+        db.collection(POSTS).document(postId).collection(VOTES).document(voterId).delete()
+    }
+
     override suspend fun checkForCommentVote(voterId: String, commentId: String) {
         TODO("Not yet implemented")
     }

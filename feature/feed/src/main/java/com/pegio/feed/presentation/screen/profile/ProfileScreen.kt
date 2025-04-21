@@ -91,7 +91,7 @@ private fun ProfileContent(
             PostContent(
                 post = post,
                 onProfileClick = { },
-                onVoteClick = { },
+                onVoteClick = { onEvent(ProfileUiEvent.OnPostVote(post.id, voteType = it)) },
                 onCommentClick = { },
                 onRatingClick = { }
             )

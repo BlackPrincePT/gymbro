@@ -8,6 +8,7 @@ interface VoteRepository {
 
     // Upload
     fun votePost(postId: String, vote: Vote)
+    fun deleteVote(postId: String, voterId: String)
 
     // Fetch
     suspend fun checkForPostVote(voterId: String, postId: String): Resource<Vote, DataError.Firestore>

@@ -8,6 +8,7 @@ import com.pegio.common.core.onFailure
 import com.pegio.common.core.onSuccess
 import com.pegio.common.presentation.core.BaseViewModel
 import com.pegio.domain.usecase.common.GetCurrentUserUseCase
+import com.pegio.domain.usecase.feed.DeleteVoteUseCase
 import com.pegio.domain.usecase.feed.FetchNextCommentsPageUseCase
 import com.pegio.domain.usecase.feed.FetchPostByIdUseCase
 import com.pegio.domain.usecase.feed.VotePostUseCase
@@ -27,6 +28,7 @@ import javax.inject.Inject
 class PostDetailsViewModel @Inject constructor(
     private val fetchPostById: FetchPostByIdUseCase,
     private val votePost: VotePostUseCase,
+    private val deleteVote: DeleteVoteUseCase,
     private val writeComment: WriteCommentUseCase,
     private val fetchNextCommentsPage: FetchNextCommentsPageUseCase,
     private val getCurrentUser: GetCurrentUserUseCase,
@@ -65,19 +67,23 @@ class PostDetailsViewModel @Inject constructor(
 
     private fun handlePostVote(voteType: Vote.Type) {
         val post = uiState.displayedPost
-        var updatedVoteCount = post.voteCount.toInt() + voteType.value
+        val previousVoteType = post.currentUserVote?.type.also { println(it) }
 
-        if (post.currentUserVote != null)
-            updatedVoteCount -= post.currentUserVote.type.value
+        val difference = when (previousVoteType) {
+            null -> voteType.value
+            voteType -> -previousVoteType.value
+            else -> voteType.value - previousVoteType.value
+        }
 
-        votePost(postId, voteType)
-            .onFailure { } // TODO HANDLE FAILURE
-            .onSuccess { vote ->
-                val updatedPost =
-                    post.copy(currentUserVote = vote, voteCount = updatedVoteCount.toString())
-
-                updateState { copy(displayedPost = updatedPost) }
-            }
+        if (previousVoteType == voteType) {
+            deleteVote(postId)
+                .onSuccess { updatePost(newVote = null, difference = difference) }
+                .onFailure { } // TODO HANDLE FAILURE
+        } else {
+            votePost(postId, voteType)
+                .onSuccess { updatePost(newVote = it, difference = difference) }
+                .onFailure { } // TODO HANDLE FAILURE
+        }
     }
 
     private fun handleCommentSubmit() = viewModelScope.launch {
@@ -117,5 +123,15 @@ class PostDetailsViewModel @Inject constructor(
         fetchPostById(id = postId)
             .onSuccess { updateState { copy(displayedPost = uiPostMapper.mapFromDomain(it)) } }
             .onFailure { /* TODO: HANDLE */ }
+    }
+
+    private fun updatePost(newVote: Vote?, difference: Int) {
+        val post = uiState.displayedPost
+        val updatedPost = post.copy(
+            currentUserVote = newVote,
+            voteCount = (post.voteCount.toInt() + difference).toString()
+        )
+
+        updateState { copy(displayedPost = updatedPost) }
     }
 }

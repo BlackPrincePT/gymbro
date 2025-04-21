@@ -19,6 +19,7 @@ import com.pegio.common.presentation.util.CollectLatestEffect
 import com.pegio.common.presentation.util.PagingColumn
 import com.pegio.feed.presentation.component.CreatePost
 import com.pegio.feed.presentation.component.PostContent
+import com.pegio.feed.presentation.model.UiPost
 import com.pegio.feed.presentation.screen.feed.state.FeedUiEffect
 import com.pegio.feed.presentation.screen.feed.state.FeedUiEvent
 import com.pegio.feed.presentation.screen.feed.state.FeedUiState
@@ -118,5 +119,8 @@ private fun SetupTopBar(
 @Preview(showBackground = true)
 @Composable
 private fun FeedContentPreview() {
-    FeedContent(state = FeedUiState(), onEvent = { })
+    FeedContent(
+        state = FeedUiState(relevantPosts = List(5) { UiPost.DEFAULT }),
+        onEvent = { }
+    )
 }
