@@ -11,5 +11,9 @@ data class ProfileUiState(
     // Main
     val displayedUser: UiUser = UiUser.EMPTY,
     val userPosts: List<UiPost> = emptyList(),
+
+    // Compose State
+    val isProfileOwner: Boolean = false,
+    val isFollowing: Boolean = false,
     val endOfPostsReached: Boolean = false
 )

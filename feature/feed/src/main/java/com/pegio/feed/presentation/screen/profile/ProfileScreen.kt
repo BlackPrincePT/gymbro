@@ -23,6 +23,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -36,6 +37,7 @@ import com.pegio.common.presentation.util.CollectLatestEffect
 import com.pegio.common.presentation.util.PagingColumn
 import com.pegio.designsystem.component.BackgroundImage
 import com.pegio.designsystem.component.ProfileImage
+import com.pegio.feed.R
 import com.pegio.feed.presentation.component.CreatePost
 import com.pegio.feed.presentation.component.PostContent
 import com.pegio.feed.presentation.model.UiPost
@@ -84,6 +86,20 @@ private fun ProfileContent(
         }
 
         item {
+            if (state.isProfileOwner) {
+                ProfileOwnerActions()
+            } else {
+                DefaultProfileActions(
+                    isFollowing = state.isFollowing,
+                    onFollowClick = { onEvent(ProfileUiEvent.OnFollowClick) },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 32.dp)
+                )
+            }
+        }
+
+        if (state.isProfileOwner) item {
             CreatePost(
                 currentUser = state.displayedUser,
                 onPostClick = { },
@@ -102,6 +118,10 @@ private fun ProfileContent(
         }
     }
 }
+
+
+// <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> \\
+
 
 @Composable
 private fun ProfileHeader(
@@ -139,10 +159,6 @@ private fun ProfileHeader(
             fontWeight = FontWeight.Medium,
             modifier = Modifier.padding(vertical = 16.dp)
         )
-
-        ProfileOwnerActions(
-            modifier = Modifier.fillMaxWidth()
-        )
     }
 }
 
@@ -174,6 +190,28 @@ private fun ProfileOwnerActions(
 }
 
 @Composable
+private fun DefaultProfileActions(
+    isFollowing: Boolean,
+    onFollowClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Button(
+        onClick = onFollowClick,
+        modifier = modifier
+    ) {
+        val btnText =
+            if (isFollowing) stringResource(R.string.feature_feed_following)
+            else stringResource(R.string.feature_feed_follow)
+
+        Text(text = btnText)
+    }
+}
+
+
+// <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> \\
+
+
+@Composable
 private fun SetupTopBar(
     onSetupTopBar: (TopBarState) -> Unit,
     onEvent: (ProfileUiEvent) -> Unit
@@ -189,6 +227,10 @@ private fun SetupTopBar(
         )
     }
 }
+
+
+// <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> \\
+
 
 @Preview(showBackground = true)
 @Composable

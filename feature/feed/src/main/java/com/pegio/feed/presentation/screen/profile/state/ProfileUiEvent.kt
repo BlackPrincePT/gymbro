@@ -6,8 +6,9 @@ sealed interface ProfileUiEvent {
 
     // Main
     data class OnPostVote(val postId: String, val voteType: Vote.Type) : ProfileUiEvent
-    data object OnLoadMorePosts: ProfileUiEvent
+    data object OnLoadMorePosts : ProfileUiEvent
+    data object OnFollowClick : ProfileUiEvent
 
-    // Top Bar
-    data object OnBackClick: ProfileUiEvent
+    // Navigation
+    data object OnBackClick : ProfileUiEvent
 }
