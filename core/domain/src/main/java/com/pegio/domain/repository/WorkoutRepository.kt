@@ -1,0 +1,9 @@
+package com.pegio.domain.repository
+
+import com.pegio.common.core.DataError
+import com.pegio.common.core.Resource
+import com.pegio.model.Workout
+
+interface WorkoutRepository {
+    suspend fun fetchWorkoutsById(id:String): Resource<List<Workout>, DataError.Firestore>
+}

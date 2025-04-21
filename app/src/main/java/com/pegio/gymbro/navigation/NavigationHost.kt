@@ -5,6 +5,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.toRoute
 import com.pegio.aichat.presentation.screen.aichat.AiChatScreen
 import com.pegio.auth.presentation.screen.auth.navigation.authScreen
 import com.pegio.auth.presentation.screen.auth.navigation.navigateToAuth
@@ -23,10 +24,13 @@ import com.pegio.gymbro.navigation.route.AiChatRoute
 import com.pegio.gymbro.navigation.route.RegisterRoute
 import com.pegio.gymbro.navigation.route.SplashRoute
 import com.pegio.gymbro.navigation.route.WorkoutPlanRoute
+import com.pegio.gymbro.navigation.route.WorkoutRoute
 import com.pegio.gymbro.navigation.route.navigateToAiChat
 import com.pegio.gymbro.navigation.route.navigateToRegister
+import com.pegio.gymbro.navigation.route.navigateToWorkout
 import com.pegio.settings.presentation.screen.AccountScreen
 import com.pegio.splash.presentation.splash.SplashScreen
+import com.pegio.workout.presentation.screen.workout.WorkoutScreen
 import com.pegio.workout.presentation.screen.workout_plan.WorkoutPlanScreen
 
 @Composable
@@ -83,6 +87,19 @@ fun NavigationHost(
                 onBackClick = navController::navigateUp,
                 onInfoClick = navController::navigateToAiChat,
                 onShowSnackbar = onShowSnackbar,
+                onStartWorkout = { difficulty ->
+                    navController.navigateToWorkout(difficulty)
+                },
+                onSetupTopBar = onSetupAppBar,
+
+            )
+        }
+
+        composable<WorkoutRoute> {
+            WorkoutScreen(
+                onBackClick = navController::navigateUp,
+                onShowSnackbar = onShowSnackbar,
+                workoutPlanId = it.toRoute<WorkoutRoute>().workoutPlanId,
                 onSetupTopBar = onSetupAppBar,
             )
         }

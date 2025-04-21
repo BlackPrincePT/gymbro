@@ -14,7 +14,7 @@ class UiWorkoutPlanMapper  @Inject constructor() : FromDomainMapper<UiWorkoutPla
             description = data.description,
             duration = data.duration,
             intensity = data.intensity,
-            difficulty = data.level.name.lowercase().replaceFirstChar { it.uppercase() },
+            difficulty = data.level.name.lowercase(),
             imageUrl = data.imageUrl
         )
     }

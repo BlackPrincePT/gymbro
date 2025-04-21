@@ -6,12 +6,14 @@ import com.pegio.domain.repository.PostRepository
 import com.pegio.domain.repository.UserRepository
 import com.pegio.domain.repository.VoteRepository
 import com.pegio.domain.repository.WorkoutPlanRepository
+import com.pegio.domain.repository.WorkoutRepository
 import com.pegio.firestore.repository.AiMessagesRepositoryImpl
 import com.pegio.firestore.repository.PostCommentRepositoryImpl
 import com.pegio.firestore.repository.PostRepositoryImpl
 import com.pegio.firestore.repository.UserRepositoryImpl
 import com.pegio.firestore.repository.VoteRepositoryImpl
 import com.pegio.firestore.repository.WorkoutPlanRepositoryImpl
+import com.pegio.firestore.repository.WorkoutRepositoryImpl
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -38,4 +40,7 @@ internal abstract class RepositoryModule {
 
     @Binds
     abstract fun bindWorkoutPlanRepository(impl: WorkoutPlanRepositoryImpl): WorkoutPlanRepository
+
+    @Binds
+    abstract fun bindWorkoutRepository(impl: WorkoutRepositoryImpl): WorkoutRepository
 }
