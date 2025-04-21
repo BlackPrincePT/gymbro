@@ -1,10 +1,12 @@
 package com.pegio.gymbro.activity.components
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
@@ -14,13 +16,13 @@ import androidx.compose.material3.NavigationDrawerItem
 import androidx.compose.material3.NavigationDrawerItemDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
-import androidx.constraintlayout.compose.ConstraintLayout
 import com.pegio.common.presentation.model.UiUser
 import com.pegio.designsystem.component.BackgroundImage
 import com.pegio.designsystem.component.ProfileImage
@@ -104,42 +106,34 @@ private fun AppDrawerHeader(
     user: UiUser,
     modifier: Modifier = Modifier
 ) {
-    ConstraintLayout(
-        modifier = modifier
+    Column(
+        modifier = modifier,
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        val (backgroundImage, profileImage, username) = createRefs()
+        Box {
+            BackgroundImage(
+                imageUrl = user.imgBackgroundUrl,
+                modifier = Modifier
+                    .height(96.dp)
+                    .fillMaxWidth()
+            )
 
-        BackgroundImage(
-            imageUrl = user.imgBackgroundUrl,
-            modifier = Modifier
-                .height(96.dp)
-                .constrainAs(backgroundImage) {
-                    top.linkTo(parent.top)
-                    centerHorizontallyTo(parent)
-                }
-        )
+            ProfileImage(
+                imageUrl = user.avatarUrl,
+                modifier = Modifier
+                    .align(Alignment.BottomCenter)
+                    .offset(y = 32.dp)
+                    .clip(CircleShape)
+                    .size(64.dp)
+                    .zIndex(1f)
+            )
+        }
 
-        ProfileImage(
-            imageUrl = user.avatarUrl,
-            modifier = Modifier
-                .clip(CircleShape)
-                .size(64.dp)
-                .zIndex(1f)
-                .constrainAs(profileImage) {
-                    top.linkTo(backgroundImage.bottom)
-                    bottom.linkTo(backgroundImage.bottom)
-                    centerHorizontallyTo(parent)
-                }
-        )
+        Spacer(modifier = Modifier.height(32.dp))
 
         Text(
             text = user.username,
-            modifier = Modifier
-                .padding(top = 16.dp)
-                .constrainAs(username) {
-                    top.linkTo(profileImage.bottom)
-                    centerHorizontallyTo(parent)
-                }
+            modifier = Modifier.padding(top = 16.dp)
         )
     }
 }

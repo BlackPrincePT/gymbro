@@ -34,6 +34,7 @@ import com.pegio.feed.presentation.screen.postdetails.state.PostDetailsUiState
 @Composable
 internal fun PostDetailsScreen(
     onBackClick: () -> Unit,
+    onUserProfileClick: (String) -> Unit,
     onSetupTopBar: (TopBarState) -> Unit,
     viewModel: PostDetailsViewModel = hiltViewModel()
 ) {
@@ -44,6 +45,7 @@ internal fun PostDetailsScreen(
 
             // Navigation
             PostDetailsUiEffect.NavigateBack -> onBackClick()
+            is PostDetailsUiEffect.NavigateToUserProfile -> onUserProfileClick(effect.userId)
         }
     }
 
@@ -63,8 +65,8 @@ private fun PostDetailsContent(
         item {
             PostContent(
                 post = state.displayedPost,
-                onUpVoteClick = { },
-                onDownVoteClick = { },
+                onProfileClick = { onEvent(PostDetailsUiEvent.OnUserProfileClick(userId = state.displayedPost.author.id)) },
+                onVoteClick = { onEvent(PostDetailsUiEvent.OnPostVote(voteType = it)) },
                 onCommentClick = { },
                 onRatingClick = { }
             )
@@ -86,7 +88,8 @@ private fun PostDetailsContent(
                 avatarUrl = comment.author.avatarUrl,
                 username = comment.author.username,
                 commentText = comment.content,
-                commentDate = comment.date
+                commentDate = comment.date,
+                onProfileClick = { onEvent(PostDetailsUiEvent.OnUserProfileClick(comment.author.id)) }
             )
         }
 

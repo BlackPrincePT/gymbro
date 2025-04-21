@@ -3,13 +3,10 @@ package com.pegio.feed.presentation.screen.feed
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ChatBubble
 import androidx.compose.material.icons.filled.Menu
-import androidx.compose.material3.pulltorefresh.pullToRefresh
-import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
@@ -19,8 +16,10 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.pegio.common.presentation.state.TopBarAction
 import com.pegio.common.presentation.state.TopBarState
 import com.pegio.common.presentation.util.CollectLatestEffect
+import com.pegio.common.presentation.util.PagingColumn
 import com.pegio.feed.presentation.component.CreatePost
 import com.pegio.feed.presentation.component.PostContent
+import com.pegio.feed.presentation.model.UiPost
 import com.pegio.feed.presentation.screen.feed.state.FeedUiEffect
 import com.pegio.feed.presentation.screen.feed.state.FeedUiEvent
 import com.pegio.feed.presentation.screen.feed.state.FeedUiState
@@ -28,8 +27,9 @@ import com.pegio.feed.presentation.screen.feed.state.FeedUiState
 @Composable
 internal fun FeedScreen(
     onCreatePostClick: () -> Unit,
-    onShowPostDetails: (String) -> Unit,
     onChatClick: () -> Unit,
+    onShowPostDetails: (String) -> Unit,
+    onUserProfileClick: (String) -> Unit,
     onOpenDrawerClick: () -> Unit,
     onSetupTopBar: (TopBarState) -> Unit,
     viewModel: FeedViewModel = hiltViewModel()
@@ -46,6 +46,7 @@ internal fun FeedScreen(
             // Navigation
             FeedUiEffect.NavigateToCreatePost -> onCreatePostClick()
             is FeedUiEffect.NavigateToPostDetails -> onShowPostDetails(effect.postId)
+            is FeedUiEffect.NavigateToUserProfile -> onUserProfileClick(effect.userId)
         }
     }
 
@@ -60,23 +61,19 @@ private fun FeedContent(
     state: FeedUiState,
     onEvent: (FeedUiEvent) -> Unit
 ) {
-    val refreshState = rememberPullToRefreshState()
-
-    LazyColumn(
+    PagingColumn(
+        itemCount = state.relevantPosts.size,
+        isLoading = state.isLoading,
+        onLoadAnotherPage = { onEvent(FeedUiEvent.OnLoadMorePosts) },
         verticalArrangement = Arrangement.spacedBy(12.dp),
         modifier = Modifier
             .fillMaxSize()
-            .pullToRefresh(
-                isRefreshing = state.isLoading,
-                onRefresh = { onEvent(FeedUiEvent.OnPostsRefresh) },
-                state = refreshState
-            )
     ) {
         item {
             CreatePost(
                 currentUser = state.currentUser,
                 onPostClick = { onEvent(FeedUiEvent.OnCreatePostClick) },
-                onProfileClick = { },
+                onProfileClick = { onEvent(FeedUiEvent.OnUserProfileClick(userId = state.currentUser.id)) },
                 modifier = Modifier
                     .padding(8.dp)
             )
@@ -87,19 +84,12 @@ private fun FeedContent(
         items(state.relevantPosts) { post ->
             PostContent(
                 post = post,
-                onUpVoteClick = { },
-                onDownVoteClick = { },
+                onProfileClick = { onEvent(FeedUiEvent.OnUserProfileClick(userId = post.author.id)) },
+                onVoteClick = { onEvent(FeedUiEvent.OnPostVote(postId = post.id, voteType = it)) },
                 onCommentClick = { onEvent(FeedUiEvent.OnPostCommentClick(postId = post.id)) },
                 onRatingClick = { }
             )
         }
-
-//        if (state.isLoading)
-//            item {
-//                Box(modifier = Modifier.fillMaxWidth()) {
-//                    CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
-//                }
-//            }
     }
 }
 
@@ -129,5 +119,8 @@ private fun SetupTopBar(
 @Preview(showBackground = true)
 @Composable
 private fun FeedContentPreview() {
-    FeedContent(state = FeedUiState(), onEvent = { })
+    FeedContent(
+        state = FeedUiState(relevantPosts = List(5) { UiPost.DEFAULT }),
+        onEvent = { }
+    )
 }

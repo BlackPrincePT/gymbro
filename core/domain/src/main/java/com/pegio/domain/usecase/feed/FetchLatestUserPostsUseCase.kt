@@ -15,24 +15,24 @@ import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
 import javax.inject.Inject
 
-class FetchNextRelevantPostsPageUseCase @Inject constructor(
+class FetchLatestUserPostsUseCase @Inject constructor(
     private val postRepository: PostRepository,
     private val userRepository: UserRepository,
     private val voteRepository: VoteRepository,
     private val authRepository: AuthRepository
 ) {
-    suspend operator fun invoke() = coroutineScope {
+    suspend operator fun invoke(authorId: String) = coroutineScope {
+        val authorDeferred = async {
+            retryableCall { userRepository.fetchUserById(id = authorId) }
+                .getOrNull()
+        }
+
         val currentUser = authRepository.getCurrentUser()
 
-        retryableCall { postRepository.fetchNextRelevantPostsPage() }
+        retryableCall { postRepository.fetchLatestUserPostsPage(authorId) }
             .getOrElse { return@coroutineScope it.asFailure() }
             .map { post ->
                 async {
-                    val authorDeferred = async {
-                        retryableCall { userRepository.fetchUserById(id = post.authorId) }
-                            .getOrNull()
-                    }
-
                     val voteDeferred = async {
                         currentUser?.let {
                             retryableCall { voteRepository.checkForPostVote(currentUser.id, post.id) }

@@ -14,11 +14,13 @@ fun NavController.navigateToPostDetails(postId: String) = navigate(route = PostD
 
 fun NavGraphBuilder.postDetailsScreen(
     onBackClick: () -> Unit,
+    onUserProfileClick: (String) -> Unit,
     onSetupTopBar: (TopBarState) -> Unit,
 ) {
     composable<PostDetailsRoute> {
         PostDetailsScreen(
             onBackClick = onBackClick,
+            onUserProfileClick = onUserProfileClick,
             onSetupTopBar = onSetupTopBar
         )
     }

@@ -3,9 +3,8 @@ package com.pegio.feed.presentation.model.mapper
 import com.pegio.common.core.FromDomainMapper
 import com.pegio.common.presentation.model.UiUser
 import com.pegio.common.presentation.model.mapper.UiUserMapper
+import com.pegio.domain.model.PostWithAuthorAndVote
 import com.pegio.feed.presentation.model.UiPost
-import com.pegio.model.Post
-import com.pegio.model.User
 import kotlinx.datetime.Instant
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toJavaLocalDateTime
@@ -15,16 +14,17 @@ import javax.inject.Inject
 
 class UiPostMapper @Inject constructor(
     private val uiUserMapper: UiUserMapper
-) : FromDomainMapper<UiPost, Pair<Post, User?>> {
+) : FromDomainMapper<UiPost, PostWithAuthorAndVote> {
 
-    override fun mapFromDomain(data: Pair<Post, User?>): UiPost {
-        val (post, author) = data
+    override fun mapFromDomain(data: PostWithAuthorAndVote): UiPost {
+        val (post, author, currentUserVote) = data
         return UiPost(
             id = post.id,
             author = author?.let(uiUserMapper::mapFromDomain) ?: UiUser.EMPTY,
             content = post.content,
             imageUrl = post.imageUrl,
             voteCount = post.voteCount.toString(),
+            currentUserVote = currentUserVote,
             commentCount = post.commentCount.toString(),
             ratingAverage = post.ratingAverage.toString(),
             ratingCount = post.ratingCount.toString(),

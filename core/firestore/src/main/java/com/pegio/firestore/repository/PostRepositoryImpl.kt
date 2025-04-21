@@ -7,6 +7,7 @@ import com.pegio.common.core.Resource
 import com.pegio.common.core.map
 import com.pegio.common.core.mapList
 import com.pegio.domain.repository.PostRepository
+import com.pegio.firestore.core.FirestoreConstants.AUTHOR_ID
 import com.pegio.firestore.core.FirestoreConstants.POSTS
 import com.pegio.firestore.core.FirestoreConstants.TIMESTAMP
 import com.pegio.firestore.core.FirestoreConstants.UP_VOTES_IN_LAST_24_HOURS
@@ -50,6 +51,15 @@ internal class PostRepositoryImpl @Inject constructor(
     override suspend fun fetchNextRelevantPostsPage(): Resource<List<Post>, DataError> {
         val baseQuery = db.collection(POSTS)
             .orderBy(UP_VOTES_IN_LAST_24_HOURS, Query.Direction.DESCENDING)
+            .orderBy(TIMESTAMP, Query.Direction.DESCENDING)
+
+        return postsPagingSource.loadNextPage(baseQuery)
+            .mapList(postDtoMapper::mapToDomain)
+    }
+
+    override suspend fun fetchLatestUserPostsPage(authorId: String): Resource<List<Post>, DataError> {
+        val baseQuery = db.collection(POSTS)
+            .whereEqualTo(AUTHOR_ID, authorId)
             .orderBy(TIMESTAMP, Query.Direction.DESCENDING)
 
         return postsPagingSource.loadNextPage(baseQuery)

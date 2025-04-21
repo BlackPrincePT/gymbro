@@ -7,11 +7,13 @@ internal object FirestoreConstants {
 
     const val POSTS = "posts"
     const val COMMENTS = "comments"
+    const val VOTES = "votes"
 
     /**
      * Document Parameters
      */
     const val USERNAME = "username"
+    const val AUTHOR_ID = "authorId"
     const val TIMESTAMP = "timestamp"
     const val WORKOUT_ORDER = "order"
     const val UP_VOTES_IN_LAST_24_HOURS = "upVotesInLast24Hours"

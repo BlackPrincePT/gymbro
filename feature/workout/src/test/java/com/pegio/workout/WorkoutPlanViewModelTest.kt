@@ -105,7 +105,7 @@ class WorkoutPlanViewModelTest {
     @Test
     fun `given use case failure, when LoadInitialPlans is triggered, then failure effect is emitted`() = runTest {
         // Given
-        val error = DataError.Firestore.UNKNOWN
+        val error = DataError.Firestore.Unknown
         coEvery { observeWorkoutPlansPagingStreamUseCase.invoke() } returns flow {
             emit(Resource.Failure(error))
         }

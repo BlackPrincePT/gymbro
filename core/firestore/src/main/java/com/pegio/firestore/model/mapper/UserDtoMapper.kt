@@ -5,11 +5,11 @@ import com.pegio.firestore.model.UserDto
 import com.pegio.model.User
 import javax.inject.Inject
 
-class UserDtoMapper @Inject constructor() : Mapper<UserDto, User> {
+internal class UserDtoMapper @Inject constructor() : Mapper<UserDto, User> {
 
     override fun mapToDomain(data: UserDto): User {
         return User(
-            id = data.id ?: throw Exception(),
+            id = data.id ?: throw IllegalStateException(),
             username = data.username,
             age = data.age,
             gender = data.gender,

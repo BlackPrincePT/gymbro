@@ -35,12 +35,13 @@ import com.pegio.common.presentation.model.UiUser
 import com.pegio.designsystem.component.PostImage
 import com.pegio.designsystem.component.ProfileImage
 import com.pegio.feed.presentation.model.UiPost
+import com.pegio.model.Vote
 
 @Composable
 internal fun PostContent(
     post: UiPost,
-    onUpVoteClick: () -> Unit,
-    onDownVoteClick: () -> Unit,
+    onProfileClick: () -> Unit,
+    onVoteClick: (Vote.Type) -> Unit,
     onCommentClick: () -> Unit,
     onRatingClick: () -> Unit
 ) {
@@ -48,7 +49,7 @@ internal fun PostContent(
         modifier = Modifier
             .padding(vertical = 8.dp)
     ) {
-        PostHeader(post, onProfileClick = { })
+        PostHeader(post, onProfileClick)
 
         Spacer(modifier = Modifier.height(8.dp))
 
@@ -58,8 +59,7 @@ internal fun PostContent(
 
         PostActions(
             post = post,
-            onUpVoteClick = onUpVoteClick,
-            onDownVoteClick = onDownVoteClick,
+            onVoteClick = onVoteClick,
             onCommentClick = onCommentClick,
             onRatingClick = onRatingClick
         )
@@ -140,8 +140,7 @@ private fun PostHeader(
 @Composable
 private fun PostActions(
     post: UiPost,
-    onUpVoteClick: () -> Unit,
-    onDownVoteClick: () -> Unit,
+    onVoteClick: (Vote.Type) -> Unit,
     onCommentClick: () -> Unit,
     onRatingClick: () -> Unit
 ) {
@@ -153,8 +152,8 @@ private fun PostActions(
     ) {
         VoteActions(
             voteCount = post.voteCount,
-            onUpVoteClick = onUpVoteClick,
-            onDownVoteClick = onDownVoteClick
+            currentUserVote = post.currentUserVote,
+            onVoteClick = onVoteClick,
         )
 
         CommentAction(
@@ -174,11 +173,18 @@ private fun PostActions(
 @Composable
 private fun VoteActions(
     voteCount: String,
-    onUpVoteClick: () -> Unit,
-    onDownVoteClick: () -> Unit
+    currentUserVote: Vote?,
+    onVoteClick: (Vote.Type) -> Unit
 ) {
+    val upVoteTint = if (currentUserVote?.type == Vote.Type.UP_VOTE) Color.Blue else Color.Gray
+    val downVoteTint = if (currentUserVote?.type == Vote.Type.DOWN_VOTE) Color.Blue else Color.Gray
+
     Row(verticalAlignment = Alignment.CenterVertically) {
-        PostAction(onUpVoteClick, Icons.Default.ArrowUpward)
+        PostAction(
+            onClick = { onVoteClick(Vote.Type.UP_VOTE) },
+            Icons.Default.ArrowUpward,
+            upVoteTint
+        )
 
         Text(
             text = voteCount,
@@ -186,7 +192,11 @@ private fun VoteActions(
             fontSize = 16.sp
         )
 
-        PostAction(onDownVoteClick, Icons.Default.ArrowDownward)
+        PostAction(
+            onClick = { onVoteClick(Vote.Type.DOWN_VOTE) },
+            Icons.Default.ArrowDownward,
+            downVoteTint
+        )
     }
 }
 
@@ -238,13 +248,14 @@ private fun RatingAction(
 @Composable
 private fun PostAction(
     onClick: () -> Unit,
-    imageVector: ImageVector
+    imageVector: ImageVector,
+    tint: Color = Color.Gray
 ) {
     IconButton(onClick = onClick) {
         Icon(
             imageVector = imageVector,
             contentDescription = null,
-            tint = Color.Gray,
+            tint = tint,
             modifier = Modifier
                 .size(24.dp)
         )
@@ -314,8 +325,7 @@ private fun PostHeaderPreview() {
 private fun PostActionsPreview() {
     PostActions(
         post = UiPost.DEFAULT,
-        onUpVoteClick = { },
-        onDownVoteClick = { },
+        onVoteClick = { },
         onCommentClick = { },
         onRatingClick = { }
     )
@@ -326,8 +336,8 @@ private fun PostActionsPreview() {
 private fun PostPreview() {
     PostContent(
         post = UiPost.DEFAULT,
-        onUpVoteClick = { },
-        onDownVoteClick = { },
+        onProfileClick = { },
+        onVoteClick = { },
         onCommentClick = { },
         onRatingClick = { }
     )

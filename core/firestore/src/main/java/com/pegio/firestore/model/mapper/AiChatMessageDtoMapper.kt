@@ -5,11 +5,11 @@ import com.pegio.common.core.Mapper
 import com.pegio.firestore.model.AiChatMessageDto
 import javax.inject.Inject
 
-class AiChatMessageDtoMapper @Inject constructor() : Mapper<AiChatMessageDto, AiMessage> {
+internal class AiChatMessageDtoMapper @Inject constructor() : Mapper<AiChatMessageDto, AiMessage> {
 
     override fun mapToDomain(data: AiChatMessageDto): AiMessage {
         return AiMessage(
-            id = data.id ?: throw Exception(),
+            id = data.id ?: throw IllegalStateException(),
             text = data.text,
             imageUrl = data.imageUrl,
             isFromUser = data.fromUser,
