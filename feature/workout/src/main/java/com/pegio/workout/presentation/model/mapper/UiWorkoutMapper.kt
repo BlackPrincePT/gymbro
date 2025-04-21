@@ -8,7 +8,6 @@ import javax.inject.Inject
 class UiWorkoutMapper @Inject constructor() : FromDomainMapper<UiWorkout, Workout> {
     override fun mapFromDomain(data: Workout): UiWorkout {
         return UiWorkout(
-            id = data.id,
             description = data.description,
             isFinished = data.isFinished,
             muscleGroups = data.muscleGroups,

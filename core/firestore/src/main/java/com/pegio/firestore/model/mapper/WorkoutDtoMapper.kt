@@ -1,15 +1,14 @@
 package com.pegio.firestore.model.mapper
 
 import com.pegio.common.core.Mapper
-import com.pegio.firestore.model.WorkoutDto
+import com.pegio.firestore.model.ExerciseDto
 import com.pegio.model.Workout
 import javax.inject.Inject
 
-class WorkoutDtoMapper @Inject constructor(): Mapper<WorkoutDto, Workout> {
+class WorkoutDtoMapper @Inject constructor(): Mapper<ExerciseDto, Workout> {
 
-    override fun mapToDomain(data: WorkoutDto): Workout {
+    override fun mapToDomain(data: ExerciseDto): Workout {
         return Workout(
-            id = data.id,
             description = data.description,
             isFinished = data.isFinished,
             muscleGroups = data.muscleGroups,
@@ -21,9 +20,8 @@ class WorkoutDtoMapper @Inject constructor(): Mapper<WorkoutDto, Workout> {
         )
     }
 
-    override fun mapFromDomain(data: Workout): WorkoutDto {
-        return WorkoutDto(
-            id = data.id,
+    override fun mapFromDomain(data: Workout): ExerciseDto {
+        return ExerciseDto(
             description = data.description,
             isFinished = data.isFinished,
             muscleGroups = data.muscleGroups,

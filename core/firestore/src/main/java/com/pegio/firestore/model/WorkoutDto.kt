@@ -4,14 +4,13 @@ import com.google.firebase.firestore.DocumentId
 import com.pegio.model.Workout.WorkoutType
 import com.pegio.model.Workout.MuscleGroup
 
-
-
-data class WorkoutContainerDto(
-    val workouts: List<WorkoutDto> = emptyList()
+data class WorkoutDto(
+    @DocumentId val id: String? = null,
+    val authorId:String = "",
+    val workouts: List<ExerciseDto> = emptyList()
 )
 
-data class WorkoutDto(
-    @DocumentId val id: String = "",
+data class ExerciseDto(
     val name: String = "",
     val description: String = "",
     val workoutType: WorkoutType = WorkoutType.REPETITION,

@@ -6,7 +6,6 @@ import com.pegio.common.core.Resource
 import com.pegio.common.core.map
 import com.pegio.domain.repository.WorkoutRepository
 import com.pegio.firestore.core.FirestoreConstants.WORKOUTS
-import com.pegio.firestore.model.WorkoutContainerDto
 import com.pegio.firestore.model.WorkoutDto
 import com.pegio.firestore.model.mapper.WorkoutDtoMapper
 import com.pegio.firestore.util.FirestoreUtils
@@ -22,7 +21,7 @@ internal class WorkoutRepositoryImpl @Inject constructor(
     override suspend fun fetchWorkoutsById(id: String): Resource<List<Workout>, DataError.Firestore> {
         val documentRef = db.collection(WORKOUTS).document(id)
 
-        val result = firestoreUtils.readDocument(documentRef, WorkoutContainerDto::class.java)
+        val result = firestoreUtils.readDocument(documentRef, WorkoutDto::class.java)
 
         return result.map { container ->
             container.workouts.map(workoutDtoMapper::mapToDomain)

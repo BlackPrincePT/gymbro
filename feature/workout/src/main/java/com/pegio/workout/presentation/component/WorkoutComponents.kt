@@ -180,7 +180,6 @@ fun PreviewWorkoutDetails() {
         sets = 3,
         muscleGroups = listOf(MuscleGroup.CHEST, MuscleGroup.ARMS),
         description = "A workout that targets the chest and arms.",
-        id = "",
         isFinished = false,
         name = "Push Up",
         workoutImage = ""
@@ -203,7 +202,6 @@ fun PreviewWorkoutDetailsCard() {
         sets = 3,
         muscleGroups = listOf(MuscleGroup.CHEST, MuscleGroup.ARMS),
         description = "",
-        id = "",
         isFinished = false,
         name = "",
         workoutImage = ""

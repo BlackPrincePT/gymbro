@@ -3,7 +3,6 @@ package com.pegio.model
 
 
 data class Workout(
-    val id: String,
     val name: String,
     val description: String,
     val workoutType: WorkoutType,
