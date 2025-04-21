@@ -66,3 +66,17 @@ fun WorkoutPlanImage(
         contentScale = ContentScale.Crop
     )
 }
+
+@Composable
+fun WorkoutImage(
+    imageUrl: String,
+    contentDescription: String,
+    modifier: Modifier = Modifier
+) {
+    AsyncImage(
+        model = imageUrl,
+        contentDescription = contentDescription,
+        contentScale = ContentScale.Fit,
+        modifier = modifier
+    )
+}
