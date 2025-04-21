@@ -1,5 +1,6 @@
 package com.pegio.workout.presentation.screen.workout_plan
 
+import android.util.Log
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -9,6 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.toLowerCase
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.pegio.common.presentation.state.TopBarAction
@@ -24,6 +26,7 @@ fun WorkoutPlanScreen(
     onBackClick: () -> Unit,
     onInfoClick: () -> Unit,
     onShowSnackbar: suspend (String, String?) -> Boolean,
+    onStartWorkout: (String) -> Unit,
     onSetupTopBar: (TopBarState) -> Unit
 ) {
 
@@ -38,6 +41,7 @@ fun WorkoutPlanScreen(
     CollectLatestEffect(viewModel.uiEffect) { effect ->
         when (effect) {
             is WorkoutPlanUiEffect.Failure -> onShowSnackbar(context.getString(effect.errorRes), null)
+            is WorkoutPlanUiEffect.NavigateToWorkout -> onStartWorkout(effect.difficulty)
             WorkoutPlanUiEffect.NavigateBack -> onBackClick()
             WorkoutPlanUiEffect.NavigateToAiChat -> onInfoClick()
         }
@@ -47,7 +51,7 @@ fun WorkoutPlanScreen(
     WorkoutPlanContent(
         state = viewModel.uiState,
         onEvent = viewModel::onEvent,
-        modifier = Modifier
+        modifier = Modifier,
     )
 
 
@@ -61,7 +65,10 @@ fun WorkoutPlanContent(
 ) {
     LazyColumn(modifier = modifier.fillMaxSize()) {
         items(state.plans) { workoutPlan ->
-            WorkoutPlanItemComponents(workoutPlan)
+            WorkoutPlanItemComponents(
+                workoutPlan =  workoutPlan,
+                onStartWorkout = { onEvent(WorkoutPlanUiEvent.StartWorkout(workoutPlan.difficulty)) }
+            )
         }
 
         item {

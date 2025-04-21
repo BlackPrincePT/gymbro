@@ -49,6 +49,7 @@ import com.pegio.workout.presentation.model.UiWorkout
 fun WorkoutScreen(
     viewModel: WorkoutViewModel = hiltViewModel(),
     onBackClick: () -> Unit,
+    workoutPlanId: String,
     onShowSnackbar: suspend (String, String?) -> Boolean,
     onSetupTopBar: (TopBarState) -> Unit
 ) {
@@ -59,14 +60,13 @@ fun WorkoutScreen(
 
     LaunchedEffect(Unit) {
         if (viewModel.uiState.workouts.isEmpty()) {
-            viewModel.onEvent(WorkoutUiEvent.FetchWorkouts("hard"))
+            viewModel.onEvent(WorkoutUiEvent.FetchWorkouts(workoutPlanId))
         }
     }
 
     CollectLatestEffect(viewModel.uiEffect) { effect ->
         when (effect) {
             is WorkoutUiEffect.Failure -> onShowSnackbar(context.getString(effect.errorRes), null)
-
             WorkoutUiEffect.NavigateBack -> onBackClick()
         }
     }

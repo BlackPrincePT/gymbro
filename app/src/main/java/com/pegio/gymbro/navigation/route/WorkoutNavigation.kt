@@ -5,8 +5,8 @@ import androidx.navigation.NavOptions
 import kotlinx.serialization.Serializable
 
 @Serializable
-data object WorkoutRoute
+data class WorkoutRoute(val workoutPlanId: String)
 
-fun NavController.navigateToWorkout(navOptions: NavOptions? = null) {
-    navigate(route = WorkoutRoute, navOptions = navOptions)
+fun NavController.navigateToWorkout(workoutPlanId: String, navOptions: NavOptions? = null) {
+    navigate(route = WorkoutRoute(workoutPlanId), navOptions = navOptions)
 }

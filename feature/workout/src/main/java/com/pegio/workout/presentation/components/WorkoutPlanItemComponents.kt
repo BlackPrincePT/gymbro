@@ -1,5 +1,7 @@
 package com.pegio.workout.presentation.components
 
+import android.util.Log
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -28,14 +30,18 @@ import com.pegio.workout.presentation.model.UiWorkoutPlan
 import com.pegio.designsystem.component.WorkoutPlanImage
 
 @Composable
-fun WorkoutPlanItemComponents(workoutPlan: UiWorkoutPlan) {
+fun WorkoutPlanItemComponents(
+    workoutPlan: UiWorkoutPlan,
+    onStartWorkout: (String) -> Unit
+) {
     Card(
-        modifier = Modifier
-            .padding(horizontal = 16.dp, vertical = 10.dp)
-            .fillMaxWidth(),
         shape = RoundedCornerShape(16.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+        modifier = Modifier
+            .padding(horizontal = 16.dp, vertical = 10.dp)
+            .clickable { onStartWorkout(workoutPlan.difficulty) }
+            .fillMaxWidth()
     ) {
         Column(modifier = Modifier.fillMaxWidth()) {
             WorkoutPlanImage(
@@ -44,7 +50,6 @@ fun WorkoutPlanItemComponents(workoutPlan: UiWorkoutPlan) {
                     .fillMaxWidth()
                     .height(190.dp)
             )
-
 
             Spacer(modifier = Modifier.height(8.dp))
 
@@ -97,9 +102,9 @@ fun WorkoutPlanItemComponents(workoutPlan: UiWorkoutPlan) {
 
 @Preview
 @Composable
-private fun WorkoutPlanItemView(){
+private fun WorkoutPlanItemView() {
     WorkoutPlanItemComponents(
-        workoutPlan =  UiWorkoutPlan(
+        workoutPlan = UiWorkoutPlan(
             id = "1",
             title = "Beginner Plan",
             description = "Designed for those with some experience. Mix of strength and cardio to push your limits.",
@@ -108,5 +113,6 @@ private fun WorkoutPlanItemView(){
             intensity = "Low",
             imageUrl = "https://avatars.githubusercontent.com/u/172249902?v=4"
         ),
+        onStartWorkout = {}
     )
 }
