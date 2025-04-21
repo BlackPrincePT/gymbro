@@ -68,10 +68,10 @@ class FeedViewModel @Inject constructor(
 
         val post = uiState.relevantPosts[index]
 
-        if (post.currentUserVote != null) {
-            // TODO HANDLE CHANGING VOTE
-            return
-        }
+        var updatedVoteCount = post.voteCount.toInt() + voteType.value
+
+        if (post.currentUserVote != null)
+            updatedVoteCount -= post.currentUserVote.vote.value
 
         votePost(postId, voteType)
             .onFailure { } // TODO HANDLE FAILURE
@@ -79,7 +79,7 @@ class FeedViewModel @Inject constructor(
                 val updatedPosts = uiState.relevantPosts.toMutableList()
                 updatedPosts[index] = post.copy(
                     currentUserVote = vote,
-                    voteCount = (post.voteCount.toInt() + voteType.value).toString()
+                    voteCount = updatedVoteCount.toString()
                 )
 
                 updateState { copy(relevantPosts = updatedPosts) }
