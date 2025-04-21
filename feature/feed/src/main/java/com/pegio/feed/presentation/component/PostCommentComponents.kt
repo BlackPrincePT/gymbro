@@ -1,5 +1,6 @@
 package com.pegio.feed.presentation.component
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -33,6 +34,7 @@ internal fun PostCommentContent(
     username: String,
     commentText: String,
     commentDate: String,
+    onProfileClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Row(
@@ -45,6 +47,7 @@ internal fun PostCommentContent(
             modifier = Modifier
                 .size(36.dp)
                 .clip(CircleShape)
+                .clickable { onProfileClick.invoke() }
         )
 
         Spacer(modifier = Modifier.width(8.dp))
@@ -60,7 +63,9 @@ internal fun PostCommentContent(
                 Column(modifier = Modifier.padding(8.dp)) {
                     Text(
                         text = username,
-                        style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Bold)
+                        style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Bold),
+                        modifier = Modifier
+                            .clickable { onProfileClick.invoke() }
                     )
                     Spacer(modifier = Modifier.height(4.dp))
                     Text(
@@ -112,7 +117,8 @@ private fun PostCommentContentPreview() {
         avatarUrl = null,
         username = "Pitiful Android Developer",
         commentText = "I believe in taking care of myself and a balanced diet and rigorous exercise routine.",
-        commentDate = "2 hrs"
+        commentDate = "2 hrs",
+        onProfileClick = { }
     )
 }
 

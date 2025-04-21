@@ -47,13 +47,14 @@ class PostDetailsViewModel @Inject constructor(
     override fun onEvent(event: PostDetailsUiEvent) {
         when (event) {
 
-            // Navigation
-            PostDetailsUiEvent.OnBackClick -> sendEffect(PostDetailsUiEffect.NavigateBack)
-
             // Main
             PostDetailsUiEvent.OnCommentSubmitClick -> handleCommentSubmit()
             PostDetailsUiEvent.OnLoadMoreCommentsClick -> loadMoreComments()
             is PostDetailsUiEvent.OnPostVote -> handlePostVote(event.voteType)
+
+            // Navigation
+            PostDetailsUiEvent.OnBackClick -> sendEffect(PostDetailsUiEffect.NavigateBack)
+            is PostDetailsUiEvent.OnUserProfileClick -> sendEffect(PostDetailsUiEffect.NavigateToUserProfile(event.userId))
 
             // Compose State
             is PostDetailsUiEvent.OnCommentTextChange -> updateState { copy(commentText = event.value) }

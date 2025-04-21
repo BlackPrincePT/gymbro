@@ -44,12 +44,10 @@ class FeedViewModel @Inject constructor(
             FeedUiEvent.OnPostsRefresh -> {} // FIXME DOESN'T WORK
             is FeedUiEvent.OnPostVote -> handlePostVote(event.postId, event.voteType)
 
-
             // Navigation
             FeedUiEvent.OnCreatePostClick -> sendEffect(FeedUiEffect.NavigateToCreatePost)
             is FeedUiEvent.OnPostCommentClick -> sendEffect(FeedUiEffect.NavigateToPostDetails(event.postId))
             is FeedUiEvent.OnUserProfileClick -> sendEffect(FeedUiEffect.NavigateToUserProfile(event.userId))
-
 
             // Top Bar
             FeedUiEvent.OnDrawerClick -> sendEffect(FeedUiEffect.OpenDrawer)

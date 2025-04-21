@@ -12,6 +12,9 @@ sealed interface PostDetailsUiEvent {
     data object OnLoadMoreCommentsClick : PostDetailsUiEvent
     data class OnPostVote(val voteType: Vote.Type) : PostDetailsUiEvent
 
+    // Navigation
+    data class OnUserProfileClick(val userId: String) : PostDetailsUiEvent
+
     // Compose State
     data class OnCommentTextChange(val value: String) : PostDetailsUiEvent
 }

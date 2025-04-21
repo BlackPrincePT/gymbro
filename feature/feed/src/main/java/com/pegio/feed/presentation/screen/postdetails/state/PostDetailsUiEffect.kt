@@ -4,4 +4,5 @@ sealed interface PostDetailsUiEffect {
 
     // Navigation
     data object NavigateBack : PostDetailsUiEffect
+    data class NavigateToUserProfile(val userId: String) : PostDetailsUiEffect
 }

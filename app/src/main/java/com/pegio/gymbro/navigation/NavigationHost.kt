@@ -106,6 +106,7 @@ fun NavigationHost(
 
         postDetailsScreen(
             onBackClick = navController::navigateUp,
+            onUserProfileClick = navController::navigateToProfile,
             onSetupTopBar = onSetupAppBar
         )
 
