@@ -1,6 +1,7 @@
 package com.pegio.firestore.di
 
 import com.pegio.domain.repository.AiMessagesRepository
+import com.pegio.domain.repository.FollowerRepository
 import com.pegio.domain.repository.PostCommentRepository
 import com.pegio.domain.repository.PostRepository
 import com.pegio.domain.repository.UserRepository
@@ -8,6 +9,7 @@ import com.pegio.domain.repository.VoteRepository
 import com.pegio.domain.repository.WorkoutPlanRepository
 import com.pegio.domain.repository.WorkoutRepository
 import com.pegio.firestore.repository.AiMessagesRepositoryImpl
+import com.pegio.firestore.repository.FollowerRepositoryImpl
 import com.pegio.firestore.repository.PostCommentRepositoryImpl
 import com.pegio.firestore.repository.PostRepositoryImpl
 import com.pegio.firestore.repository.UserRepositoryImpl
@@ -27,7 +29,7 @@ internal abstract class RepositoryModule {
     abstract fun bindUserRepository(impl: UserRepositoryImpl): UserRepository
 
     @Binds
-    abstract fun bindAiMessagesRepository(impl: AiMessagesRepositoryImpl) : AiMessagesRepository
+    abstract fun bindAiMessagesRepository(impl: AiMessagesRepositoryImpl): AiMessagesRepository
 
     @Binds
     abstract fun bindPostRepository(impl: PostRepositoryImpl): PostRepository
@@ -37,6 +39,9 @@ internal abstract class RepositoryModule {
 
     @Binds
     abstract fun bindVoteRepository(impl: VoteRepositoryImpl): VoteRepository
+
+    @Binds
+    abstract fun bindFollowerRepository(impl: FollowerRepositoryImpl): FollowerRepository
 
     @Binds
     abstract fun bindWorkoutPlanRepository(impl: WorkoutPlanRepositoryImpl): WorkoutPlanRepository
