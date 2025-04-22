@@ -24,13 +24,19 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import coil3.ImageLoader
+import coil3.request.CachePolicy
+import coil3.request.ImageRequest
+import coil3.request.allowHardware
 import com.pegio.designsystem.component.WorkoutImage
 import com.pegio.model.Workout.MuscleGroup
 import com.pegio.model.Workout.WorkoutType
@@ -122,7 +128,9 @@ fun WorkoutDetailsCard(workout: UiWorkout) {
 fun WorkoutDetails(
     workout: UiWorkout,
     onNextClick: () -> Unit,
-    isLastWorkout: Boolean
+    onPreviousClick: () -> Unit,
+    isLastWorkout: Boolean,
+    showBackButton: Boolean
 ) {
     Column(
         verticalArrangement = Arrangement.spacedBy(12.dp),
@@ -155,18 +163,40 @@ fun WorkoutDetails(
 
         Spacer(modifier = Modifier.weight(1f))
 
-        Button(
-            onClick = onNextClick,
-            shape = RoundedCornerShape(12.dp),
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(56.dp)
+
+
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            Text(
-                text = if (isLastWorkout) "Finish" else "Next",
-                style = MaterialTheme.typography.titleMedium
-            )
+            if (showBackButton) {
+                Button(
+                    onClick = onPreviousClick,
+                    shape = RoundedCornerShape(12.dp),
+                    modifier = Modifier
+                        .weight(1f)
+                        .height(56.dp)
+                ) {
+                    Text(
+                        text = "Back",
+                        style = MaterialTheme.typography.titleMedium
+                    )
+                }
+            }
+
+            Button(
+                onClick = onNextClick,
+                shape = RoundedCornerShape(12.dp),
+                modifier = Modifier
+                    .weight(1f)
+                    .height(56.dp)
+            ) {
+                Text(
+                    text = if (isLastWorkout) "Finish" else "Next",
+                    style = MaterialTheme.typography.titleMedium
+                )
+            }
         }
+
     }
 }
 
@@ -188,7 +218,9 @@ fun PreviewWorkoutDetails() {
     WorkoutDetails(
         workout = workout,
         onNextClick = {},
-        isLastWorkout = false
+        onPreviousClick = {},
+        isLastWorkout = false,
+        showBackButton = true
     )
 }
 

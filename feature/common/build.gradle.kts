@@ -13,6 +13,7 @@ dependencies {
     implementation(project(":core:designsystem"))
 
     api(libs.navigation.compose)
+    api(libs.coil.compose)
 
     implementation(libs.javax.inject)
     implementation(libs.androidx.hilt.navigation.compose)

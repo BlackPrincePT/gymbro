@@ -26,6 +26,7 @@ class WorkoutViewModel @Inject constructor(
         when (event) {
             is WorkoutUiEvent.FetchWorkouts -> fetchWorkout(event.workoutId)
             is WorkoutUiEvent.OnNextClick -> nextWorkout()
+            WorkoutUiEvent.OnPreviousClick ->previousWorkout()
             WorkoutUiEvent.OnBackClick -> sendEffect(WorkoutUiEffect.NavigateBack)
         }
     }
@@ -55,6 +56,13 @@ class WorkoutViewModel @Inject constructor(
         }
     }
 
+    private fun previousWorkout() {
+        if (uiState.currentWorkoutIndex > 0) {
+            updateState {
+                copy(currentWorkoutIndex = currentWorkoutIndex - 1)
+            }
+        }
+    }
 
     override fun setLoading(isLoading: Boolean) {
         updateState { copy(isLoading = isLoading) }

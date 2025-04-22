@@ -45,26 +45,31 @@ fun WorkoutScreen(
 
     WorkoutContent(
         state = viewModel.uiState,
-        onNextClick = { viewModel.onEvent(WorkoutUiEvent.OnNextClick) }
+        onNextClick = { viewModel.onEvent(WorkoutUiEvent.OnNextClick) },
+        onPreviousClick = {viewModel.onEvent(WorkoutUiEvent.OnPreviousClick) }
     )
 }
 
 @Composable
 fun WorkoutContent(
     state: WorkoutUiState,
-    onNextClick: () -> Unit
+    onNextClick: () -> Unit,
+    onPreviousClick: () -> Unit
 ) {
     if (state.isLoading) {
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
             CircularProgressIndicator()
         }
     } else {
+
         val currentWorkout = state.workouts.getOrNull(state.currentWorkoutIndex)
         currentWorkout?.let {
             WorkoutDetails(
                 workout = it,
                 onNextClick = onNextClick,
-                isLastWorkout = state.currentWorkoutIndex == state.workouts.size - 1
+                onPreviousClick = onPreviousClick,
+                isLastWorkout = state.currentWorkoutIndex == state.workouts.size - 1,
+                showBackButton = state.currentWorkoutIndex != 0
             )
         }
     }
