@@ -2,9 +2,6 @@
 agp = "8.6.1"
 kotlin = "2.1.10"
 coreKtx = "1.16.0"
-junit = "4.13.2"
-junitVersion = "1.2.1"
-espressoCore = "3.6.1"
 lifecycleRuntimeKtx = "2.8.7"
 activityCompose = "1.10.1"
 composeBom = "2025.04.00"
@@ -12,8 +9,10 @@ composeBom = "2025.04.00"
 ksp = "2.1.10-1.0.31"
 
 #Test
-mockkVersion = "1.13.10"
-turbineVersion = "1.1.0"
+junit = "4.13.2"
+junitVersion = "1.2.1"
+espressoCore = "3.6.1"
+mockk = "1.13.10"
 
 #Kotlin
 kotlinxCoroutines = "1.10.1"
@@ -29,7 +28,6 @@ hiltAndroidVersion = "2.56"
 hiltNavigationCompose = "1.2.0"
 
 #UI
-pagingRuntime = "3.3.6"
 coil = "3.1.0"
 kotlinxDatetime = "0.6.2"
 
@@ -61,12 +59,8 @@ androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecyc
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
-
-#Test Utils
-mockk = { module = "io.mockk:mockk", version.ref = "mockkVersion" }
+mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
 kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinxCoroutines" }
-#turbine = { module = "app.cash.turbine:turbine", version = "turbineVersion" }
-
 
 #Compose
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
@@ -111,6 +105,7 @@ kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.
 firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBom" }
 firebase-auth = { module = "com.google.firebase:firebase-auth" }
 firebase-firestore = { module = "com.google.firebase:firebase-firestore" }
+firebase-messaging-ktx = { group = "com.google.firebase", name = "firebase-messaging-ktx" }
 firebase-storage-ktx = { module = "com.google.firebase:firebase-storage-ktx" }
 androidx-credentials = { module = "androidx.credentials:credentials", version.ref = "credentials" }
 androidx-credentials-play-services-auth = { module = "androidx.credentials:credentials-play-services-auth", version.ref = "credentials" }

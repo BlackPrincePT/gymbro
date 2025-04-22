@@ -3,7 +3,7 @@ package com.pegio.domain.usecase.aichat
 import com.pegio.model.AiMessage
 import com.pegio.common.core.DataError
 import com.pegio.common.core.Resource
-import com.pegio.domain.repository.AiChatRepository
+import com.pegio.network.repository.AiChatRepository
 import javax.inject.Inject
 
 class SendMessageToAiUseCase @Inject constructor(

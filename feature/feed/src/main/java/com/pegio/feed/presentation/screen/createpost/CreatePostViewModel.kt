@@ -36,7 +36,7 @@ class CreatePostViewModel @Inject constructor(
 
     private fun handlePostClick() = launchWithLoading {
         with(uiState) {
-            retryableCall { uploadPost(content = postText, imageUri = imageUri.toString()) }
+            retryableCall { uploadPost(content = postText, imageUri = imageUri?.toString()) }
                 .onSuccess { sendEffect(CreatePostUiEffect.NavigateBack) }
                 .onFailure { sendEffect(CreatePostUiEffect.ShowSnackbar(it.toStringResId())) }
         }

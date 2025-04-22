@@ -1,7 +1,7 @@
 package com.pegio.network.di
 
 import com.pegio.network.repository.AiChatRepositoryImpl
-import com.pegio.domain.repository.AiChatRepository
+import com.pegio.network.repository.AiChatRepository
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn

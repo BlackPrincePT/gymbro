@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="core_notification_channel_post_name">New Posts</string>
+    <string name="core_notification_channel_post_desc">Alerts for new posts from people you follow</string>
+</resources>
