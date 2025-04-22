@@ -1,5 +1,6 @@
 package com.pegio.feed.presentation.screen.profile
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -11,12 +12,12 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -159,6 +160,13 @@ private fun ProfileHeader(
             fontWeight = FontWeight.Medium,
             modifier = Modifier.padding(vertical = 16.dp)
         )
+
+        ProfileStatsRow(
+            followersCount = user.followersCount,
+            followingCount = user.followingCount,
+            onFollowersClick = { }, // TODO
+            onFollowingClick = { }  // TODO
+        )
     }
 }
 
@@ -204,6 +212,59 @@ private fun DefaultProfileActions(
             else stringResource(R.string.feature_feed_follow)
 
         Text(text = btnText)
+    }
+}
+
+@Composable
+private fun ProfileStatsRow(
+    followersCount: Int,
+    followingCount: Int,
+    onFollowersClick: () -> Unit = { },
+    onFollowingClick: () -> Unit = { }
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 8.dp),
+        horizontalArrangement = Arrangement.SpaceEvenly
+    ) {
+        StatItem(
+            count = followersCount,
+            label = stringResource(R.string.feature_feed_followers),
+            onClick = onFollowersClick
+        )
+        StatItem(
+            count = followingCount,
+            label = stringResource(id = R.string.feature_feed_following),
+            onClick = onFollowingClick
+        )
+    }
+}
+
+@Composable
+private fun StatItem(
+    count: Int,
+    label: String,
+    onClick: () -> Unit = { }
+) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier
+            .clickable(onClick = onClick)
+    ) {
+        Text(
+            text = count.toString(),
+            style = MaterialTheme.typography.titleMedium,
+            fontWeight = FontWeight.Bold
+        )
+
+        Spacer(modifier = Modifier.height(2.dp))
+
+        Text(
+            text = label,
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
     }
 }
 

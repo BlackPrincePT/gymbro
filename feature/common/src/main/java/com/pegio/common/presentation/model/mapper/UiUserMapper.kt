@@ -7,29 +7,33 @@ import javax.inject.Inject
 
 class UiUserMapper @Inject constructor() : Mapper<UiUser, User> {
 
-    override fun mapToDomain(data: UiUser): User {
+    override fun mapToDomain(data: UiUser): User = with(data) {
         return User(
-            id = data.id,
-            username = data.username,
-            age = data.age.toInt(),
-            gender = data.gender ?: User.Gender.MALE, // FIXME PLEASE
-            heightCm = data.heightCm.toInt(),
-            weightKg = data.weightKg.toInt(),
-            imgProfileUrl = data.avatarUrl,
-            imgBackgroundUrl = data.imgBackgroundUrl,
+            id = id,
+            username = username,
+            age = age.toInt(),
+            gender = gender ?: User.Gender.MALE, // FIXME PLEASE
+            heightCm = heightCm.toInt(),
+            weightKg = weightKg.toInt(),
+            imgProfileUrl = avatarUrl,
+            imgBackgroundUrl = imgBackgroundUrl,
+            followingCount = followingCount,
+            followersCount = followersCount
         )
     }
 
-    override fun mapFromDomain(data: User): UiUser {
+    override fun mapFromDomain(data: User): UiUser = with(data) {
         return UiUser(
-            id = data.id,
-            username = data.username,
-            age = data.age.toString(),
-            gender = data.gender,
-            heightCm = data.heightCm.toString(),
-            weightKg = data.weightKg.toString(),
-            avatarUrl = data.imgProfileUrl,
-            imgBackgroundUrl = data.imgBackgroundUrl,
+            id = id,
+            username = username,
+            age = age.toString(),
+            gender = gender,
+            heightCm = heightCm.toString(),
+            weightKg = weightKg.toString(),
+            avatarUrl = imgProfileUrl,
+            imgBackgroundUrl = imgBackgroundUrl,
+            followingCount = followingCount,
+            followersCount = followersCount
         )
     }
 }

@@ -7,29 +7,33 @@ import javax.inject.Inject
 
 internal class UserDtoMapper @Inject constructor() : Mapper<UserDto, User> {
 
-    override fun mapToDomain(data: UserDto): User {
+    override fun mapToDomain(data: UserDto): User = with(data) {
         return User(
-            id = data.id ?: throw IllegalStateException(),
-            username = data.username,
-            age = data.age,
-            gender = data.gender,
-            heightCm = data.heightCm,
-            weightKg = data.weightKg,
-            imgProfileUrl = data.imgProfileUrl,
-            imgBackgroundUrl = data.imgBackgroundUrl
+            id = id ?: throw IllegalStateException(),
+            username = username,
+            age = age,
+            gender = gender,
+            heightCm = heightCm,
+            weightKg = weightKg,
+            imgProfileUrl = imgProfileUrl,
+            imgBackgroundUrl = imgBackgroundUrl,
+            followingCount = followingCount,
+            followersCount = followersCount
         )
     }
 
-    override fun mapFromDomain(data: User): UserDto {
+    override fun mapFromDomain(data: User): UserDto = with(data) {
         return UserDto(
-            id = data.id.ifEmpty { null },
-            username = data.username,
-            age = data.age,
-            gender = data.gender,
-            heightCm = data.heightCm,
-            weightKg = data.weightKg,
-            imgProfileUrl = data.imgProfileUrl,
-            imgBackgroundUrl = data.imgBackgroundUrl
+            id = id.ifEmpty { null },
+            username = username,
+            age = age,
+            gender = gender,
+            heightCm = heightCm,
+            weightKg = weightKg,
+            imgProfileUrl = imgProfileUrl,
+            imgBackgroundUrl = imgBackgroundUrl,
+            followingCount = followingCount,
+            followersCount = followersCount
         )
     }
 }

@@ -11,6 +11,8 @@ data class UiUser(
     val weightKg: String,
     val avatarUrl: String?,
     val imgBackgroundUrl: String?,
+    val followingCount: Int,
+    val followersCount: Int
 ) {
 
     companion object {
@@ -24,6 +26,8 @@ data class UiUser(
             weightKg = "75",
             avatarUrl = null,
             imgBackgroundUrl = null,
+            followingCount = 101,
+            followersCount = 102
         )
 
         val EMPTY = UiUser(
@@ -34,7 +38,9 @@ data class UiUser(
             heightCm = "",
             weightKg = "",
             avatarUrl = null,
-            imgBackgroundUrl = null
+            imgBackgroundUrl = null,
+            followingCount = 0,
+            followersCount = 0
         )
     }
 }

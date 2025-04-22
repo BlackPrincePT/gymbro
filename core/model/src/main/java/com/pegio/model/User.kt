@@ -8,7 +8,9 @@ data class User(
     val heightCm: Int,
     val weightKg: Int,
     val imgProfileUrl: String?,
-    val imgBackgroundUrl: String?
+    val imgBackgroundUrl: String?,
+    val followingCount: Int,
+    val followersCount: Int
 ) {
 
     data class Auth(

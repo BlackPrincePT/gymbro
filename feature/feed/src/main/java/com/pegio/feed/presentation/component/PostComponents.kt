@@ -75,7 +75,7 @@ private fun PostContent(
     Column {
         Text(
             text = post.content,
-            maxLines = 3,
+            maxLines = 3, // TODO IMPLEMENT LOAD MORE
             modifier = Modifier
                 .padding(horizontal = 16.dp)
         )

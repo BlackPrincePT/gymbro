@@ -3,4 +3,5 @@
     <string name="feature_feed_write_a_comment">Write a comment…</string>
     <string name="feature_feed_following">Following</string>
     <string name="feature_feed_follow">Follow</string>
+    <string name="feature_feed_followers">Followers</string>
 </resources>
