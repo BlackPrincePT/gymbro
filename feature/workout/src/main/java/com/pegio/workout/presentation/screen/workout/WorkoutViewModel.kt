@@ -1,17 +1,15 @@
 package com.pegio.workout.presentation.screen.workout
 
-import android.util.Log
-import androidx.lifecycle.viewModelScope
 import com.pegio.common.core.onFailure
 import com.pegio.common.core.onSuccess
 import com.pegio.common.presentation.core.BaseViewModel
 import com.pegio.common.presentation.util.toStringResId
+import com.pegio.domain.usecase.texttospeech.ShutdownTextToSpeechUseCase
+import com.pegio.domain.usecase.texttospeech.SpeakTextUseCase
+import com.pegio.domain.usecase.texttospeech.StopSpeakingUseCase
 import com.pegio.domain.usecase.workout.FetchWorkoutsByIdUseCase
 import com.pegio.workout.presentation.model.mapper.UiWorkoutMapper
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 
@@ -19,6 +17,9 @@ import javax.inject.Inject
 class WorkoutViewModel @Inject constructor(
     private val fetchWorkoutsById: FetchWorkoutsByIdUseCase,
     private val uiWorkoutMapper: UiWorkoutMapper,
+    private val speakText: SpeakTextUseCase,
+    private val stopSpeaking: StopSpeakingUseCase,
+    private val shutdownTextToSpeech: ShutdownTextToSpeechUseCase
 ) : BaseViewModel<WorkoutUiState, WorkoutUiEffect, WorkoutUiEvent>(initialState = WorkoutUiState()) {
 
 
@@ -26,24 +27,27 @@ class WorkoutViewModel @Inject constructor(
         when (event) {
             is WorkoutUiEvent.FetchWorkouts -> fetchWorkout(event.workoutId)
             is WorkoutUiEvent.OnNextClick -> nextWorkout()
-            WorkoutUiEvent.OnPreviousClick ->previousWorkout()
+            WorkoutUiEvent.OnPreviousClick -> previousWorkout()
             WorkoutUiEvent.OnBackClick -> sendEffect(WorkoutUiEffect.NavigateBack)
+            is WorkoutUiEvent.OnReadTTSClick -> readDescription(event.textToRead)
+            WorkoutUiEvent.OnToggleTTSClick -> toggleTTSState()
         }
     }
 
     private fun fetchWorkout(workoutId: String) {
         launchWithLoading {
-            fetchWorkoutsById(workoutId).onSuccess { workouts ->
-                val mappedWorkouts = workouts.map(uiWorkoutMapper::mapFromDomain)
-                updateState {
-                    copy(
-                        workouts = mappedWorkouts,
-                        currentWorkoutIndex = 0,
-                    )
+            fetchWorkoutsById(workoutId)
+                .onSuccess { workouts ->
+                    val mappedWorkouts = workouts.map(uiWorkoutMapper::mapFromDomain)
+                    updateState {
+                        copy(
+                            workouts = mappedWorkouts,
+                            currentWorkoutIndex = 0,
+                        )
+                    }
+                }.onFailure { error ->
+                    sendEffect(WorkoutUiEffect.Failure(error.toStringResId()))
                 }
-            }.onFailure { error ->
-                sendEffect(WorkoutUiEffect.Failure(error.toStringResId()))
-            }
         }
     }
 
@@ -64,7 +68,30 @@ class WorkoutViewModel @Inject constructor(
         }
     }
 
+    private fun readDescription(textToRead: String) {
+        if (uiState.isTTSActive) {
+            speakText(textToRead)
+            updateState { copy(isTTSActive = true) }
+        }
+    }
+
+    private fun toggleTTSState() {
+        if (uiState.isTTSActive) {
+            stopSpeaking
+            shutdownTextToSpeech()
+            updateState { copy(isTTSActive = false) }
+        } else {
+            updateState { copy(isTTSActive = true) }
+        }
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        shutdownTextToSpeech()
+    }
+
     override fun setLoading(isLoading: Boolean) {
         updateState { copy(isLoading = isLoading) }
     }
+
 }

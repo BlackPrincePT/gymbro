@@ -1,7 +1,9 @@
 package com.pegio.workout.presentation.component
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -14,29 +16,31 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.VolumeOff
+import androidx.compose.material.icons.automirrored.filled.VolumeUp
 import androidx.compose.material.icons.filled.Accessibility
 import androidx.compose.material.icons.filled.FitnessCenter
 import androidx.compose.material.icons.filled.Repeat
+import androidx.compose.material.icons.filled.VolumeOff
+import androidx.compose.material.icons.filled.VolumeUp
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import coil3.ImageLoader
-import coil3.request.CachePolicy
-import coil3.request.ImageRequest
-import coil3.request.allowHardware
 import com.pegio.designsystem.component.WorkoutImage
 import com.pegio.model.Workout.MuscleGroup
 import com.pegio.model.Workout.WorkoutType
@@ -123,80 +127,93 @@ fun WorkoutDetailsCard(workout: UiWorkout) {
     }
 }
 
-
 @Composable
 fun WorkoutDetails(
     workout: UiWorkout,
+    isTTSActive: Boolean,
     onNextClick: () -> Unit,
     onPreviousClick: () -> Unit,
     isLastWorkout: Boolean,
-    showBackButton: Boolean
+    showBackButton: Boolean,
+    onReadDescriptionClick: (String) -> Unit,
+    onToggleClick: () -> Unit
 ) {
-    Column(
-        verticalArrangement = Arrangement.spacedBy(12.dp),
+    Log.d("workout", workout.description)
+
+    LaunchedEffect(workout.description, isTTSActive) {
+        if (isTTSActive) {
+            onReadDescriptionClick(workout.description)
+        }
+    }
+
+    Box(
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp)
-            .verticalScroll(rememberScrollState())
     ) {
-        WorkoutImage(
-            imageUrl = workout.workoutImage,
-            contentDescription = workout.name,
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(230.dp)
-                .clip(RoundedCornerShape(12.dp)),
-        )
-
-        Text(
-            text = workout.name,
-            style = MaterialTheme.typography.headlineMedium,
-            fontWeight = FontWeight.Bold
-        )
-
-        WorkoutDetailsCard(workout)
-
-        Text(
-            text = workout.description,
-            style = MaterialTheme.typography.bodyLarge
-        )
-
-        Spacer(modifier = Modifier.weight(1f))
-
-
-
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(12.dp)
+        IconButton(
+            onClick = onToggleClick,
+            modifier = Modifier.align(Alignment.TopEnd)
         ) {
-            if (showBackButton) {
+            Icon(
+                imageVector = if (isTTSActive) Icons.AutoMirrored.Default.VolumeUp else Icons.AutoMirrored.Default.VolumeOff,
+                contentDescription = if (isTTSActive) "Mute TTS" else "Read Description"
+            )
+        }
+
+        Column(
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(top = 58.dp)
+                .verticalScroll(rememberScrollState())
+        ) {
+            WorkoutImage(
+                imageUrl = workout.workoutImage,
+                contentDescription = workout.name,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(250.dp)
+                    .clip(RoundedCornerShape(12.dp)),
+            )
+
+            Text(
+                text = workout.name,
+                style = MaterialTheme.typography.headlineMedium,
+                fontWeight = FontWeight.Bold
+            )
+
+            WorkoutDetailsCard(workout)
+
+            Spacer(modifier = Modifier.weight(1f))
+
+            Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                if (showBackButton) {
+                    Button(
+                        onClick = onPreviousClick,
+                        shape = RoundedCornerShape(12.dp),
+                        modifier = Modifier
+                            .weight(1f)
+                            .height(56.dp)
+                    ) {
+                        Text("Back", style = MaterialTheme.typography.titleMedium)
+                    }
+                }
+
                 Button(
-                    onClick = onPreviousClick,
+                    onClick = onNextClick,
                     shape = RoundedCornerShape(12.dp),
                     modifier = Modifier
                         .weight(1f)
                         .height(56.dp)
                 ) {
                     Text(
-                        text = "Back",
+                        text = if (isLastWorkout) "Finish" else "Next",
                         style = MaterialTheme.typography.titleMedium
                     )
                 }
             }
-
-            Button(
-                onClick = onNextClick,
-                shape = RoundedCornerShape(12.dp),
-                modifier = Modifier
-                    .weight(1f)
-                    .height(56.dp)
-            ) {
-                Text(
-                    text = if (isLastWorkout) "Finish" else "Next",
-                    style = MaterialTheme.typography.titleMedium
-                )
-            }
         }
-
     }
 }
 
@@ -218,9 +235,12 @@ fun PreviewWorkoutDetails() {
     WorkoutDetails(
         workout = workout,
         onNextClick = {},
+        onToggleClick = {},
         onPreviousClick = {},
         isLastWorkout = false,
-        showBackButton = true
+        showBackButton = true,
+        isTTSActive = false,
+        onReadDescriptionClick = {}
     )
 }
 
