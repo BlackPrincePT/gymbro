@@ -74,11 +74,13 @@ fun WorkoutImage(
     modifier: Modifier = Modifier
 ) {
     AsyncImage(
-        model = imageUrl,
+        model = ImageRequest.Builder(LocalContext.current)
+            .data(imageUrl)
+            .crossfade(true)
+            .build(),
         contentDescription = contentDescription,
         contentScale = ContentScale.Fit,
         modifier = modifier
     )
 }
-
 

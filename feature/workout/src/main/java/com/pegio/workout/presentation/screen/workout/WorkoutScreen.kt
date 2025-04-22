@@ -11,10 +11,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
+import coil3.ImageLoader
+import coil3.request.CachePolicy
+import coil3.request.ImageRequest
+import coil3.request.allowHardware
 import com.pegio.common.presentation.state.TopBarAction
 import com.pegio.common.presentation.state.TopBarState
 import com.pegio.common.presentation.util.CollectLatestEffect
 import com.pegio.workout.presentation.component.WorkoutDetails
+import com.pegio.workout.presentation.model.UiWorkout
 
 
 @Composable
@@ -68,6 +73,8 @@ fun WorkoutContent(
             CircularProgressIndicator()
         }
     } else {
+        PreloadWorkoutImages(workouts = state.workouts)
+
         val currentWorkout = state.workouts.getOrNull(state.currentWorkoutIndex)
         currentWorkout?.let {
             WorkoutDetails(
@@ -80,6 +87,28 @@ fun WorkoutContent(
                 isTTSActive = state.isTTSActive,
                 onReadDescriptionClick = onReadDescriptionClick,
             )
+        }
+    }
+}
+
+
+@Composable
+fun PreloadWorkoutImages(
+    workouts: List<UiWorkout>
+) {
+    val context = LocalContext.current
+    val imageLoader = ImageLoader(context)
+
+    LaunchedEffect(workouts) {
+        workouts.forEach { workout ->
+            val request = ImageRequest.Builder(context)
+                .data(workout.workoutImage)
+                .memoryCachePolicy(CachePolicy.ENABLED)
+                .diskCachePolicy(CachePolicy.ENABLED)
+                .allowHardware(false)
+                .build()
+
+            imageLoader.enqueue(request)
         }
     }
 }

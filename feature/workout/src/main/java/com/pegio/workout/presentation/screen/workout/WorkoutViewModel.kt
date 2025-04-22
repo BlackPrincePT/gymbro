@@ -52,13 +52,16 @@ class WorkoutViewModel @Inject constructor(
     }
 
     private fun nextWorkout() {
-        if (uiState.workouts.size > uiState.currentWorkoutIndex + 1) {
+        if (uiState.currentWorkoutIndex == uiState.workouts.lastIndex) {
+            sendEffect(WorkoutUiEffect.NavigateBack)
+        } else if (uiState.workouts.size > uiState.currentWorkoutIndex + 1) {
             val newIndex = uiState.currentWorkoutIndex + 1
             updateState {
                 copy(currentWorkoutIndex = newIndex)
             }
         }
     }
+
 
     private fun previousWorkout() {
         if (uiState.currentWorkoutIndex > 0) {
