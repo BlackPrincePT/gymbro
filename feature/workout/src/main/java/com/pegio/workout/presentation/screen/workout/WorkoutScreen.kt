@@ -56,7 +56,8 @@ fun WorkoutScreen(
         onPreviousClick = { viewModel.onEvent(WorkoutUiEvent.OnPreviousClick) },
         onReadDescriptionClick = { textToRead ->
             viewModel.onEvent(WorkoutUiEvent.OnReadTTSClick(textToRead))
-        }
+        },
+        onStartTimer = { durationSeconds -> viewModel.onEvent(WorkoutUiEvent.StartTimer(durationSeconds)) },
     )
 }
 
@@ -66,7 +67,8 @@ fun WorkoutContent(
     onNextClick: () -> Unit,
     onPreviousClick: () -> Unit,
     onToggleTTSClick: () -> Unit,
-    onReadDescriptionClick: (String) -> Unit
+    onReadDescriptionClick: (String) -> Unit,
+    onStartTimer: (Int) -> Unit,
 ) {
     if (state.isLoading) {
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
@@ -79,13 +81,15 @@ fun WorkoutContent(
         currentWorkout?.let {
             WorkoutDetails(
                 workout = it,
-                onNextClick = onNextClick,
-                onPreviousClick = onPreviousClick,
-                onToggleClick = onToggleTTSClick,
-                isLastWorkout = state.currentWorkoutIndex == state.workouts.size - 1,
-                showBackButton = state.currentWorkoutIndex != 0,
                 isTTSActive = state.isTTSActive,
+                onNextClick = onNextClick,
+                isLastWorkout = state.currentWorkoutIndex == state.workouts.size - 1,
+                onToggleTTSClick = onToggleTTSClick,
+                timeRemaining = state.timeRemaining,
+                showBackButton = state.currentWorkoutIndex != 0,
+                onPreviousClick = onPreviousClick,
                 onReadDescriptionClick = onReadDescriptionClick,
+                onStartTimer = onStartTimer,
             )
         }
     }

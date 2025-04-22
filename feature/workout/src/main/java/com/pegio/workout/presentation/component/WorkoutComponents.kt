@@ -1,6 +1,5 @@
 package com.pegio.workout.presentation.component
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -132,10 +131,10 @@ fun WorkoutDetails(
     isLastWorkout: Boolean,
     showBackButton: Boolean,
     onReadDescriptionClick: (String) -> Unit,
-    onToggleClick: () -> Unit
+    onToggleTTSClick: () -> Unit,
+    timeRemaining: Int,
+    onStartTimer: (Int) -> Unit,
 ) {
-    Log.d("workout", workout.description)
-
     LaunchedEffect(workout.description, isTTSActive) {
         if (isTTSActive) {
             onReadDescriptionClick(workout.description)
@@ -148,7 +147,7 @@ fun WorkoutDetails(
             .padding(16.dp)
     ) {
         IconButton(
-            onClick = onToggleClick,
+            onClick = onToggleTTSClick,
             modifier = Modifier.align(Alignment.TopEnd)
         ) {
             Icon(
@@ -180,6 +179,24 @@ fun WorkoutDetails(
             )
 
             WorkoutDetailsCard(workout)
+
+            if (workout.workoutType == WorkoutType.TIMED){
+                Text(
+                    text = "Time Remaining: ${timeRemaining}s",
+                    style = MaterialTheme.typography.bodyLarge,
+                    fontWeight = FontWeight.Medium
+                )
+
+                Button(
+                    onClick = { onStartTimer(workout.value) },
+                    shape = RoundedCornerShape(12.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(56.dp)
+                ) {
+                    Text("Start Timer", style = MaterialTheme.typography.titleMedium)
+                }
+            }
 
             Spacer(modifier = Modifier.weight(1f))
 
@@ -214,7 +231,6 @@ fun WorkoutDetails(
 }
 
 
-
 @Preview(showBackground = true)
 @Composable
 fun PreviewWorkoutDetails() {
@@ -232,12 +248,14 @@ fun PreviewWorkoutDetails() {
     WorkoutDetails(
         workout = workout,
         onNextClick = {},
-        onToggleClick = {},
+        onToggleTTSClick = {},
         onPreviousClick = {},
         isLastWorkout = false,
         showBackButton = true,
         isTTSActive = false,
-        onReadDescriptionClick = {}
+        onReadDescriptionClick = {},
+        timeRemaining = 14,
+        onStartTimer = {}
     )
 }
 
