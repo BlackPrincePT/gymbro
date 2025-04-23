@@ -5,10 +5,8 @@ import com.pegio.common.core.onFailure
 import com.pegio.common.core.onSuccess
 import com.pegio.common.presentation.core.BaseViewModel
 import com.pegio.common.presentation.util.toStringResId
-import com.pegio.domain.usecase.texttospeech.ShutdownTextToSpeechUseCase
-import com.pegio.domain.usecase.texttospeech.SpeakTextUseCase
-import com.pegio.domain.usecase.texttospeech.StopSpeakingUseCase
 import com.pegio.domain.usecase.workout.FetchWorkoutsByIdUseCase
+import com.pegio.workout.presentation.core.TextToSpeechRepositoryImpl
 import com.pegio.workout.presentation.model.mapper.UiWorkoutMapper
 import com.pegio.workout.presentation.screen.workout.WorkoutUiState.*
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -22,9 +20,7 @@ import javax.inject.Inject
 class WorkoutViewModel @Inject constructor(
     private val fetchWorkoutsById: FetchWorkoutsByIdUseCase,
     private val uiWorkoutMapper: UiWorkoutMapper,
-    private val speakText: SpeakTextUseCase,
-    private val stopSpeaking: StopSpeakingUseCase,
-    private val shutdownTextToSpeech: ShutdownTextToSpeechUseCase
+    private val textToSpeechRepository: TextToSpeechRepositoryImpl,
 ) : BaseViewModel<WorkoutUiState, WorkoutUiEffect, WorkoutUiEvent>(initialState = WorkoutUiState()) {
 
     private var timerJob: Job? = null
@@ -92,15 +88,15 @@ class WorkoutViewModel @Inject constructor(
 
     private fun readDescription(textToRead: String) {
         if (uiState.isTTSActive) {
-            speakText(textToRead)
+            textToSpeechRepository.speak(textToRead)
             updateState { copy(isTTSActive = true) }
         }
     }
 
     private fun toggleTTSState() {
         if (uiState.isTTSActive) {
-            stopSpeaking()
-            shutdownTextToSpeech()
+            textToSpeechRepository.stop()
+            textToSpeechRepository.shutdown()
             updateState { copy(isTTSActive = false) }
         } else {
             updateState { copy(isTTSActive = true) }
@@ -162,7 +158,7 @@ class WorkoutViewModel @Inject constructor(
     override fun onCleared() {
         super.onCleared()
         timerJob?.cancel()
-        shutdownTextToSpeech()
+        textToSpeechRepository.shutdown()
     }
 
     override fun setLoading(isLoading: Boolean) {

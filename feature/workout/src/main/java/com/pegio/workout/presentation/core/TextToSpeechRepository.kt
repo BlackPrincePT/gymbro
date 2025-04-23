@@ -1,4 +1,4 @@
-package com.pegio.network.repository
+package com.pegio.workout.presentation.core
 
 interface TextToSpeechRepository {
     fun speak(text: String)

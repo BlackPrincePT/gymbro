@@ -1,4 +1,4 @@
-package com.pegio.network.repository
+package com.pegio.workout.presentation.core
 
 import android.content.Context
 import android.speech.tts.TextToSpeech
