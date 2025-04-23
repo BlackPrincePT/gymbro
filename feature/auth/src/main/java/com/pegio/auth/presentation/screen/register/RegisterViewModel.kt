@@ -9,6 +9,7 @@ import com.pegio.common.presentation.model.UiUser
 import com.pegio.common.presentation.model.mapper.UiUserMapper
 import com.pegio.common.presentation.util.toStringResId
 import com.pegio.domain.usecase.aggregator.FormValidatorUseCases
+import com.pegio.domain.usecase.common.GetCurrentAuthUserUseCase
 import com.pegio.domain.usecase.common.SaveUserUseCase
 import com.pegio.uploadmanager.core.FileUploadManager
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -27,6 +28,7 @@ class RegisterViewModel @Inject constructor(
     private val uiUserMapper: UiUserMapper,
     private val fileUploadManager: FileUploadManager,
     private val formValidator: FormValidatorUseCases,
+    getCurrentAuthUser: GetCurrentAuthUserUseCase
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(RegisterUiState())
@@ -36,7 +38,7 @@ class RegisterViewModel @Inject constructor(
     val uiEffect = _uiEffect.asSharedFlow()
 
     init {
-//        updateUser { copy(id = getCurrentUserId()) }
+        getCurrentAuthUser()?.let { updateUser { copy(id = it.id) } }
     }
 
     fun onEvent(event: RegisterUiEvent) {

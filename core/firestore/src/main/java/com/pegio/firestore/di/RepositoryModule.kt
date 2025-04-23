@@ -2,7 +2,7 @@ package com.pegio.firestore.di
 
 import com.pegio.firestore.repository.AiMessagesRepository
 import com.pegio.firestore.repository.FcmTokenRepository
-import com.pegio.firestore.repository.FollowerRepository
+import com.pegio.firestore.repository.FollowRecordRepository
 import com.pegio.firestore.repository.PostCommentRepository
 import com.pegio.firestore.repository.PostRepository
 import com.pegio.firestore.repository.UserRepository
@@ -12,7 +12,7 @@ import com.pegio.firestore.repository.WorkoutRepository
 import com.pegio.firestore.repository.impl.WorkoutRepositoryImpl
 import com.pegio.firestore.repository.impl.AiMessagesRepositoryImpl
 import com.pegio.firestore.repository.impl.FcmTokenRepositoryImpl
-import com.pegio.firestore.repository.impl.FollowerRepositoryImpl
+import com.pegio.firestore.repository.impl.FollowRecordRepositoryImpl
 import com.pegio.firestore.repository.impl.PostCommentRepositoryImpl
 import com.pegio.firestore.repository.impl.PostRepositoryImpl
 import com.pegio.firestore.repository.impl.UserRepositoryImpl
@@ -46,7 +46,7 @@ internal abstract class RepositoryModule {
     abstract fun bindVoteRepository(impl: VoteRepositoryImpl): VoteRepository
 
     @Binds
-    abstract fun bindFollowerRepository(impl: FollowerRepositoryImpl): FollowerRepository
+    abstract fun bindFollowerRepository(impl: FollowRecordRepositoryImpl): FollowRecordRepository
 
     @Binds
     abstract fun bindWorkoutPlanRepository(impl: WorkoutPlanRepositoryImpl): WorkoutPlanRepository

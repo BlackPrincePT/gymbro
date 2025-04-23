@@ -7,11 +7,11 @@ import com.pegio.common.core.SessionError
 import com.pegio.common.core.asFailure
 import com.pegio.common.core.map
 import com.pegio.common.core.retryableCall
-import com.pegio.firestore.repository.FollowerRepository
+import com.pegio.firestore.repository.FollowRecordRepository
 import javax.inject.Inject
 
 class IsCurrentUserFollowingUseCase @Inject constructor(
-    private val followerRepository: FollowerRepository,
+    private val followRecordRepository: FollowRecordRepository,
     private val authRepository: AuthRepository
 ) {
     suspend operator fun invoke(targetUserId: String): Resource<Unit, Error> {
@@ -21,7 +21,7 @@ class IsCurrentUserFollowingUseCase @Inject constructor(
         if (currentUser.isAnonymous)
             return SessionError.AnonymousUser.asFailure()
 
-        return retryableCall { followerRepository.isUserFollowing(userId = currentUser.id, targetUserId = targetUserId) }
+        return retryableCall { followRecordRepository.isUserFollowing(userId = currentUser.id, targetUserId = targetUserId) }
             .map { Unit }
     }
 }

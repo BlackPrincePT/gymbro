@@ -45,10 +45,12 @@ import com.pegio.feed.presentation.model.UiPost
 import com.pegio.feed.presentation.screen.profile.state.ProfileUiEffect
 import com.pegio.feed.presentation.screen.profile.state.ProfileUiEvent
 import com.pegio.feed.presentation.screen.profile.state.ProfileUiState
+import com.pegio.model.FollowRecord
 
 @Composable
 internal fun ProfileScreen(
     onBackClick: () -> Unit,
+    onFollowRecordClick: (String, FollowRecord.Type) -> Unit,
     onSetupTopBar: (TopBarState) -> Unit,
     viewModel: ProfileViewModel = hiltViewModel()
 ) {
@@ -59,6 +61,8 @@ internal fun ProfileScreen(
 
             // Navigation
             ProfileUiEffect.NavigateBack -> onBackClick()
+            is ProfileUiEffect.NavigateToFollowRecord ->
+                onFollowRecordClick(effect.userId, effect.mode)
         }
     }
 
@@ -81,6 +85,9 @@ private fun ProfileContent(
         item {
             ProfileHeader(
                 user = state.displayedUser,
+                onFollowRecordClick = {
+                    onEvent(ProfileUiEvent.OnFollowRecordClick(state.displayedUser.id, it))
+                },
                 modifier = Modifier
                     .fillMaxWidth()
             )
@@ -127,6 +134,7 @@ private fun ProfileContent(
 @Composable
 private fun ProfileHeader(
     user: UiUser,
+    onFollowRecordClick: (FollowRecord.Type) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -164,8 +172,8 @@ private fun ProfileHeader(
         ProfileStatsRow(
             followersCount = user.followersCount,
             followingCount = user.followingCount,
-            onFollowersClick = { }, // TODO
-            onFollowingClick = { }  // TODO
+            onFollowersClick = { onFollowRecordClick(FollowRecord.Type.FOLLOWERS) },
+            onFollowingClick = { onFollowRecordClick(FollowRecord.Type.FOLLOWING) }
         )
     }
 }
@@ -307,5 +315,5 @@ private fun ProfileContentPreview() {
 @Preview
 @Composable
 private fun ProfileHeaderPreview() {
-    ProfileHeader(user = UiUser.DEFAULT)
+    ProfileHeader(user = UiUser.DEFAULT, onFollowRecordClick = { })
 }

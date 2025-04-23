@@ -15,6 +15,8 @@ import com.pegio.feed.presentation.screen.createpost.navigation.createPostScreen
 import com.pegio.feed.presentation.screen.createpost.navigation.navigateToCreatePost
 import com.pegio.feed.presentation.screen.feed.navigation.feedScreen
 import com.pegio.feed.presentation.screen.feed.navigation.popNavigateToFeed
+import com.pegio.feed.presentation.screen.followrecord.navigation.followRecordScreen
+import com.pegio.feed.presentation.screen.followrecord.navigation.navigateToFollowRecord
 import com.pegio.feed.presentation.screen.postdetails.navigation.navigateToPostDetails
 import com.pegio.feed.presentation.screen.postdetails.navigation.postDetailsScreen
 import com.pegio.feed.presentation.screen.profile.navigation.navigateToProfile
@@ -129,8 +131,15 @@ fun NavigationHost(
 
         profileScreen(
             onBackClick = navController::navigateUp,
+            onFollowRecordClick = navController::navigateToFollowRecord,
             onSetupTopBar = onSetupAppBar,
             onShowSnackbar = onShowSnackbar
+        )
+
+        followRecordScreen(
+            onBackClick = navController::navigateUp,
+            onUserProfileClick = navController::navigateToProfile,
+            onSetupTopBar = onSetupAppBar
         )
     }
 }

@@ -18,7 +18,7 @@ private val deepLink1 = navDeepLink<PostDetailsRoute>(basePath = "gymbro://post-
 fun NavGraphBuilder.postDetailsScreen(
     onBackClick: () -> Unit,
     onUserProfileClick: (String) -> Unit,
-    onSetupTopBar: (TopBarState) -> Unit,
+    onSetupTopBar: (TopBarState) -> Unit
 ) {
     composable<PostDetailsRoute>(deepLinks = listOf(deepLink1)) {
         PostDetailsScreen(
