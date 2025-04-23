@@ -3,7 +3,6 @@ package com.pegio.network.repository
 import com.pegio.common.core.DataError
 import com.pegio.common.core.Resource
 import com.pegio.common.core.map
-import com.pegio.domain.repository.AiChatRepository
 import com.pegio.model.AiMessage
 import com.pegio.network.core.OpenAiConstants
 import com.pegio.network.core.OpenAiConstants.SYSTEM

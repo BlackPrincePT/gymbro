@@ -1,15 +1,15 @@
 package com.pegio.domain.usecase.feed
 
+import com.pegio.auth.repository.AuthRepository
 import com.pegio.common.core.asFailure
 import com.pegio.common.core.asSuccess
 import com.pegio.common.core.getOrElse
 import com.pegio.common.core.getOrNull
 import com.pegio.common.core.retryableCall
 import com.pegio.domain.model.PostWithAuthorAndVote
-import com.pegio.domain.repository.AuthRepository
-import com.pegio.domain.repository.PostRepository
-import com.pegio.domain.repository.UserRepository
-import com.pegio.domain.repository.VoteRepository
+import com.pegio.firestore.repository.PostRepository
+import com.pegio.firestore.repository.UserRepository
+import com.pegio.firestore.repository.VoteRepository
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope

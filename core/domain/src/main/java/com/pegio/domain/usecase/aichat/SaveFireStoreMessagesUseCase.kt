@@ -1,6 +1,6 @@
 package com.pegio.domain.usecase.aichat
 
-import com.pegio.domain.repository.AiMessagesRepository
+import com.pegio.firestore.repository.AiMessagesRepository
 import com.pegio.model.AiMessage
 import javax.inject.Inject
 

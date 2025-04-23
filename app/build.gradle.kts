@@ -71,9 +71,7 @@ dependencies {
     implementation(project(":core:domain"))
     implementation(project(":core:designsystem"))
 
-    implementation(project(":core:auth"))
-    implementation(project(":core:firestore"))
-    implementation(project(":core:network"))
+    implementation(project(":core:notification"))
 
     implementation(project(":feature:common"))
     implementation(project(":feature:aichat"))

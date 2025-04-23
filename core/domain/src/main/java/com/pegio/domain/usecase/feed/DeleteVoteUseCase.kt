@@ -1,11 +1,11 @@
 package com.pegio.domain.usecase.feed
 
+import com.pegio.auth.repository.AuthRepository
 import com.pegio.common.core.Resource
 import com.pegio.common.core.SessionError
 import com.pegio.common.core.asFailure
 import com.pegio.common.core.asSuccess
-import com.pegio.domain.repository.AuthRepository
-import com.pegio.domain.repository.VoteRepository
+import com.pegio.firestore.repository.VoteRepository
 import javax.inject.Inject
 
 class DeleteVoteUseCase @Inject constructor(

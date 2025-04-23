@@ -36,6 +36,7 @@ include(":core:datastore")
 include(":core:firestore")
 include(":core:designsystem")
 include(":core:uploadmanager")
+include(":core:notification")
 
 // Feature
 include(":feature:aichat")

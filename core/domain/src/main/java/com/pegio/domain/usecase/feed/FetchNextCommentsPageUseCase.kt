@@ -5,8 +5,8 @@ import com.pegio.common.core.asSuccess
 import com.pegio.common.core.getOrElse
 import com.pegio.common.core.getOrNull
 import com.pegio.common.core.retryableCall
-import com.pegio.domain.repository.PostCommentRepository
-import com.pegio.domain.repository.UserRepository
+import com.pegio.firestore.repository.PostCommentRepository
+import com.pegio.firestore.repository.UserRepository
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope

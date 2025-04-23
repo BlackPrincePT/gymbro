@@ -1,5 +1,6 @@
 package com.pegio.domain.usecase.common
 
+import com.pegio.auth.repository.AuthRepository
 import com.pegio.common.core.DataError
 import com.pegio.common.core.Resource
 import com.pegio.common.core.SessionError
@@ -7,8 +8,7 @@ import com.pegio.common.core.asFailure
 import com.pegio.common.core.asSuccess
 import com.pegio.common.core.errorOrElse
 import com.pegio.common.core.retryableCall
-import com.pegio.domain.repository.AuthRepository
-import com.pegio.domain.repository.UserRepository
+import com.pegio.firestore.repository.UserRepository
 import com.pegio.model.User
 import javax.inject.Inject
 

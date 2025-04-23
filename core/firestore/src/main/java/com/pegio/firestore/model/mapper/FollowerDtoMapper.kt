@@ -5,7 +5,7 @@ import com.pegio.firestore.model.FollowerDto
 import com.pegio.model.Follower
 import javax.inject.Inject
 
-class FollowerDtoMapper @Inject constructor() : ToDomainMapper<FollowerDto, Follower> {
+internal class FollowerDtoMapper @Inject constructor() : ToDomainMapper<FollowerDto, Follower> {
 
     override fun mapToDomain(data: FollowerDto): Follower = with(data) {
         return Follower(

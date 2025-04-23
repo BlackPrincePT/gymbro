@@ -1,13 +1,13 @@
 package com.pegio.domain.usecase.feed
 
+import com.pegio.auth.repository.AuthRepository
 import com.pegio.common.core.Error
 import com.pegio.common.core.Resource
 import com.pegio.common.core.SessionError
 import com.pegio.common.core.asFailure
 import com.pegio.common.core.map
 import com.pegio.common.core.retryableCall
-import com.pegio.domain.repository.AuthRepository
-import com.pegio.domain.repository.FollowerRepository
+import com.pegio.firestore.repository.FollowerRepository
 import javax.inject.Inject
 
 class IsCurrentUserFollowingUseCase @Inject constructor(

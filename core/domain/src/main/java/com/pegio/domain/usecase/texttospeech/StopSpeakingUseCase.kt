@@ -1,6 +1,6 @@
 package com.pegio.domain.usecase.texttospeech
 
-import com.pegio.domain.repository.TextToSpeechRepository
+import com.pegio.network.repository.TextToSpeechRepository
 import javax.inject.Inject
 
 class StopSpeakingUseCase @Inject constructor(

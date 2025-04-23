@@ -5,18 +5,19 @@ internal object FirestoreConstants {
     const val FOLLOWING = "following"
     const val FOLLOWERS = "followers"
 
-    const val AI_MESSAGES = "ai_messages"
-    const val WORKOUT_PLANS = "workout_plans"
-    const val WORKOUTS = "workouts"
+    const val FCM_TOKENS = "fcmTokens"
 
     const val POSTS = "posts"
     const val COMMENTS = "comments"
     const val VOTES = "votes"
 
+    const val AI_MESSAGES = "ai_messages"
+    const val WORKOUT_PLANS = "workout_plans"
+    const val WORKOUTS = "workouts"
+
     /**
      * Document Parameters
      */
-    const val USERNAME = "username"
     const val AUTHOR_ID = "authorId"
     const val TIMESTAMP = "timestamp"
     const val WORKOUT_ORDER = "order"

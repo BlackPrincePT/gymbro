@@ -1,21 +1,23 @@
 package com.pegio.firestore.di
 
-import com.pegio.domain.repository.AiMessagesRepository
-import com.pegio.domain.repository.FollowerRepository
-import com.pegio.domain.repository.PostCommentRepository
-import com.pegio.domain.repository.PostRepository
-import com.pegio.domain.repository.UserRepository
-import com.pegio.domain.repository.VoteRepository
-import com.pegio.domain.repository.WorkoutPlanRepository
-import com.pegio.domain.repository.WorkoutRepository
-import com.pegio.firestore.repository.AiMessagesRepositoryImpl
-import com.pegio.firestore.repository.FollowerRepositoryImpl
-import com.pegio.firestore.repository.PostCommentRepositoryImpl
-import com.pegio.firestore.repository.PostRepositoryImpl
-import com.pegio.firestore.repository.UserRepositoryImpl
-import com.pegio.firestore.repository.VoteRepositoryImpl
-import com.pegio.firestore.repository.WorkoutPlanRepositoryImpl
-import com.pegio.firestore.repository.WorkoutRepositoryImpl
+import com.pegio.firestore.repository.AiMessagesRepository
+import com.pegio.firestore.repository.FcmTokenRepository
+import com.pegio.firestore.repository.FollowerRepository
+import com.pegio.firestore.repository.PostCommentRepository
+import com.pegio.firestore.repository.PostRepository
+import com.pegio.firestore.repository.UserRepository
+import com.pegio.firestore.repository.VoteRepository
+import com.pegio.firestore.repository.WorkoutPlanRepository
+import com.pegio.firestore.repository.WorkoutRepository
+import com.pegio.firestore.repository.impl.WorkoutRepositoryImpl
+import com.pegio.firestore.repository.impl.AiMessagesRepositoryImpl
+import com.pegio.firestore.repository.impl.FcmTokenRepositoryImpl
+import com.pegio.firestore.repository.impl.FollowerRepositoryImpl
+import com.pegio.firestore.repository.impl.PostCommentRepositoryImpl
+import com.pegio.firestore.repository.impl.PostRepositoryImpl
+import com.pegio.firestore.repository.impl.UserRepositoryImpl
+import com.pegio.firestore.repository.impl.VoteRepositoryImpl
+import com.pegio.firestore.repository.impl.WorkoutPlanRepositoryImpl
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -27,6 +29,9 @@ internal abstract class RepositoryModule {
 
     @Binds
     abstract fun bindUserRepository(impl: UserRepositoryImpl): UserRepository
+
+    @Binds
+    abstract fun bindFcmTokenRepository(impl: FcmTokenRepositoryImpl): FcmTokenRepository
 
     @Binds
     abstract fun bindAiMessagesRepository(impl: AiMessagesRepositoryImpl): AiMessagesRepository

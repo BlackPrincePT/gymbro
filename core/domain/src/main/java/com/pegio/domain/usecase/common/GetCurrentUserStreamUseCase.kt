@@ -1,8 +1,8 @@
 package com.pegio.domain.usecase.common
 
+import com.pegio.auth.repository.AuthRepository
 import com.pegio.common.core.isSuccess
-import com.pegio.domain.repository.AuthRepository
-import com.pegio.domain.repository.UserRepository
+import com.pegio.firestore.repository.UserRepository
 import com.pegio.model.User
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.filterNotNull

@@ -13,7 +13,6 @@ import com.google.firebase.auth.FirebaseAuthInvalidUserException
 import com.google.firebase.auth.GoogleAuthProvider
 import com.pegio.common.core.DataError
 import com.pegio.common.core.Resource
-import com.pegio.domain.repository.AuthRepository
 import com.pegio.model.User
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.channels.awaitClose
@@ -38,10 +37,6 @@ internal class FirebaseAuthRepository @Inject constructor(
         awaitClose { auth.removeAuthStateListener(listener) }
     }
 
-    override fun getCurrentUser(): User.Auth? {
-        return auth.currentUser?.run { User.Auth(id = uid, isAnonymous = isAnonymous) }
-    }
-
     override fun getCurrentUserStream(): Flow<User.Auth?> {
         return currentUserFlow.map { user ->
             user?.run {
@@ -50,10 +45,18 @@ internal class FirebaseAuthRepository @Inject constructor(
         }
     }
 
+    override fun getCurrentUser(): User.Auth? {
+        return auth.currentUser?.run { User.Auth(id = uid, isAnonymous = isAnonymous) }
+    }
+
+
+    // <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> \\
+
+
     override fun signOut() = auth.signOut()
 
 
-    // ========= Sign in anonymously ========= \\
+    // <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> \\
 
 
     override suspend fun signInAnonymously(): Resource<Unit, DataError.Auth> {
@@ -66,7 +69,7 @@ internal class FirebaseAuthRepository @Inject constructor(
     }
 
 
-    // ========= Sign in with Google ========= \\
+    // <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> \\
 
 
     override suspend fun launchGoogleAuthOptions(context: Context): Resource<Unit, DataError.Auth> {
@@ -101,6 +104,10 @@ internal class FirebaseAuthRepository @Inject constructor(
             Resource.Failure(error = mapExceptionToSignInError(e))
         }
     }
+
+
+    // <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> \\
+
 
     private fun mapExceptionToSignInError(e: Exception): DataError.Auth {
         return when (e) {
