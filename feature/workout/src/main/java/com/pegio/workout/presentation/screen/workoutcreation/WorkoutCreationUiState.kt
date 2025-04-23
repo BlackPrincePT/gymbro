@@ -1,4 +1,8 @@
 package com.pegio.workout.presentation.screen.workoutcreation
 
-class WorkoutCreationUiState {
-}
+import com.pegio.workout.presentation.model.UiWorkout
+
+data class WorkoutCreationUiState(
+    val workouts: List<UiWorkout> = emptyList(),
+    val isLoading: Boolean = false
+)

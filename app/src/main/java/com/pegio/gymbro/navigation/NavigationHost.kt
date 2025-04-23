@@ -109,7 +109,11 @@ fun NavigationHost(
         }
 
         composable<WorkoutCreationRoute>{
-            WorkoutCreationScreen()
+            WorkoutCreationScreen(
+                onBackClick = navController::navigateUp,
+                onShowSnackbar = onShowSnackbar,
+                onSetupTopBar = onSetupAppBar,
+            )
         }
 
         // ========= Feed ========= \\

@@ -1,4 +1,9 @@
 package com.pegio.workout.presentation.screen.workoutcreation
 
-interface WorkoutCreationUiEffect {
+import androidx.annotation.StringRes
+
+sealed interface WorkoutCreationUiEffect {
+    data class Failure(@StringRes val errorRes: Int) : WorkoutCreationUiEffect
+
+    data object NavigateBack: WorkoutCreationUiEffect
 }
