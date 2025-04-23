@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="core_notification_channel_post_name">New Posts</string>
-    <string name="core_notification_channel_post_desc">Alerts for new posts from people you follow</string>
+    <string name="core_notification_channel_content_name">Content Activity</string>
+    <string name="core_notification_channel_content_desc">Get notified when someone you follow publishes a new content.</string>
+
+    <string name="core_notification_channel_social_name">Social Activity</string>
+    <string name="core_notification_channel_social_desc">Alerts for new followers and other interactions</string>
 </resources>
