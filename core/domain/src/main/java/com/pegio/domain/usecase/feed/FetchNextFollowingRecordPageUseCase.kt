@@ -5,28 +5,28 @@ import com.pegio.common.core.asSuccess
 import com.pegio.common.core.getOrElse
 import com.pegio.common.core.getOrNull
 import com.pegio.common.core.retryableCall
-import com.pegio.firestore.repository.PostCommentRepository
+import com.pegio.firestore.repository.FollowRecordRepository
 import com.pegio.firestore.repository.UserRepository
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
 import javax.inject.Inject
 
-class FetchNextCommentsPageUseCase @Inject constructor(
-    private val postCommentRepository: PostCommentRepository,
+class FetchNextFollowingRecordPageUseCase @Inject constructor(
+    private val followRecordRepository: FollowRecordRepository,
     private val userRepository: UserRepository
 ) {
-    suspend operator fun invoke(postId: String) = coroutineScope {
-        retryableCall { postCommentRepository.fetchNextCommentsPage(postId) }
+    suspend operator fun invoke(userId: String) = coroutineScope {
+        retryableCall { followRecordRepository.fetchFollowing(userId) }
             .getOrElse { return@coroutineScope it.asFailure() }
-            .map { comment ->
+            .map { followRecord ->
                 async {
-                    retryableCall { userRepository.fetchUserById(id = comment.authorId) }
+                    retryableCall { userRepository.fetchUserById(id = followRecord.userId) }
                         .getOrNull()
-                        .let { comment to it }
                 }
             }
             .awaitAll()
+            .filterNotNull()
             .asSuccess()
     }
 }

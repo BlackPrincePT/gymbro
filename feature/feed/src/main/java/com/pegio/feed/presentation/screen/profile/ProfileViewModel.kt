@@ -42,6 +42,7 @@ class ProfileViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle
 ) : BaseViewModel<ProfileUiState, ProfileUiEffect, ProfileUiEvent>(initialState = ProfileUiState()) {
 
+
     private val userId = savedStateHandle.toRoute<ProfileRoute>().userId
 
     init {
@@ -64,6 +65,8 @@ class ProfileViewModel @Inject constructor(
 
             // Navigation
             ProfileUiEvent.OnBackClick -> sendEffect(ProfileUiEffect.NavigateBack)
+            is ProfileUiEvent.OnFollowRecordClick ->
+                sendEffect(ProfileUiEffect.NavigateToFollowRecord(event.userId, event.mode))
         }
     }
 
