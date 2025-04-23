@@ -3,7 +3,6 @@ package com.pegio.workout.presentation.model
 import com.pegio.model.Workout.*
 
 data class UiWorkout(
-    val id: String,
     val name: String,
     val description: String,
     val workoutType: WorkoutType,
