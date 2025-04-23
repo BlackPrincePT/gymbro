@@ -9,6 +9,7 @@ import com.pegio.firestore.repository.UserRepository
 import com.pegio.firestore.repository.VoteRepository
 import com.pegio.firestore.repository.WorkoutPlanRepository
 import com.pegio.firestore.repository.WorkoutRepository
+import com.pegio.firestore.repository.impl.WorkoutRepositoryImpl
 import com.pegio.firestore.repository.impl.AiMessagesRepositoryImpl
 import com.pegio.firestore.repository.impl.FcmTokenRepositoryImpl
 import com.pegio.firestore.repository.impl.FollowerRepositoryImpl
@@ -17,7 +18,6 @@ import com.pegio.firestore.repository.impl.PostRepositoryImpl
 import com.pegio.firestore.repository.impl.UserRepositoryImpl
 import com.pegio.firestore.repository.impl.VoteRepositoryImpl
 import com.pegio.firestore.repository.impl.WorkoutPlanRepositoryImpl
-import com.pegio.firestore.repository.impl.WorkoutRepositoryImpl
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn

@@ -1,7 +1,7 @@
 package com.pegio.network.repository
+
 import android.content.Context
 import android.speech.tts.TextToSpeech
-import com.pegio.domain.repository.TextToSpeechRepository
 import dagger.hilt.android.qualifiers.ApplicationContext
 import java.util.Locale
 import javax.inject.Inject
@@ -9,6 +9,7 @@ import javax.inject.Inject
 class TextToSpeechRepositoryImpl @Inject constructor(
    @ApplicationContext context: Context
 ) : TextToSpeechRepository {
+
     private var tts: TextToSpeech? = null
 
     init {

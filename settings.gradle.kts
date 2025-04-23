@@ -36,6 +36,7 @@ include(":core:datastore")
 include(":core:firestore")
 include(":core:designsystem")
 include(":core:uploadmanager")
+include(":core:notification")
 
 // Feature
 include(":feature:aichat")
@@ -45,4 +46,3 @@ include(":feature:feed")
 include(":feature:settings")
 include(":feature:splash")
 include(":feature:workout")
-include(":core:notification")
