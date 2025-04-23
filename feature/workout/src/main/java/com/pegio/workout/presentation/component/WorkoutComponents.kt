@@ -2,6 +2,7 @@ package com.pegio.workout.presentation.component
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -14,6 +15,8 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.VolumeOff
+import androidx.compose.material.icons.automirrored.filled.VolumeUp
 import androidx.compose.material.icons.filled.Accessibility
 import androidx.compose.material.icons.filled.FitnessCenter
 import androidx.compose.material.icons.filled.Repeat
@@ -21,9 +24,11 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -35,6 +40,7 @@ import com.pegio.designsystem.component.WorkoutImage
 import com.pegio.model.Workout.MuscleGroup
 import com.pegio.model.Workout.WorkoutType
 import com.pegio.workout.presentation.model.UiWorkout
+import com.pegio.workout.presentation.screen.workout.WorkoutUiState.TimerState
 
 @Composable
 fun WorkoutDetailChip(
@@ -117,55 +123,104 @@ fun WorkoutDetailsCard(workout: UiWorkout) {
     }
 }
 
-
 @Composable
 fun WorkoutDetails(
     workout: UiWorkout,
+    isTTSActive: Boolean,
     onNextClick: () -> Unit,
-    isLastWorkout: Boolean
+    onPreviousClick: () -> Unit,
+    isLastWorkout: Boolean,
+    showBackButton: Boolean,
+    onReadDescriptionClick: (String) -> Unit,
+    onToggleTTSClick: () -> Unit,
+    timeRemaining: Int,
+    timerState: TimerState,
+    onStartTimer: (Int) -> Unit,
+    onPauseTimer: () -> Unit,
+    onResumeTimer: () -> Unit,
 ) {
-    Column(
-        verticalArrangement = Arrangement.spacedBy(12.dp),
+    LaunchedEffect(workout.description, isTTSActive) {
+        if (isTTSActive) {
+            onReadDescriptionClick(workout.description)
+        }
+    }
+
+    Box(
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp)
-            .verticalScroll(rememberScrollState())
     ) {
-        WorkoutImage(
-            imageUrl = workout.workoutImage,
-            contentDescription = workout.name,
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(230.dp)
-                .clip(RoundedCornerShape(12.dp)),
-        )
-
-        Text(
-            text = workout.name,
-            style = MaterialTheme.typography.headlineMedium,
-            fontWeight = FontWeight.Bold
-        )
-
-        WorkoutDetailsCard(workout)
-
-        Text(
-            text = workout.description,
-            style = MaterialTheme.typography.bodyLarge
-        )
-
-        Spacer(modifier = Modifier.weight(1f))
-
-        Button(
-            onClick = onNextClick,
-            shape = RoundedCornerShape(12.dp),
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(56.dp)
+        IconButton(
+            onClick = onToggleTTSClick,
+            modifier = Modifier.align(Alignment.TopEnd)
         ) {
-            Text(
-                text = if (isLastWorkout) "Finish" else "Next",
-                style = MaterialTheme.typography.titleMedium
+            Icon(
+                imageVector = if (isTTSActive) Icons.AutoMirrored.Default.VolumeUp else Icons.AutoMirrored.Default.VolumeOff,
+                contentDescription = if (isTTSActive) "Mute TTS" else "Read Description"
             )
+        }
+
+        Column(
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(top = 58.dp)
+                .verticalScroll(rememberScrollState())
+        ) {
+            WorkoutImage(
+                imageUrl = workout.workoutImage,
+                contentDescription = workout.name,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(250.dp)
+                    .clip(RoundedCornerShape(12.dp)),
+            )
+
+            Text(
+                text = workout.name,
+                style = MaterialTheme.typography.headlineMedium,
+                fontWeight = FontWeight.Bold
+            )
+
+            WorkoutDetailsCard(workout)
+
+            TimerSection(
+                workout = workout.workoutType,
+                timeRemaining = timeRemaining,
+                timerState = timerState,
+                onStartTimer = onStartTimer,
+                onPauseTimer = onPauseTimer,
+                onResumeTimer = onResumeTimer
+            )
+
+            Spacer(modifier = Modifier.weight(1f))
+
+            Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                if (showBackButton) {
+                    Button(
+                        onClick = onPreviousClick,
+                        shape = RoundedCornerShape(12.dp),
+                        modifier = Modifier
+                            .weight(1f)
+                            .height(56.dp)
+                    ) {
+                        Text("Back", style = MaterialTheme.typography.titleMedium)
+                    }
+                }
+
+                Button(
+                    onClick = onNextClick,
+                    shape = RoundedCornerShape(12.dp),
+                    modifier = Modifier
+                        .weight(1f)
+                        .height(56.dp)
+                ) {
+                    Text(
+                        text = if (isLastWorkout) "Finish" else "Next",
+                        style = MaterialTheme.typography.titleMedium
+                    )
+                }
+            }
         }
     }
 }
@@ -180,7 +235,6 @@ fun PreviewWorkoutDetails() {
         sets = 3,
         muscleGroups = listOf(MuscleGroup.CHEST, MuscleGroup.ARMS),
         description = "A workout that targets the chest and arms.",
-        id = "",
         isFinished = false,
         name = "Push Up",
         workoutImage = ""
@@ -189,7 +243,17 @@ fun PreviewWorkoutDetails() {
     WorkoutDetails(
         workout = workout,
         onNextClick = {},
-        isLastWorkout = false
+        onToggleTTSClick = {},
+        onPreviousClick = {},
+        isLastWorkout = false,
+        showBackButton = true,
+        isTTSActive = false,
+        onReadDescriptionClick = {},
+        timeRemaining = 14,
+        onStartTimer = {},
+        onPauseTimer = {},
+        onResumeTimer = {},
+        timerState = TimerState.STOPPED
     )
 }
 
@@ -203,7 +267,6 @@ fun PreviewWorkoutDetailsCard() {
         sets = 3,
         muscleGroups = listOf(MuscleGroup.CHEST, MuscleGroup.ARMS),
         description = "",
-        id = "",
         isFinished = false,
         name = "",
         workoutImage = ""

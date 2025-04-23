@@ -22,12 +22,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.pegio.designsystem.component.WorkoutPlanImage
+import com.pegio.workout.R
 import com.pegio.workout.presentation.model.UiWorkoutPlan
 
 
@@ -134,7 +136,7 @@ fun TipCardComponents(
                     .padding(end = 16.dp)
             )
             Text(
-                text = "stringResource(R.string.workout_info_suggestion)",
+                text = stringResource(R.string.feature_workout_info_suggestion),
                 fontSize = 15.sp,
                 color = Color.Blue, // light_blue
                 modifier = Modifier.fillMaxWidth()
