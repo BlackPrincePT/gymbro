@@ -40,6 +40,7 @@ import com.pegio.designsystem.component.WorkoutImage
 import com.pegio.model.Workout.MuscleGroup
 import com.pegio.model.Workout.WorkoutType
 import com.pegio.workout.presentation.model.UiWorkout
+import com.pegio.workout.presentation.screen.workout.WorkoutUiState.TimerState
 
 @Composable
 fun WorkoutDetailChip(
@@ -133,7 +134,10 @@ fun WorkoutDetails(
     onReadDescriptionClick: (String) -> Unit,
     onToggleTTSClick: () -> Unit,
     timeRemaining: Int,
+    timerState: TimerState,
     onStartTimer: (Int) -> Unit,
+    onPauseTimer: () -> Unit,
+    onResumeTimer: () -> Unit,
 ) {
     LaunchedEffect(workout.description, isTTSActive) {
         if (isTTSActive) {
@@ -180,23 +184,14 @@ fun WorkoutDetails(
 
             WorkoutDetailsCard(workout)
 
-            if (workout.workoutType == WorkoutType.TIMED){
-                Text(
-                    text = "Time Remaining: ${timeRemaining}s",
-                    style = MaterialTheme.typography.bodyLarge,
-                    fontWeight = FontWeight.Medium
-                )
-
-                Button(
-                    onClick = { onStartTimer(workout.value) },
-                    shape = RoundedCornerShape(12.dp),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(56.dp)
-                ) {
-                    Text("Start Timer", style = MaterialTheme.typography.titleMedium)
-                }
-            }
+            TimerSection(
+                workout = workout.workoutType,
+                timeRemaining = timeRemaining,
+                timerState = timerState,
+                onStartTimer = onStartTimer,
+                onPauseTimer = onPauseTimer,
+                onResumeTimer = onResumeTimer
+            )
 
             Spacer(modifier = Modifier.weight(1f))
 
@@ -255,7 +250,10 @@ fun PreviewWorkoutDetails() {
         isTTSActive = false,
         onReadDescriptionClick = {},
         timeRemaining = 14,
-        onStartTimer = {}
+        onStartTimer = {},
+        onPauseTimer = {},
+        onResumeTimer = {},
+        timerState = TimerState.STOPPED
     )
 }
 

@@ -10,6 +10,7 @@ import com.pegio.domain.usecase.texttospeech.SpeakTextUseCase
 import com.pegio.domain.usecase.texttospeech.StopSpeakingUseCase
 import com.pegio.domain.usecase.workout.FetchWorkoutsByIdUseCase
 import com.pegio.workout.presentation.model.mapper.UiWorkoutMapper
+import com.pegio.workout.presentation.screen.workout.WorkoutUiState.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -37,6 +38,8 @@ class WorkoutViewModel @Inject constructor(
             is WorkoutUiEvent.OnReadTTSClick -> readDescription(event.textToRead)
             WorkoutUiEvent.OnToggleTTSClick -> toggleTTSState()
             is WorkoutUiEvent.StartTimer -> startTimer(event.durationSeconds)
+            WorkoutUiEvent.PauseTimer -> pauseTimer()
+            WorkoutUiEvent.ResumeTimer -> resumeTimer()
             WorkoutUiEvent.StopTimer -> stopTimer()
         }
     }
@@ -101,24 +104,59 @@ class WorkoutViewModel @Inject constructor(
             updateState { copy(isTTSActive = false) }
         } else {
             updateState { copy(isTTSActive = true) }
+
         }
     }
 
     private fun startTimer(durationSeconds: Int) {
-        timerJob?.cancel()
-        timerJob = viewModelScope.launch {
-            for (second in durationSeconds downTo 0) {
-                updateState { copy(timeRemaining = second) }
-                delay(1000L)
-            }
-            nextWorkout() // hmm should we move it to next one?
+        cancelExistingTimer()
+
+        updateState {
+            copy(
+                timerState = TimerState.RUNNING,
+                timeRemaining = durationSeconds
+            )
         }
+
+        startCountdownTimer(durationSeconds)
     }
+
+    private fun pauseTimer() {
+        cancelExistingTimer()
+        updateState { copy(timerState = TimerState.PAUSED) }
+    }
+
+    private fun resumeTimer() {
+        cancelExistingTimer()
+        val currentTimeRemaining = uiState.timeRemaining
+
+        updateState { copy(timerState = TimerState.RUNNING) }
+
+        startCountdownTimer(currentTimeRemaining)
+    }
+
 
     private fun stopTimer() {
         timerJob?.cancel()
         timerJob = null
-        updateState { copy(timeRemaining = 0) }
+        updateState { copy(timeRemaining = 0, timerState = TimerState.STOPPED) }
+    }
+
+    private fun startCountdownTimer(startTimeInSeconds: Int) {
+        timerJob = viewModelScope.launch {
+            for (second in startTimeInSeconds downTo 0) {
+                updateState { copy(timeRemaining = second) }
+                delay(1000L)
+            }
+
+            updateState { copy(timerState = TimerState.STOPPED) }
+            nextWorkout()
+        }
+    }
+
+    private fun cancelExistingTimer() {
+        timerJob?.cancel()
+        timerJob = null
     }
 
     override fun onCleared() {
