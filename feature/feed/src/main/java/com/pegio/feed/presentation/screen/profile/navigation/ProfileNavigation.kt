@@ -6,6 +6,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navDeepLink
 import com.pegio.common.presentation.state.TopBarState
 import com.pegio.feed.presentation.screen.profile.ProfileScreen
+import com.pegio.model.FollowRecord
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -17,12 +18,14 @@ private val deepLink1 = navDeepLink<ProfileRoute>(basePath = "gymbro://profile")
 
 fun NavGraphBuilder.profileScreen(
     onBackClick: () -> Unit,
+    onFollowRecordClick: (String, FollowRecord.Type) -> Unit,
     onSetupTopBar: (TopBarState) -> Unit,
     onShowSnackbar: suspend (String, String?) -> Boolean,
 ) {
     composable<ProfileRoute>(deepLinks = listOf(deepLink1)) {
         ProfileScreen(
             onBackClick = onBackClick,
+            onFollowRecordClick = onFollowRecordClick,
             onSetupTopBar = onSetupTopBar
         )
     }

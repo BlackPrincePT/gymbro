@@ -20,6 +20,10 @@ fun NavGraphBuilder.followRecordScreen(
     onSetupTopBar: (TopBarState) -> Unit
 ) {
     composable<FollowRecordRoute> {
-        FollowRecordScreen()
+        FollowRecordScreen(
+            onBackClick = onBackClick,
+            onUserProfileClick = onUserProfileClick,
+            onSetupTopBar = onSetupTopBar
+        )
     }
 }
