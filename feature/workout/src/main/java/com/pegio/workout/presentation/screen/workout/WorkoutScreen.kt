@@ -5,11 +5,13 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil3.ImageLoader
 import coil3.request.CachePolicy
@@ -18,6 +20,7 @@ import coil3.request.allowHardware
 import com.pegio.common.presentation.state.TopBarAction
 import com.pegio.common.presentation.state.TopBarState
 import com.pegio.common.presentation.util.CollectLatestEffect
+import com.pegio.model.Workout
 import com.pegio.workout.presentation.component.WorkoutDetails
 import com.pegio.workout.presentation.model.UiWorkout
 
@@ -57,7 +60,13 @@ fun WorkoutScreen(
         onReadDescriptionClick = { textToRead ->
             viewModel.onEvent(WorkoutUiEvent.OnReadTTSClick(textToRead))
         },
-        onStartTimer = { durationSeconds -> viewModel.onEvent(WorkoutUiEvent.StartTimer(durationSeconds)) },
+        onStartTimer = { durationSeconds ->
+            viewModel.onEvent(
+                WorkoutUiEvent.StartTimer(
+                    durationSeconds
+                )
+            )
+        },
         onPauseTimer = { viewModel.onEvent(WorkoutUiEvent.PauseTimer) },
         onResumeTimer = { viewModel.onEvent(WorkoutUiEvent.ResumeTimer) },
     )
@@ -140,3 +149,31 @@ private fun SetupTopBar(
         )
     }
 }
+
+
+@Preview(showBackground = true)
+@Composable
+fun WorkoutContentPreview() {
+    val sampleWorkout = UiWorkout(
+        name = "Plank",
+        description = "Hold the plank position for 60 seconds.",
+        workoutType = Workout.WorkoutType.TIMED,
+        value = 60,
+        sets = 3,
+        isFinished = false,
+        muscleGroups = listOf(Workout.MuscleGroup.CORE, Workout.MuscleGroup.SHOULDERS),
+        workoutImage = ""
+    )
+
+    WorkoutContent(
+        state = WorkoutUiState(workouts = listOf(sampleWorkout)),
+        onNextClick = {},
+        onPreviousClick = {},
+        onToggleTTSClick = {},
+        onReadDescriptionClick = {},
+        onStartTimer = {},
+        onPauseTimer = {},
+        onResumeTimer = {}
+    )
+}
+
