@@ -2,10 +2,10 @@ package com.pegio.firestore.repository
 
 import com.pegio.common.core.DataError
 import com.pegio.common.core.Resource
-import com.pegio.model.Follower
+import com.pegio.model.FollowRecord
 
-interface FollowerRepository {
+interface FollowRecordRepository {
     fun followUser(userId: String, targetUserId: String)
     fun unfollowUser(userId: String, targetUserId: String)
-    suspend fun isUserFollowing(userId: String, targetUserId: String) : Resource<Follower, DataError.Firestore>
+    suspend fun isUserFollowing(userId: String, targetUserId: String) : Resource<FollowRecord, DataError.Firestore>
 }

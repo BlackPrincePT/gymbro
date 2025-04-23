@@ -5,11 +5,11 @@ import com.pegio.common.core.Resource
 import com.pegio.common.core.SessionError
 import com.pegio.common.core.asFailure
 import com.pegio.common.core.asSuccess
-import com.pegio.firestore.repository.FollowerRepository
+import com.pegio.firestore.repository.FollowRecordRepository
 import javax.inject.Inject
 
 class FollowUserUseCase @Inject constructor(
-    private val followerRepository: FollowerRepository,
+    private val followRecordRepository: FollowRecordRepository,
     private val authRepository: AuthRepository
 ) {
     operator fun invoke(targetUserId: String): Resource<Unit, SessionError> {
@@ -19,7 +19,7 @@ class FollowUserUseCase @Inject constructor(
         if (currentUser.isAnonymous)
             return SessionError.AnonymousUser.asFailure()
 
-        followerRepository.followUser(userId = currentUser.id, targetUserId = targetUserId)
+        followRecordRepository.followUser(userId = currentUser.id, targetUserId = targetUserId)
 
         return Unit.asSuccess()
     }
