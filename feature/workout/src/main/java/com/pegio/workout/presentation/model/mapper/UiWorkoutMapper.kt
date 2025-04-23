@@ -9,7 +9,6 @@ class UiWorkoutMapper @Inject constructor() : FromDomainMapper<UiWorkout, Workou
     override fun mapFromDomain(data: Workout): UiWorkout {
         return UiWorkout(
             description = data.description,
-            isFinished = data.isFinished,
             muscleGroups = data.muscleGroups,
             name = data.name,
             sets = data.sets,

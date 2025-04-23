@@ -159,7 +159,6 @@ fun WorkoutContentPreview() {
         workoutType = Workout.WorkoutType.TIMED,
         value = 60,
         sets = 3,
-        isFinished = false,
         muscleGroups = listOf(Workout.MuscleGroup.CORE, Workout.MuscleGroup.SHOULDERS),
         workoutImage = ""
     )
