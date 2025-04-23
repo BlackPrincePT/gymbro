@@ -33,7 +33,7 @@ fun TimerSection(
     onPauseTimer: () -> Unit,
     onResumeTimer: () -> Unit
 ) {
-    AnimatedVisibility(visible = workout == WorkoutType.TIMED) {
+    if (workout == WorkoutType.TIMED) {
         Column(
             verticalArrangement = Arrangement.spacedBy(8.dp),
             modifier = Modifier.fillMaxWidth()
