@@ -7,7 +7,7 @@ sealed interface FeedUiEffect {
     data object NavigateToChat : FeedUiEffect
 
     // Navigation
-    data object NavigateToCreatePost : FeedUiEffect
+    data class NavigateToCreatePost(val shouldOpenGallery: Boolean) : FeedUiEffect
     data class NavigateToPostDetails(val postId: String) : FeedUiEffect
     data class NavigateToUserProfile(val userId: String) : FeedUiEffect
 }

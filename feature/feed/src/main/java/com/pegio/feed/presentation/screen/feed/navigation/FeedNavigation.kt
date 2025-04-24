@@ -14,7 +14,7 @@ data object FeedRoute
 fun NavController.popNavigateToFeed() = popNavigate(route = FeedRoute)
 
 fun NavGraphBuilder.feedScreen(
-    onCreatePostClick: () -> Unit,
+    onCreatePostClick: (Boolean) -> Unit,
     onShowPostDetails: (String) -> Unit,
     onPostAuthorClick: (String) -> Unit,
     onChatClick: () -> Unit,

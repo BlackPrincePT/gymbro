@@ -7,6 +7,8 @@ data class ProfileUiState(
 
     // Loading
     val isLoading: Boolean = false,
+    val isBackgroundLoading: Boolean = false,
+    val isAvatarLoading: Boolean = false,
 
     // Main
     val displayedUser: UiUser = UiUser.EMPTY,
@@ -15,5 +17,6 @@ data class ProfileUiState(
     // Compose State
     val isProfileOwner: Boolean = false,
     val isFollowing: Boolean = false,
-    val endOfPostsReached: Boolean = false
+    val endOfPostsReached: Boolean = false,
+    val shouldShowBottomSheet: Boolean = false
 )

@@ -31,7 +31,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.pegio.common.presentation.state.TopBarAction
 import com.pegio.common.presentation.state.TopBarState
 import com.pegio.common.presentation.util.CollectLatestEffect
-import com.pegio.designsystem.component.ProfileImage
+import com.pegio.common.presentation.components.ProfileImage
 import com.pegio.feed.presentation.screen.createpost.state.CreatePostUiEffect
 import com.pegio.feed.presentation.screen.createpost.state.CreatePostUiEvent
 import com.pegio.feed.presentation.screen.createpost.state.CreatePostUiState

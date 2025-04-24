@@ -45,7 +45,7 @@ class FeedViewModel @Inject constructor(
             is FeedUiEvent.OnPostVote -> handlePostVote(event.postId, event.voteType)
 
             // Navigation
-            FeedUiEvent.OnCreatePostClick -> sendEffect(FeedUiEffect.NavigateToCreatePost)
+            is FeedUiEvent.OnCreatePostClick -> sendEffect(FeedUiEffect.NavigateToCreatePost(event.shouldOpenGallery))
             is FeedUiEvent.OnPostCommentClick -> sendEffect(FeedUiEffect.NavigateToPostDetails(event.postId))
             is FeedUiEvent.OnUserProfileClick -> sendEffect(FeedUiEffect.NavigateToUserProfile(event.userId))
 

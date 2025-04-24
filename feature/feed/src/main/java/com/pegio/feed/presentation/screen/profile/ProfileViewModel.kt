@@ -1,5 +1,6 @@
 package com.pegio.feed.presentation.screen.profile
 
+import android.net.Uri
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
@@ -8,9 +9,13 @@ import com.pegio.common.core.getOrElse
 import com.pegio.common.core.onFailure
 import com.pegio.common.core.onSuccess
 import com.pegio.common.presentation.core.BaseViewModel
+import com.pegio.common.presentation.model.UiUser
 import com.pegio.common.presentation.model.mapper.UiUserMapper
+import com.pegio.domain.usecase.common.DeleteFileUseCase
+import com.pegio.domain.usecase.common.EnqueueFileUploadUseCase
 import com.pegio.domain.usecase.common.FetchUserByIdUseCase
 import com.pegio.domain.usecase.common.GetCurrentAuthUserUseCase
+import com.pegio.domain.usecase.common.SaveUserUseCase
 import com.pegio.domain.usecase.feed.DeleteVoteUseCase
 import com.pegio.domain.usecase.feed.FetchLatestUserPostsUseCase
 import com.pegio.domain.usecase.feed.FollowUserUseCase
@@ -30,6 +35,9 @@ import javax.inject.Inject
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
     private val fetchUserById: FetchUserByIdUseCase,
+    private val saveUser: SaveUserUseCase,
+    private val enqueueFileUpload: EnqueueFileUploadUseCase,
+    private val deleteFile: DeleteFileUseCase,
     private val getCurrentAuthUser: GetCurrentAuthUserUseCase,
     private val fetchLatestUserPosts: FetchLatestUserPostsUseCase,
     private val votePost: VotePostUseCase,
@@ -45,6 +53,9 @@ class ProfileViewModel @Inject constructor(
 
     private val userId = savedStateHandle.toRoute<ProfileRoute>().userId
 
+    var editMode: ProfileEditMode? = null
+        private set
+
     init {
         updateProfileOwnershipStatus()
         updateFollowingStatus()
@@ -59,18 +70,43 @@ class ProfileViewModel @Inject constructor(
         when (event) {
 
             // Main
+            is ProfileUiEvent.OnEditModeChange -> editMode = event.mode
             is ProfileUiEvent.OnPostVote -> handlePostVote(event.postId, event.voteType)
             ProfileUiEvent.OnLoadMorePosts -> loadMorePosts()
             ProfileUiEvent.OnFollowClick -> handleFollowClick()
 
+            // Image
+            ProfileUiEvent.OnOpenGallery -> sendEffect(ProfileUiEffect.LaunchGallery)
+            is ProfileUiEvent.OnAvatarSelected -> uploadAvatar(event.uri)
+            is ProfileUiEvent.OnBackgroundSelected -> uploadBackground(event.uri)
+            ProfileUiEvent.OnAvatarRemove -> removeAvatar()
+            ProfileUiEvent.OnBackgroundRemove -> removeBackground()
+
+
             // Navigation
-            ProfileUiEvent.OnBackClick -> sendEffect(ProfileUiEffect.NavigateBack)
             is ProfileUiEvent.OnFollowRecordClick ->
                 sendEffect(ProfileUiEffect.NavigateToFollowRecord(event.userId, event.mode))
+
+            is ProfileUiEvent.OnCreatePostClick ->
+                sendEffect(ProfileUiEffect.NavigateToCreatePost(event.shouldOpenGallery))
+
+            is ProfileUiEvent.OnPostCommentClick ->
+                sendEffect(ProfileUiEffect.NavigateToPostDetail(event.postId))
+
+            ProfileUiEvent.OnBackClick -> sendEffect(ProfileUiEffect.NavigateBack)
+
+            // Bottom Sheet
+            is ProfileUiEvent.OnBottomSheetStateUpdate -> updateState { copy(shouldShowBottomSheet = event.shouldShow) }
         }
     }
 
     override fun setLoading(isLoading: Boolean) = updateState { copy(isLoading = isLoading) }
+
+    private fun setAvatarLoading(isLoading: Boolean) =
+        updateState { copy(isAvatarLoading = isLoading) }
+
+    private fun setBackgroundLoading(isLoading: Boolean) =
+        updateState { copy(isBackgroundLoading = isLoading) }
 
 
     // <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> \\
@@ -85,6 +121,49 @@ class ProfileViewModel @Inject constructor(
     private fun updateProfileOwnershipStatus() {
         val currentUser = getCurrentAuthUser()
         updateState { copy(isProfileOwner = currentUser?.id == userId) }
+    }
+
+
+    // <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> \\
+
+
+    private fun uploadAvatar(uri: Uri) = launchWithLoading(::setAvatarLoading) {
+        with(uiState.displayedUser) {
+            avatarUrl?.let { deleteFile(it) }
+
+            enqueueFileUpload(uri = uri.toString())
+                .onSuccess { saveAndUpdateUser(uiUser = copy(avatarUrl = it)) }
+                .onFailure { } // TODO SHOW FAILURE MESSAGE
+        }
+    }
+
+    private fun removeAvatar() = with(uiState.displayedUser) {
+        avatarUrl?.let {
+            deleteFile(it)
+            saveAndUpdateUser(uiUser = copy(avatarUrl = null))
+        }
+    }
+
+    private fun uploadBackground(uri: Uri) = launchWithLoading(::setBackgroundLoading) {
+        with(uiState.displayedUser) {
+            imgBackgroundUrl?.let { deleteFile(it) }
+
+            enqueueFileUpload(uri = uri.toString())
+                .onSuccess { saveAndUpdateUser(uiUser = copy(imgBackgroundUrl = it)) }
+                .onFailure { } // TODO SHOW FAILURE MESSAGE
+        }
+    }
+
+    private fun removeBackground() = with(uiState.displayedUser) {
+        imgBackgroundUrl?.let {
+            deleteFile(it)
+            saveAndUpdateUser(uiUser = copy(imgBackgroundUrl = null))
+        }
+    }
+
+    private fun saveAndUpdateUser(uiUser: UiUser) {
+        saveUser(user = uiUserMapper.mapToDomain(uiUser))
+        updateState { copy(displayedUser = uiUser) }
     }
 
 

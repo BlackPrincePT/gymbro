@@ -6,4 +6,6 @@
     <string name="feature_feed_followers">Followers</string>
     <string name="feature_feed_no_followers_message">Zero followers. Must be your sparkling personality.</string>
     <string name="feature_feed_no_following_message">Following no one? Okay, lone wolf, we get it.</string>
+    <string name="feature_feed_choose_from_gallery">Choose from gallery</string>
+    <string name="feature_feed_remove">Remove</string>
 </resources>

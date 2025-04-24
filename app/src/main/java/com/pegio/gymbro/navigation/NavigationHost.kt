@@ -132,6 +132,8 @@ fun NavigationHost(
         profileScreen(
             onBackClick = navController::navigateUp,
             onFollowRecordClick = navController::navigateToFollowRecord,
+            onCreatePostClick = navController::navigateToCreatePost,
+            onShowPostDetails = navController::navigateToPostDetails,
             onSetupTopBar = onSetupAppBar,
             onShowSnackbar = onShowSnackbar
         )

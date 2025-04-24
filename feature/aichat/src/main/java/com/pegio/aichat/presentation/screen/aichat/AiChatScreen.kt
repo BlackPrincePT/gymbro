@@ -39,7 +39,7 @@ import com.pegio.aichat.presentation.model.UiAiMessage
 import com.pegio.common.presentation.state.TopBarAction
 import com.pegio.common.presentation.state.TopBarState
 import com.pegio.common.presentation.util.CollectLatestEffect
-import com.pegio.designsystem.component.MessageImage
+import com.pegio.common.presentation.components.MessageImage
 
 @Composable
 fun AiChatScreen(

@@ -17,7 +17,7 @@ import com.pegio.common.presentation.state.TopBarAction
 import com.pegio.common.presentation.state.TopBarState
 import com.pegio.common.presentation.util.CollectLatestEffect
 import com.pegio.common.presentation.util.PagingColumn
-import com.pegio.feed.presentation.component.CreatePost
+import com.pegio.feed.presentation.component.CreatePostContent
 import com.pegio.feed.presentation.component.PostContent
 import com.pegio.feed.presentation.model.UiPost
 import com.pegio.feed.presentation.screen.feed.state.FeedUiEffect
@@ -26,7 +26,7 @@ import com.pegio.feed.presentation.screen.feed.state.FeedUiState
 
 @Composable
 internal fun FeedScreen(
-    onCreatePostClick: () -> Unit,
+    onCreatePostClick: (Boolean) -> Unit,
     onChatClick: () -> Unit,
     onShowPostDetails: (String) -> Unit,
     onUserProfileClick: (String) -> Unit,
@@ -44,7 +44,7 @@ internal fun FeedScreen(
             FeedUiEffect.NavigateToChat -> onChatClick()
 
             // Navigation
-            FeedUiEffect.NavigateToCreatePost -> onCreatePostClick()
+            is FeedUiEffect.NavigateToCreatePost -> onCreatePostClick(effect.shouldOpenGallery)
             is FeedUiEffect.NavigateToPostDetails -> onShowPostDetails(effect.postId)
             is FeedUiEffect.NavigateToUserProfile -> onUserProfileClick(effect.userId)
         }
@@ -70,24 +70,21 @@ private fun FeedContent(
             .fillMaxSize()
     ) {
         item {
-            CreatePost(
+            CreatePostContent(
                 currentUser = state.currentUser,
-                onPostClick = { onEvent(FeedUiEvent.OnCreatePostClick) },
+                onClick = { onEvent(FeedUiEvent.OnCreatePostClick(it)) },
                 onProfileClick = { onEvent(FeedUiEvent.OnUserProfileClick(userId = state.currentUser.id)) },
                 modifier = Modifier
-                    .padding(8.dp)
+                    .padding(16.dp)
             )
         }
-
-        // TODO: Add stories
 
         items(state.relevantPosts) { post ->
             PostContent(
                 post = post,
                 onProfileClick = { onEvent(FeedUiEvent.OnUserProfileClick(userId = post.author.id)) },
                 onVoteClick = { onEvent(FeedUiEvent.OnPostVote(postId = post.id, voteType = it)) },
-                onCommentClick = { onEvent(FeedUiEvent.OnPostCommentClick(postId = post.id)) },
-                onRatingClick = { }
+                onCommentClick = { onEvent(FeedUiEvent.OnPostCommentClick(postId = post.id)) }
             )
         }
     }

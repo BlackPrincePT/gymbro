@@ -19,14 +19,19 @@ private val deepLink1 = navDeepLink<ProfileRoute>(basePath = "gymbro://profile")
 fun NavGraphBuilder.profileScreen(
     onBackClick: () -> Unit,
     onFollowRecordClick: (String, FollowRecord.Type) -> Unit,
+    onCreatePostClick: (Boolean) -> Unit,
+    onShowPostDetails: (String) -> Unit,
     onSetupTopBar: (TopBarState) -> Unit,
-    onShowSnackbar: suspend (String, String?) -> Boolean,
+    onShowSnackbar: suspend (String, String?) -> Boolean
 ) {
     composable<ProfileRoute>(deepLinks = listOf(deepLink1)) {
         ProfileScreen(
             onBackClick = onBackClick,
             onFollowRecordClick = onFollowRecordClick,
-            onSetupTopBar = onSetupTopBar
+            onCreatePostClick = onCreatePostClick,
+            onShowPostDetails = onShowPostDetails,
+            onSetupTopBar = onSetupTopBar,
+            onShowSnackbar = onShowSnackbar
         )
     }
 }

@@ -66,9 +66,7 @@ private fun PostDetailsContent(
             PostContent(
                 post = state.displayedPost,
                 onProfileClick = { onEvent(PostDetailsUiEvent.OnUserProfileClick(userId = state.displayedPost.author.id)) },
-                onVoteClick = { onEvent(PostDetailsUiEvent.OnPostVote(voteType = it)) },
-                onCommentClick = { },
-                onRatingClick = { }
+                onVoteClick = { onEvent(PostDetailsUiEvent.OnPostVote(voteType = it)) }
             )
         }
 

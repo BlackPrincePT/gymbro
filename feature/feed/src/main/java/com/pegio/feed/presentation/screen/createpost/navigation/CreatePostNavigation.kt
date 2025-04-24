@@ -8,9 +8,10 @@ import com.pegio.feed.presentation.screen.createpost.CreatePostScreen
 import kotlinx.serialization.Serializable
 
 @Serializable
-data object CreatePostRoute
+data class CreatePostRoute(val shouldOpenGallery: Boolean)
 
-fun NavController.navigateToCreatePost() = navigate(CreatePostRoute)
+fun NavController.navigateToCreatePost(shouldOpenGallery: Boolean) =
+    navigate(CreatePostRoute(shouldOpenGallery))
 
 fun NavGraphBuilder.createPostScreen(
     onDismiss: () -> Unit,
