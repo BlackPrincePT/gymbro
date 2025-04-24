@@ -4,4 +4,6 @@
     <string name="feature_feed_following">Following</string>
     <string name="feature_feed_follow">Follow</string>
     <string name="feature_feed_followers">Followers</string>
+    <string name="feature_feed_no_followers_message">Zero followers. Must be your sparkling personality.</string>
+    <string name="feature_feed_no_following_message">Following no one? Okay, lone wolf, we get it.</string>
 </resources>
