@@ -69,6 +69,7 @@ internal fun ProfileScreen(
     viewModel: ProfileViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
+
     val launchGallery = rememberGalleryLauncher(
         onImageSelected = {
             viewModel.editMode?.run { viewModel.onEvent(getUploadEvent(it)) }
@@ -131,9 +132,9 @@ private fun ProfileContent(
             )
         }
 
-        if (state.isProfileOwner.not()) item {
+        if (!isProfileOwner) item {
             DefaultProfileActions(
-                isFollowing = state.isFollowing,
+                isFollowing = isFollowing,
                 onFollowClick = { onEvent(ProfileUiEvent.OnFollowClick) },
                 modifier = Modifier
                     .fillMaxWidth()
@@ -141,7 +142,7 @@ private fun ProfileContent(
             )
         }
 
-        if (state.isProfileOwner) item {
+        if (isProfileOwner) item {
             CreatePostContent(
                 onClick = { onEvent(ProfileUiEvent.OnCreatePostClick(it)) },
                 modifier = Modifier
@@ -149,12 +150,21 @@ private fun ProfileContent(
             )
         }
 
-        items(state.userPosts) { post ->
+        items(userPosts) { post ->
             PostContent(
                 post = post,
                 onVoteClick = { onEvent(ProfileUiEvent.OnPostVote(post.id, voteType = it)) },
                 onCommentClick = { onEvent(ProfileUiEvent.OnPostCommentClick(post.id)) }
             )
+        }
+
+        if (isLoading) item {
+            Box(
+                contentAlignment = Alignment.Center,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                CircularProgressIndicator(modifier = Modifier.size(48.dp))
+            }
         }
     }
 }

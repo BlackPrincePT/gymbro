@@ -56,12 +56,12 @@ internal fun FollowRecordScreen(
         }
     }
 
-    val state = viewModel.uiState
-
-    when {
-        state.users.isEmpty() && state.isLoading -> EmptyFollowRecordLoadingContent()
-        state.users.isEmpty() -> EmptyFollowRecordContent(viewModel.currentMode)
-        else -> FollowRecordContent(state = state, onEvent = viewModel::onEvent)
+    with(viewModel.uiState) {
+        when {
+            users.isEmpty() && isLoading -> EmptyFollowRecordLoadingContent()
+            users.isEmpty() -> EmptyFollowRecordContent(viewModel.currentMode)
+            else -> FollowRecordContent(state = this, onEvent = viewModel::onEvent)
+        }
     }
 }
 
@@ -69,23 +69,23 @@ internal fun FollowRecordScreen(
 private fun FollowRecordContent(
     state: FollowRecordUiState,
     onEvent: (FollowRecordUiEvent) -> Unit
-) {
+) = with(state) {
     PagingColumn(
-        itemCount = state.users.size,
-        isLoading = state.isLoading,
+        itemCount = users.size,
+        isLoading = isLoading,
         onLoadAnotherPage = { onEvent(FollowRecordUiEvent.OnLoadMoreUsers) },
         loadIndex = 5,
         verticalArrangement = Arrangement.spacedBy(8.dp),
         modifier = Modifier.fillMaxSize()
     ) {
-        items(state.users) { user ->
+        items(users) { user ->
             FollowRecordItem(
                 user = user,
                 onClick = { onEvent(FollowRecordUiEvent.OnUserProfileClick(user.id)) }
             )
         }
 
-        if (state.isLoading) item {
+        if (isLoading) item {
             Box(
                 contentAlignment = Alignment.Center,
                 modifier = Modifier.fillMaxWidth()
