@@ -186,6 +186,7 @@ fun WorkoutDetails(
 
             TimerSection(
                 workout = workout.workoutType,
+                workoutTime = workout.value,
                 timeRemaining = timeRemaining,
                 timerState = timerState,
                 onStartTimer = onStartTimer,
@@ -230,7 +231,7 @@ fun WorkoutDetails(
 @Composable
 fun PreviewWorkoutDetails() {
     val workout = UiWorkout(
-        workoutType = WorkoutType.REPETITION,
+        workoutType = WorkoutType.TIMED,
         value = 10,
         sets = 3,
         muscleGroups = listOf(MuscleGroup.CHEST, MuscleGroup.ARMS),
@@ -252,7 +253,7 @@ fun PreviewWorkoutDetails() {
         onStartTimer = {},
         onPauseTimer = {},
         onResumeTimer = {},
-        timerState = TimerState.STOPPED
+        timerState = TimerState.RUNNING
     )
 }
 
