@@ -32,6 +32,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -67,6 +68,7 @@ internal fun ProfileScreen(
     onShowSnackbar: suspend (String, String?) -> Boolean,
     viewModel: ProfileViewModel = hiltViewModel()
 ) {
+    val context = LocalContext.current
     val launchGallery = rememberGalleryLauncher(
         onImageSelected = {
             viewModel.editMode?.run { viewModel.onEvent(getUploadEvent(it)) }
@@ -80,6 +82,10 @@ internal fun ProfileScreen(
 
             // Image
             is ProfileUiEffect.LaunchGallery -> launchGallery.invoke()
+
+            // Failure
+            is ProfileUiEffect.ShowSnackbar ->
+                onShowSnackbar(context.getString(effect.errorRes), null)
 
             // Navigation
             ProfileUiEffect.NavigateBack -> onBackClick()

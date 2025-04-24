@@ -5,6 +5,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.pegio.common.core.Displayable
+import com.pegio.common.core.Error
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -32,7 +34,7 @@ abstract class BaseViewModel<State, Effect, Event>(initialState: State) : ViewMo
         }
     }
 
-    protected abstract fun setLoading(isLoading: Boolean = false)
+    protected open fun setLoading(isLoading: Boolean = false) { }
 
     protected fun launchWithLoading(
         updateLoading: (Boolean) -> Unit = ::setLoading,

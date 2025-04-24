@@ -5,12 +5,16 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import com.pegio.common.core.DataError
+import com.pegio.common.core.Displayable
+import com.pegio.common.core.Error
+import com.pegio.common.core.Resource
 import com.pegio.common.core.getOrElse
 import com.pegio.common.core.onFailure
 import com.pegio.common.core.onSuccess
 import com.pegio.common.presentation.core.BaseViewModel
 import com.pegio.common.presentation.model.UiUser
 import com.pegio.common.presentation.model.mapper.UiUserMapper
+import com.pegio.common.presentation.util.toStringResId
 import com.pegio.domain.usecase.common.DeleteFileUseCase
 import com.pegio.domain.usecase.common.EnqueueFileUploadUseCase
 import com.pegio.domain.usecase.common.FetchUserByIdUseCase
@@ -34,19 +38,25 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
+    private val getCurrentAuthUser: GetCurrentAuthUserUseCase,
     private val fetchUserById: FetchUserByIdUseCase,
     private val saveUser: SaveUserUseCase,
+
+    private val fetchLatestUserPosts: FetchLatestUserPostsUseCase,
+
     private val enqueueFileUpload: EnqueueFileUploadUseCase,
     private val deleteFile: DeleteFileUseCase,
-    private val getCurrentAuthUser: GetCurrentAuthUserUseCase,
-    private val fetchLatestUserPosts: FetchLatestUserPostsUseCase,
+
     private val votePost: VotePostUseCase,
     private val deleteVote: DeleteVoteUseCase,
+
     private val followUser: FollowUserUseCase,
     private val unfollowUser: UnfollowUserUseCase,
     private val isCurrentUserFollowing: IsCurrentUserFollowingUseCase,
+
     private val uiUserMapper: UiUserMapper,
     private val uiPostMapper: UiPostMapper,
+
     savedStateHandle: SavedStateHandle
 ) : BaseViewModel<ProfileUiState, ProfileUiEffect, ProfileUiEvent>(initialState = ProfileUiState()) {
 
@@ -114,8 +124,8 @@ class ProfileViewModel @Inject constructor(
 
     private fun loadProfileInfo() = launchWithLoading {
         fetchUserById(id = userId)
-            .onFailure { return@launchWithLoading } // TODO HANDLE PROPERLY
             .onSuccess { updateState { copy(displayedUser = uiUserMapper.mapFromDomain(it)) } }
+            .onFailureShowSnackbar()
     }
 
     private fun updateProfileOwnershipStatus() {
@@ -133,7 +143,7 @@ class ProfileViewModel @Inject constructor(
 
             enqueueFileUpload(uri = uri.toString())
                 .onSuccess { saveAndUpdateUser(uiUser = copy(avatarUrl = it)) }
-                .onFailure { } // TODO SHOW FAILURE MESSAGE
+                .onFailureShowSnackbar()
         }
     }
 
@@ -150,7 +160,7 @@ class ProfileViewModel @Inject constructor(
 
             enqueueFileUpload(uri = uri.toString())
                 .onSuccess { saveAndUpdateUser(uiUser = copy(imgBackgroundUrl = it)) }
-                .onFailure { } // TODO SHOW FAILURE MESSAGE
+                .onFailureShowSnackbar()
         }
     }
 
@@ -207,7 +217,7 @@ class ProfileViewModel @Inject constructor(
                         DataError.Pagination.END_OF_PAGINATION_REACHED ->
                             updateState { copy(endOfPostsReached = true) }
 
-                        else -> {} // TODO HANDLE BETTER
+                        else -> {}
                     }
                     return@launchWithLoading
                 }
@@ -232,11 +242,11 @@ class ProfileViewModel @Inject constructor(
         if (previousVoteType == voteType) {
             deleteVote(postId)
                 .onSuccess { updatePost(index = index, newVote = null, difference = difference) }
-                .onFailure { } // TODO HANDLE FAILURE
+                .onFailureShowSnackbar()
         } else {
             votePost(postId, voteType)
                 .onSuccess { updatePost(index = index, newVote = it, difference = difference) }
-                .onFailure { } // TODO HANDLE FAILURE
+                .onFailureShowSnackbar()
         }
     }
 
@@ -254,5 +264,12 @@ class ProfileViewModel @Inject constructor(
         )
 
         updateState { copy(userPosts = updatedPosts) }
+    }
+
+    private fun <D, E : Error> Resource<D, E>.onFailureShowSnackbar(): Resource<D, E> {
+        return onFailure { error ->
+            if (error is Displayable)
+                sendEffect(ProfileUiEffect.ShowSnackbar(error.toStringResId()))
+        }
     }
 }

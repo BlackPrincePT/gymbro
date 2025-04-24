@@ -1,12 +1,15 @@
 package com.pegio.feed.presentation.screen.profile.state
 
-import android.net.Uri
+import androidx.annotation.StringRes
 import com.pegio.model.FollowRecord
 
 sealed interface ProfileUiEffect {
 
     // Image
     data object LaunchGallery : ProfileUiEffect
+
+    // Failure
+    data class ShowSnackbar(@StringRes val errorRes: Int) : ProfileUiEffect
 
     // Navigation
     data object NavigateBack : ProfileUiEffect
