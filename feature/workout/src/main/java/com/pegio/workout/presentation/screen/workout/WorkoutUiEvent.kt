@@ -14,10 +14,8 @@ sealed interface WorkoutUiEvent {
     data object OnToggleTTSClick : WorkoutUiEvent
 
     //Timer
-    data class StartTimer(val durationSeconds: Int) : WorkoutUiEvent
     data object PauseTimer : WorkoutUiEvent
     data object ResumeTimer : WorkoutUiEvent
-    data object StopTimer : WorkoutUiEvent
 
     // Navigation
     data object OnBackClick : WorkoutUiEvent

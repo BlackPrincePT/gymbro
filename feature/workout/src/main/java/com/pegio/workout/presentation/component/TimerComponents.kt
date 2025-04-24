@@ -4,7 +4,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
@@ -21,7 +20,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.pegio.model.Workout.WorkoutType
@@ -33,7 +32,6 @@ fun TimerSection(
     workoutTime : Int,
     timeRemaining: Int,
     timerState: TimerState,
-    onStartTimer: (Int) -> Unit,
     onPauseTimer: () -> Unit,
     onResumeTimer: () -> Unit
 ) {
@@ -59,58 +57,51 @@ fun TimerSection(
                 )
             }
 
-            Row(
-                horizontalArrangement = Arrangement.Center,
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                when (timerState) {
-                    TimerState.STOPPED -> {
-                        IconButton(
-                            onClick = { onStartTimer(timeRemaining) },
-                            modifier = Modifier
-                                .size(56.dp)
-                                .background(MaterialTheme.colorScheme.primary, shape = CircleShape)
-                        ) {
-                            Icon(
-                                imageVector = Icons.Default.PlayArrow,
-                                contentDescription = "Start Timer",
-                                tint = Color.White
-                            )
-                        }
-                    }
-
-                    TimerState.RUNNING -> {
-                        IconButton(
-                            onClick = onPauseTimer,
-                            modifier = Modifier
-                                .size(46.dp)
-                                .background(MaterialTheme.colorScheme.primary, shape = CircleShape)
-                        ) {
-                            Icon(
-                                imageVector = Icons.Default.Pause,
-                                contentDescription = "Pause Timer",
-                                tint = Color.White
-                            )
-                        }
-                    }
-
-                    TimerState.PAUSED -> {
-                        IconButton(
-                            onClick = onResumeTimer,
-                            modifier = Modifier
-                                .size(46.dp)
-                                .background(MaterialTheme.colorScheme.primary, shape = CircleShape)
-                        ) {
-                            Icon(
-                                imageVector = Icons.Default.PlayArrow,
-                                contentDescription = "Resume Timer",
-                                tint = Color.White
-                            )
-                        }
-                    }
-                }
-            }
+            TimerControlButton(
+                timerState = timerState,
+                onPause = onPauseTimer,
+                onResume = onResumeTimer
+            )
         }
+    }
+}
+
+@Composable
+private fun TimerControlButton(
+    timerState: TimerState,
+    onPause: () -> Unit,
+    onResume: () -> Unit
+) {
+    val icon: ImageVector
+    val description: String
+    val onClick: () -> Unit
+
+    when (timerState) {
+
+        TimerState.RUNNING -> {
+            icon = Icons.Default.Pause
+            description = "Pause Timer"
+            onClick = onPause
+        }
+
+        TimerState.PAUSED -> {
+            icon = Icons.Default.PlayArrow
+            description = "Resume Timer"
+            onClick = onResume
+        }
+    }
+
+    IconButton(
+        onClick = onClick,
+        modifier = Modifier
+            .size(46.dp)
+            .background(MaterialTheme.colorScheme.primary, shape = CircleShape)
+    ) {
+        Icon(
+            imageVector = icon,
+            contentDescription = description,
+            tint = Color.White
+        )
     }
 }
 
@@ -123,7 +114,6 @@ fun TimerSectionPreview() {
             timeRemaining = 45,
             workoutTime = 10,
             timerState = TimerState.RUNNING,
-            onStartTimer = {},
             onPauseTimer = {},
             onResumeTimer = {}
         )

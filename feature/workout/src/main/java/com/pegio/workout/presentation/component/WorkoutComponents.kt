@@ -135,7 +135,6 @@ fun WorkoutDetails(
     onToggleTTSClick: () -> Unit,
     timeRemaining: Int,
     timerState: TimerState,
-    onStartTimer: (Int) -> Unit,
     onPauseTimer: () -> Unit,
     onResumeTimer: () -> Unit,
 ) {
@@ -189,7 +188,6 @@ fun WorkoutDetails(
                 workoutTime = workout.value,
                 timeRemaining = timeRemaining,
                 timerState = timerState,
-                onStartTimer = onStartTimer,
                 onPauseTimer = onPauseTimer,
                 onResumeTimer = onResumeTimer
             )
@@ -250,7 +248,6 @@ fun PreviewWorkoutDetails() {
         isTTSActive = false,
         onReadDescriptionClick = {},
         timeRemaining = 14,
-        onStartTimer = {},
         onPauseTimer = {},
         onResumeTimer = {},
         timerState = TimerState.RUNNING

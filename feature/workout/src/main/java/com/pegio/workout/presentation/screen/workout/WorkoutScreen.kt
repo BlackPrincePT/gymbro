@@ -59,13 +59,6 @@ fun WorkoutScreen(
         onReadDescriptionClick = { textToRead ->
             viewModel.onEvent(WorkoutUiEvent.OnReadTTSClick(textToRead))
         },
-        onStartTimer = { durationSeconds ->
-            viewModel.onEvent(
-                WorkoutUiEvent.StartTimer(
-                    durationSeconds
-                )
-            )
-        },
         onPauseTimer = { viewModel.onEvent(WorkoutUiEvent.PauseTimer) },
         onResumeTimer = { viewModel.onEvent(WorkoutUiEvent.ResumeTimer) },
     )
@@ -78,7 +71,6 @@ fun WorkoutContent(
     onPreviousClick: () -> Unit,
     onToggleTTSClick: () -> Unit,
     onReadDescriptionClick: (String) -> Unit,
-    onStartTimer: (Int) -> Unit,
     onPauseTimer: () -> Unit,
     onResumeTimer: () -> Unit,
 ) {
@@ -102,7 +94,6 @@ fun WorkoutContent(
                 showBackButton = state.currentWorkoutIndex != 0,
                 onPreviousClick = onPreviousClick,
                 onReadDescriptionClick = onReadDescriptionClick,
-                onStartTimer = onStartTimer,
                 onPauseTimer = onPauseTimer,
                 onResumeTimer = onResumeTimer,
             )
@@ -169,7 +160,6 @@ fun WorkoutContentPreview() {
         onPreviousClick = {},
         onToggleTTSClick = {},
         onReadDescriptionClick = {},
-        onStartTimer = {},
         onPauseTimer = {},
         onResumeTimer = {}
     )

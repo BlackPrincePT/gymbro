@@ -1,5 +1,6 @@
 package com.pegio.workout.presentation.screen.workout
 
+import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.pegio.common.core.onFailure
 import com.pegio.common.core.onSuccess
@@ -33,10 +34,8 @@ class WorkoutViewModel @Inject constructor(
             WorkoutUiEvent.OnBackClick -> sendEffect(WorkoutUiEffect.NavigateBack)
             is WorkoutUiEvent.OnReadTTSClick -> readDescription(event.textToRead)
             WorkoutUiEvent.OnToggleTTSClick -> toggleTTSState()
-            is WorkoutUiEvent.StartTimer -> startTimer(event.durationSeconds)
             WorkoutUiEvent.PauseTimer -> pauseTimer()
             WorkoutUiEvent.ResumeTimer -> resumeTimer()
-            WorkoutUiEvent.StopTimer -> stopTimer()
         }
     }
 
@@ -104,19 +103,6 @@ class WorkoutViewModel @Inject constructor(
         }
     }
 
-    private fun startTimer(durationSeconds: Int) {
-        cancelExistingTimer()
-
-        updateState {
-            copy(
-                timerState = TimerState.RUNNING,
-                timeRemaining = durationSeconds
-            )
-        }
-
-        startCountdownTimer(durationSeconds)
-    }
-
     private fun pauseTimer() {
         cancelExistingTimer()
         updateState { copy(timerState = TimerState.PAUSED) }
@@ -133,9 +119,8 @@ class WorkoutViewModel @Inject constructor(
 
 
     private fun stopTimer() {
-        timerJob?.cancel()
-        timerJob = null
-        updateState { copy(timeRemaining = 0, timerState = TimerState.STOPPED) }
+        cancelExistingTimer()
+        updateState { copy(timeRemaining = 0, timerState = TimerState.PAUSED) }
     }
 
     private fun startCountdownTimer(startTimeInSeconds: Int) {
@@ -145,7 +130,7 @@ class WorkoutViewModel @Inject constructor(
                 delay(1000L)
             }
 
-            updateState { copy(timerState = TimerState.STOPPED) }
+            updateState { copy(timerState = TimerState.PAUSED) }
             nextWorkout()
         }
     }
@@ -157,7 +142,7 @@ class WorkoutViewModel @Inject constructor(
 
     override fun onCleared() {
         super.onCleared()
-        timerJob?.cancel()
+        stopTimer()
         textToSpeechRepository.shutdown()
     }
 
