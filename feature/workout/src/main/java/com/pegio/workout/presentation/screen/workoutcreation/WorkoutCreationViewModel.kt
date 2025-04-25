@@ -9,7 +9,9 @@ import javax.inject.Inject
 @HiltViewModel
 class WorkoutCreationViewModel @Inject constructor(
 
-): BaseViewModel<WorkoutCreationUiState, WorkoutCreationUiEffect, WorkoutCreationUiEvent>(initialState = WorkoutCreationUiState())  {
+) : BaseViewModel<WorkoutCreationUiState, WorkoutCreationUiEffect, WorkoutCreationUiEvent>(
+    initialState = WorkoutCreationUiState()
+) {
     override fun onEvent(event: WorkoutCreationUiEvent) {
         when (event) {
             is WorkoutCreationUiEvent.RemoveWorkout -> removeWorkout(event.workoutId)
@@ -41,8 +43,8 @@ class WorkoutCreationViewModel @Inject constructor(
     private fun editWorkout(workout: UiWorkout) {
         updateState {
             copy(
-                showAddWorkoutDialog = true,
-                newWorkout = workout
+                newWorkout = workout,
+                showAddWorkoutDialog = true
             )
         }
     }
@@ -52,7 +54,6 @@ class WorkoutCreationViewModel @Inject constructor(
         updateState {
             copy(
                 showAddWorkoutDialog = false,
-                newWorkout = null
             )
         }
     }
@@ -60,23 +61,20 @@ class WorkoutCreationViewModel @Inject constructor(
     private fun saveWorkout() {
         val workout = uiState.newWorkout
 
-        if (workout != null) {
-            updateState {
-                val updatedList = workouts.toMutableList()
-                val index = updatedList.indexOfFirst { it.id == workout.id }
+        updateState {
+            val updatedList = workouts.toMutableList()
+            val index = updatedList.indexOfFirst { it.id == workout.id }
 
-                if (index >= 0) {
-                    updatedList[index] = workout
-                } else {
-                    updatedList.add(workout)
-                }
-
-                copy(
-                    workouts = updatedList,
-                    showAddWorkoutDialog = false,
-                    newWorkout = null
-                )
+            if (index >= 0) {
+                updatedList[index] = workout
+            } else {
+                updatedList.add(workout)
             }
+
+            copy(
+                workouts = updatedList,
+                showAddWorkoutDialog = false,
+            )
         }
     }
 

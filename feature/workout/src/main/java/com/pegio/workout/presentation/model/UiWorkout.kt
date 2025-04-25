@@ -12,4 +12,20 @@ data class UiWorkout(
     val sets: Int,
     val muscleGroups: List<MuscleGroup>,
     val workoutImage: String
-)
+){
+
+    companion object {
+        val EMPTY = UiWorkout(
+            id = "",
+            name = "",
+            description = "",
+            workoutType = WorkoutType.TIMED,
+            value = 0,
+            sets = 0,
+            muscleGroups = emptyList(),
+            workoutImage = ""
+        )
+
+    }
+
+}
