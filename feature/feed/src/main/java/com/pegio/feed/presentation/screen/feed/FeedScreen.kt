@@ -17,6 +17,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.pegio.common.presentation.components.LoadingItemsIndicator
 import com.pegio.common.presentation.state.TopBarAction
 import com.pegio.common.presentation.state.TopBarState
 import com.pegio.common.presentation.util.CollectLatestEffect
@@ -99,9 +100,16 @@ private fun FeedContent(
                     }
                 )
             }
+
+            if (isLoading && !isRefreshing)
+                item { LoadingItemsIndicator() }
         }
     }
 }
+
+
+// <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> \\
+
 
 @Composable
 private fun SetupTopBar(
@@ -125,6 +133,10 @@ private fun SetupTopBar(
         )
     }
 }
+
+
+// <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> \\
+
 
 @Preview(showBackground = true)
 @Composable
