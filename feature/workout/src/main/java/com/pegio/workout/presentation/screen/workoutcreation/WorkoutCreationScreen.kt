@@ -66,8 +66,7 @@ fun WorkoutCreationContent(
             items(state.workouts) { workout ->
                 WorkoutItem(
                     workout = workout,
-                    onRemoveClick = { onEvent(WorkoutCreationUiEvent.RemoveWorkout(workout.id)) },
-                    onClick = { onEvent(WorkoutCreationUiEvent.OnEditWorkout(workout)) }
+                    onEvent = onEvent
                 )
                 Spacer(modifier = Modifier.height(8.dp))
             }

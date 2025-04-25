@@ -47,6 +47,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import coil3.compose.AsyncImage
@@ -61,14 +62,13 @@ import com.pegio.workout.presentation.screen.workoutcreation.WorkoutCreationUiSt
 @Composable
 fun WorkoutItem(
     workout: UiWorkout,
-    onRemoveClick: () -> Unit,
-    onClick: () -> Unit
+    onEvent: (WorkoutCreationUiEvent) -> Unit
 ) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 12.dp)
-            .clickable { onClick() },
+            .clickable { onEvent(WorkoutCreationUiEvent.OnEditWorkout(workout)) },
         elevation = CardDefaults.cardElevation(defaultElevation = 6.dp)
     ) {
         Column(
@@ -135,7 +135,7 @@ fun WorkoutItem(
                     }
                 }
 
-                IconButton(onClick = onRemoveClick) {
+                IconButton(onClick = { onEvent(WorkoutCreationUiEvent.RemoveWorkout(workout.id)) }) {
                     Icon(
                         imageVector = Icons.Default.Delete,
                         contentDescription = "Remove Workout"
@@ -197,8 +197,7 @@ fun AddWorkoutDialog(
     Dialog(onDismissRequest = { onEvent(WorkoutCreationUiEvent.OnDismissDialog) }) {
         Card(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
+                .fillMaxWidth(),
             elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
         ) {
             Column(
@@ -439,4 +438,24 @@ fun AddWorkoutDialog(
             }
         }
     }
+}
+
+
+@Preview(showBackground = true)
+@Composable
+fun PreviewWorkoutItem() {
+    WorkoutItem(
+        workout = UiWorkout.EMPTY,
+        onEvent = {}
+    )
+}
+
+
+@Preview(showBackground = true)
+@Composable
+fun PreviewAddWorkoutDialog() {
+    AddWorkoutDialog(
+        state = WorkoutCreationUiState(),
+        onEvent = {}
+    )
 }
