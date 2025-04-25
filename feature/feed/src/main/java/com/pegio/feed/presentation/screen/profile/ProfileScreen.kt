@@ -154,7 +154,7 @@ private fun ProfileContent(
                 CreatePostContent(
                     onClick = { onEvent(ProfileUiEvent.OnCreatePostClick(it)) },
                     modifier = Modifier
-                        .padding(horizontal = 16.dp)
+                        .padding(16.dp)
                 )
             }
 
@@ -296,10 +296,10 @@ private fun ProfileFollowRecords(
     onFollowingClick: () -> Unit
 ) {
     Row(
+        horizontalArrangement = Arrangement.SpaceEvenly,
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 8.dp),
-        horizontalArrangement = Arrangement.SpaceEvenly
+            .padding(top = 8.dp)
     ) {
         FollowRecordItem(
             count = followersCount,

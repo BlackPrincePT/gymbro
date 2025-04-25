@@ -28,10 +28,13 @@ import javax.inject.Inject
 @HiltViewModel
 class FeedViewModel @Inject constructor(
     private val fetchCurrentUserStream: GetCurrentUserStreamUseCase,
+
     private val fetchNextRelevantPostsPage: FetchNextRelevantPostsPageUseCase,
+    private val resetPostPagination: ResetPostPaginationUseCase,
+
     private val votePost: VotePostUseCase,
     private val deleteVote: DeleteVoteUseCase,
-    private val resetPostPagination: ResetPostPaginationUseCase,
+
     private val uiUserMapper: UiUserMapper,
     private val uiPostMapper: UiPostMapper
 ) : BaseViewModel<FeedUiState, FeedUiEffect, FeedUiEvent>(initialState = FeedUiState()) {
