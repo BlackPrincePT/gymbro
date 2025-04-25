@@ -22,7 +22,7 @@ fun NavGraphBuilder.profileScreen(
     onCreatePostClick: (Boolean) -> Unit,
     onShowPostDetails: (String) -> Unit,
     onSetupTopBar: (TopBarState) -> Unit,
-    onShowSnackbar: suspend (String, String?) -> Boolean
+    onShowSnackbar: suspend (String) -> Unit
 ) {
     composable<ProfileRoute>(deepLinks = listOf(deepLink1)) {
         ProfileScreen(

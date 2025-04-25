@@ -45,7 +45,7 @@ import com.pegio.common.presentation.components.MessageImage
 fun AiChatScreen(
     onBackClick: () -> Unit,
     onSetupTopBar: (TopBarState) -> Unit,
-    onShowSnackbar: suspend (String, String?) -> Boolean,
+    onShowSnackbar: suspend (String) -> Unit,
     viewModel: AiChatViewModel = hiltViewModel()
 ) {
 
@@ -54,7 +54,7 @@ fun AiChatScreen(
 
     CollectLatestEffect(viewModel.uiEffect) { effect ->
         when (effect) {
-            is AiChatUiEffect.Failure -> onShowSnackbar(context.getString(effect.errorRes), null)
+            is AiChatUiEffect.Failure -> onShowSnackbar(context.getString(effect.errorRes))
             AiChatUiEffect.NavigateBack -> onBackClick()
         }
     }

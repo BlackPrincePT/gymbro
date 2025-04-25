@@ -4,7 +4,6 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.navigation.toRoute
 import com.pegio.common.core.Displayable
 import com.pegio.common.core.Error
-import com.pegio.common.core.Resource
 import com.pegio.common.core.onFailure
 import com.pegio.common.core.onSuccess
 import com.pegio.common.presentation.core.BaseViewModel
@@ -62,7 +61,7 @@ class CreatePostViewModel @Inject constructor(
         with(uiState) {
             uploadPost(content = postText, imageUri = imageUri?.toString())
                 .onSuccess { sendEffect(CreatePostUiEffect.NavigateBack) }
-                .onFailureShowSnackbar()
+                .onFailure { showDisplayableError(it) }
         }
     }
 
@@ -70,10 +69,7 @@ class CreatePostViewModel @Inject constructor(
     // <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> \\
 
 
-    private fun <D, E : Error> Resource<D, E>.onFailureShowSnackbar(): Resource<D, E> {
-        return onFailure { error ->
-            if (error is Displayable)
-                sendEffect(CreatePostUiEffect.ShowSnackbar(error.toStringResId()))
-        }
+    private fun showDisplayableError(error: Error) {
+        if (error is Displayable) sendEffect(CreatePostUiEffect.ShowSnackbar(error.toStringResId()))
     }
 }

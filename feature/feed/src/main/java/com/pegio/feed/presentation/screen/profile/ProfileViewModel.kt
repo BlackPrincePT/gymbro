@@ -7,7 +7,6 @@ import androidx.navigation.toRoute
 import com.pegio.common.core.DataError
 import com.pegio.common.core.Displayable
 import com.pegio.common.core.Error
-import com.pegio.common.core.Resource
 import com.pegio.common.core.getOrElse
 import com.pegio.common.core.onFailure
 import com.pegio.common.core.onSuccess
@@ -125,7 +124,7 @@ class ProfileViewModel @Inject constructor(
     private fun loadProfileInfo() = launchWithLoading {
         fetchUserById(id = userId)
             .onSuccess { updateState { copy(displayedUser = uiUserMapper.mapFromDomain(it)) } }
-            .onFailureShowSnackbar()
+            .onFailure { showDisplayableError(it) }
     }
 
     private fun updateProfileOwnershipStatus() {
@@ -143,7 +142,7 @@ class ProfileViewModel @Inject constructor(
 
             enqueueFileUpload(uri = uri.toString())
                 .onSuccess { saveAndUpdateUser(uiUser = copy(avatarUrl = it)) }
-                .onFailureShowSnackbar()
+                .onFailure { showDisplayableError(it) }
         }
     }
 
@@ -160,7 +159,7 @@ class ProfileViewModel @Inject constructor(
 
             enqueueFileUpload(uri = uri.toString())
                 .onSuccess { saveAndUpdateUser(uiUser = copy(imgBackgroundUrl = it)) }
-                .onFailureShowSnackbar()
+                .onFailure { showDisplayableError(it) }
         }
     }
 
@@ -242,11 +241,11 @@ class ProfileViewModel @Inject constructor(
         if (previousVoteType == voteType) {
             deleteVote(postId)
                 .onSuccess { updatePost(index = index, newVote = null, difference = difference) }
-                .onFailureShowSnackbar()
+                .onFailure { showDisplayableError(it) }
         } else {
             votePost(postId, voteType)
                 .onSuccess { updatePost(index = index, newVote = it, difference = difference) }
-                .onFailureShowSnackbar()
+                .onFailure { showDisplayableError(it) }
         }
     }
 
@@ -266,10 +265,7 @@ class ProfileViewModel @Inject constructor(
         updateState { copy(userPosts = updatedPosts) }
     }
 
-    private fun <D, E : Error> Resource<D, E>.onFailureShowSnackbar(): Resource<D, E> {
-        return onFailure { error ->
-            if (error is Displayable)
-                sendEffect(ProfileUiEffect.ShowSnackbar(error.toStringResId()))
-        }
+    private fun showDisplayableError(error: Error) {
+        if (error is Displayable) sendEffect(ProfileUiEffect.ShowSnackbar(error.toStringResId()))
     }
 }

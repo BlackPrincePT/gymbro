@@ -39,7 +39,7 @@ import com.pegio.workout.presentation.screen.workout_plan.WorkoutPlanScreen
 fun NavigationHost(
     navController: NavHostController,
     onSetupAppBar: (TopBarState) -> Unit,
-    onShowSnackbar: suspend (String, String?) -> Boolean,
+    onShowSnackbar: suspend (String) -> Unit,
     dynamicallyOpenDrawer: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -126,7 +126,8 @@ fun NavigationHost(
         postDetailsScreen(
             onBackClick = navController::navigateUp,
             onUserProfileClick = navController::navigateToProfile,
-            onSetupTopBar = onSetupAppBar
+            onSetupTopBar = onSetupAppBar,
+            onShowSnackbar = onShowSnackbar
         )
 
         profileScreen(

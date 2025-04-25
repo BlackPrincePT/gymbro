@@ -42,12 +42,12 @@ import com.pegio.model.Vote
 internal fun PostContent(
     post: UiPost,
     onVoteClick: (Vote.Type) -> Unit,
+    modifier: Modifier = Modifier,
     onCommentClick: () -> Unit = { },
     onProfileClick: () -> Unit = { },
 ) {
     Column(
-        modifier = Modifier
-            .padding(vertical = 8.dp)
+        modifier = modifier
     ) {
         PostHeader(post, onProfileClick)
 

@@ -1,6 +1,8 @@
 package com.pegio.feed.presentation.screen.createpost.navigation
 
 import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.navigation.NavController
@@ -19,7 +21,7 @@ fun NavController.navigateToCreatePost(shouldOpenGallery: Boolean) =
 fun NavGraphBuilder.createPostScreen(
     onDismiss: () -> Unit,
     onSetupTopBar: (TopBarState) -> Unit,
-    onShowSnackbar: suspend (String, String?) -> Boolean,
+    onShowSnackbar: suspend (String) -> Unit,
 ) {
     composable<CreatePostRoute>(
         enterTransition = {
@@ -28,7 +30,7 @@ fun NavGraphBuilder.createPostScreen(
                 animationSpec = tween(durationMillis = 300)
             )
         },
-        popExitTransition = {
+        exitTransition = {
             slideOutVertically(
                 targetOffsetY = { it },
                 animationSpec = tween(durationMillis = 300)

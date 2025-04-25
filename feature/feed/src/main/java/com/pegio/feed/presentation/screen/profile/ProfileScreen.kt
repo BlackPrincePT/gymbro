@@ -1,5 +1,6 @@
 package com.pegio.feed.presentation.screen.profile
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -41,6 +42,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.pegio.common.presentation.components.BackgroundImage
+import com.pegio.common.presentation.components.LoadingItemsIndicator
 import com.pegio.common.presentation.components.ProfileImage
 import com.pegio.common.presentation.model.UiUser
 import com.pegio.common.presentation.state.TopBarAction
@@ -65,7 +67,7 @@ internal fun ProfileScreen(
     onCreatePostClick: (Boolean) -> Unit,
     onShowPostDetails: (String) -> Unit,
     onSetupTopBar: (TopBarState) -> Unit,
-    onShowSnackbar: suspend (String, String?) -> Boolean,
+    onShowSnackbar: suspend (String) -> Unit,
     viewModel: ProfileViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
@@ -85,8 +87,7 @@ internal fun ProfileScreen(
             is ProfileUiEffect.LaunchGallery -> launchGallery.invoke()
 
             // Failure
-            is ProfileUiEffect.ShowSnackbar ->
-                onShowSnackbar(context.getString(effect.errorRes), null)
+            is ProfileUiEffect.ShowSnackbar -> onShowSnackbar(context.getString(effect.errorRes))
 
             // Navigation
             ProfileUiEffect.NavigateBack -> onBackClick()
@@ -115,6 +116,7 @@ private fun ProfileContent(
         verticalArrangement = Arrangement.spacedBy(12.dp),
         modifier = Modifier
             .fillMaxSize()
+            .background(color = MaterialTheme.colorScheme.surface)
     ) {
         item {
             ProfileHeader(
@@ -158,14 +160,8 @@ private fun ProfileContent(
             )
         }
 
-        if (isLoading) item {
-            Box(
-                contentAlignment = Alignment.Center,
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                CircularProgressIndicator(modifier = Modifier.size(48.dp))
-            }
-        }
+        if (isLoading)
+            item { LoadingItemsIndicator() }
     }
 }
 

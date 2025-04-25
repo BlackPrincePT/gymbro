@@ -1,5 +1,6 @@
 package com.pegio.feed.presentation.screen.createpost
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -17,6 +18,7 @@ import androidx.compose.material.icons.filled.FitnessCenter
 import androidx.compose.material.icons.filled.Image
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
@@ -26,6 +28,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.pegio.common.presentation.components.EmptyLoadingScreen
 import com.pegio.common.presentation.state.TopBarAction
 import com.pegio.common.presentation.state.TopBarState
 import com.pegio.common.presentation.util.CollectLatestEffect
@@ -43,7 +46,7 @@ import com.pegio.feed.presentation.screen.createpost.state.CreatePostUiState
 internal fun CreatePostScreen(
     onDismiss: () -> Unit,
     onSetupTopBar: (TopBarState) -> Unit,
-    onShowSnackbar: suspend (String, String?) -> Boolean,
+    onShowSnackbar: suspend (String) -> Unit,
     viewModel: CreatePostViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
@@ -61,8 +64,7 @@ internal fun CreatePostScreen(
             CreatePostUiEffect.LaunchGallery -> launchGallery.invoke()
 
             // Failure
-            is CreatePostUiEffect.ShowSnackbar ->
-                onShowSnackbar(context.getString(effect.errorRes), null)
+            is CreatePostUiEffect.ShowSnackbar -> onShowSnackbar(context.getString(effect.errorRes))
 
             // Navigation
             CreatePostUiEffect.NavigateBack -> onDismiss.invoke()
@@ -71,7 +73,7 @@ internal fun CreatePostScreen(
 
     CreatePostContent(state = viewModel.uiState, onEvent = viewModel::onEvent)
 
-    if (viewModel.uiState.isLoading) LoadingIndicatorContent()
+    if (viewModel.uiState.isLoading) EmptyLoadingScreen()
 }
 
 @Composable
@@ -79,7 +81,11 @@ private fun CreatePostContent(
     state: CreatePostUiState,
     onEvent: (CreatePostUiEvent) -> Unit
 ) {
-    Column(modifier = Modifier.fillMaxSize()) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(color = MaterialTheme.colorScheme.surface)
+    ) {
         HorizontalDivider()
 
         CreatePostActions(
@@ -146,17 +152,6 @@ private fun CreatePostActions(
             enabled = enabled,
             modifier = Modifier.size(32.dp)
         )
-    }
-}
-
-@Composable
-private fun LoadingIndicatorContent() {
-    Box(
-        contentAlignment = Alignment.Center,
-        modifier = Modifier
-            .fillMaxSize()
-    ) {
-        CircularProgressIndicator(modifier = Modifier.size(48.dp))
     }
 }
 

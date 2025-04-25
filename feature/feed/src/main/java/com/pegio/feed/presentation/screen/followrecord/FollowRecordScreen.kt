@@ -26,12 +26,13 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.pegio.common.presentation.components.EmptyLoadingScreen
+import com.pegio.common.presentation.components.ProfileImage
 import com.pegio.common.presentation.model.UiUser
 import com.pegio.common.presentation.state.TopBarAction
 import com.pegio.common.presentation.state.TopBarState
 import com.pegio.common.presentation.util.CollectLatestEffect
 import com.pegio.common.presentation.util.PagingColumn
-import com.pegio.common.presentation.components.ProfileImage
 import com.pegio.feed.R
 import com.pegio.feed.presentation.screen.followrecord.state.FollowRecordUiEffect
 import com.pegio.feed.presentation.screen.followrecord.state.FollowRecordUiEvent
@@ -58,7 +59,7 @@ internal fun FollowRecordScreen(
 
     with(viewModel.uiState) {
         when {
-            users.isEmpty() && isLoading -> EmptyFollowRecordLoadingContent()
+            users.isEmpty() && isLoading -> EmptyLoadingScreen()
             users.isEmpty() -> EmptyFollowRecordContent(viewModel.currentMode)
             else -> FollowRecordContent(state = this, onEvent = viewModel::onEvent)
         }
@@ -76,7 +77,8 @@ private fun FollowRecordContent(
         onLoadAnotherPage = { onEvent(FollowRecordUiEvent.OnLoadMoreUsers) },
         loadIndex = 5,
         verticalArrangement = Arrangement.spacedBy(8.dp),
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier
+            .fillMaxSize()
     ) {
         items(users) { user ->
             FollowRecordItem(
@@ -116,17 +118,6 @@ private fun EmptyFollowRecordContent(mode: FollowRecord.Type) {
             modifier = Modifier
                 .padding(horizontal = 32.dp)
         )
-    }
-}
-
-@Composable
-private fun EmptyFollowRecordLoadingContent() {
-    Box(
-        contentAlignment = Alignment.Center,
-        modifier = Modifier
-            .fillMaxSize()
-    ) {
-        CircularProgressIndicator(modifier = Modifier.size(48.dp))
     }
 }
 

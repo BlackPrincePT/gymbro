@@ -1,12 +1,16 @@
 package com.pegio.feed.presentation.screen.feed
 
+import android.content.res.Configuration.UI_MODE_NIGHT_YES
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ChatBubble
 import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
@@ -17,6 +21,7 @@ import com.pegio.common.presentation.state.TopBarAction
 import com.pegio.common.presentation.state.TopBarState
 import com.pegio.common.presentation.util.CollectLatestEffect
 import com.pegio.common.presentation.util.PagingColumn
+import com.pegio.designsystem.theme.GymBroTheme
 import com.pegio.feed.presentation.component.CreatePostContent
 import com.pegio.feed.presentation.component.PostContent
 import com.pegio.feed.presentation.model.UiPost
@@ -50,10 +55,7 @@ internal fun FeedScreen(
         }
     }
 
-    FeedContent(
-        state = viewModel.uiState,
-        onEvent = viewModel::onEvent
-    )
+    FeedContent(state = viewModel.uiState, onEvent = viewModel::onEvent)
 }
 
 @Composable
@@ -68,6 +70,7 @@ private fun FeedContent(
         verticalArrangement = Arrangement.spacedBy(12.dp),
         modifier = Modifier
             .fillMaxSize()
+            .background(color = MaterialTheme.colorScheme.surface)
     ) {
         item {
             CreatePostContent(
