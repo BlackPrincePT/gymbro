@@ -26,14 +26,19 @@ import javax.inject.Inject
 
 @HiltViewModel
 class PostDetailsViewModel @Inject constructor(
+    private val getCurrentUser: GetCurrentUserUseCase,
+
     private val fetchPostById: FetchPostByIdUseCase,
+
     private val votePost: VotePostUseCase,
     private val deleteVote: DeleteVoteUseCase,
+
     private val writeComment: WriteCommentUseCase,
     private val fetchNextCommentsPage: FetchNextCommentsPageUseCase,
-    private val getCurrentUser: GetCurrentUserUseCase,
+
     private val uiPostMapper: UiPostMapper,
     private val uiPostCommentMapper: UiPostCommentMapper,
+
     savedStateHandle: SavedStateHandle
 ) : BaseViewModel<PostDetailsUiState, PostDetailsUiEffect, PostDetailsUiEvent>(initialState = PostDetailsUiState()) {
 

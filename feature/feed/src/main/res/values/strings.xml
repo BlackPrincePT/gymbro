@@ -8,4 +8,6 @@
     <string name="feature_feed_no_following_message">Following no one? Okay, lone wolf, we get it.</string>
     <string name="feature_feed_choose_from_gallery">Choose from gallery</string>
     <string name="feature_feed_remove">Remove</string>
+    <string name="feature_feed_what_s_on_your_muscle">What\'s on your muscle?</string>
+    <string name="feature_feed_choose_your_workout">Choose your workout</string>
 </resources>

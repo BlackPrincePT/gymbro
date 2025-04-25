@@ -4,9 +4,12 @@ import androidx.annotation.StringRes
 
 sealed interface CreatePostUiEffect {
 
+    // Main
+    data object LaunchGallery : CreatePostUiEffect
+
     // Failure
     data class ShowSnackbar(@StringRes val errorRes: Int): CreatePostUiEffect
 
-    // Top Bar
+    // Navigation
     data object NavigateBack: CreatePostUiEffect
 }

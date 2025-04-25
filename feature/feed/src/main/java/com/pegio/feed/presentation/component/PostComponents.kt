@@ -305,7 +305,7 @@ internal fun CreatePostContent(
 }
 
 @Composable
-private fun PostImage(
+internal fun PostImage(
     imageUrl: String?,
     modifier: Modifier = Modifier
 ) {

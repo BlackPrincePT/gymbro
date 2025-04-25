@@ -113,6 +113,10 @@ private fun PostDetailsContent(
     }
 }
 
+
+// <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> \\
+
+
 @Composable
 private fun SetupTopBar(
     onSetupTopBar: (TopBarState) -> Unit,
@@ -129,6 +133,10 @@ private fun SetupTopBar(
         )
     }
 }
+
+
+// <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> \\
+
 
 @Preview(showBackground = true)
 @Composable

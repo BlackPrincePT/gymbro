@@ -5,11 +5,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.pegio.common.core.Displayable
-import com.pegio.common.core.Error
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -19,8 +17,8 @@ abstract class BaseViewModel<State, Effect, Event>(initialState: State) : ViewMo
     var uiState by mutableStateOf<State>(initialState)
         private set
 
-    private val _uiEffect = MutableSharedFlow<Effect>()
-    val uiEffect = _uiEffect.asSharedFlow()
+    private val _uiEffect = Channel<Effect>()
+    val uiEffect = _uiEffect.receiveAsFlow()
 
     abstract fun onEvent(event: Event)
 
@@ -30,7 +28,7 @@ abstract class BaseViewModel<State, Effect, Event>(initialState: State) : ViewMo
 
     protected fun sendEffect(effect: Effect) {
         viewModelScope.launch(Dispatchers.Main.immediate) {
-            _uiEffect.emit(effect)
+            _uiEffect.send(effect)
         }
     }
 
