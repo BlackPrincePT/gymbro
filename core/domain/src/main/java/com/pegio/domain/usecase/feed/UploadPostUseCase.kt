@@ -7,6 +7,7 @@ import com.pegio.common.core.SessionError
 import com.pegio.common.core.asFailure
 import com.pegio.common.core.asSuccess
 import com.pegio.common.core.getOrElse
+import com.pegio.common.core.retryableCall
 import com.pegio.firestore.repository.PostRepository
 import com.pegio.model.Post
 import com.pegio.uploadmanager.core.UploadManager
@@ -40,7 +41,7 @@ class UploadPostUseCase @Inject constructor(
             return Unit.asSuccess()
         }
 
-        uploadManager.enqueueFileUpload(imageUri)
+        retryableCall { uploadManager.enqueueFileUpload(imageUri) }
             .getOrElse { return it.asFailure() }
             .let {
                 postRepository.uploadPost(post = newPost.copy(imageUrl = it))

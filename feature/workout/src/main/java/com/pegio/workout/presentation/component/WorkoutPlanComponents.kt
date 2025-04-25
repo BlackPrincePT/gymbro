@@ -28,7 +28,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.pegio.designsystem.component.WorkoutPlanImage
+import com.pegio.common.presentation.components.WorkoutPlanImage
 import com.pegio.workout.R
 import com.pegio.workout.presentation.model.UiWorkoutPlan
 

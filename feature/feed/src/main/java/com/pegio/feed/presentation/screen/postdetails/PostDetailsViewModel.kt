@@ -1,16 +1,20 @@
 package com.pegio.feed.presentation.screen.postdetails
 
 import androidx.lifecycle.SavedStateHandle
-import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import com.pegio.common.core.DataError
+import com.pegio.common.core.Displayable
+import com.pegio.common.core.Error
+import com.pegio.common.core.getOrElse
 import com.pegio.common.core.onFailure
 import com.pegio.common.core.onSuccess
 import com.pegio.common.presentation.core.BaseViewModel
+import com.pegio.common.presentation.util.toStringResId
 import com.pegio.domain.usecase.common.GetCurrentUserUseCase
 import com.pegio.domain.usecase.feed.DeleteVoteUseCase
 import com.pegio.domain.usecase.feed.FetchNextCommentsPageUseCase
 import com.pegio.domain.usecase.feed.FetchPostByIdUseCase
+import com.pegio.domain.usecase.feed.ResetPostCommentPaginationUseCase
 import com.pegio.domain.usecase.feed.VotePostUseCase
 import com.pegio.domain.usecase.feed.WriteCommentUseCase
 import com.pegio.feed.presentation.model.mapper.UiPostCommentMapper
@@ -21,28 +25,39 @@ import com.pegio.feed.presentation.screen.postdetails.state.PostDetailsUiEvent
 import com.pegio.feed.presentation.screen.postdetails.state.PostDetailsUiState
 import com.pegio.model.Vote
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class PostDetailsViewModel @Inject constructor(
+    private val getCurrentUser: GetCurrentUserUseCase,
+
     private val fetchPostById: FetchPostByIdUseCase,
+
     private val votePost: VotePostUseCase,
     private val deleteVote: DeleteVoteUseCase,
+
     private val writeComment: WriteCommentUseCase,
     private val fetchNextCommentsPage: FetchNextCommentsPageUseCase,
-    private val getCurrentUser: GetCurrentUserUseCase,
+    resetPostCommentPagination: ResetPostCommentPaginationUseCase,
+
     private val uiPostMapper: UiPostMapper,
     private val uiPostCommentMapper: UiPostCommentMapper,
+
     savedStateHandle: SavedStateHandle
 ) : BaseViewModel<PostDetailsUiState, PostDetailsUiEffect, PostDetailsUiEvent>(initialState = PostDetailsUiState()) {
+
 
     private val postId = savedStateHandle.toRoute<PostDetailsRoute>().postId
 
     init {
+        resetPostCommentPagination()
         fetchCurrentPost()
         loadMoreComments()
     }
+
+
+    // <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> \\
+
 
     override fun onEvent(event: PostDetailsUiEvent) {
         when (event) {
@@ -54,7 +69,8 @@ class PostDetailsViewModel @Inject constructor(
 
             // Navigation
             PostDetailsUiEvent.OnBackClick -> sendEffect(PostDetailsUiEffect.NavigateBack)
-            is PostDetailsUiEvent.OnUserProfileClick -> sendEffect(PostDetailsUiEffect.NavigateToUserProfile(event.userId))
+            is PostDetailsUiEvent.OnUserProfileClick ->
+                sendEffect(PostDetailsUiEffect.NavigateToUserProfile(event.userId))
 
             // Compose State
             is PostDetailsUiEvent.OnCommentTextChange -> updateState { copy(commentText = event.value) }
@@ -65,6 +81,23 @@ class PostDetailsViewModel @Inject constructor(
 
     private fun setLoadingMoreComments(isLoading: Boolean) =
         updateState { copy(loadingMoreComments = isLoading) }
+
+    private fun setLoadingSendComments(isLoading: Boolean) =
+        updateState { copy(loadingSendComment = isLoading) }
+
+
+    // <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> \\
+
+
+    private fun fetchCurrentPost() = launchWithLoading {
+        fetchPostById(id = postId)
+            .onSuccess { updateState { copy(displayedPost = uiPostMapper.mapFromDomain(it)) } }
+            .onFailure { showDisplayableError(it) }
+    }
+
+
+    // <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> \\
+
 
     private fun handlePostVote(voteType: Vote.Type) {
         val post = uiState.displayedPost
@@ -78,19 +111,24 @@ class PostDetailsViewModel @Inject constructor(
 
         if (previousVoteType == voteType) {
             deleteVote(postId)
-                .onSuccess { updatePost(newVote = null, difference = difference) }
-                .onFailure { } // TODO HANDLE FAILURE
+                .onSuccess { updatePostVoteCount(newVote = null, difference = difference) }
+                .onFailure { showDisplayableError(it) }
         } else {
             votePost(postId, voteType)
-                .onSuccess { updatePost(newVote = it, difference = difference) }
-                .onFailure { } // TODO HANDLE FAILURE
+                .onSuccess { updatePostVoteCount(newVote = it, difference = difference) }
+                .onFailure { showDisplayableError(it) }
         }
     }
 
-    private fun handleCommentSubmit() = viewModelScope.launch {
-        writeComment(content = uiState.commentText, postId = postId)
+    private fun handleCommentSubmit() = launchWithLoading(::setLoadingSendComments) {
+        val commentText = uiState.commentText.ifEmpty { return@launchWithLoading }
+
+        writeComment(content = commentText, postId = postId)
+            .onFailure { showDisplayableError(it) }
             .onSuccess { comment ->
                 updateState { copy(commentText = "") }
+                updatePostCommentCount()
+
                 getCurrentUser()
                     .onSuccess { currentUser ->
                         val uiComment =
@@ -105,34 +143,40 @@ class PostDetailsViewModel @Inject constructor(
 
         launchWithLoading(::setLoadingMoreComments) {
             fetchNextCommentsPage(postId)
-                .onSuccess { fetchedComments ->
-                    val combinedComments = fetchedComments.map(uiPostCommentMapper::mapFromDomain)
-                    updateState { copy(comments = comments.plus(combinedComments)) }
-                }
-                .onFailure { error ->
+                .getOrElse { error ->
                     when (error) {
                         DataError.Pagination.END_OF_PAGINATION_REACHED ->
                             updateState { copy(endOfCommentsReached = true) }
 
-                        else -> {} // TODO HANDLE BETTER
+                        else -> showDisplayableError(error)
                     }
+                    return@launchWithLoading
                 }
+                .map(uiPostCommentMapper::mapFromDomain)
+                .let { updateState { copy(comments = comments.plus(it)) } }
         }
     }
 
-    private fun fetchCurrentPost() = launchWithLoading {
-        fetchPostById(id = postId)
-            .onSuccess { updateState { copy(displayedPost = uiPostMapper.mapFromDomain(it)) } }
-            .onFailure { /* TODO: HANDLE */ }
-    }
 
-    private fun updatePost(newVote: Vote?, difference: Int) {
-        val post = uiState.displayedPost
-        val updatedPost = post.copy(
+    // <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> \\
+
+
+    private fun updatePostVoteCount(newVote: Vote?, difference: Int) = with(uiState.displayedPost) {
+        val updatedPost = copy(
             currentUserVote = newVote,
-            voteCount = (post.voteCount.toInt() + difference).toString()
+            voteCount = (voteCount.toInt() + difference).toString()
         )
 
         updateState { copy(displayedPost = updatedPost) }
+    }
+
+    private fun updatePostCommentCount(difference: Int = +1) = with(uiState.displayedPost) {
+        val updatedPost = copy(commentCount = (commentCount.toInt() + difference).toString())
+
+        updateState { copy(displayedPost = updatedPost) }
+    }
+
+    private fun showDisplayableError(error: Error) {
+        if (error is Displayable) sendEffect(PostDetailsUiEffect.ShowSnackbar(error.toStringResId()))
     }
 }

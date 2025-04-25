@@ -5,7 +5,6 @@ import com.google.firebase.firestore.Query
 import com.pegio.common.core.DataError
 import com.pegio.common.core.Resource
 import com.pegio.common.core.map
-import com.pegio.common.core.onFailure
 import com.pegio.firestore.util.FirestoreUtils
 
 internal class FirestorePagingSource<T>(

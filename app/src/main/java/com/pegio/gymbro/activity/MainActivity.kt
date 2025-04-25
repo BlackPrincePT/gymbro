@@ -135,13 +135,7 @@ private fun AppContent(
                 navController = navController,
                 onSetupAppBar = { onEvent(MainActivityUiEvent.OnUpdateTopBarState(it)) },
                 dynamicallyOpenDrawer = { onEvent(MainActivityUiEvent.OnOpenDrawer) },
-                onShowSnackbar = { message, action ->
-                    snackbarHostState.showSnackbar(
-                        message = message,
-                        actionLabel = action,
-                        duration = Short
-                    ) == ActionPerformed
-                },
+                onShowSnackbar = { snackbarHostState.showSnackbar(message = it, duration = Short) },
                 modifier = Modifier
                     .padding(innerPadding)
             )

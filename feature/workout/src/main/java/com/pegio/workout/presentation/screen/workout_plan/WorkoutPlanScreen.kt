@@ -23,7 +23,7 @@ fun WorkoutPlanScreen(
     viewModel: WorkoutPlanViewModel = hiltViewModel(),
     onBackClick: () -> Unit,
     onInfoClick: () -> Unit,
-    onShowSnackbar: suspend (String, String?) -> Boolean,
+    onShowSnackbar: suspend (String) -> Unit,
     onStartWorkout: (String) -> Unit,
     onSetupTopBar: (TopBarState) -> Unit
 ) {
@@ -38,7 +38,7 @@ fun WorkoutPlanScreen(
 
     CollectLatestEffect(viewModel.uiEffect) { effect ->
         when (effect) {
-            is WorkoutPlanUiEffect.Failure -> onShowSnackbar(context.getString(effect.errorRes), null)
+            is WorkoutPlanUiEffect.Failure -> onShowSnackbar(context.getString(effect.errorRes))
             is WorkoutPlanUiEffect.NavigateToWorkout -> onStartWorkout(effect.difficulty)
             WorkoutPlanUiEffect.NavigateBack -> onBackClick()
             WorkoutPlanUiEffect.NavigateToAiChat -> onInfoClick()

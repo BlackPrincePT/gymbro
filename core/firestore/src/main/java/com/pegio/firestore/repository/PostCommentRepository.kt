@@ -6,6 +6,8 @@ import com.pegio.model.PostComment
 
 interface PostCommentRepository {
 
+    fun resetPagination()
+
     // Upload
     fun writeComment(comment: PostComment, postId: String)
 

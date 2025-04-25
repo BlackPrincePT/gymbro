@@ -24,7 +24,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.pegio.common.presentation.state.TopBarAction
 import com.pegio.common.presentation.state.TopBarState
-import com.pegio.designsystem.component.ProfileImage
+import com.pegio.common.presentation.components.ProfileImage
 import com.pegio.common.presentation.util.CollectLatestEffect
 
 @Composable

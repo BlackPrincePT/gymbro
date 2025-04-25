@@ -15,7 +15,9 @@ import com.pegio.firestore.model.mapper.PostCommentDtoMapper
 import com.pegio.firestore.util.FirestoreUtils
 import com.pegio.model.PostComment
 import javax.inject.Inject
+import javax.inject.Singleton
 
+@Singleton
 internal class PostCommentRepositoryImpl @Inject constructor(
     private val db: FirebaseFirestore,
     private val postCommentDtoMapper: PostCommentDtoMapper,
@@ -28,6 +30,10 @@ internal class PostCommentRepositoryImpl @Inject constructor(
 
     private val commentsPagingSource =
         FirestorePagingSource(COMMENT_PAGE_SIZE, PostCommentDto::class.java, firestoreUtils)
+
+    override fun resetPagination() {
+        commentsPagingSource.resetPagination()
+    }
 
     override fun writeComment(comment: PostComment, postId: String) {
         val commentDto = postCommentDtoMapper.mapFromDomain(comment)

@@ -7,6 +7,7 @@ data class FeedUiState(
 
     // Loading
     val isLoading: Boolean = false,
+    val isRefreshing: Boolean = false,
 
     // Main
     val currentUser: UiUser = UiUser.DEFAULT,

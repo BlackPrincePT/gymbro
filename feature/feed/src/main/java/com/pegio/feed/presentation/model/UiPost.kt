@@ -6,6 +6,7 @@ import com.pegio.model.Vote
 data class UiPost(
     val id: String,
     val author: UiUser,
+    val workoutId: String? = null,
     val content: String,
     val imageUrl: String?,
     val voteCount: String,
@@ -17,7 +18,10 @@ data class UiPost(
 ) {
 
     val hasImage: Boolean
-        get() = imageUrl != null
+        get() = !imageUrl.isNullOrEmpty()
+
+    val hasWorkout: Boolean
+        get() = !workoutId.isNullOrEmpty()
 
     companion object {
 

@@ -8,6 +8,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.pegio.common.core.onSuccess
 import com.pegio.common.presentation.model.mapper.UiUserMapper
+import com.pegio.domain.usecase.common.GetCurrentUserStreamUseCase
+import com.pegio.domain.usecase.common.SaveUserUseCase
 import com.pegio.uploadmanager.core.FileUploadManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -19,9 +21,9 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AccountViewModel @Inject constructor(
-    private val fetchCurrentUserStream: com.pegio.domain.usecase.common.GetCurrentUserStreamUseCase,
+    private val fetchCurrentUserStream: GetCurrentUserStreamUseCase,
     private val fileUploadManager: FileUploadManager,
-    private val saveUser: com.pegio.domain.usecase.common.SaveUserUseCase,
+    private val saveUser: SaveUserUseCase,
     private val uiUserMapper: UiUserMapper
 ) : ViewModel() {
 

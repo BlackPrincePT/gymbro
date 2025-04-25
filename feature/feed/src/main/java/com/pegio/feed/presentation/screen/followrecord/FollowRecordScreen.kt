@@ -1,27 +1,38 @@
 package com.pegio.feed.presentation.screen.followrecord
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ListItem
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.pegio.common.presentation.components.EmptyLoadingScreen
+import com.pegio.common.presentation.components.ProfileImage
 import com.pegio.common.presentation.model.UiUser
 import com.pegio.common.presentation.state.TopBarAction
 import com.pegio.common.presentation.state.TopBarState
 import com.pegio.common.presentation.util.CollectLatestEffect
 import com.pegio.common.presentation.util.PagingColumn
-import com.pegio.designsystem.component.ProfileImage
 import com.pegio.feed.R
 import com.pegio.feed.presentation.screen.followrecord.state.FollowRecordUiEffect
 import com.pegio.feed.presentation.screen.followrecord.state.FollowRecordUiEvent
@@ -46,26 +57,67 @@ internal fun FollowRecordScreen(
         }
     }
 
-    FollowRecordContent(state = viewModel.uiState, onEvent = viewModel::onEvent)
+    with(viewModel.uiState) {
+        when {
+            users.isEmpty() && isLoading -> EmptyLoadingScreen()
+            users.isEmpty() -> EmptyFollowRecordContent(viewModel.currentMode)
+            else -> FollowRecordContent(state = this, onEvent = viewModel::onEvent)
+        }
+    }
 }
 
 @Composable
 private fun FollowRecordContent(
     state: FollowRecordUiState,
     onEvent: (FollowRecordUiEvent) -> Unit
-) {
+) = with(state) {
     PagingColumn(
-        itemCount = state.users.size,
-        isLoading = state.isLoading,
+        itemCount = users.size,
+        isLoading = isLoading,
         onLoadAnotherPage = { onEvent(FollowRecordUiEvent.OnLoadMoreUsers) },
-        loadIndex = 5
+        loadIndex = 5,
+        verticalArrangement = Arrangement.spacedBy(8.dp),
+        modifier = Modifier
+            .fillMaxSize()
     ) {
-        items(state.users) { user ->
+        items(users) { user ->
             FollowRecordItem(
                 user = user,
                 onClick = { onEvent(FollowRecordUiEvent.OnUserProfileClick(user.id)) }
             )
         }
+
+        if (isLoading) item {
+            Box(
+                contentAlignment = Alignment.Center,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                CircularProgressIndicator(modifier = Modifier.size(48.dp))
+            }
+        }
+    }
+}
+
+@Composable
+private fun EmptyFollowRecordContent(mode: FollowRecord.Type) {
+    Box(
+        contentAlignment = Alignment.Center,
+        modifier = Modifier
+            .fillMaxSize()
+    ) {
+        val title = when (mode) {
+            FollowRecord.Type.FOLLOWERS -> stringResource(R.string.feature_feed_no_followers_message)
+            FollowRecord.Type.FOLLOWING -> stringResource(R.string.feature_feed_no_following_message)
+        }
+
+        Text(
+            text = title,
+            textAlign = TextAlign.Center,
+            style = MaterialTheme.typography.headlineSmall,
+            color = Color.Gray,
+            modifier = Modifier
+                .padding(horizontal = 32.dp)
+        )
     }
 }
 
@@ -132,8 +184,17 @@ private fun FollowRecordItemContentPreview() {
     FollowRecordItem(user = UiUser.DEFAULT, onClick = { })
 }
 
-@Preview
+@Preview(showBackground = true)
+@Composable
+private fun EmptyFollowRecordContentPreview() {
+    EmptyFollowRecordContent(mode = FollowRecord.Type.FOLLOWING)
+}
+
+@Preview(showBackground = true)
 @Composable
 private fun FollowRecordContentPreview() {
-    FollowRecordContent(state = FollowRecordUiState(), onEvent = { })
+    FollowRecordContent(
+        state = FollowRecordUiState(isLoading = true, users = List(size = 7) { UiUser.DEFAULT }),
+        onEvent = { }
+    )
 }

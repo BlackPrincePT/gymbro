@@ -26,7 +26,7 @@ import com.pegio.common.presentation.util.CollectLatestEffect
 internal fun AuthScreen(
     onAuthSuccess: () -> Unit,
     onRegistrationRequired: () -> Unit,
-    onShowSnackbar: suspend (String, String?) -> Boolean,
+    onShowSnackbar: suspend (String) -> Unit,
     viewModel: AuthViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
@@ -35,7 +35,7 @@ internal fun AuthScreen(
         when (effect) {
             AuthUiEffect.NavigateToHome -> onAuthSuccess()
             AuthUiEffect.NavigateToRegister -> onRegistrationRequired()
-            is AuthUiEffect.ShowSnackbar -> onShowSnackbar(context.getString(effect.errorRes), null)
+            is AuthUiEffect.ShowSnackbar -> onShowSnackbar(context.getString(effect.errorRes))
         }
     }
 

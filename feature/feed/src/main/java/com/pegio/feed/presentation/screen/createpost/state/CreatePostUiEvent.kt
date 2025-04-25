@@ -5,12 +5,13 @@ import android.net.Uri
 sealed interface CreatePostUiEvent {
 
     // Main
-    data class OnPostTextChange(val value: String) : CreatePostUiEvent
-
-    // Top Bar
+    data object OnOpenGallery : CreatePostUiEvent
     data object OnPostClick : CreatePostUiEvent
+
+    // Navigation
     data object OnCancelClick : CreatePostUiEvent
 
     // Compose State
     data class OnPhotoSelected(val imageUri: Uri) : CreatePostUiEvent
+    data class OnPostTextChange(val value: String) : CreatePostUiEvent
 }

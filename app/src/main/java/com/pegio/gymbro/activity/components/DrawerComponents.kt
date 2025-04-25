@@ -24,8 +24,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import com.pegio.common.presentation.model.UiUser
-import com.pegio.designsystem.component.BackgroundImage
-import com.pegio.designsystem.component.ProfileImage
+import com.pegio.common.presentation.components.BackgroundImage
+import com.pegio.common.presentation.components.ProfileImage
 import com.pegio.gymbro.R
 
 @Composable

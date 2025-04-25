@@ -39,13 +39,13 @@ import com.pegio.aichat.presentation.model.UiAiMessage
 import com.pegio.common.presentation.state.TopBarAction
 import com.pegio.common.presentation.state.TopBarState
 import com.pegio.common.presentation.util.CollectLatestEffect
-import com.pegio.designsystem.component.MessageImage
+import com.pegio.common.presentation.components.MessageImage
 
 @Composable
 fun AiChatScreen(
     onBackClick: () -> Unit,
     onSetupTopBar: (TopBarState) -> Unit,
-    onShowSnackbar: suspend (String, String?) -> Boolean,
+    onShowSnackbar: suspend (String) -> Unit,
     viewModel: AiChatViewModel = hiltViewModel()
 ) {
 
@@ -54,7 +54,7 @@ fun AiChatScreen(
 
     CollectLatestEffect(viewModel.uiEffect) { effect ->
         when (effect) {
-            is AiChatUiEffect.Failure -> onShowSnackbar(context.getString(effect.errorRes), null)
+            is AiChatUiEffect.Failure -> onShowSnackbar(context.getString(effect.errorRes))
             AiChatUiEffect.NavigateBack -> onBackClick()
         }
     }

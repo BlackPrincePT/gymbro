@@ -36,7 +36,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.pegio.designsystem.component.DropdownMenu
 import com.pegio.designsystem.component.FormTextField
-import com.pegio.designsystem.component.ProfileImage
+import com.pegio.common.presentation.components.ProfileImage
 import com.pegio.model.User.Gender
 import kotlinx.coroutines.flow.collectLatest
 

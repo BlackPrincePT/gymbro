@@ -48,11 +48,11 @@ class FollowRecordViewModel @Inject constructor(
 
             // Main
             FollowRecordUiEvent.OnLoadMoreUsers -> loadMoreUsers()
-            is FollowRecordUiEvent.OnUserProfileClick ->
-                sendEffect(FollowRecordUiEffect.NavigateToUserProfile(event.userId))
 
             // Navigation
             FollowRecordUiEvent.OnBackClick -> sendEffect(FollowRecordUiEffect.NavigateBack)
+            is FollowRecordUiEvent.OnUserProfileClick ->
+                sendEffect(FollowRecordUiEffect.NavigateToUserProfile(event.userId))
         }
     }
 
@@ -72,7 +72,7 @@ class FollowRecordViewModel @Inject constructor(
                         DataError.Pagination.END_OF_PAGINATION_REACHED ->
                             updateState { copy(endOfUsersReached = true) }
 
-                        else -> {} // TODO HANDLE BETTER
+                        else -> {}
                     }
                     return@launchWithLoading
                 }
