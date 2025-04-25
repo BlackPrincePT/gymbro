@@ -1,6 +1,7 @@
 package com.pegio.workout.presentation.screen.workoutcreation
 
 import com.pegio.common.presentation.core.BaseViewModel
+import com.pegio.model.Workout
 import com.pegio.workout.presentation.model.UiWorkout
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -11,26 +12,79 @@ class WorkoutCreationViewModel @Inject constructor(
 ): BaseViewModel<WorkoutCreationUiState, WorkoutCreationUiEffect, WorkoutCreationUiEvent>(initialState = WorkoutCreationUiState())  {
     override fun onEvent(event: WorkoutCreationUiEvent) {
         when (event) {
-            is WorkoutCreationUiEvent.AddWorkout -> addWorkout(event.workout)
             is WorkoutCreationUiEvent.RemoveWorkout -> removeWorkout(event.workoutId)
             WorkoutCreationUiEvent.OnBackClick -> sendEffect(WorkoutCreationUiEffect.NavigateBack)
-            WorkoutCreationUiEvent.OnAddWorkoutClick -> TODO()
+            WorkoutCreationUiEvent.OnAddWorkoutClick -> showAddWorkoutDialog()
+            WorkoutCreationUiEvent.OnDismissDialog -> hideAddWorkoutDialog()
+            WorkoutCreationUiEvent.OnSaveWorkout -> saveWorkout()
+            is WorkoutCreationUiEvent.OnEditWorkout -> editWorkout(event.workout)
         }
-
     }
 
-    private fun addWorkout(workout: UiWorkout){
+    private fun showAddWorkoutDialog() {
         updateState {
-            copy(workouts = workouts + workout)
+            copy(
+                showAddWorkoutDialog = true,
+                newWorkout = UiWorkout(
+                    name = "",
+                    description = "",
+                    workoutType = Workout.WorkoutType.TIMED,
+                    value = 0,
+                    sets = 0,
+                    muscleGroups = emptyList(),
+                    workoutImage = ""
+                )
+            )
         }
     }
 
-    private fun removeWorkout(workoutId: String){
+    private fun editWorkout(workout: UiWorkout) {
+        updateState {
+            copy(
+                showAddWorkoutDialog = true,
+                newWorkout = workout
+            )
+        }
+    }
+
+
+    private fun hideAddWorkoutDialog() {
+        updateState {
+            copy(
+                showAddWorkoutDialog = false,
+                newWorkout = null
+            )
+        }
+    }
+
+    private fun saveWorkout() {
+        val workout = uiState.newWorkout
+
+        if (workout != null) {
+            updateState {
+                val updatedList = workouts.toMutableList()
+                val index = updatedList.indexOfFirst { it.id == workout.id }
+
+                if (index >= 0) {
+                    updatedList[index] = workout
+                } else {
+                    updatedList.add(workout)
+                }
+
+                copy(
+                    workouts = updatedList,
+                    showAddWorkoutDialog = false,
+                    newWorkout = null
+                )
+            }
+        }
+    }
+
+    private fun removeWorkout(workoutId: String) {
         updateState {
             copy(workouts = workouts.filter { it.id != workoutId })
         }
     }
-
 
     override fun setLoading(isLoading: Boolean) {
         updateState { copy(isLoading = isLoading) }
