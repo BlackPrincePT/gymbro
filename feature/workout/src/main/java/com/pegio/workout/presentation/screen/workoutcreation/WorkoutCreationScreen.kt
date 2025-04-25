@@ -17,6 +17,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.pegio.common.presentation.state.TopBarAction
@@ -24,6 +25,7 @@ import com.pegio.common.presentation.state.TopBarState
 import com.pegio.common.presentation.util.CollectLatestEffect
 import com.pegio.workout.presentation.component.AddWorkoutDialog
 import com.pegio.workout.presentation.component.WorkoutItem
+import com.pegio.workout.presentation.model.UiWorkout
 
 @Composable
 fun WorkoutCreationScreen(
@@ -47,7 +49,6 @@ fun WorkoutCreationScreen(
     WorkoutCreationContent(
         state = viewModel.uiState,
         onEvent = viewModel::onEvent,
-        modifier = Modifier.fillMaxSize()
     )
 }
 
@@ -55,9 +56,8 @@ fun WorkoutCreationScreen(
 fun WorkoutCreationContent(
     state: WorkoutCreationUiState,
     onEvent: (WorkoutCreationUiEvent) -> Unit,
-    modifier: Modifier = Modifier
 ) {
-    Box(modifier = modifier) {
+    Box {
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
@@ -105,4 +105,20 @@ private fun SetupTopBar(
             )
         )
     }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun PreviewWorkoutCreationContent() {
+    val state = WorkoutCreationUiState(
+        workouts = listOf(
+            UiWorkout.EMPTY,
+            UiWorkout.EMPTY
+        ),
+    )
+
+    WorkoutCreationContent(
+        state = state,
+        onEvent = {},
+    )
 }

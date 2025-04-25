@@ -53,26 +53,14 @@ fun WorkoutScreen(
 
     WorkoutContent(
         state = viewModel.uiState,
-        onNextClick = { viewModel.onEvent(WorkoutUiEvent.OnNextClick) },
-        onToggleTTSClick = { viewModel.onEvent(WorkoutUiEvent.OnToggleTTSClick) },
-        onPreviousClick = { viewModel.onEvent(WorkoutUiEvent.OnPreviousClick) },
-        onReadDescriptionClick = { textToRead ->
-            viewModel.onEvent(WorkoutUiEvent.OnReadTTSClick(textToRead))
-        },
-        onPauseTimer = { viewModel.onEvent(WorkoutUiEvent.PauseTimer) },
-        onResumeTimer = { viewModel.onEvent(WorkoutUiEvent.ResumeTimer) },
+        onEvent = viewModel::onEvent,
     )
 }
 
 @Composable
 fun WorkoutContent(
     state: WorkoutUiState,
-    onNextClick: () -> Unit,
-    onPreviousClick: () -> Unit,
-    onToggleTTSClick: () -> Unit,
-    onReadDescriptionClick: (String) -> Unit,
-    onPauseTimer: () -> Unit,
-    onResumeTimer: () -> Unit,
+    onEvent: (WorkoutUiEvent) -> Unit,
 ) {
     if (state.isLoading) {
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
@@ -85,17 +73,8 @@ fun WorkoutContent(
         currentWorkout?.let {
             WorkoutDetails(
                 workout = it,
-                isTTSActive = state.isTTSActive,
-                onNextClick = onNextClick,
-                isLastWorkout = state.currentWorkoutIndex == state.workouts.size - 1,
-                onToggleTTSClick = onToggleTTSClick,
-                timeRemaining = state.timeRemaining,
-                timerState = state.timerState,
-                showBackButton = state.currentWorkoutIndex != 0,
-                onPreviousClick = onPreviousClick,
-                onReadDescriptionClick = onReadDescriptionClick,
-                onPauseTimer = onPauseTimer,
-                onResumeTimer = onResumeTimer,
+                onEvent = onEvent,
+                state = state,
             )
         }
     }
@@ -156,12 +135,7 @@ fun WorkoutContentPreview() {
 
     WorkoutContent(
         state = WorkoutUiState(workouts = listOf(sampleWorkout)),
-        onNextClick = {},
-        onPreviousClick = {},
-        onToggleTTSClick = {},
-        onReadDescriptionClick = {},
-        onPauseTimer = {},
-        onResumeTimer = {}
+        onEvent = {},
     )
 }
 

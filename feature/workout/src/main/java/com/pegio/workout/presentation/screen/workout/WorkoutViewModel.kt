@@ -60,6 +60,7 @@ class WorkoutViewModel @Inject constructor(
     private fun nextWorkout() {
         stopTimer()
         if (uiState.currentWorkoutIndex == uiState.workouts.lastIndex) {
+            textToSpeechRepository.shutdown()
             sendEffect(WorkoutUiEffect.NavigateBack)
         } else if (uiState.workouts.size > uiState.currentWorkoutIndex + 1) {
             val newIndex = uiState.currentWorkoutIndex + 1
@@ -95,7 +96,6 @@ class WorkoutViewModel @Inject constructor(
     private fun toggleTTSState() {
         if (uiState.isTTSActive) {
             textToSpeechRepository.stop()
-            textToSpeechRepository.shutdown()
             updateState { copy(isTTSActive = false) }
         } else {
             updateState { copy(isTTSActive = true) }
