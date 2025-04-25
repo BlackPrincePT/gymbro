@@ -2,10 +2,14 @@ package com.pegio.feed.presentation.screen.feed
 
 import androidx.lifecycle.viewModelScope
 import com.pegio.common.core.DataError
+import com.pegio.common.core.Displayable
+import com.pegio.common.core.Error
+import com.pegio.common.core.getOrElse
 import com.pegio.common.core.onFailure
 import com.pegio.common.core.onSuccess
 import com.pegio.common.presentation.core.BaseViewModel
 import com.pegio.common.presentation.model.mapper.UiUserMapper
+import com.pegio.common.presentation.util.toStringResId
 import com.pegio.domain.usecase.common.GetCurrentUserStreamUseCase
 import com.pegio.domain.usecase.feed.DeleteVoteUseCase
 import com.pegio.domain.usecase.feed.FetchNextRelevantPostsPageUseCase
@@ -27,12 +31,13 @@ class FeedViewModel @Inject constructor(
     private val fetchNextRelevantPostsPage: FetchNextRelevantPostsPageUseCase,
     private val votePost: VotePostUseCase,
     private val deleteVote: DeleteVoteUseCase,
-    private val resetPagination: ResetPostPaginationUseCase,
+    private val resetPostPagination: ResetPostPaginationUseCase,
     private val uiUserMapper: UiUserMapper,
     private val uiPostMapper: UiPostMapper
 ) : BaseViewModel<FeedUiState, FeedUiEffect, FeedUiEvent>(initialState = FeedUiState()) {
 
     init {
+        resetPostPagination()
         observeCurrentUser()
     }
 
@@ -41,7 +46,7 @@ class FeedViewModel @Inject constructor(
 
             // Main
             FeedUiEvent.OnLoadMorePosts -> loadMorePosts()
-            FeedUiEvent.OnPostsRefresh -> {} // FIXME DOESN'T WORK
+            FeedUiEvent.OnPostsRefresh -> refreshPosts()
             is FeedUiEvent.OnPostVote -> handlePostVote(event.postId, event.voteType)
 
             // Navigation
@@ -57,10 +62,17 @@ class FeedViewModel @Inject constructor(
 
     override fun setLoading(isLoading: Boolean) = updateState { copy(isLoading = isLoading) }
 
+    // <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> \\
+
+
     private fun observeCurrentUser() = viewModelScope.launch {
         fetchCurrentUserStream()
             .collectLatest { updateState { copy(currentUser = uiUserMapper.mapFromDomain(it)) } }
     }
+
+
+    // <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> \\
+
 
     private fun handlePostVote(postId: String, voteType: Vote.Type) {
         val index = uiState.relevantPosts.indexOfFirst { it.id == postId }
@@ -78,40 +90,50 @@ class FeedViewModel @Inject constructor(
         if (previousVoteType == voteType) {
             deleteVote(postId)
                 .onSuccess { updatePost(index = index, newVote = null, difference = difference) }
-                .onFailure { } // TODO HANDLE FAILURE
+                .onFailure { showDisplayableError(it) }
         } else {
             votePost(postId, voteType)
                 .onSuccess { updatePost(index = index, newVote = it, difference = difference) }
-                .onFailure { } // TODO HANDLE FAILURE
+                .onFailure { showDisplayableError(it) }
         }
     }
 
 
-//    private fun refreshPosts() {
-//        updateState { copy(relevantPosts = emptyList(), endOfPostsReached = false) }
-//        resetPagination()
-//        loadMorePosts()
-//    }
+    // <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> \\
+
+
+    private fun refreshPosts() {
+        resetPostPagination()
+        updateState {
+            copy(relevantPosts = emptyList(), endOfPostsReached = false, isRefreshing = true)
+        }
+        loadMorePosts()
+    }
 
     private fun loadMorePosts() {
         if (uiState.endOfPostsReached) return
 
         launchWithLoading {
             fetchNextRelevantPostsPage()
-                .onSuccess { fetchedPosts ->
-                    val combinedPosts = fetchedPosts.map(uiPostMapper::mapFromDomain)
-                    updateState { copy(relevantPosts = relevantPosts.plus(combinedPosts)) }
-                }
-                .onFailure { error ->
+                .getOrElse { error ->
                     when (error) {
                         DataError.Pagination.END_OF_PAGINATION_REACHED ->
                             updateState { copy(endOfPostsReached = true) }
 
-                        else -> {} // TODO HANDLE BETTER
+                        else -> showDisplayableError(error)
                     }
+                    return@launchWithLoading
                 }
+                .map(uiPostMapper::mapFromDomain)
+                .let { updateState { copy(relevantPosts = relevantPosts.plus(it)) } }
+
+            updateState { copy(isRefreshing = false) }
         }
     }
+
+
+    // <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> \\
+
 
     private fun updatePost(index: Int, newVote: Vote?, difference: Int) {
         val updatedPosts = uiState.relevantPosts.toMutableList()
@@ -123,5 +145,9 @@ class FeedViewModel @Inject constructor(
         )
 
         updateState { copy(relevantPosts = updatedPosts) }
+    }
+
+    private fun showDisplayableError(error: Error) {
+        if (error is Displayable) sendEffect(FeedUiEffect.ShowSnackbar(error.toStringResId()))
     }
 }

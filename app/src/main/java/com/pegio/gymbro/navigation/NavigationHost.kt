@@ -114,6 +114,7 @@ fun NavigationHost(
             onPostAuthorClick = navController::navigateToProfile,
             onChatClick = navController::navigateToAiChat,
             onOpenDrawerClick = dynamicallyOpenDrawer,
+            onShowSnackbar = onShowSnackbar,
             onSetupTopBar = onSetupAppBar
         )
 

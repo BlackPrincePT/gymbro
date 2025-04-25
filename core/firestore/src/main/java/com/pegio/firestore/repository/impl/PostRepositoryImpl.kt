@@ -17,7 +17,9 @@ import com.pegio.firestore.model.mapper.PostDtoMapper
 import com.pegio.firestore.util.FirestoreUtils
 import com.pegio.model.Post
 import javax.inject.Inject
+import javax.inject.Singleton
 
+@Singleton
 internal class PostRepositoryImpl @Inject constructor(
     private val db: FirebaseFirestore,
     private val firestoreUtils: FirestoreUtils,

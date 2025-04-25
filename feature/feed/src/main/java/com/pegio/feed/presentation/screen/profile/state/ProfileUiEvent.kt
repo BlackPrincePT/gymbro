@@ -11,6 +11,7 @@ sealed interface ProfileUiEvent {
     data class OnEditModeChange(val mode: ProfileEditMode) : ProfileUiEvent
     data class OnPostVote(val postId: String, val voteType: Vote.Type) : ProfileUiEvent
     data object OnLoadMorePosts : ProfileUiEvent
+    data object OnPostsRefresh : ProfileUiEvent
     data object OnFollowClick : ProfileUiEvent
 
     // Image

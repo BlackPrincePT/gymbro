@@ -6,6 +6,7 @@ import com.pegio.feed.presentation.model.UiPost
 data class ProfileUiState(
 
     // Loading
+    val isRefreshing: Boolean = false,
     val isLoading: Boolean = false,
     val isBackgroundLoading: Boolean = false,
     val isAvatarLoading: Boolean = false,

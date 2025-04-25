@@ -23,6 +23,7 @@ import com.pegio.domain.usecase.feed.DeleteVoteUseCase
 import com.pegio.domain.usecase.feed.FetchLatestUserPostsUseCase
 import com.pegio.domain.usecase.feed.FollowUserUseCase
 import com.pegio.domain.usecase.feed.IsCurrentUserFollowingUseCase
+import com.pegio.domain.usecase.feed.ResetPostPaginationUseCase
 import com.pegio.domain.usecase.feed.UnfollowUserUseCase
 import com.pegio.domain.usecase.feed.VotePostUseCase
 import com.pegio.feed.presentation.model.mapper.UiPostMapper
@@ -42,6 +43,7 @@ class ProfileViewModel @Inject constructor(
     private val saveUser: SaveUserUseCase,
 
     private val fetchLatestUserPosts: FetchLatestUserPostsUseCase,
+    private val resetPostPagination: ResetPostPaginationUseCase,
 
     private val enqueueFileUpload: EnqueueFileUploadUseCase,
     private val deleteFile: DeleteFileUseCase,
@@ -66,6 +68,7 @@ class ProfileViewModel @Inject constructor(
         private set
 
     init {
+        resetPostPagination()
         updateProfileOwnershipStatus()
         updateFollowingStatus()
         loadProfileInfo()
@@ -82,6 +85,7 @@ class ProfileViewModel @Inject constructor(
             is ProfileUiEvent.OnEditModeChange -> editMode = event.mode
             is ProfileUiEvent.OnPostVote -> handlePostVote(event.postId, event.voteType)
             ProfileUiEvent.OnLoadMorePosts -> loadMorePosts()
+            ProfileUiEvent.OnPostsRefresh -> refreshPosts()
             ProfileUiEvent.OnFollowClick -> handleFollowClick()
 
             // Image
@@ -222,8 +226,22 @@ class ProfileViewModel @Inject constructor(
                 }
                 .map(uiPostMapper::mapFromDomain)
                 .let { updateState { copy(userPosts = it) } }
+
+            updateState { copy(isRefreshing = false) }
         }
     }
+
+    private fun refreshPosts() {
+        resetPostPagination()
+        updateState {
+            copy(userPosts = emptyList(), endOfPostsReached = false, isRefreshing = true)
+        }
+        loadMorePosts()
+    }
+
+
+    // <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> \\
+
 
     private fun handlePostVote(postId: String, voteType: Vote.Type) {
         val index = uiState.userPosts.indexOfFirst { it.id == postId }

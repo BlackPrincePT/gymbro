@@ -19,6 +19,7 @@ fun NavGraphBuilder.feedScreen(
     onPostAuthorClick: (String) -> Unit,
     onChatClick: () -> Unit,
     onOpenDrawerClick: () -> Unit,
+    onShowSnackbar: suspend (String) -> Unit,
     onSetupTopBar: (TopBarState) -> Unit
 ) {
     composable<FeedRoute> {
@@ -28,6 +29,7 @@ fun NavGraphBuilder.feedScreen(
             onUserProfileClick = onPostAuthorClick,
             onChatClick = onChatClick,
             onOpenDrawerClick = onOpenDrawerClick,
+            onShowSnackbar = onShowSnackbar,
             onSetupTopBar = onSetupTopBar
         )
     }

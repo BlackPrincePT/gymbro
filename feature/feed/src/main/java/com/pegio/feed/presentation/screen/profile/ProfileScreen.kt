@@ -25,6 +25,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -110,67 +111,72 @@ private fun ProfileContent(
     state: ProfileUiState,
     onEvent: (ProfileUiEvent) -> Unit
 ) = with(state) {
-    PagingColumn(
-        itemCount = userPosts.size,
-        isLoading = isLoading,
-        onLoadAnotherPage = { onEvent(ProfileUiEvent.OnLoadMorePosts) },
-        verticalArrangement = Arrangement.spacedBy(12.dp),
-        modifier = Modifier
-            .fillMaxSize()
-            .background(color = MaterialTheme.colorScheme.surface)
+    PullToRefreshBox(
+        isRefreshing = isRefreshing,
+        onRefresh = { onEvent(ProfileUiEvent.OnPostsRefresh) }
     ) {
-        item {
-            ProfileHeader(
-                user = displayedUser,
-                isProfileOwner = isProfileOwner,
-                isLoadingAvatar = isAvatarLoading,
-                isLoadingBackground = isBackgroundLoading,
-                onCameraIconClick = { onEvent(ProfileUiEvent.OnBottomSheetStateUpdate(shouldShow = true)) },
-                onFollowRecordClick = {
-                    onEvent(ProfileUiEvent.OnFollowRecordClick(displayedUser.id, it))
-                },
-                onEditModeChange = { onEvent(ProfileUiEvent.OnEditModeChange(it)) },
-                modifier = Modifier
-                    .fillMaxWidth()
-            )
-        }
+        PagingColumn(
+            itemCount = userPosts.size,
+            isLoading = isLoading,
+            onLoadAnotherPage = { onEvent(ProfileUiEvent.OnLoadMorePosts) },
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+            modifier = Modifier
+                .fillMaxSize()
+                .background(color = MaterialTheme.colorScheme.surface)
+        ) {
+            item {
+                ProfileHeader(
+                    user = displayedUser,
+                    isProfileOwner = isProfileOwner,
+                    isLoadingAvatar = isAvatarLoading,
+                    isLoadingBackground = isBackgroundLoading,
+                    onCameraIconClick = { onEvent(ProfileUiEvent.OnBottomSheetStateUpdate(shouldShow = true)) },
+                    onFollowRecordClick = {
+                        onEvent(ProfileUiEvent.OnFollowRecordClick(displayedUser.id, it))
+                    },
+                    onEditModeChange = { onEvent(ProfileUiEvent.OnEditModeChange(it)) },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                )
+            }
 
-        if (!isProfileOwner) item {
-            DefaultProfileActions(
-                isFollowing = isFollowing,
-                onFollowClick = { onEvent(ProfileUiEvent.OnFollowClick) },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 32.dp)
-            )
-        }
+            if (!isProfileOwner) item {
+                DefaultProfileActions(
+                    isFollowing = isFollowing,
+                    onFollowClick = { onEvent(ProfileUiEvent.OnFollowClick) },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 32.dp)
+                )
+            }
 
-        if (isProfileOwner) item {
-            CreatePostContent(
-                onClick = { onEvent(ProfileUiEvent.OnCreatePostClick(it)) },
-                modifier = Modifier
-                    .padding(horizontal = 16.dp)
-            )
-        }
+            if (isProfileOwner) item {
+                CreatePostContent(
+                    onClick = { onEvent(ProfileUiEvent.OnCreatePostClick(it)) },
+                    modifier = Modifier
+                        .padding(horizontal = 16.dp)
+                )
+            }
 
-        if (userPosts.isEmpty() && !isLoading) item {
-            EmptyUsersContent(
-                username = displayedUser.username,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(32.dp)
-            )
-        }
-        else items(userPosts) { post ->
-            PostContent(
-                post = post,
-                onVoteClick = { onEvent(ProfileUiEvent.OnPostVote(post.id, voteType = it)) },
-                onCommentClick = { onEvent(ProfileUiEvent.OnPostCommentClick(post.id)) }
-            )
-        }
+            if (userPosts.isEmpty() && !isLoading && !isRefreshing) item {
+                EmptyUsersContent(
+                    username = displayedUser.username,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(32.dp)
+                )
+            }
+            else items(userPosts) { post ->
+                PostContent(
+                    post = post,
+                    onVoteClick = { onEvent(ProfileUiEvent.OnPostVote(post.id, voteType = it)) },
+                    onCommentClick = { onEvent(ProfileUiEvent.OnPostCommentClick(post.id)) }
+                )
+            }
 
-        if (isLoading)
-            item { LoadingItemsIndicator() }
+            if (isLoading && !isRefreshing)
+                item { LoadingItemsIndicator() }
+        }
     }
 }
 

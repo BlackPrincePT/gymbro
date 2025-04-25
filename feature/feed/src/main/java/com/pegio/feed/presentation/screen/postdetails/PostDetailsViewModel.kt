@@ -108,11 +108,11 @@ class PostDetailsViewModel @Inject constructor(
 
         if (previousVoteType == voteType) {
             deleteVote(postId)
-                .onSuccess { updatePost(newVote = null, difference = difference) }
+                .onSuccess { updatePostVoteCount(newVote = null, difference = difference) }
                 .onFailure { showDisplayableError(it) }
         } else {
             votePost(postId, voteType)
-                .onSuccess { updatePost(newVote = it, difference = difference) }
+                .onSuccess { updatePostVoteCount(newVote = it, difference = difference) }
                 .onFailure { showDisplayableError(it) }
         }
     }
@@ -124,6 +124,7 @@ class PostDetailsViewModel @Inject constructor(
             .onFailure { showDisplayableError(it) }
             .onSuccess { comment ->
                 updateState { copy(commentText = "") }
+                updatePostCommentCount()
 
                 getCurrentUser()
                     .onSuccess { currentUser ->
@@ -157,11 +158,17 @@ class PostDetailsViewModel @Inject constructor(
     // <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> \\
 
 
-    private fun updatePost(newVote: Vote?, difference: Int) = with(uiState.displayedPost) {
+    private fun updatePostVoteCount(newVote: Vote?, difference: Int) = with(uiState.displayedPost) {
         val updatedPost = copy(
             currentUserVote = newVote,
             voteCount = (voteCount.toInt() + difference).toString()
         )
+
+        updateState { copy(displayedPost = updatedPost) }
+    }
+
+    private fun updatePostCommentCount(difference: Int = +1) = with(uiState.displayedPost) {
+        val updatedPost = copy(commentCount = (commentCount.toInt() + difference).toString())
 
         updateState { copy(displayedPost = updatedPost) }
     }

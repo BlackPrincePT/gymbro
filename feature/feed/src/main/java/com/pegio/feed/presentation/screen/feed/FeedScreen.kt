@@ -9,9 +9,11 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ChatBubble
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -34,18 +36,22 @@ internal fun FeedScreen(
     onUserProfileClick: (String) -> Unit,
     onOpenDrawerClick: () -> Unit,
     onSetupTopBar: (TopBarState) -> Unit,
+    onShowSnackbar: suspend (String) -> Unit,
     viewModel: FeedViewModel = hiltViewModel()
 ) {
+    val context = LocalContext.current
+
     SetupTopBar(onSetupTopBar, viewModel::onEvent)
 
     CollectLatestEffect(viewModel.uiEffect) { effect ->
         when (effect) {
 
-            // Top Bar
-            FeedUiEffect.OpenDrawer -> onOpenDrawerClick()
-            FeedUiEffect.NavigateToChat -> onChatClick()
+            // Failure
+            is FeedUiEffect.ShowSnackbar -> onShowSnackbar(context.getString(effect.errorRes))
 
             // Navigation
+            FeedUiEffect.OpenDrawer -> onOpenDrawerClick()
+            FeedUiEffect.NavigateToChat -> onChatClick()
             is FeedUiEffect.NavigateToCreatePost -> onCreatePostClick(effect.shouldOpenGallery)
             is FeedUiEffect.NavigateToPostDetails -> onShowPostDetails(effect.postId)
             is FeedUiEffect.NavigateToUserProfile -> onUserProfileClick(effect.userId)
@@ -59,33 +65,40 @@ internal fun FeedScreen(
 private fun FeedContent(
     state: FeedUiState,
     onEvent: (FeedUiEvent) -> Unit
-) {
-    PagingColumn(
-        itemCount = state.relevantPosts.size,
-        isLoading = state.isLoading,
-        onLoadAnotherPage = { onEvent(FeedUiEvent.OnLoadMorePosts) },
-        verticalArrangement = Arrangement.spacedBy(12.dp),
-        modifier = Modifier
-            .fillMaxSize()
-            .background(color = MaterialTheme.colorScheme.surface)
+) = with(state) {
+    PullToRefreshBox(
+        isRefreshing = isRefreshing,
+        onRefresh = { onEvent(FeedUiEvent.OnPostsRefresh) }
     ) {
-        item {
-            CreatePostContent(
-                currentUser = state.currentUser,
-                onClick = { onEvent(FeedUiEvent.OnCreatePostClick(it)) },
-                onProfileClick = { onEvent(FeedUiEvent.OnUserProfileClick(userId = state.currentUser.id)) },
-                modifier = Modifier
-                    .padding(16.dp)
-            )
-        }
+        PagingColumn(
+            itemCount = relevantPosts.size,
+            isLoading = isLoading,
+            onLoadAnotherPage = { onEvent(FeedUiEvent.OnLoadMorePosts) },
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+            modifier = Modifier
+                .fillMaxSize()
+                .background(color = MaterialTheme.colorScheme.surface)
+        ) {
+            item {
+                CreatePostContent(
+                    currentUser = currentUser,
+                    onClick = { onEvent(FeedUiEvent.OnCreatePostClick(it)) },
+                    onProfileClick = { onEvent(FeedUiEvent.OnUserProfileClick(userId = currentUser.id)) },
+                    modifier = Modifier
+                        .padding(16.dp)
+                )
+            }
 
-        items(state.relevantPosts) { post ->
-            PostContent(
-                post = post,
-                onProfileClick = { onEvent(FeedUiEvent.OnUserProfileClick(userId = post.author.id)) },
-                onVoteClick = { onEvent(FeedUiEvent.OnPostVote(postId = post.id, voteType = it)) },
-                onCommentClick = { onEvent(FeedUiEvent.OnPostCommentClick(postId = post.id)) }
-            )
+            items(relevantPosts) { post ->
+                PostContent(
+                    post = post,
+                    onProfileClick = { onEvent(FeedUiEvent.OnUserProfileClick(userId = post.author.id)) },
+                    onCommentClick = { onEvent(FeedUiEvent.OnPostCommentClick(postId = post.id)) },
+                    onVoteClick = {
+                        onEvent(FeedUiEvent.OnPostVote(postId = post.id, voteType = it))
+                    }
+                )
+            }
         }
     }
 }
