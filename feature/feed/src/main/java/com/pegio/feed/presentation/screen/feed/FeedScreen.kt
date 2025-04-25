@@ -1,9 +1,7 @@
 package com.pegio.feed.presentation.screen.feed
 
-import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.items
@@ -21,7 +19,6 @@ import com.pegio.common.presentation.state.TopBarAction
 import com.pegio.common.presentation.state.TopBarState
 import com.pegio.common.presentation.util.CollectLatestEffect
 import com.pegio.common.presentation.util.PagingColumn
-import com.pegio.designsystem.theme.GymBroTheme
 import com.pegio.feed.presentation.component.CreatePostContent
 import com.pegio.feed.presentation.component.PostContent
 import com.pegio.feed.presentation.model.UiPost

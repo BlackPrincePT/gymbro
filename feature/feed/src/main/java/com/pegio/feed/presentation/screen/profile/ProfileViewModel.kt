@@ -216,7 +216,7 @@ class ProfileViewModel @Inject constructor(
                         DataError.Pagination.END_OF_PAGINATION_REACHED ->
                             updateState { copy(endOfPostsReached = true) }
 
-                        else -> {}
+                        else -> showDisplayableError(error)
                     }
                     return@launchWithLoading
                 }

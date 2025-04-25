@@ -36,6 +36,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -152,7 +153,15 @@ private fun ProfileContent(
             )
         }
 
-        items(userPosts) { post ->
+        if (userPosts.isEmpty() && !isLoading) item {
+            EmptyUsersContent(
+                username = displayedUser.username,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(32.dp)
+            )
+        }
+        else items(userPosts) { post ->
             PostContent(
                 post = post,
                 onVoteClick = { onEvent(ProfileUiEvent.OnPostVote(post.id, voteType = it)) },
@@ -163,6 +172,20 @@ private fun ProfileContent(
         if (isLoading)
             item { LoadingItemsIndicator() }
     }
+}
+
+@Composable
+private fun EmptyUsersContent(
+    username: String,
+    modifier: Modifier = Modifier
+) {
+    Text(
+        text = stringResource(R.string.feature_feed_has_not_posted_yet, username),
+        textAlign = TextAlign.Center,
+        style = MaterialTheme.typography.headlineSmall,
+        color = Color.Gray,
+        modifier = modifier
+    )
 }
 
 

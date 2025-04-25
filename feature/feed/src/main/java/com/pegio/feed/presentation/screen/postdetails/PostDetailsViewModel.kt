@@ -1,7 +1,6 @@
 package com.pegio.feed.presentation.screen.postdetails
 
 import androidx.lifecycle.SavedStateHandle
-import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import com.pegio.common.core.DataError
 import com.pegio.common.core.Displayable
@@ -25,7 +24,6 @@ import com.pegio.feed.presentation.screen.postdetails.state.PostDetailsUiEvent
 import com.pegio.feed.presentation.screen.postdetails.state.PostDetailsUiState
 import com.pegio.model.Vote
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -68,11 +66,8 @@ class PostDetailsViewModel @Inject constructor(
 
             // Navigation
             PostDetailsUiEvent.OnBackClick -> sendEffect(PostDetailsUiEffect.NavigateBack)
-            is PostDetailsUiEvent.OnUserProfileClick -> sendEffect(
-                PostDetailsUiEffect.NavigateToUserProfile(
-                    event.userId
-                )
-            )
+            is PostDetailsUiEvent.OnUserProfileClick ->
+                sendEffect(PostDetailsUiEffect.NavigateToUserProfile(event.userId))
 
             // Compose State
             is PostDetailsUiEvent.OnCommentTextChange -> updateState { copy(commentText = event.value) }
@@ -123,7 +118,9 @@ class PostDetailsViewModel @Inject constructor(
     }
 
     private fun handleCommentSubmit() = launchWithLoading(::setLoadingSendComments) {
-        writeComment(content = uiState.commentText, postId = postId)
+        val commentText = uiState.commentText.ifEmpty { return@launchWithLoading }
+
+        writeComment(content = commentText, postId = postId)
             .onFailure { showDisplayableError(it) }
             .onSuccess { comment ->
                 updateState { copy(commentText = "") }

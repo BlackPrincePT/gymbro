@@ -272,6 +272,7 @@ internal fun CreatePostContent(
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = modifier
+            .height(40.dp)
             .clickable { onClick(false) }
     ) {
         currentUser?.let {

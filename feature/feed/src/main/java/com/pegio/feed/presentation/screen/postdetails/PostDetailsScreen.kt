@@ -24,15 +24,16 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -88,7 +89,7 @@ internal fun PostDetailsScreen(
 private fun PostDetailsContent(
     state: PostDetailsUiState,
     onEvent: (PostDetailsUiEvent) -> Unit
-) {
+) = with(state) {
     LazyColumn(
         verticalArrangement = Arrangement.spacedBy(8.dp),
         modifier = Modifier
@@ -97,20 +98,20 @@ private fun PostDetailsContent(
     ) {
         item {
             PostContent(
-                post = state.displayedPost,
-                onProfileClick = { onEvent(PostDetailsUiEvent.OnUserProfileClick(userId = state.displayedPost.author.id)) },
+                post = displayedPost,
+                onProfileClick = { onEvent(PostDetailsUiEvent.OnUserProfileClick(userId = displayedPost.author.id)) },
                 onVoteClick = { onEvent(PostDetailsUiEvent.OnPostVote(voteType = it)) }
             )
         }
 
         item {
             GymBroTextField(
-                value = state.commentText,
+                value = commentText,
                 onValueChange = { onEvent(PostDetailsUiEvent.OnCommentTextChange(it)) },
                 label = stringResource(R.string.feature_feed_write_a_comment),
                 trailingIcon = {
                     UploadCommentContent(
-                        isUploading = state.loadingSendComment,
+                        isUploading = loadingSendComment,
                         onClick = { onEvent(PostDetailsUiEvent.OnCommentSubmitClick) }
                     )
                 },
@@ -120,7 +121,14 @@ private fun PostDetailsContent(
             )
         }
 
-        items(state.comments) { comment ->
+        if (comments.isEmpty() && !loadingMoreComments) item {
+            EmptyCommentsContent(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(32.dp)
+            )
+        }
+        else items(comments) { comment ->
             PostCommentContent(
                 avatarUrl = comment.author.avatarUrl,
                 username = comment.author.username,
@@ -130,11 +138,25 @@ private fun PostDetailsContent(
             )
         }
 
-        if (state.endOfCommentsReached.not()) item {
-            if (state.loadingMoreComments) LoadingItemsIndicator()
-            else LoadMoreItemsTextButton(onClick = { onEvent(PostDetailsUiEvent.OnLoadMoreCommentsClick) })
+        if (!endOfCommentsReached) item {
+            if (loadingMoreComments) LoadingItemsIndicator()
+            else if (comments.isNotEmpty())
+                LoadMoreItemsTextButton(onClick = { onEvent(PostDetailsUiEvent.OnLoadMoreCommentsClick) })
         }
     }
+}
+
+@Composable
+private fun EmptyCommentsContent(
+    modifier: Modifier = Modifier
+) {
+    Text(
+        text = stringResource(R.string.feature_feed_be_first_one_to_comment),
+        textAlign = TextAlign.Center,
+        style = MaterialTheme.typography.headlineSmall,
+        color = Color.Gray,
+        modifier = modifier
+    )
 }
 
 
