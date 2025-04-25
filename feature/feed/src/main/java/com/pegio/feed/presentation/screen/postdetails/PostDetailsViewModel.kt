@@ -14,6 +14,7 @@ import com.pegio.domain.usecase.common.GetCurrentUserUseCase
 import com.pegio.domain.usecase.feed.DeleteVoteUseCase
 import com.pegio.domain.usecase.feed.FetchNextCommentsPageUseCase
 import com.pegio.domain.usecase.feed.FetchPostByIdUseCase
+import com.pegio.domain.usecase.feed.ResetPostCommentPaginationUseCase
 import com.pegio.domain.usecase.feed.VotePostUseCase
 import com.pegio.domain.usecase.feed.WriteCommentUseCase
 import com.pegio.feed.presentation.model.mapper.UiPostCommentMapper
@@ -37,6 +38,7 @@ class PostDetailsViewModel @Inject constructor(
 
     private val writeComment: WriteCommentUseCase,
     private val fetchNextCommentsPage: FetchNextCommentsPageUseCase,
+    resetPostCommentPagination: ResetPostCommentPaginationUseCase,
 
     private val uiPostMapper: UiPostMapper,
     private val uiPostCommentMapper: UiPostCommentMapper,
@@ -48,6 +50,7 @@ class PostDetailsViewModel @Inject constructor(
     private val postId = savedStateHandle.toRoute<PostDetailsRoute>().postId
 
     init {
+        resetPostCommentPagination()
         fetchCurrentPost()
         loadMoreComments()
     }

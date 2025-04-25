@@ -31,6 +31,10 @@ internal class PostCommentRepositoryImpl @Inject constructor(
     private val commentsPagingSource =
         FirestorePagingSource(COMMENT_PAGE_SIZE, PostCommentDto::class.java, firestoreUtils)
 
+    override fun resetPagination() {
+        commentsPagingSource.resetPagination()
+    }
+
     override fun writeComment(comment: PostComment, postId: String) {
         val commentDto = postCommentDtoMapper.mapFromDomain(comment)
         db.collection(POSTS).document(postId).collection(COMMENTS).add(commentDto)

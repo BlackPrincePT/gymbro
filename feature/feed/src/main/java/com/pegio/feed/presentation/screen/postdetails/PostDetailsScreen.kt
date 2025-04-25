@@ -245,7 +245,9 @@ private fun LoadMoreItemsTextButton(
         GymBroTextButton(
             text = stringResource(R.string.feature_feed_load_more_comments),
             onClick = onClick,
-            modifier = Modifier.align(Alignment.Center)
+            modifier = Modifier
+                .align(Alignment.Center)
+                .padding(bottom = 16.dp)
         )
     }
 }
