@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="feature_settings_edit_your_profile_picture">Edit your profile picture</string>
+    <string name="feature_settings_submit">Submit</string>
+    <string name="feature_settings_account">Account</string>
+</resources>

@@ -21,7 +21,6 @@ import com.pegio.feed.presentation.screen.postdetails.navigation.navigateToPostD
 import com.pegio.feed.presentation.screen.postdetails.navigation.postDetailsScreen
 import com.pegio.feed.presentation.screen.profile.navigation.navigateToProfile
 import com.pegio.feed.presentation.screen.profile.navigation.profileScreen
-import com.pegio.gymbro.navigation.route.AccountRoute
 import com.pegio.gymbro.navigation.route.AiChatRoute
 import com.pegio.gymbro.navigation.route.RegisterRoute
 import com.pegio.gymbro.navigation.route.SplashRoute
@@ -31,7 +30,7 @@ import com.pegio.gymbro.navigation.route.WorkoutRoute
 import com.pegio.gymbro.navigation.route.navigateToAiChat
 import com.pegio.gymbro.navigation.route.navigateToRegister
 import com.pegio.gymbro.navigation.route.navigateToWorkout
-import com.pegio.settings.presentation.screen.AccountScreen
+import com.pegio.settings.presentation.screen.account.navigation.accountScreen
 import com.pegio.splash.presentation.splash.SplashScreen
 import com.pegio.workout.presentation.screen.workout.WorkoutScreen
 import com.pegio.workout.presentation.screen.workout_plan.WorkoutPlanScreen
@@ -50,6 +49,7 @@ fun NavigationHost(
         startDestination = SplashRoute,
         modifier = modifier
     ) {
+
 
         composable<SplashRoute> {
             SplashScreen(
@@ -71,12 +71,9 @@ fun NavigationHost(
             )
         }
 
-        composable<AccountRoute> {
-            AccountScreen(
-                onBackClick = navController::navigateUp,
-                onSetupTopBar = onSetupAppBar
-            )
-        }
+
+        // <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> \\
+
 
         composable<AiChatRoute> {
             AiChatScreen(
@@ -85,6 +82,19 @@ fun NavigationHost(
                 onShowSnackbar = onShowSnackbar
             )
         }
+
+
+        // <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> \\
+
+
+        accountScreen(
+            onBackClick = navController::navigateUp,
+            onSetupTopBar = onSetupAppBar
+        )
+
+
+        // <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> \\
+
 
         composable<WorkoutPlanRoute> {
             WorkoutPlanScreen(
@@ -96,7 +106,7 @@ fun NavigationHost(
                 },
                 onSetupTopBar = onSetupAppBar,
 
-            )
+                )
         }
 
         composable<WorkoutRoute> {
@@ -108,7 +118,7 @@ fun NavigationHost(
             )
         }
 
-        composable<WorkoutCreationRoute>{
+        composable<WorkoutCreationRoute> {
             WorkoutCreationScreen(
                 onBackClick = navController::navigateUp,
                 onShowSnackbar = onShowSnackbar,
@@ -116,7 +126,9 @@ fun NavigationHost(
             )
         }
 
-        // ========= Feed ========= \\
+
+        // <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> \\
+
 
         feedScreen(
             onCreatePostClick = navController::navigateToCreatePost,

@@ -257,7 +257,7 @@ fun AddWorkoutDialog(
                             )
                         )
                     },
-                    label = { Text("Workout Name") },
+                    label = "Workout Name",
                     error = state.validationError.name,
                     modifier = Modifier.fillMaxWidth()
                 )
@@ -274,7 +274,7 @@ fun AddWorkoutDialog(
                             )
                         )
                     },
-                    label = { Text("Description") },
+                    label = "Description",
                     error = state.validationError.description,
                     modifier = Modifier.fillMaxWidth()
                 )
@@ -337,7 +337,7 @@ fun AddWorkoutDialog(
                                     )
                                 )
                             },
-                            label = { Text("Time (seconds)") },
+                            label = "Time (seconds)",
                             error = state.validationError.value,
                             isNumberOnly = true,
                             modifier = Modifier.fillMaxWidth()
@@ -356,7 +356,7 @@ fun AddWorkoutDialog(
                                     )
                                 )
                             },
-                            label = { Text("Repetitions") },
+                            label = "Repetitions",
                             error = state.validationError.value,
                             isNumberOnly = true,
                             modifier = Modifier.fillMaxWidth()
@@ -377,7 +377,7 @@ fun AddWorkoutDialog(
                             )
                         )
                     },
-                    label = { Text("Sets") },
+                    label = "Sets",
                     error = state.validationError.sets,
                     isNumberOnly = true,
                     modifier = Modifier.fillMaxWidth()
@@ -406,7 +406,11 @@ fun AddWorkoutDialog(
                                     state.newWorkout.muscleGroups + muscleGroup
                                 }
                                 onEvent(
-                                    WorkoutCreationUiEvent.OnEditWorkout(state.newWorkout.copy(muscleGroups = newSelection))
+                                    WorkoutCreationUiEvent.OnEditWorkout(
+                                        state.newWorkout.copy(
+                                            muscleGroups = newSelection
+                                        )
+                                    )
                                 )
                             },
                             label = { Text(muscleGroup.name.replace("_", " ")) }

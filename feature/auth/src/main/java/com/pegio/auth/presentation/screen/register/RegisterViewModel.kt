@@ -80,23 +80,38 @@ class RegisterViewModel @Inject constructor(
 
         formValidator.validateUsername(currentUser.username)
             .errorOrNull()
-            .let { updateError { copy(username = it?.toStringResId()) }; isValid = it == null }
+            .let {
+                updateError { copy(username = it?.toStringResId()) }
+                isValid = it == null
+            }
 
         formValidator.validateAge(ageString = currentUser.age)
             .errorOrNull()
-            .let { updateError { copy(age = it?.toStringResId()) }; isValid = it == null }
+            .let {
+                updateError { copy(age = it?.toStringResId()) }
+                isValid = it == null
+            }
 
         formValidator.validateGender(gender = currentUser.gender)
             .errorOrNull()
-            .let { updateError { copy(gender = it?.toStringResId()) }; isValid = it == null }
+            .let {
+                updateError { copy(gender = it?.toStringResId()) }
+                isValid = it == null
+            }
 
         formValidator.validateHeight(heightString = currentUser.heightCm)
             .errorOrNull()
-            .let { updateError { copy(height = it?.toStringResId()) }; isValid = it == null }
+            .let {
+                updateError { copy(height = it?.toStringResId()) }
+                isValid = it == null
+            }
 
         formValidator.validateWeight(weightString = currentUser.weightKg)
             .errorOrNull()
-            .let { updateError { copy(weight = it?.toStringResId()) }; isValid = it == null }
+            .let {
+                updateError { copy(weight = it?.toStringResId()) }
+                isValid = it == null
+            }
 
         return isValid
     }

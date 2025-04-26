@@ -17,7 +17,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarDuration.Short
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.SnackbarResult.ActionPerformed
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -39,8 +38,8 @@ import com.pegio.gymbro.activity.state.MainActivityUiState
 import com.pegio.gymbro.navigation.NavigationHost
 import com.pegio.gymbro.navigation.route.RegisterRoute
 import com.pegio.gymbro.navigation.route.SplashRoute
-import com.pegio.gymbro.navigation.route.navigateToAccount
 import com.pegio.gymbro.navigation.route.navigateToWorkoutPlan
+import com.pegio.settings.presentation.screen.account.navigation.navigateToAccount
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 

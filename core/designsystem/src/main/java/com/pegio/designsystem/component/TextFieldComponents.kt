@@ -62,10 +62,6 @@ fun GymBroTextField(
         colors = TextFieldDefaults.colors(
             unfocusedContainerColor = Color.Transparent,
             focusedContainerColor = Color.Transparent,
-            unfocusedIndicatorColor = Color.Transparent,
-            focusedIndicatorColor = Color.Transparent,
-            disabledContainerColor = Color.Transparent,
-            errorContainerColor = Color.Transparent
         )
     )
 }
@@ -74,15 +70,17 @@ fun GymBroTextField(
 fun FormTextField(
     value: String,
     onValueChange: (String) -> Unit,
+    label: String,
     modifier: Modifier = Modifier,
-    label: @Composable (() -> Unit)? = null,
     @StringRes error: Int? = null,
-    isNumberOnly: Boolean = false
+    isNumberOnly: Boolean = false,
+    leadingIcon: @Composable (() -> Unit)? = null,
+    trailingIcon: @Composable (() -> Unit)? = null,
 ) {
     val keyboardType = if (isNumberOnly) KeyboardType.Number else KeyboardType.Unspecified
 
     Column(modifier = modifier) {
-        TextField(
+        GymBroTextField(
             value = value,
             onValueChange = { newValue ->
                 if (isNumberOnly) {
@@ -94,6 +92,8 @@ fun FormTextField(
             },
             isError = error != null,
             label = label,
+            leadingIcon = leadingIcon,
+            trailingIcon = trailingIcon,
             keyboardOptions = KeyboardOptions(keyboardType = keyboardType),
             singleLine = true,
             modifier = Modifier.fillMaxWidth()
@@ -116,7 +116,7 @@ private fun FormTextFieldPreview() {
     FormTextField(
         value = "Pitiful Android Developer",
         onValueChange = { },
-        label = { Text(text = "Username") },
+        label = "Username",
         error = null
     )
 }

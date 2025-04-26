@@ -121,7 +121,7 @@ fun RegisterForm(
         FormTextField(
             value = state.user.username,
             onValueChange = { onEvent(RegisterUiEvent.OnUsernameChanged(it)) },
-            label = { Text("Username") },
+            label = "Username",
             error = state.validationError.username,
             modifier = Modifier.fillMaxWidth()
         )
@@ -131,7 +131,7 @@ fun RegisterForm(
         FormTextField(
             value = state.user.age,
             onValueChange = { onEvent(RegisterUiEvent.OnAgeChanged(it)) },
-            label = { Text("Age") },
+            label = "Age",
             isNumberOnly = true,
             error = state.validationError.age,
             modifier = Modifier.fillMaxWidth()
@@ -142,8 +142,8 @@ fun RegisterForm(
         DropdownMenu(
             options = Gender.entries,
             onSelectionChanged = { onEvent(RegisterUiEvent.OnGenderChanged(it)) },
-            label = { Text(text = "Gender") },
-            selectedOption = state.user.gender?.name,
+            label = "Gender",
+            selectedOption = state.user.gender.name,
             error = state.validationError.gender
         )
 
@@ -152,7 +152,7 @@ fun RegisterForm(
         FormTextField(
             value = state.user.heightCm,
             onValueChange = { onEvent(RegisterUiEvent.OnHeightChanged(it)) },
-            label = { Text("Height (cm)") },
+            label = "Height (cm)",
             isNumberOnly = true,
             error = state.validationError.height,
             modifier = Modifier.fillMaxWidth()
@@ -163,7 +163,7 @@ fun RegisterForm(
         FormTextField(
             value = state.user.weightKg,
             onValueChange = { onEvent(RegisterUiEvent.OnWeightChanged(it)) },
-            label = { Text("Weight (kg)") },
+            label = "Weight (kg)",
             isNumberOnly = true,
             error = state.validationError.weight,
             modifier = Modifier.fillMaxWidth()
