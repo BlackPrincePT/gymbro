@@ -11,8 +11,8 @@ import com.pegio.common.core.onSuccessAsync
 import com.pegio.common.presentation.core.BaseViewModel
 import com.pegio.common.presentation.util.toStringResId
 import com.pegio.domain.usecase.auth.SignInAnonymouslyUseCase
-import com.pegio.domain.usecase.common.GetCurrentUserUseCase
 import com.pegio.domain.usecase.auth.LaunchGoogleAuthOptionsUseCase
+import com.pegio.domain.usecase.auth.CheckUserAuthStateUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
@@ -20,8 +20,9 @@ import javax.inject.Inject
 class AuthViewModel @Inject constructor(
     private val launchGoogleAuthOptions: LaunchGoogleAuthOptionsUseCase,
     private val signInAnonymously: SignInAnonymouslyUseCase,
-    private val getCurrentUser: GetCurrentUserUseCase
+    private val checkForAuthState: CheckUserAuthStateUseCase
 ) : BaseViewModel<AuthUiState, AuthUiEffect, AuthUiEvent>(initialState = AuthUiState()) {
+
 
     override fun onEvent(event: AuthUiEvent) {
         when (event) {
@@ -32,27 +33,35 @@ class AuthViewModel @Inject constructor(
 
     override fun setLoading(isLoading: Boolean) = updateState { copy(isLoading = isLoading) }
 
+
+    // <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> \\
+
+
     private fun handleLaunchGoogleAuthOptions(context: Context) = launchWithLoading {
         launchGoogleAuthOptions(context)
             .onSuccessAsync { checkForSavedAuthState() }
             .onFailure { sendEffect(AuthUiEffect.ShowSnackbar(errorRes = it.toStringResId())) }
     }
 
-    private fun handleSignInAnonymously() = launchWithLoading {
-        signInAnonymously()
-            .onSuccess { sendEffect(AuthUiEffect.NavigateToHome) }
-            .onFailure { sendEffect(AuthUiEffect.ShowSnackbar(errorRes = it.toStringResId())) }
-    }
-
     private suspend fun checkForSavedAuthState() {
-        getCurrentUser()
+        checkForAuthState()
             .onSuccess { sendEffect(AuthUiEffect.NavigateToHome) }
             .onFailure { error ->
                 when (error) {
                     SessionError.AnonymousUser -> sendEffect(AuthUiEffect.NavigateToHome)
                     SessionError.RegistrationIncomplete -> sendEffect(AuthUiEffect.NavigateToRegister)
-                    else -> throw Exception("AuthViewModel: $error") // TODO HANDLE PROPERLY
+                    else -> throw Exception("AuthViewModel: $error")
                 }
             }
+    }
+
+
+    // <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> \\
+
+
+    private fun handleSignInAnonymously() = launchWithLoading {
+        signInAnonymously()
+            .onSuccess { sendEffect(AuthUiEffect.NavigateToHome) }
+            .onFailure { sendEffect(AuthUiEffect.ShowSnackbar(errorRes = it.toStringResId())) }
     }
 }

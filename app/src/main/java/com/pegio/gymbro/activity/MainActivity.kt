@@ -28,6 +28,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.pegio.auth.presentation.screen.auth.navigation.AuthRoute
 import com.pegio.auth.presentation.screen.auth.navigation.navigateToAuth
+import com.pegio.auth.presentation.screen.register.navigation.RegisterRoute
 import com.pegio.common.presentation.util.CollectLatestEffect
 import com.pegio.designsystem.theme.GymBroTheme
 import com.pegio.gymbro.activity.components.DrawerContent
@@ -36,7 +37,6 @@ import com.pegio.gymbro.activity.state.MainActivityUiEffect
 import com.pegio.gymbro.activity.state.MainActivityUiEvent
 import com.pegio.gymbro.activity.state.MainActivityUiState
 import com.pegio.gymbro.navigation.NavigationHost
-import com.pegio.gymbro.navigation.route.RegisterRoute
 import com.pegio.gymbro.navigation.route.SplashRoute
 import com.pegio.gymbro.navigation.route.navigateToWorkoutPlan
 import com.pegio.settings.presentation.screen.account.navigation.navigateToAccount

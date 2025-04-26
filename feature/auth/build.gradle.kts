@@ -5,7 +5,3 @@ plugins {
 android {
     namespace = "com.pegio.auth"
 }
-
-dependencies {
-    implementation(project(":core:uploadmanager"))
-}

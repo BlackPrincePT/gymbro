@@ -9,7 +9,8 @@ import androidx.navigation.toRoute
 import com.pegio.aichat.presentation.screen.aichat.AiChatScreen
 import com.pegio.auth.presentation.screen.auth.navigation.authScreen
 import com.pegio.auth.presentation.screen.auth.navigation.navigateToAuth
-import com.pegio.auth.presentation.screen.register.RegisterScreen
+import com.pegio.auth.presentation.screen.register.navigation.navigateToRegister
+import com.pegio.auth.presentation.screen.register.navigation.registerScreen
 import com.pegio.common.presentation.state.TopBarState
 import com.pegio.feed.presentation.screen.createpost.navigation.createPostScreen
 import com.pegio.feed.presentation.screen.createpost.navigation.navigateToCreatePost
@@ -22,13 +23,11 @@ import com.pegio.feed.presentation.screen.postdetails.navigation.postDetailsScre
 import com.pegio.feed.presentation.screen.profile.navigation.navigateToProfile
 import com.pegio.feed.presentation.screen.profile.navigation.profileScreen
 import com.pegio.gymbro.navigation.route.AiChatRoute
-import com.pegio.gymbro.navigation.route.RegisterRoute
 import com.pegio.gymbro.navigation.route.SplashRoute
 import com.pegio.gymbro.navigation.route.WorkoutCreationRoute
 import com.pegio.gymbro.navigation.route.WorkoutPlanRoute
 import com.pegio.gymbro.navigation.route.WorkoutRoute
 import com.pegio.gymbro.navigation.route.navigateToAiChat
-import com.pegio.gymbro.navigation.route.navigateToRegister
 import com.pegio.gymbro.navigation.route.navigateToWorkout
 import com.pegio.settings.presentation.screen.account.navigation.accountScreen
 import com.pegio.splash.presentation.splash.SplashScreen
@@ -65,11 +64,9 @@ fun NavigationHost(
             onShowSnackbar = onShowSnackbar
         )
 
-        composable<RegisterRoute> {
-            RegisterScreen(
-                onRegisterSuccess = navController::popNavigateToFeed
-            )
-        }
+        registerScreen(
+            onRegisterSuccess = navController::popNavigateToFeed
+        )
 
 
         // <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> \\

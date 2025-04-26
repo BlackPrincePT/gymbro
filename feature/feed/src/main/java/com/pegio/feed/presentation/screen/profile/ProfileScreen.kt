@@ -17,11 +17,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.CameraAlt
 import androidx.compose.material3.Button
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
@@ -44,7 +40,9 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.pegio.common.presentation.components.BackgroundImage
+import com.pegio.common.presentation.components.CameraIcon
 import com.pegio.common.presentation.components.LoadingItemsIndicator
+import com.pegio.common.presentation.components.ProfileAvatar
 import com.pegio.common.presentation.components.ProfileImage
 import com.pegio.common.presentation.model.UiUser
 import com.pegio.common.presentation.state.TopBarAction
@@ -229,9 +227,9 @@ private fun ProfileHeader(
 
             ProfileAvatar(
                 imageUrl = user.avatarUrl,
-                isProfileOwner = isProfileOwner,
+                isCameraIconVisible = isProfileOwner,
                 isLoading = isLoadingAvatar,
-                onCameraIconClick = {
+                onClick = {
                     onEditModeChange(ProfileEditMode.Avatar)
                     onCameraIconClick()
                 },
@@ -347,33 +345,6 @@ private fun FollowRecordItem(
 
 
 @Composable
-private fun ProfileAvatar(
-    imageUrl: String?,
-    isProfileOwner: Boolean,
-    isLoading: Boolean,
-    onCameraIconClick: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    Box(modifier = modifier.clickable { onCameraIconClick() }) {
-        CameraIcon(
-            isProfileOwner = isProfileOwner,
-            isLoading = isLoading,
-            onClick = onCameraIconClick,
-            modifier = Modifier
-                .align(Alignment.Center)
-                .padding(8.dp)
-                .size(24.dp)
-                .zIndex(1f)
-        )
-
-        ProfileImage(
-            imageUrl = imageUrl,
-            modifier = Modifier.fillMaxSize()
-        )
-    }
-}
-
-@Composable
 private fun ProfileBackground(
     imageUrl: String?,
     isProfileOwner: Boolean,
@@ -382,8 +353,7 @@ private fun ProfileBackground(
     modifier: Modifier = Modifier
 ) {
     Box(modifier = modifier.clickable { onCameraIconClick() }) {
-        CameraIcon(
-            isProfileOwner = isProfileOwner,
+        if (isProfileOwner) CameraIcon(
             isLoading = isLoading,
             onClick = onCameraIconClick,
             modifier = Modifier
@@ -397,36 +367,6 @@ private fun ProfileBackground(
             imageUrl = imageUrl,
             modifier = Modifier.fillMaxSize()
         )
-    }
-}
-
-@Composable
-private fun CameraIcon(
-    isProfileOwner: Boolean,
-    isLoading: Boolean,
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    when {
-        isProfileOwner && isLoading -> {
-            CircularProgressIndicator(
-                color = Color.White,
-                modifier = modifier
-            )
-        }
-
-        isProfileOwner -> {
-            IconButton(
-                onClick = onClick,
-                modifier = modifier
-            ) {
-                Icon(
-                    imageVector = Icons.Default.CameraAlt,
-                    contentDescription = null,
-                    tint = Color.White
-                )
-            }
-        }
     }
 }
 

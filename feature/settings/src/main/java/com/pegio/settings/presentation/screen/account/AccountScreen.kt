@@ -1,32 +1,23 @@
 package com.pegio.settings.presentation.screen.account
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.pegio.common.presentation.components.ProfileImage
+import com.pegio.common.presentation.components.EditAvatarContent
 import com.pegio.common.presentation.state.TopBarAction
 import com.pegio.common.presentation.state.TopBarState
 import com.pegio.common.presentation.util.CollectLatestEffect
@@ -76,12 +67,12 @@ private fun AccountContent(
         verticalArrangement = Arrangement.Center,
         modifier = Modifier
             .fillMaxSize()
+            .padding(horizontal = 32.dp)
     ) {
         EditAvatarContent(
             imageUrl = user.avatarUrl,
             isLoading = isLoadingAvatar,
-            onClick = { onEvent(AccountUiEvent.OnLaunchGallery) },
-            modifier = Modifier
+            onClick = { onEvent(AccountUiEvent.OnLaunchGallery) }
         )
 
         Spacer(modifier = Modifier.height(32.dp))
@@ -97,9 +88,7 @@ private fun AccountContent(
                     onClick = { onEvent(AccountUiEvent.OnUsernameSubmit) }
                 )
             },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 32.dp)
+            modifier = Modifier.fillMaxWidth()
         )
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -115,9 +104,7 @@ private fun AccountContent(
                     onClick = { onEvent(AccountUiEvent.OnAgeSubmit) }
                 )
             },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 32.dp)
+            modifier = Modifier.fillMaxWidth()
         )
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -134,9 +121,7 @@ private fun AccountContent(
                     onClick = { onEvent(AccountUiEvent.OnGenderSubmit) }
                 )
             },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 32.dp)
+            modifier = Modifier.fillMaxWidth()
         )
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -152,9 +137,7 @@ private fun AccountContent(
                     onClick = { onEvent(AccountUiEvent.OnHeightSubmit) }
                 )
             },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 32.dp)
+            modifier = Modifier.fillMaxWidth()
         )
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -170,9 +153,7 @@ private fun AccountContent(
                     onClick = { onEvent(AccountUiEvent.OnWeightSubmit) }
                 )
             },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 32.dp)
+            modifier = Modifier.fillMaxWidth()
         )
     }
 }
@@ -186,69 +167,6 @@ private fun SubmitButton(
         text = stringResource(R.string.feature_settings_submit),
         onClick = onClick
     )
-}
-
-
-// <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> \\
-
-
-@Composable
-private fun EditAvatarContent(
-    imageUrl: String?,
-    isLoading: Boolean,
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        modifier = modifier
-    ) {
-        ProfileAvatar(
-            imageUrl = imageUrl,
-            isLoading = isLoading,
-            onClick = onClick,
-            modifier = Modifier
-                .clip(CircleShape)
-                .clickable { onClick.invoke() }
-                .size(64.dp)
-        )
-
-        Spacer(modifier = Modifier.width(16.dp))
-
-        GymBroTextButton(
-            text = stringResource(R.string.feature_settings_edit_your_profile_picture),
-            onClick = onClick
-        )
-    }
-}
-
-@Composable
-private fun ProfileAvatar(
-    imageUrl: String?,
-    isLoading: Boolean,
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    Box(
-        modifier = modifier
-            .clickable { onClick.invoke() }
-    ) {
-        if (isLoading)
-            CircularProgressIndicator(
-                modifier = Modifier
-                    .align(Alignment.Center)
-                    .padding(8.dp)
-                    .size(16.dp)
-                    .zIndex(1f)
-
-            )
-
-        ProfileImage(
-            imageUrl = imageUrl,
-            modifier = Modifier
-                .fillMaxSize()
-        )
-    }
 }
 
 
