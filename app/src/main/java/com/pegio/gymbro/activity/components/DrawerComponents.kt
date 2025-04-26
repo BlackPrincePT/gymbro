@@ -53,8 +53,9 @@ fun DrawerContent(
 @Composable
 fun DrawerContent(
     displayedUser: UiUser,
-    onAccountClick: () -> Unit,
     onWorkoutPlanClick: () -> Unit,
+    onAccountClick: () -> Unit,
+    onSettingsClick: () -> Unit,
     onSignOutClick: () -> Unit
 ) {
     ModalDrawerSheet {
@@ -71,6 +72,13 @@ fun DrawerContent(
                 .padding(vertical = 16.dp)
         ) {
             NavigationDrawerItem(
+                label = { Text(text = stringResource(R.string.built_in_workout_plans)) },
+                selected = false,
+                onClick = onWorkoutPlanClick,
+                modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding)
+            )
+
+            NavigationDrawerItem(
                 label = { Text(text = stringResource(R.string.account)) },
                 selected = false,
                 onClick = onAccountClick,
@@ -78,9 +86,9 @@ fun DrawerContent(
             )
 
             NavigationDrawerItem(
-                label = { Text(text = stringResource(R.string.built_in_workout_plans)) },
+                label = { Text(text = stringResource(R.string.settings)) },
                 selected = false,
-                onClick = onWorkoutPlanClick,
+                onClick = onSettingsClick,
                 modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding)
             )
 
@@ -145,6 +153,7 @@ private fun AppDrawerContentPreview() {
         displayedUser = UiUser.DEFAULT,
         onAccountClick = {},
         onWorkoutPlanClick = {},
+        onSettingsClick = {},
         onSignOutClick = {}
     )
 }

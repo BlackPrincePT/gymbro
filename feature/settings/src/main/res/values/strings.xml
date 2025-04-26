@@ -3,4 +3,6 @@
     <string name="feature_settings_edit_your_profile_picture">Edit your profile picture</string>
     <string name="feature_settings_submit">Submit</string>
     <string name="feature_settings_account">Account</string>
+    <string name="feature_settings_settings">Settings</string>
+    <string name="feature_settings_theme">Theme</string>
 </resources>
