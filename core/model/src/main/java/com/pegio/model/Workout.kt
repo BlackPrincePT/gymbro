@@ -8,7 +8,6 @@ data class Workout(
     val workoutType: WorkoutType,
     val value: Int,
     val sets: Int,
-    val isFinished: Boolean,
     val muscleGroups: List<MuscleGroup>,
     val workoutImage: String
 ) {

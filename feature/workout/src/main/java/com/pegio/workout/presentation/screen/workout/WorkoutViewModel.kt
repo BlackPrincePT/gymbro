@@ -1,14 +1,13 @@
 package com.pegio.workout.presentation.screen.workout
 
+import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.pegio.common.core.onFailure
 import com.pegio.common.core.onSuccess
 import com.pegio.common.presentation.core.BaseViewModel
 import com.pegio.common.presentation.util.toStringResId
-import com.pegio.domain.usecase.texttospeech.ShutdownTextToSpeechUseCase
-import com.pegio.domain.usecase.texttospeech.SpeakTextUseCase
-import com.pegio.domain.usecase.texttospeech.StopSpeakingUseCase
 import com.pegio.domain.usecase.workout.FetchWorkoutsByIdUseCase
+import com.pegio.workout.presentation.core.TextToSpeechRepositoryImpl
 import com.pegio.workout.presentation.model.mapper.UiWorkoutMapper
 import com.pegio.workout.presentation.screen.workout.WorkoutUiState.*
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -22,9 +21,7 @@ import javax.inject.Inject
 class WorkoutViewModel @Inject constructor(
     private val fetchWorkoutsById: FetchWorkoutsByIdUseCase,
     private val uiWorkoutMapper: UiWorkoutMapper,
-    private val speakText: SpeakTextUseCase,
-    private val stopSpeaking: StopSpeakingUseCase,
-    private val shutdownTextToSpeech: ShutdownTextToSpeechUseCase
+    private val textToSpeechRepository: TextToSpeechRepositoryImpl,
 ) : BaseViewModel<WorkoutUiState, WorkoutUiEffect, WorkoutUiEvent>(initialState = WorkoutUiState()) {
 
     private var timerJob: Job? = null
@@ -37,10 +34,8 @@ class WorkoutViewModel @Inject constructor(
             WorkoutUiEvent.OnBackClick -> sendEffect(WorkoutUiEffect.NavigateBack)
             is WorkoutUiEvent.OnReadTTSClick -> readDescription(event.textToRead)
             WorkoutUiEvent.OnToggleTTSClick -> toggleTTSState()
-            is WorkoutUiEvent.StartTimer -> startTimer(event.durationSeconds)
             WorkoutUiEvent.PauseTimer -> pauseTimer()
             WorkoutUiEvent.ResumeTimer -> resumeTimer()
-            WorkoutUiEvent.StopTimer -> stopTimer()
         }
     }
 
@@ -65,6 +60,7 @@ class WorkoutViewModel @Inject constructor(
     private fun nextWorkout() {
         stopTimer()
         if (uiState.currentWorkoutIndex == uiState.workouts.lastIndex) {
+            textToSpeechRepository.shutdown()
             sendEffect(WorkoutUiEffect.NavigateBack)
         } else if (uiState.workouts.size > uiState.currentWorkoutIndex + 1) {
             val newIndex = uiState.currentWorkoutIndex + 1
@@ -92,33 +88,19 @@ class WorkoutViewModel @Inject constructor(
 
     private fun readDescription(textToRead: String) {
         if (uiState.isTTSActive) {
-            speakText(textToRead)
+            textToSpeechRepository.speak(textToRead)
             updateState { copy(isTTSActive = true) }
         }
     }
 
     private fun toggleTTSState() {
         if (uiState.isTTSActive) {
-            stopSpeaking()
-            shutdownTextToSpeech()
+            textToSpeechRepository.stop()
             updateState { copy(isTTSActive = false) }
         } else {
             updateState { copy(isTTSActive = true) }
 
         }
-    }
-
-    private fun startTimer(durationSeconds: Int) {
-        cancelExistingTimer()
-
-        updateState {
-            copy(
-                timerState = TimerState.RUNNING,
-                timeRemaining = durationSeconds
-            )
-        }
-
-        startCountdownTimer(durationSeconds)
     }
 
     private fun pauseTimer() {
@@ -137,9 +119,8 @@ class WorkoutViewModel @Inject constructor(
 
 
     private fun stopTimer() {
-        timerJob?.cancel()
-        timerJob = null
-        updateState { copy(timeRemaining = 0, timerState = TimerState.STOPPED) }
+        cancelExistingTimer()
+        updateState { copy(timeRemaining = 0, timerState = TimerState.PAUSED) }
     }
 
     private fun startCountdownTimer(startTimeInSeconds: Int) {
@@ -149,7 +130,7 @@ class WorkoutViewModel @Inject constructor(
                 delay(1000L)
             }
 
-            updateState { copy(timerState = TimerState.STOPPED) }
+            updateState { copy(timerState = TimerState.PAUSED) }
             nextWorkout()
         }
     }
@@ -161,8 +142,8 @@ class WorkoutViewModel @Inject constructor(
 
     override fun onCleared() {
         super.onCleared()
-        timerJob?.cancel()
-        shutdownTextToSpeech()
+        stopTimer()
+        textToSpeechRepository.shutdown()
     }
 
     override fun setLoading(isLoading: Boolean) {

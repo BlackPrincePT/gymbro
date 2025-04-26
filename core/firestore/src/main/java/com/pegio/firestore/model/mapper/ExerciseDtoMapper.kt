@@ -10,7 +10,6 @@ class ExerciseDtoMapper @Inject constructor(): Mapper<ExerciseDto, Workout> {
     override fun mapToDomain(data: ExerciseDto): Workout {
         return Workout(
             description = data.description,
-            isFinished = data.isFinished,
             muscleGroups = data.muscleGroups,
             name = data.name,
             sets = data.sets,
@@ -23,7 +22,6 @@ class ExerciseDtoMapper @Inject constructor(): Mapper<ExerciseDto, Workout> {
     override fun mapFromDomain(data: Workout): ExerciseDto {
         return ExerciseDto(
             description = data.description,
-            isFinished = data.isFinished,
             muscleGroups = data.muscleGroups,
             name = data.name,
             sets = data.sets,

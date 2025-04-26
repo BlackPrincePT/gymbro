@@ -40,7 +40,8 @@ import com.pegio.common.presentation.components.WorkoutImage
 import com.pegio.model.Workout.MuscleGroup
 import com.pegio.model.Workout.WorkoutType
 import com.pegio.workout.presentation.model.UiWorkout
-import com.pegio.workout.presentation.screen.workout.WorkoutUiState.TimerState
+import com.pegio.workout.presentation.screen.workout.WorkoutUiEvent
+import com.pegio.workout.presentation.screen.workout.WorkoutUiState
 
 @Composable
 fun WorkoutDetailChip(
@@ -126,22 +127,12 @@ fun WorkoutDetailsCard(workout: UiWorkout) {
 @Composable
 fun WorkoutDetails(
     workout: UiWorkout,
-    isTTSActive: Boolean,
-    onNextClick: () -> Unit,
-    onPreviousClick: () -> Unit,
-    isLastWorkout: Boolean,
-    showBackButton: Boolean,
-    onReadDescriptionClick: (String) -> Unit,
-    onToggleTTSClick: () -> Unit,
-    timeRemaining: Int,
-    timerState: TimerState,
-    onStartTimer: (Int) -> Unit,
-    onPauseTimer: () -> Unit,
-    onResumeTimer: () -> Unit,
+    onEvent: (WorkoutUiEvent) -> Unit,
+    state: WorkoutUiState,
 ) {
-    LaunchedEffect(workout.description, isTTSActive) {
-        if (isTTSActive) {
-            onReadDescriptionClick(workout.description)
+    LaunchedEffect(workout.description, state.isTTSActive) {
+        if (state.isTTSActive) {
+            onEvent(WorkoutUiEvent.OnReadTTSClick(workout.description))
         }
     }
 
@@ -151,12 +142,12 @@ fun WorkoutDetails(
             .padding(16.dp)
     ) {
         IconButton(
-            onClick = onToggleTTSClick,
+            onClick = { onEvent(WorkoutUiEvent.OnToggleTTSClick) },
             modifier = Modifier.align(Alignment.TopEnd)
         ) {
             Icon(
-                imageVector = if (isTTSActive) Icons.AutoMirrored.Default.VolumeUp else Icons.AutoMirrored.Default.VolumeOff,
-                contentDescription = if (isTTSActive) "Mute TTS" else "Read Description"
+                imageVector = if (state.isTTSActive) Icons.AutoMirrored.Default.VolumeUp else Icons.AutoMirrored.Default.VolumeOff,
+                contentDescription = if (state.isTTSActive) "Mute TTS" else "Read Description"
             )
         }
 
@@ -186,19 +177,19 @@ fun WorkoutDetails(
 
             TimerSection(
                 workout = workout.workoutType,
-                timeRemaining = timeRemaining,
-                timerState = timerState,
-                onStartTimer = onStartTimer,
-                onPauseTimer = onPauseTimer,
-                onResumeTimer = onResumeTimer
+                workoutTime = workout.value,
+                timeRemaining = state.timeRemaining,
+                timerState = state.timerState,
+                onPauseTimer = { onEvent(WorkoutUiEvent.PauseTimer) },
+                onResumeTimer = { onEvent(WorkoutUiEvent.ResumeTimer) },
             )
 
             Spacer(modifier = Modifier.weight(1f))
 
             Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                if (showBackButton) {
+                if (state.currentWorkoutIndex != 0) {
                     Button(
-                        onClick = onPreviousClick,
+                        onClick = { onEvent(WorkoutUiEvent.OnPreviousClick) },
                         shape = RoundedCornerShape(12.dp),
                         modifier = Modifier
                             .weight(1f)
@@ -209,14 +200,14 @@ fun WorkoutDetails(
                 }
 
                 Button(
-                    onClick = onNextClick,
+                    onClick = { onEvent(WorkoutUiEvent.OnNextClick) },
                     shape = RoundedCornerShape(12.dp),
                     modifier = Modifier
                         .weight(1f)
                         .height(56.dp)
                 ) {
                     Text(
-                        text = if (isLastWorkout) "Finish" else "Next",
+                        text = if (state.currentWorkoutIndex == state.workouts.size - 1) "Finish" else "Next",
                         style = MaterialTheme.typography.titleMedium
                     )
                 }
@@ -230,30 +221,19 @@ fun WorkoutDetails(
 @Composable
 fun PreviewWorkoutDetails() {
     val workout = UiWorkout(
-        workoutType = WorkoutType.REPETITION,
+        workoutType = WorkoutType.TIMED,
         value = 10,
         sets = 3,
         muscleGroups = listOf(MuscleGroup.CHEST, MuscleGroup.ARMS),
         description = "A workout that targets the chest and arms.",
-        isFinished = false,
         name = "Push Up",
         workoutImage = ""
     )
 
     WorkoutDetails(
         workout = workout,
-        onNextClick = {},
-        onToggleTTSClick = {},
-        onPreviousClick = {},
-        isLastWorkout = false,
-        showBackButton = true,
-        isTTSActive = false,
-        onReadDescriptionClick = {},
-        timeRemaining = 14,
-        onStartTimer = {},
-        onPauseTimer = {},
-        onResumeTimer = {},
-        timerState = TimerState.STOPPED
+        onEvent = {},
+        state = WorkoutUiState()
     )
 }
 
@@ -267,7 +247,6 @@ fun PreviewWorkoutDetailsCard() {
         sets = 3,
         muscleGroups = listOf(MuscleGroup.CHEST, MuscleGroup.ARMS),
         description = "",
-        isFinished = false,
         name = "",
         workoutImage = ""
     )
