@@ -6,10 +6,15 @@ import com.pegio.common.core.Resource
 import com.pegio.common.core.SessionError
 import com.pegio.common.core.asFailure
 import com.pegio.common.core.asSuccess
-import com.pegio.common.core.getOrElse
+import com.pegio.common.core.getOrNull
+import com.pegio.common.core.isFailure
+import com.pegio.common.core.map
 import com.pegio.firestore.repository.WorkoutRepository
 import com.pegio.model.Workout
 import com.pegio.uploadmanager.core.UploadManager
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.coroutineScope
 import javax.inject.Inject
 
 class UploadWorkoutUseCase @Inject constructor(
@@ -19,28 +24,35 @@ class UploadWorkoutUseCase @Inject constructor(
 ) {
     suspend operator fun invoke(
         workouts: List<Workout>
-    ): Resource<Unit, Error> {
+    ): Resource<Unit, Error> = coroutineScope {
 
         val currentUser = authRepository.getCurrentUser()
-            ?: return SessionError.Unauthenticated.asFailure()
+            ?: return@coroutineScope SessionError.Unauthenticated.asFailure()
 
         if (currentUser.isAnonymous)
-            return SessionError.AnonymousUser.asFailure()
+            return@coroutineScope SessionError.AnonymousUser.asFailure()
 
         val updatedWorkouts = workouts.map { workout ->
-            uploadManager.enqueueFileUpload(workout.workoutImage)
-                .getOrElse { return it.asFailure() }
-                .let { uploadedUrl ->
-                    workout.copy(workoutImage = uploadedUrl)
-                }
-        }
+            async {
+                uploadManager.enqueueFileUpload(workout.workoutImage)
+                    .map { uploadedUrl ->
+                        workout.copy(workoutImage = uploadedUrl)
+                    }
+            }
+        }.awaitAll()
+
+        updatedWorkouts.firstOrNull { it.isFailure() }
+            ?.let { return@coroutineScope it as Resource.Failure }
+
+        val successfulWorkouts = updatedWorkouts.mapNotNull { it.getOrNull() }
 
         workoutRepository.uploadWorkouts(
             authorId = currentUser.id,
-            workouts = updatedWorkouts
+            workouts = successfulWorkouts
         )
 
-        return Unit.asSuccess()
+        Unit.asSuccess()
     }
+
 }
 
