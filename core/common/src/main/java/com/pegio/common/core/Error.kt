@@ -103,4 +103,9 @@ sealed interface WorkoutValidationError : Error {
     enum class WorkoutImage : WorkoutValidationError {
         EMPTY,          // When no image is provided
     }
+
+    enum class Workouts : WorkoutValidationError {
+        TOO_FEW,         // When workouts size is fewer than 5
+        TOO_MANY         // When workouts size is more than 30
+    }
 }

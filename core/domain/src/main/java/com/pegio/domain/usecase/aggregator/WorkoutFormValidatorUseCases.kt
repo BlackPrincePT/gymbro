@@ -6,6 +6,7 @@ import com.pegio.domain.usecase.validator.workout.ValidateWorkoutMuscleGroupsUse
 import com.pegio.domain.usecase.validator.workout.ValidateWorkoutNameUseCase
 import com.pegio.domain.usecase.validator.workout.ValidateWorkoutSetsUseCase
 import com.pegio.domain.usecase.validator.workout.ValidateWorkoutValueUseCase
+import com.pegio.domain.usecase.validator.workout.ValidateWorkoutsListUseCase
 import javax.inject.Inject
 
 data class WorkoutFormValidatorUseCases @Inject constructor(
@@ -14,5 +15,6 @@ data class WorkoutFormValidatorUseCases @Inject constructor(
     val validateWorkoutValue: ValidateWorkoutValueUseCase,
     val validateWorkoutSets: ValidateWorkoutSetsUseCase,
     val validateWorkoutMuscleGroups: ValidateWorkoutMuscleGroupsUseCase,
-    val validateWorkoutImage: ValidateWorkoutImageUseCase
+    val validateWorkoutImage: ValidateWorkoutImageUseCase,
+    val validateWorkoutsListUseCase: ValidateWorkoutsListUseCase
 )

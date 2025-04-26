@@ -9,6 +9,7 @@ sealed interface WorkoutCreationUiEvent {
     data object OnAddWorkoutClick : WorkoutCreationUiEvent
     data object OnDismissDialog : WorkoutCreationUiEvent
     data object OnSaveWorkout : WorkoutCreationUiEvent
+    data object OnUploadWorkouts : WorkoutCreationUiEvent
 
     data object OnBackClick: WorkoutCreationUiEvent
 }

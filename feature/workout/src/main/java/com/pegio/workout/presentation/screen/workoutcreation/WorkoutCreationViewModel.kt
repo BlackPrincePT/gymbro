@@ -1,28 +1,36 @@
 package com.pegio.workout.presentation.screen.workoutcreation
 
 import com.pegio.common.core.errorOrNull
+import com.pegio.common.core.onFailure
+import com.pegio.common.core.onSuccess
+import com.pegio.common.core.retryableCall
 import com.pegio.common.presentation.core.BaseViewModel
 import com.pegio.common.presentation.util.toStringResId
 import com.pegio.domain.usecase.aggregator.WorkoutFormValidatorUseCases
+import com.pegio.domain.usecase.workout.UploadWorkoutUseCase
 import com.pegio.model.Workout
 import com.pegio.workout.presentation.model.UiWorkout
+import com.pegio.workout.presentation.model.mapper.UiWorkoutMapper
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
 class WorkoutCreationViewModel @Inject constructor(
-    private val workoutFormValidator: WorkoutFormValidatorUseCases
+    private val workoutFormValidator: WorkoutFormValidatorUseCases,
+    private val uploadWorkout: UploadWorkoutUseCase,
+    private val uiWorkoutMapper: UiWorkoutMapper
 ) : BaseViewModel<WorkoutCreationUiState, WorkoutCreationUiEffect, WorkoutCreationUiEvent>(
     initialState = WorkoutCreationUiState()
 ) {
     override fun onEvent(event: WorkoutCreationUiEvent) {
         when (event) {
             is WorkoutCreationUiEvent.RemoveWorkout -> removeWorkout(event.workoutId)
+            is WorkoutCreationUiEvent.OnEditWorkout -> editWorkout(event.workout)
             WorkoutCreationUiEvent.OnBackClick -> sendEffect(WorkoutCreationUiEffect.NavigateBack)
             WorkoutCreationUiEvent.OnAddWorkoutClick -> showAddWorkoutDialog()
             WorkoutCreationUiEvent.OnDismissDialog -> hideAddWorkoutDialog()
             WorkoutCreationUiEvent.OnSaveWorkout -> saveWorkout()
-            is WorkoutCreationUiEvent.OnEditWorkout -> editWorkout(event.workout)
+            WorkoutCreationUiEvent.OnUploadWorkouts -> uploadWorkouts()
         }
     }
 
@@ -143,6 +151,37 @@ class WorkoutCreationViewModel @Inject constructor(
             }
 
         return isValid
+    }
+
+
+    private fun uploadWorkouts() {
+       workoutFormValidator.validateWorkoutsListUseCase(
+            uiState.workouts.map { uiWorkout ->
+                uiWorkoutMapper.mapToDomain(uiWorkout)
+            }
+        ).onFailure {
+            sendEffect(
+                WorkoutCreationUiEffect.Failure(
+                    errorRes = it.toStringResId()
+                )
+            )
+            return
+        }
+
+        launchWithLoading {
+            val result = retryableCall {
+                val workoutsToUpload = uiState.workouts.map { uiWorkout ->
+                    uiWorkoutMapper.mapToDomain(uiWorkout)
+                }
+                uploadWorkout(workoutsToUpload)
+            }
+
+            result.onSuccess {
+                sendEffect(WorkoutCreationUiEffect.NavigateBack)
+            }.onFailure { error ->
+                sendEffect(WorkoutCreationUiEffect.Failure(error.toStringResId()))
+            }
+        }
     }
 
 

@@ -6,4 +6,5 @@ import com.pegio.model.Workout
 
 interface WorkoutRepository {
     suspend fun fetchWorkoutsById(id:String): Resource<List<Workout>, DataError.Firestore>
+    suspend fun uploadWorkouts(authorId: String, workouts: List<Workout>)
 }

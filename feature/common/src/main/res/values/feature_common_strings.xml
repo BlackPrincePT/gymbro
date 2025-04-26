@@ -62,4 +62,8 @@
     <!-- Workout Image Error -->
     <string name="feature_common_presentation_error_workout_image_empty">Workout image is required</string>
 
+    <!-- Workouts List Error -->
+    <string name="feature_common_presentation_error_workouts_list_too_few">You need at least 5 workouts to upload!</string>
+    <string name="feature_common_presentation_error_workouts_list_too_many">You must have less than 30 workouts to upload!</string>
+
 </resources>
