@@ -17,6 +17,5 @@ data class WorkoutValidationError(
     @StringRes val description: Int? = null,
     @StringRes val value: Int? = null,
     @StringRes val sets: Int? = null,
-    @StringRes val workoutType : Int? = null,
     @StringRes val muscleGroups: Int? = null,
 )

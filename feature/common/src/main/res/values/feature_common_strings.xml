@@ -48,9 +48,6 @@
     <string name="feature_common_presentation_error_description_empty">Workout description cannot be empty</string>
     <string name="feature_common_presentation_error_description_too_short">Workout description is too short</string>
 
-    <!-- Workout Type Error -->
-    <string name="feature_common_presentation_error_workout_type_empty">Workout type must be selected</string>
-
     <!-- Workout Value Error -->
     <string name="feature_common_presentation_error_value_invalid">Workout value is invalid</string>
     <string name="feature_common_presentation_error_value_too_low">Workout value is too low</string>
@@ -64,6 +61,5 @@
 
     <!-- Workout Image Error -->
     <string name="feature_common_presentation_error_workout_image_empty">Workout image is required</string>
-    <string name="feature_common_presentation_error_workout_image_invalid_url">Workout image URL is invalid</string>
 
 </resources>

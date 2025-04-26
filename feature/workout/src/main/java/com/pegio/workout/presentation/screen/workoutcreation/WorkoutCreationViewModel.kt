@@ -106,15 +106,6 @@ class WorkoutCreationViewModel @Inject constructor(
                 isValid = isValid && it == null
             }
 
-        workoutFormValidator.validateWorkoutType(currentWorkout.workoutType)
-            .errorOrNull()
-            .let {
-                updateState {
-                    copy(validationError = validationError.copy(workoutType = it?.toStringResId()))
-                }
-                isValid = isValid && it == null
-            }
-
         workoutFormValidator.validateWorkoutValue(currentWorkout.value)
             .errorOrNull()
             .let {

@@ -40,7 +40,6 @@ private fun DataError.Network.toStringResId(): Int = when (this) {
 private fun WorkoutValidationError.toStringResId(): Int = when (this) {
     is WorkoutValidationError.Name -> this.toStringResId()
     is WorkoutValidationError.Description -> this.toStringResId()
-    is WorkoutValidationError.WorkoutType -> this.toStringResId()
     is WorkoutValidationError.Value -> this.toStringResId()
     is WorkoutValidationError.Sets -> this.toStringResId()
     is WorkoutValidationError.MuscleGroups -> this.toStringResId()
@@ -97,10 +96,6 @@ private fun WorkoutValidationError.Description.toStringResId(): Int = when (this
     WorkoutValidationError.Description.TOO_SHORT -> R.string.feature_common_presentation_error_description_too_short
 }
 
-private fun WorkoutValidationError.WorkoutType.toStringResId(): Int = when (this) {
-    WorkoutValidationError.WorkoutType.EMPTY -> R.string.feature_common_presentation_error_workout_type_empty
-}
-
 private fun WorkoutValidationError.Value.toStringResId(): Int = when (this) {
     WorkoutValidationError.Value.INVALID -> R.string.feature_common_presentation_error_value_invalid
     WorkoutValidationError.Value.TOO_LOW -> R.string.feature_common_presentation_error_value_too_low
@@ -117,7 +112,6 @@ private fun WorkoutValidationError.MuscleGroups.toStringResId(): Int = when (thi
 
 private fun WorkoutValidationError.WorkoutImage.toStringResId(): Int = when (this) {
     WorkoutValidationError.WorkoutImage.EMPTY -> R.string.feature_common_presentation_error_workout_image_empty
-    WorkoutValidationError.WorkoutImage.INVALID_URL -> R.string.feature_common_presentation_error_workout_image_invalid_url
 }
 
 

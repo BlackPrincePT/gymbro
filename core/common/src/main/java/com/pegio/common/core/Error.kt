@@ -86,10 +86,6 @@ sealed interface WorkoutValidationError : Error {
         TOO_SHORT       // When the description is too short
     }
 
-    enum class WorkoutType : WorkoutValidationError {
-        EMPTY         // When the workout type is not in the allowed list
-    }
-
     enum class Value : WorkoutValidationError {
         INVALID,        // When the value (e.g., reps or duration) is non-positive
         TOO_LOW         // When the value is below a logical threshold
@@ -106,6 +102,5 @@ sealed interface WorkoutValidationError : Error {
 
     enum class WorkoutImage : WorkoutValidationError {
         EMPTY,          // When no image is provided
-        INVALID_URL     // When the image string is not a valid URL or file path
     }
 }
