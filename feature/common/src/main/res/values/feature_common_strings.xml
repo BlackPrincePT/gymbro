@@ -38,4 +38,32 @@
     <!-- Weight Errors -->
     <string name="feature_common_presentation_error_weight_invalid">The weight value provided is invalid.</string>
     <string name="feature_common_presentation_error_weight_too_low">The weight is below the acceptable threshold.</string>
+
+    <!-- Workout Name Error -->
+    <string name="feature_common_presentation_error_name_empty">Workout name cannot be empty</string>
+    <string name="feature_common_presentation_error_name_too_short">Workout name is too short</string>
+
+    <!-- Workout Description Error -->
+
+    <string name="feature_common_presentation_error_description_empty">Workout description cannot be empty</string>
+    <string name="feature_common_presentation_error_description_too_short">Workout description is too short</string>
+
+    <!-- Workout Type Error -->
+    <string name="feature_common_presentation_error_workout_type_empty">Workout type must be selected</string>
+
+    <!-- Workout Value Error -->
+    <string name="feature_common_presentation_error_value_invalid">Workout value is invalid</string>
+    <string name="feature_common_presentation_error_value_too_low">Workout value is too low</string>
+
+    <!-- Workout Sets Error -->
+    <string name="feature_common_presentation_error_sets_invalid">Number of sets is invalid</string>
+    <string name="feature_common_presentation_error_sets_too_many">Too many sets specified</string>
+
+    <!-- Workout MuscleGroups Error -->
+    <string name="feature_common_presentation_error_muscle_groups_empty">Please select at least one muscle group</string>
+
+    <!-- Workout Image Error -->
+    <string name="feature_common_presentation_error_workout_image_empty">Workout image is required</string>
+    <string name="feature_common_presentation_error_workout_image_invalid_url">Workout image URL is invalid</string>
+
 </resources>

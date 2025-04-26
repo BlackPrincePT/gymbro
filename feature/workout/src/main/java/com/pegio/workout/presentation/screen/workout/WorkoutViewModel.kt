@@ -1,6 +1,5 @@
 package com.pegio.workout.presentation.screen.workout
 
-import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.pegio.common.core.onFailure
 import com.pegio.common.core.onSuccess

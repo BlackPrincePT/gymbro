@@ -4,10 +4,12 @@ import com.pegio.common.R
 import com.pegio.common.core.DataError
 import com.pegio.common.core.Error
 import com.pegio.common.core.ValidationError
+import com.pegio.common.core.WorkoutValidationError
 
 fun Error.toStringResId(): Int = when (this) {
     is DataError -> this.toStringResId()
     is ValidationError -> this.toStringResId()
+    is WorkoutValidationError -> this.toStringResId()
     else -> R.string.feature_common_presentation_error_generic
 }
 
@@ -34,6 +36,17 @@ private fun DataError.Network.toStringResId(): Int = when (this) {
     DataError.Network.NOT_FOUND -> R.string.feature_common_presentation_error_not_found
     else -> R.string.feature_common_presentation_error_generic
 }
+
+private fun WorkoutValidationError.toStringResId(): Int = when (this) {
+    is WorkoutValidationError.Name -> this.toStringResId()
+    is WorkoutValidationError.Description -> this.toStringResId()
+    is WorkoutValidationError.WorkoutType -> this.toStringResId()
+    is WorkoutValidationError.Value -> this.toStringResId()
+    is WorkoutValidationError.Sets -> this.toStringResId()
+    is WorkoutValidationError.MuscleGroups -> this.toStringResId()
+    is WorkoutValidationError.WorkoutImage -> this.toStringResId()
+}
+
 
 private fun DataError.Auth.toStringResId(): Int = when (this) {
     DataError.Auth.INVALID_CREDENTIAL -> R.string.feature_common_presentation_error_invalid_credential
@@ -73,3 +86,38 @@ private fun ValidationError.Weight.toStringResId(): Int = when (this) {
     ValidationError.Weight.INVALID -> R.string.feature_common_presentation_error_weight_invalid
     ValidationError.Weight.TOO_LOW -> R.string.feature_common_presentation_error_weight_too_low
 }
+
+private fun WorkoutValidationError.Name.toStringResId(): Int = when (this) {
+    WorkoutValidationError.Name.EMPTY -> R.string.feature_common_presentation_error_name_empty
+    WorkoutValidationError.Name.TOO_SHORT -> R.string.feature_common_presentation_error_name_too_short
+}
+
+private fun WorkoutValidationError.Description.toStringResId(): Int = when (this) {
+    WorkoutValidationError.Description.EMPTY -> R.string.feature_common_presentation_error_description_empty
+    WorkoutValidationError.Description.TOO_SHORT -> R.string.feature_common_presentation_error_description_too_short
+}
+
+private fun WorkoutValidationError.WorkoutType.toStringResId(): Int = when (this) {
+    WorkoutValidationError.WorkoutType.EMPTY -> R.string.feature_common_presentation_error_workout_type_empty
+}
+
+private fun WorkoutValidationError.Value.toStringResId(): Int = when (this) {
+    WorkoutValidationError.Value.INVALID -> R.string.feature_common_presentation_error_value_invalid
+    WorkoutValidationError.Value.TOO_LOW -> R.string.feature_common_presentation_error_value_too_low
+}
+
+private fun WorkoutValidationError.Sets.toStringResId(): Int = when (this) {
+    WorkoutValidationError.Sets.INVALID -> R.string.feature_common_presentation_error_sets_invalid
+    WorkoutValidationError.Sets.TOO_MANY -> R.string.feature_common_presentation_error_sets_too_many
+}
+
+private fun WorkoutValidationError.MuscleGroups.toStringResId(): Int = when (this) {
+    WorkoutValidationError.MuscleGroups.EMPTY -> R.string.feature_common_presentation_error_muscle_groups_empty
+}
+
+private fun WorkoutValidationError.WorkoutImage.toStringResId(): Int = when (this) {
+    WorkoutValidationError.WorkoutImage.EMPTY -> R.string.feature_common_presentation_error_workout_image_empty
+    WorkoutValidationError.WorkoutImage.INVALID_URL -> R.string.feature_common_presentation_error_workout_image_invalid_url
+}
+
+

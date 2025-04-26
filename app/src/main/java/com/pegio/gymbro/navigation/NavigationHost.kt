@@ -47,7 +47,7 @@ fun NavigationHost(
 ) {
     NavHost(
         navController = navController,
-        startDestination = SplashRoute,
+        startDestination = WorkoutCreationRoute,
         modifier = modifier
     ) {
 
