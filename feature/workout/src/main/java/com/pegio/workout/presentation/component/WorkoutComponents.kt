@@ -37,8 +37,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.pegio.common.presentation.components.WorkoutImage
-import com.pegio.model.Workout.MuscleGroup
-import com.pegio.model.Workout.WorkoutType
+import com.pegio.model.Exercise.MuscleGroup
+import com.pegio.model.Exercise.Type
 import com.pegio.workout.presentation.model.UiWorkout
 import com.pegio.workout.presentation.screen.workout.WorkoutUiEvent
 import com.pegio.workout.presentation.screen.workout.WorkoutUiState
@@ -101,9 +101,9 @@ fun WorkoutDetailsCard(workout: UiWorkout) {
             ) {
                 WorkoutDetailChip(
                     icon = Icons.Default.FitnessCenter,
-                    text = when (workout.workoutType) {
-                        WorkoutType.REPETITION -> "${workout.value} reps"
-                        WorkoutType.TIMED -> "${workout.value} seconds"
+                    text = when (workout.type) {
+                        Type.REPETITION -> "${workout.value} reps"
+                        Type.TIMED -> "${workout.value} seconds"
                     },
                     modifier = Modifier.weight(1f)
                 )
@@ -176,7 +176,7 @@ fun WorkoutDetails(
             WorkoutDetailsCard(workout)
 
             TimerSection(
-                workout = workout.workoutType,
+                workout = workout.type,
                 workoutTime = workout.value,
                 timeRemaining = state.timeRemaining,
                 timerState = state.timerState,
@@ -221,7 +221,7 @@ fun WorkoutDetails(
 @Composable
 fun PreviewWorkoutDetails() {
     val workout = UiWorkout(
-        workoutType = WorkoutType.TIMED,
+        type = Type.TIMED,
         value = 10,
         sets = 3,
         muscleGroups = listOf(MuscleGroup.CHEST, MuscleGroup.ARMS),
@@ -242,7 +242,7 @@ fun PreviewWorkoutDetails() {
 @Composable
 fun PreviewWorkoutDetailsCard() {
     val workout = UiWorkout(
-        workoutType = WorkoutType.REPETITION,
+        type = Type.REPETITION,
         value = 10,
         sets = 3,
         muscleGroups = listOf(MuscleGroup.CHEST, MuscleGroup.ARMS),

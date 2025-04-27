@@ -27,6 +27,7 @@ class WorkoutViewModel @Inject constructor(
 
     override fun onEvent(event: WorkoutUiEvent) {
         when (event) {
+
             is WorkoutUiEvent.FetchWorkouts -> fetchWorkouts(event.workoutId)
             is WorkoutUiEvent.OnNextClick -> nextWorkout()
             WorkoutUiEvent.OnPreviousClick -> previousWorkout()

@@ -29,7 +29,7 @@ import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 
 
-class WorkoutPlanViewModelTest {
+class ExercisePlanViewModelTest {
 
     private lateinit var viewModel: WorkoutPlanViewModel
 

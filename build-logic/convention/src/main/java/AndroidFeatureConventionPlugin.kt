@@ -25,9 +25,6 @@ class AndroidFeatureConventionPlugin : Plugin<Project> {
                 scriptImplementation(libs.findLibrary("androidx-ui-graphics").get())
                 scriptImplementation(libs.findLibrary("androidx-hilt-navigation-compose").get())
                 scriptImplementation(libs.findLibrary("kotlinx-serialization-json").get())
-
-                scriptTestImplementation(libs.findLibrary("mockk").get())
-                scriptTestImplementation(libs.findLibrary("kotlinx-coroutines-test").get())
             }
         }
     }

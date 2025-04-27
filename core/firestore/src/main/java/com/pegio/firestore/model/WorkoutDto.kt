@@ -1,22 +1,12 @@
 package com.pegio.firestore.model
 
 import com.google.firebase.firestore.DocumentId
-import com.pegio.model.Workout.WorkoutType
-import com.pegio.model.Workout.MuscleGroup
+import com.pegio.model.Exercise.Type
+import com.pegio.model.Exercise.MuscleGroup
 
 data class WorkoutDto(
     @DocumentId val id: String? = null,
     val authorId:String = "",
-    val workouts: List<ExerciseDto> = emptyList()
-)
-
-data class ExerciseDto(
-    val name: String = "",
-    val description: String = "",
-    val workoutType: WorkoutType = WorkoutType.REPETITION,
-    val value: Int = 0,
-    val sets: Int = 1,
-    val isFinished: Boolean = false,
-    val muscleGroups: List<MuscleGroup> = emptyList(),
-    val workoutImage: String = ""
+    val title: String = "",
+    val description: String = ""
 )

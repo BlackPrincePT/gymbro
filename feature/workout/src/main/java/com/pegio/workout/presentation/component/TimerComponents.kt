@@ -23,19 +23,19 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.pegio.model.Workout.WorkoutType
+import com.pegio.model.Exercise.Type
 import com.pegio.workout.presentation.screen.workout.WorkoutUiState.TimerState
 
 @Composable
 fun TimerSection(
-    workout: WorkoutType,
+    workout: Type,
     workoutTime : Int,
     timeRemaining: Int,
     timerState: TimerState,
     onPauseTimer: () -> Unit,
     onResumeTimer: () -> Unit
 ) {
-    if (workout == WorkoutType.TIMED) {
+    if (workout == Type.TIMED) {
         val progress = timeRemaining / workoutTime.toFloat()
 
         Column(
@@ -110,7 +110,7 @@ private fun TimerControlButton(
 fun TimerSectionPreview() {
     MaterialTheme {
         TimerSection(
-            workout = WorkoutType.TIMED,
+            workout = Type.TIMED,
             timeRemaining = 45,
             workoutTime = 10,
             timerState = TimerState.RUNNING,

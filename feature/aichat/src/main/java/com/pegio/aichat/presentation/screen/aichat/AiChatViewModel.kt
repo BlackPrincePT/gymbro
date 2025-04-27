@@ -11,6 +11,7 @@ import com.pegio.common.presentation.util.toStringResId
 import com.pegio.domain.usecase.aichat.ObserveAiMessagesPagingStreamUseCase
 import com.pegio.domain.usecase.aichat.SaveFireStoreMessagesUseCase
 import com.pegio.domain.usecase.aichat.SendMessageToAiUseCase
+import com.pegio.domain.usecase.common.EnqueueFileUploadUseCase
 import com.pegio.domain.usecase.common.GetCurrentAuthUserUseCase
 import com.pegio.uploadmanager.core.FileUploadManager
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -22,7 +23,7 @@ class AiChatViewModel @Inject constructor(
     private val sendMessageToAi: SendMessageToAiUseCase,
     private val saveMessage: SaveFireStoreMessagesUseCase,
     private val observeAiMessagesPagingStream: ObserveAiMessagesPagingStreamUseCase,
-    private val fileUploadManager: FileUploadManager,
+    private val enqueueFileUpload: EnqueueFileUploadUseCase,
     private val uiAiMessageMapper: UiAiMessageMapper,
     getCurrentAuthUser: GetCurrentAuthUserUseCase
 ) : BaseViewModel<AiChatUiState, AiChatUiEffect, AiChatUiEvent>(initialState = AiChatUiState()) {
@@ -104,7 +105,7 @@ class AiChatViewModel @Inject constructor(
     }
 
     private suspend fun handleImageMessage(uri: Uri, uiMessage: UiAiMessage, userId: String) {
-        fileUploadManager.enqueueFileUpload(uri.toString())
+        enqueueFileUpload(uri.toString())
             .onSuccess { imageUrl ->
                 val messageWithImage = uiMessage.copy(imageUrl = imageUrl)
                 val domainMessage = uiAiMessageMapper.mapToDomain(messageWithImage)

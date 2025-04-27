@@ -8,7 +8,7 @@ import com.pegio.common.presentation.core.BaseViewModel
 import com.pegio.common.presentation.util.toStringResId
 import com.pegio.domain.usecase.aggregator.WorkoutFormValidatorUseCases
 import com.pegio.domain.usecase.workout.UploadWorkoutUseCase
-import com.pegio.model.Workout
+import com.pegio.model.Exercise
 import com.pegio.workout.presentation.model.UiWorkout
 import com.pegio.workout.presentation.model.mapper.UiWorkoutMapper
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -41,7 +41,7 @@ class WorkoutCreationViewModel @Inject constructor(
                 newWorkout = UiWorkout(
                     name = "",
                     description = "",
-                    workoutType = Workout.WorkoutType.TIMED,
+                    type = Exercise.Type.TIMED,
                     value = 0,
                     sets = 0,
                     muscleGroups = emptyList(),
@@ -155,32 +155,33 @@ class WorkoutCreationViewModel @Inject constructor(
 
 
     private fun uploadWorkouts() {
-       workoutFormValidator.validateWorkoutsListUseCase(
+        workoutFormValidator.validateWorkoutsListUseCase(
             uiState.workouts.map { uiWorkout ->
                 uiWorkoutMapper.mapToDomain(uiWorkout)
             }
-        ).onFailure {
-            sendEffect(
-                WorkoutCreationUiEffect.Failure(
-                    errorRes = it.toStringResId()
+        )
+            .onFailure {
+                sendEffect(
+                    WorkoutCreationUiEffect.Failure(
+                        errorRes = it.toStringResId()
+                    )
                 )
-            )
-            return
-        }
+                return
+            }
 
         launchWithLoading {
-            val result = retryableCall {
+            retryableCall {
                 val workoutsToUpload = uiState.workouts.map { uiWorkout ->
                     uiWorkoutMapper.mapToDomain(uiWorkout)
                 }
                 uploadWorkout(workoutsToUpload)
             }
-
-            result.onSuccess {
-                sendEffect(WorkoutCreationUiEffect.NavigateBack)
-            }.onFailure { error ->
-                sendEffect(WorkoutCreationUiEffect.Failure(error.toStringResId()))
-            }
+                .onSuccess {
+                    sendEffect(WorkoutCreationUiEffect.NavigateBack)
+                }
+                .onFailure { error ->
+                    sendEffect(WorkoutCreationUiEffect.Failure(error.toStringResId()))
+                }
         }
     }
 
@@ -190,7 +191,6 @@ class WorkoutCreationViewModel @Inject constructor(
             copy(workouts = workouts.filter { it.id != workoutId })
         }
     }
-
 
     override fun setLoading(isLoading: Boolean) {
         updateState { copy(isLoading = isLoading) }

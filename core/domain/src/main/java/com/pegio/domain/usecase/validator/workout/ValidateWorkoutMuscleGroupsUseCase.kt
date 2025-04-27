@@ -2,7 +2,7 @@ package com.pegio.domain.usecase.validator.workout
 
 import com.pegio.common.core.Resource
 import com.pegio.common.core.WorkoutValidationError
-import com.pegio.model.Workout.MuscleGroup
+import com.pegio.model.Exercise.MuscleGroup
 import javax.inject.Inject
 
 class ValidateWorkoutMuscleGroupsUseCase @Inject constructor() {

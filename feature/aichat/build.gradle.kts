@@ -7,7 +7,5 @@ android {
 }
 
 dependencies {
-    implementation(project(":core:uploadmanager"))
-
     implementation(libs.kotlinx.datetime)
 }

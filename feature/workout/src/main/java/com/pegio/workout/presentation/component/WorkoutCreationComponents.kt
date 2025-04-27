@@ -53,8 +53,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import coil3.compose.AsyncImage
 import com.pegio.designsystem.component.FormTextField
-import com.pegio.model.Workout.MuscleGroup
-import com.pegio.model.Workout.WorkoutType
+import com.pegio.model.Exercise.MuscleGroup
+import com.pegio.model.Exercise.Type
 import com.pegio.workout.presentation.model.UiWorkout
 import com.pegio.workout.presentation.screen.workoutcreation.WorkoutCreationUiEvent
 import com.pegio.workout.presentation.screen.workoutcreation.WorkoutCreationUiState
@@ -110,16 +110,16 @@ fun WorkoutItem(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Text(
-                            text = workout.workoutType.toString(),
+                            text = workout.type.toString(),
                             style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.primary
                         )
 
                         Spacer(modifier = Modifier.width(12.dp))
 
-                        val valueText = when (workout.workoutType) {
-                            WorkoutType.TIMED -> "${workout.value} seconds"
-                            WorkoutType.REPETITION -> "${workout.value} reps"
+                        val valueText = when (workout.type) {
+                            Type.TIMED -> "${workout.value} seconds"
+                            Type.REPETITION -> "${workout.value} reps"
                         }
 
                         Text(
@@ -289,7 +289,7 @@ fun AddWorkoutDialog(
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     OutlinedTextField(
-                        value = state.newWorkout.workoutType.toString(),
+                        value = state.newWorkout.type.toString(),
                         onValueChange = { },
                         readOnly = true,
                         label = { Text("Workout Type") },
@@ -305,14 +305,14 @@ fun AddWorkoutDialog(
                         expanded = workoutTypeExpanded,
                         onDismissRequest = { workoutTypeExpanded = false }
                     ) {
-                        WorkoutType.entries.forEach { workoutType ->
+                        Type.entries.forEach { workoutType ->
                             DropdownMenuItem(
                                 text = { Text(workoutType.toString()) },
                                 onClick = {
                                     onEvent(
                                         WorkoutCreationUiEvent.OnEditWorkout(
                                             state.newWorkout.copy(
-                                                workoutType = workoutType,
+                                                type = workoutType,
                                                 value = 0
                                             )
                                         )
@@ -326,8 +326,8 @@ fun AddWorkoutDialog(
 
                 Spacer(modifier = Modifier.height(8.dp))
 
-                when (state.newWorkout.workoutType) {
-                    WorkoutType.TIMED -> {
+                when (state.newWorkout.type) {
+                    Type.TIMED -> {
                         FormTextField(
                             value = if (state.newWorkout.value == 0) "" else state.newWorkout.value.toString(),
                             onValueChange = { newValue ->
@@ -346,7 +346,7 @@ fun AddWorkoutDialog(
                         )
                     }
 
-                    WorkoutType.REPETITION -> {
+                    Type.REPETITION -> {
                         FormTextField(
                             value = if (state.newWorkout.value == 0) "" else state.newWorkout.value.toString(),
                             onValueChange = { newValue ->

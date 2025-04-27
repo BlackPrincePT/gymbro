@@ -19,7 +19,7 @@ import coil3.request.allowHardware
 import com.pegio.common.presentation.state.TopBarAction
 import com.pegio.common.presentation.state.TopBarState
 import com.pegio.common.presentation.util.CollectLatestEffect
-import com.pegio.model.Workout
+import com.pegio.model.Exercise
 import com.pegio.workout.presentation.component.WorkoutDetails
 import com.pegio.workout.presentation.model.UiWorkout
 
@@ -123,18 +123,18 @@ private fun SetupTopBar(
 @Preview(showBackground = true)
 @Composable
 fun WorkoutContentPreview() {
-    val sampleWorkout = UiWorkout(
+    val sampleExercise = UiWorkout(
         name = "Plank",
         description = "Hold the plank position for 60 seconds.",
-        workoutType = Workout.WorkoutType.TIMED,
+        type = Exercise.Type.TIMED,
         value = 60,
         sets = 3,
-        muscleGroups = listOf(Workout.MuscleGroup.CORE, Workout.MuscleGroup.SHOULDERS),
+        muscleGroups = listOf(Exercise.MuscleGroup.CORE, Exercise.MuscleGroup.SHOULDERS),
         workoutImage = ""
     )
 
     WorkoutContent(
-        state = WorkoutUiState(workouts = listOf(sampleWorkout)),
+        state = WorkoutUiState(workouts = listOf(sampleExercise)),
         onEvent = {},
     )
 }

@@ -14,6 +14,7 @@ internal object FirestoreConstants {
     const val AI_MESSAGES = "ai_messages"
     const val WORKOUT_PLANS = "workout_plans"
     const val WORKOUTS = "workouts"
+    const val EXERCISES = "exercises"
 
     /**
      * Document Parameters

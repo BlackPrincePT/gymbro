@@ -1,42 +1,47 @@
 package com.pegio.firestore.repository.impl
 
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Query
 import com.pegio.common.core.DataError
 import com.pegio.common.core.Resource
 import com.pegio.common.core.map
+import com.pegio.common.core.mapList
+import com.pegio.firestore.core.FirestoreConstants.AUTHOR_ID
+import com.pegio.firestore.core.FirestoreConstants.TIMESTAMP
 import com.pegio.firestore.core.FirestoreConstants.WORKOUTS
+import com.pegio.firestore.core.FirestorePagingSource
 import com.pegio.firestore.model.WorkoutDto
-import com.pegio.firestore.model.mapper.ExerciseDtoMapper
+import com.pegio.firestore.model.mapper.WorkoutDtoMapper
 import com.pegio.firestore.repository.WorkoutRepository
 import com.pegio.firestore.util.FirestoreUtils
+import com.pegio.model.Exercise
 import com.pegio.model.Workout
 import javax.inject.Inject
 
 internal class WorkoutRepositoryImpl @Inject constructor(
     private val db: FirebaseFirestore,
-    private val firestoreUtils: FirestoreUtils,
-    private val exerciseDtoMapper: ExerciseDtoMapper
+    private val workoutDtoMapper: WorkoutDtoMapper,
+    firestoreUtils: FirestoreUtils
 ) : WorkoutRepository {
 
-    override suspend fun fetchWorkoutsById(id: String): Resource<List<Workout>, DataError.Firestore> {
-        val documentRef = db.collection(WORKOUTS).document(id)
-
-        val result = firestoreUtils.readDocument(documentRef, WorkoutDto::class.java)
-
-        return result.map { container ->
-            container.workouts.map(exerciseDtoMapper::mapToDomain)
-        }
+    companion object {
+        const val WORKOUTS_PAGE_SIZE: Long = 10L
     }
 
+    private val workoutsPagingSource =
+        FirestorePagingSource(WORKOUTS_PAGE_SIZE, WorkoutDto::class.java, firestoreUtils)
 
-    override suspend fun uploadWorkouts(authorId: String, workouts: List<Workout>) {
-        val workoutsList = workouts.map { exerciseDtoMapper.mapFromDomain(it) }
-        val workoutDto = WorkoutDto(
-            authorId = authorId,
-            workouts = workoutsList
-        )
+    override suspend fun uploadWorkout(workout: Workout) {
+        val workoutDto = workoutDtoMapper.mapFromDomain(workout)
         db.collection(WORKOUTS).add(workoutDto)
     }
 
+    override suspend fun fetchNextUserWorkoutsPage(authorId: String): Resource<List<Workout>, DataError> {
+        val baseQuery = db.collection(WORKOUTS)
+            .whereEqualTo(AUTHOR_ID, authorId)
+            .orderBy(TIMESTAMP, Query.Direction.DESCENDING)
 
+        return workoutsPagingSource.loadNextPage(baseQuery)
+            .mapList(workoutDtoMapper::mapToDomain)
+    }
 }

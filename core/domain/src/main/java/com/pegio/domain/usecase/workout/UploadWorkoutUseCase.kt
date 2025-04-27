@@ -10,7 +10,7 @@ import com.pegio.common.core.getOrNull
 import com.pegio.common.core.isFailure
 import com.pegio.common.core.map
 import com.pegio.firestore.repository.WorkoutRepository
-import com.pegio.model.Workout
+import com.pegio.model.Exercise
 import com.pegio.uploadmanager.core.UploadManager
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
@@ -23,7 +23,7 @@ class UploadWorkoutUseCase @Inject constructor(
     private val uploadManager: UploadManager
 ) {
     suspend operator fun invoke(
-        workouts: List<Workout>
+        exercises: List<Exercise>
     ): Resource<Unit, Error> = coroutineScope {
 
         val currentUser = authRepository.getCurrentUser()
@@ -32,7 +32,7 @@ class UploadWorkoutUseCase @Inject constructor(
         if (currentUser.isAnonymous)
             return@coroutineScope SessionError.AnonymousUser.asFailure()
 
-        val updatedWorkouts = workouts.map { workout ->
+        val updatedWorkouts = exercises.map { workout ->
             async {
                 uploadManager.enqueueFileUpload(workout.workoutImage)
                     .map { uploadedUrl ->
@@ -46,7 +46,7 @@ class UploadWorkoutUseCase @Inject constructor(
 
         val successfulWorkouts = updatedWorkouts.mapNotNull { it.getOrNull() }
 
-        workoutRepository.uploadWorkouts(
+        workoutRepository.uploadWorkout(
             authorId = currentUser.id,
             workouts = successfulWorkouts
         )
