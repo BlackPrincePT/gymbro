@@ -38,10 +38,10 @@ import com.pegio.gymbro.activity.state.MainActivityUiEvent
 import com.pegio.gymbro.activity.state.MainActivityUiState
 import com.pegio.gymbro.navigation.NavigationHost
 import com.pegio.gymbro.navigation.route.navigateToUserWorkouts
-import com.pegio.gymbro.navigation.route.navigateToWorkoutPlan
 import com.pegio.settings.presentation.screen.account.navigation.navigateToAccount
 import com.pegio.settings.presentation.screen.settings.navigation.navigateToSettings
 import com.pegio.splash.presentation.splash.navigation.SplashRoute
+import com.pegio.workout.presentation.screen.workout_plan.navigation.navigateToWorkoutPlan
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 

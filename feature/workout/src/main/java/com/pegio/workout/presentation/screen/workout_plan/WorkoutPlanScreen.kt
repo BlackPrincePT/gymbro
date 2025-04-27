@@ -17,6 +17,9 @@ import com.pegio.common.presentation.util.CollectLatestEffect
 import com.pegio.workout.presentation.component.TipCardComponents
 import com.pegio.workout.presentation.component.WorkoutPlanItemComponents
 import com.pegio.workout.presentation.model.UiWorkoutPlan
+import com.pegio.workout.presentation.screen.workout_plan.state.WorkoutPlanUiEffect
+import com.pegio.workout.presentation.screen.workout_plan.state.WorkoutPlanUiEvent
+import com.pegio.workout.presentation.screen.workout_plan.state.WorkoutPlanUiState
 
 @Composable
 fun WorkoutPlanScreen(
@@ -81,6 +84,7 @@ private fun SetupTopBar(
     LaunchedEffect(Unit) {
         onSetupTopBar(
             TopBarState(
+                title = "Workout plan",
                 navigationIcon = TopBarAction(
                     icon = Icons.AutoMirrored.Default.ArrowBack,
                     onClick = { onEvent(WorkoutPlanUiEvent.OnBackClick) }

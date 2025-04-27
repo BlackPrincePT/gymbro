@@ -1,4 +1,4 @@
-package com.pegio.workout.presentation.screen.workout_plan
+package com.pegio.workout.presentation.screen.workout_plan.state
 
 import androidx.annotation.StringRes
 

@@ -25,7 +25,6 @@ import com.pegio.feed.presentation.screen.profile.navigation.profileScreen
 import com.pegio.gymbro.navigation.route.AiChatRoute
 import com.pegio.gymbro.navigation.route.UserWorkoutsRoute
 import com.pegio.gymbro.navigation.route.WorkoutCreationRoute
-import com.pegio.gymbro.navigation.route.WorkoutPlanRoute
 import com.pegio.gymbro.navigation.route.WorkoutRoute
 import com.pegio.gymbro.navigation.route.navigateToAiChat
 import com.pegio.gymbro.navigation.route.navigateToWorkout
@@ -35,7 +34,7 @@ import com.pegio.splash.presentation.splash.navigation.SplashRoute
 import com.pegio.splash.presentation.splash.navigation.splashScreen
 import com.pegio.workout.presentation.screen.userworkouts.UserWorkoutsScreen
 import com.pegio.workout.presentation.screen.workout.WorkoutScreen
-import com.pegio.workout.presentation.screen.workout_plan.WorkoutPlanScreen
+import com.pegio.workout.presentation.screen.workout_plan.navigation.workoutPlanScreen
 import com.pegio.workout.presentation.screen.workoutcreation.WorkoutCreationScreen
 
 @Composable
@@ -99,18 +98,15 @@ fun NavigationHost(
 
         // <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> \\
 
-
-        composable<WorkoutPlanRoute> {
-            WorkoutPlanScreen(
-                onBackClick = navController::navigateUp,
-                onInfoClick = navController::navigateToAiChat,
-                onShowSnackbar = onShowSnackbar,
-                onStartWorkout = { workoutId ->
-                    navController.navigateToWorkout(workoutId)
-                },
-                onSetupTopBar = onSetupAppBar,
-            )
-        }
+        workoutPlanScreen(
+            onBackClick = navController::navigateUp,
+            onInfoClick = navController::navigateToAiChat,
+            onShowSnackbar = onShowSnackbar,
+            onStartWorkout = { workoutId ->
+                navController.navigateToWorkout(workoutId)
+            },
+            onSetupTopBar = onSetupAppBar,
+        )
 
         composable<WorkoutRoute> {
             WorkoutScreen(
