@@ -1,4 +1,4 @@
-package com.pegio.workout.presentation.screen.workout_plan.state
+package com.pegio.workout.presentation.screen.workoutplan.state
 
 sealed interface WorkoutPlanUiEvent {
     data object LoadInitialPlans : WorkoutPlanUiEvent

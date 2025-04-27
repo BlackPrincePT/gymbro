@@ -9,6 +9,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -29,6 +30,7 @@ fun UserWorkoutsScreen(
     onBackClick: () -> Unit,
     onShowSnackbar: suspend (String) -> Unit,
     onStartWorkout: (String) -> Unit,
+    onCreateWorkoutClick: () -> Unit,
     onSetupTopBar: (TopBarState) -> Unit
 ) {
 
@@ -41,6 +43,7 @@ fun UserWorkoutsScreen(
             is UserWorkoutsUiEffect.Failure -> onShowSnackbar(context.getString(effect.errorRes))
             UserWorkoutsUiEffect.NavigateBack -> onBackClick()
             is UserWorkoutsUiEffect.NavigateToWorkout -> onStartWorkout(effect.workoutId)
+            UserWorkoutsUiEffect.NavigateToWorkoutCreation -> onCreateWorkoutClick()
         }
     }
 
@@ -106,7 +109,11 @@ private fun SetupTopBar(
                 navigationIcon = TopBarAction(
                     icon = Icons.AutoMirrored.Default.ArrowBack,
                     onClick = { onEvent(UserWorkoutsUiEvent.OnBackClick) }
-                )
+                ),
+                actions = listOf(TopBarAction(
+                    icon = Icons.Default.Add,
+                    onClick = { onEvent(UserWorkoutsUiEvent.OnCreateWorkoutClick)}
+                ))
             )
         )
     }

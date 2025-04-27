@@ -24,7 +24,6 @@ import com.pegio.feed.presentation.screen.profile.navigation.navigateToProfile
 import com.pegio.feed.presentation.screen.profile.navigation.profileScreen
 import com.pegio.gymbro.navigation.route.AiChatRoute
 import com.pegio.gymbro.navigation.route.UserWorkoutsRoute
-import com.pegio.gymbro.navigation.route.WorkoutCreationRoute
 import com.pegio.gymbro.navigation.route.WorkoutRoute
 import com.pegio.gymbro.navigation.route.navigateToAiChat
 import com.pegio.gymbro.navigation.route.navigateToWorkout
@@ -34,8 +33,9 @@ import com.pegio.splash.presentation.splash.navigation.SplashRoute
 import com.pegio.splash.presentation.splash.navigation.splashScreen
 import com.pegio.workout.presentation.screen.userworkouts.UserWorkoutsScreen
 import com.pegio.workout.presentation.screen.workout.WorkoutScreen
-import com.pegio.workout.presentation.screen.workout_plan.navigation.workoutPlanScreen
-import com.pegio.workout.presentation.screen.workoutcreation.WorkoutCreationScreen
+import com.pegio.workout.presentation.screen.workoutcreation.navigation.navigateToWorkoutCreation
+import com.pegio.workout.presentation.screen.workoutcreation.navigation.workoutCreationScreen
+import com.pegio.workout.presentation.screen.workoutplan.navigation.workoutPlanScreen
 
 @Composable
 fun NavigationHost(
@@ -117,14 +117,11 @@ fun NavigationHost(
             )
         }
 
-        composable<WorkoutCreationRoute> {
-            WorkoutCreationScreen(
-                onBackClick = navController::navigateUp,
-                onShowSnackbar = onShowSnackbar,
-                onSetupTopBar = onSetupAppBar,
-            )
-        }
-
+        workoutCreationScreen(
+            onBackClick = navController::navigateUp,
+            onShowSnackbar = onShowSnackbar,
+            onSetupTopBar = onSetupAppBar,
+        )
 
         composable<UserWorkoutsRoute>{
             UserWorkoutsScreen(
@@ -133,7 +130,8 @@ fun NavigationHost(
                 onSetupTopBar = onSetupAppBar,
                 onStartWorkout = { workoutId ->
                     navController.navigateToWorkout(workoutId)
-                }
+                },
+                onCreateWorkoutClick = navController::navigateToWorkoutCreation
             )
         }
 

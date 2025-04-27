@@ -6,9 +6,9 @@ import com.pegio.domain.usecase.workout.ObserveWorkoutPlansPagingStreamUseCase
 import com.pegio.model.WorkoutPlan
 import com.pegio.workout.presentation.model.UiWorkoutPlan
 import com.pegio.workout.presentation.model.mapper.UiWorkoutPlanMapper
-import com.pegio.workout.presentation.screen.workout_plan.state.WorkoutPlanUiEffect
-import com.pegio.workout.presentation.screen.workout_plan.state.WorkoutPlanUiEvent
-import com.pegio.workout.presentation.screen.workout_plan.WorkoutPlanViewModel
+import com.pegio.workout.presentation.screen.workoutplan.state.WorkoutPlanUiEffect
+import com.pegio.workout.presentation.screen.workoutplan.state.WorkoutPlanUiEvent
+import com.pegio.workout.presentation.screen.workoutplan.WorkoutPlanViewModel
 import io.mockk.coEvery
 import io.mockk.every
 import kotlinx.coroutines.Dispatchers

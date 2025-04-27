@@ -1,4 +1,4 @@
-package com.pegio.workout.presentation.screen.workout_plan
+package com.pegio.workout.presentation.screen.workoutplan
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
@@ -17,9 +17,9 @@ import com.pegio.common.presentation.util.CollectLatestEffect
 import com.pegio.workout.presentation.component.TipCardComponents
 import com.pegio.workout.presentation.component.WorkoutPlanItemComponents
 import com.pegio.workout.presentation.model.UiWorkoutPlan
-import com.pegio.workout.presentation.screen.workout_plan.state.WorkoutPlanUiEffect
-import com.pegio.workout.presentation.screen.workout_plan.state.WorkoutPlanUiEvent
-import com.pegio.workout.presentation.screen.workout_plan.state.WorkoutPlanUiState
+import com.pegio.workout.presentation.screen.workoutplan.state.WorkoutPlanUiEffect
+import com.pegio.workout.presentation.screen.workoutplan.state.WorkoutPlanUiEvent
+import com.pegio.workout.presentation.screen.workoutplan.state.WorkoutPlanUiState
 
 @Composable
 fun WorkoutPlanScreen(

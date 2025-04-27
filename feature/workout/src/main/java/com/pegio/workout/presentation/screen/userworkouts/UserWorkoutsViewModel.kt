@@ -22,6 +22,7 @@ class UserWorkoutsViewModel @Inject constructor(
             is UserWorkoutsUiEvent.FetchWorkouts -> fetchWorkoutsId()
             UserWorkoutsUiEvent.OnBackClick -> sendEffect(UserWorkoutsUiEffect.NavigateBack)
             is UserWorkoutsUiEvent.StartWorkout -> startWorkout(event.workoutId)
+            UserWorkoutsUiEvent.OnCreateWorkoutClick -> sendEffect(UserWorkoutsUiEffect.NavigateToWorkoutCreation)
         }
     }
 

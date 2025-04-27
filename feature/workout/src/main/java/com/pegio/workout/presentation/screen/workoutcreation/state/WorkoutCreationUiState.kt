@@ -1,4 +1,4 @@
-package com.pegio.workout.presentation.screen.workoutcreation
+package com.pegio.workout.presentation.screen.workoutcreation.state
 
 import androidx.annotation.StringRes
 import com.pegio.workout.presentation.model.UiExercise

@@ -33,6 +33,9 @@ import com.pegio.designsystem.component.FormTextField
 import com.pegio.workout.presentation.component.AddWorkoutDialog
 import com.pegio.workout.presentation.component.WorkoutItem
 import com.pegio.workout.presentation.model.UiExercise
+import com.pegio.workout.presentation.screen.workoutcreation.state.WorkoutCreationUiEffect
+import com.pegio.workout.presentation.screen.workoutcreation.state.WorkoutCreationUiEvent
+import com.pegio.workout.presentation.screen.workoutcreation.state.WorkoutCreationUiState
 
 @Composable
 fun WorkoutCreationScreen(
