@@ -20,7 +20,6 @@ import com.pegio.settings.presentation.screen.account.state.AccountUiEvent
 import com.pegio.settings.presentation.screen.account.state.AccountUiState
 import com.pegio.settings.presentation.screen.account.state.AccountValidationError
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
