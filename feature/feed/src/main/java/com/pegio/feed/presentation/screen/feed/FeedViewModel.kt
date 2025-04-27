@@ -40,7 +40,7 @@ class FeedViewModel @Inject constructor(
 ) : BaseViewModel<FeedUiState, FeedUiEffect, FeedUiEvent>(initialState = FeedUiState()) {
 
     init {
-        resetPostPagination()
+        refreshPosts()
         observeCurrentUser()
     }
 
@@ -71,12 +71,12 @@ class FeedViewModel @Inject constructor(
     private fun observeCurrentUser() = viewModelScope.launch {
         getCurrentUserStream()
             .onSuccess { updateState { copy(currentUser = uiUserMapper.mapFromDomain(it)) } }
-            .onFailure {  } // TODO HANDLE FAILURE
+            .onFailure { updateState { copy(currentUser = null) } }
             .launchIn(viewModelScope)
     }
 
 
-    // <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> \\
+// <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> \\
 
 
     private fun handlePostVote(postId: String, voteType: Vote.Type) {
@@ -104,7 +104,7 @@ class FeedViewModel @Inject constructor(
     }
 
 
-    // <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> \\
+// <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> \\
 
 
     private fun refreshPosts() {
@@ -137,7 +137,7 @@ class FeedViewModel @Inject constructor(
     }
 
 
-    // <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> \\
+// <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> \\
 
 
     private fun updatePost(index: Int, newVote: Vote?, difference: Int) {

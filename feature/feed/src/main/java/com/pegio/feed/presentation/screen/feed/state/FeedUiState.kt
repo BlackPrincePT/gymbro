@@ -10,7 +10,7 @@ data class FeedUiState(
     val isRefreshing: Boolean = false,
 
     // Main
-    val currentUser: UiUser = UiUser.DEFAULT,
+    val currentUser: UiUser? = null,
     val relevantPosts: List<UiPost> = emptyList(),
     val endOfPostsReached: Boolean = false
 )
