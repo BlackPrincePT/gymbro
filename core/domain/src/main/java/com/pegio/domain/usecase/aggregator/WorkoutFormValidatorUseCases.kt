@@ -13,7 +13,7 @@ import javax.inject.Inject
 
 data class WorkoutFormValidatorUseCases @Inject constructor(
     val validateWorkoutTitle : ValidateWorkoutTitleUseCase,
-    val validateWorkoutDesc : ValidateWorkoutMainDescriptionUseCase,
+    val validateWorkoutMainDescription : ValidateWorkoutMainDescriptionUseCase,
     val validateWorkoutName: ValidateWorkoutNameUseCase,
     val validateWorkoutDescription: ValidateWorkoutDescriptionUseCase,
     val validateWorkoutValue: ValidateWorkoutValueUseCase,

@@ -91,66 +91,28 @@ class WorkoutCreationViewModel @Inject constructor(
 
 
 
-    private fun areWorkoutFieldsValid(): Boolean {
-        val currentWorkout = uiState.newWorkout
+    private fun areWorkoutFieldsValid(): Boolean = with(uiState.newWorkout) {
+        val nameError = workoutFormValidator.validateWorkoutName(name).errorOrNull()
+        val descriptionError = workoutFormValidator.validateWorkoutDescription(description).errorOrNull()
+        val valueError = workoutFormValidator.validateWorkoutValue(value).errorOrNull()
+        val setsError = workoutFormValidator.validateWorkoutSets(sets).errorOrNull()
+        val muscleGroupsError = workoutFormValidator.validateWorkoutMuscleGroups(muscleGroups).errorOrNull()
+        val workoutImageError = workoutFormValidator.validateWorkoutImage(workoutImage).errorOrNull()
 
-        var isValid = true
+        updateState {
+            copy(
+                validationError = validationError.copy(
+                    name = nameError?.toStringResId(),
+                    description = descriptionError?.toStringResId(),
+                    value = valueError?.toStringResId(),
+                    sets = setsError?.toStringResId(),
+                    muscleGroups = muscleGroupsError?.toStringResId(),
+                    workoutImage = workoutImageError?.toStringResId()
+                )
+            )
+        }
 
-        workoutFormValidator.validateWorkoutName(currentWorkout.name)
-            .errorOrNull()
-            .let {
-                updateState {
-                    copy(validationError = validationError.copy(name = it?.toStringResId()))
-                }
-                isValid = it == null
-            }
-
-        workoutFormValidator.validateWorkoutDescription(currentWorkout.description)
-            .errorOrNull()
-            .let {
-                updateState {
-                    copy(validationError = validationError.copy(description = it?.toStringResId()))
-                }
-                isValid = isValid && it == null
-            }
-
-        workoutFormValidator.validateWorkoutValue(currentWorkout.value)
-            .errorOrNull()
-            .let {
-                updateState {
-                    copy(validationError = validationError.copy(value = it?.toStringResId()))
-                }
-                isValid = isValid && it == null
-            }
-
-        workoutFormValidator.validateWorkoutSets(currentWorkout.sets)
-            .errorOrNull()
-            .let {
-                updateState {
-                    copy(validationError = validationError.copy(sets = it?.toStringResId()))
-                }
-                isValid = isValid && it == null
-            }
-
-        workoutFormValidator.validateWorkoutMuscleGroups(currentWorkout.muscleGroups)
-            .errorOrNull()
-            .let {
-                updateState {
-                    copy(validationError = validationError.copy(muscleGroups = it?.toStringResId()))
-                }
-                isValid = isValid && it == null
-            }
-
-        workoutFormValidator.validateWorkoutImage(currentWorkout.workoutImage)
-            .errorOrNull()
-            .let {
-                updateState {
-                    copy(validationError = validationError.copy(workoutImage = it?.toStringResId()))
-                }
-                isValid = isValid && it == null
-            }
-
-        return isValid
+        return nameError == null && descriptionError == null && valueError == null && setsError == null && muscleGroupsError == null && workoutImageError == null
     }
 
 
@@ -168,6 +130,9 @@ class WorkoutCreationViewModel @Inject constructor(
                 )
                 return
             }
+        if (!validateWorkoutFields()) {
+            return
+        }
 
         launchWithLoading {
             retryableCall {
@@ -187,6 +152,21 @@ class WorkoutCreationViewModel @Inject constructor(
         }
     }
 
+    private fun validateWorkoutFields(): Boolean {
+        val titleError = workoutFormValidator.validateWorkoutTitle(uiState.title).errorOrNull()
+        val mainDescriptionError = workoutFormValidator.validateWorkoutMainDescription(uiState.description).errorOrNull()
+
+        updateState {
+            copy(
+                validationError = validationError.copy(
+                    title = titleError?.toStringResId(),
+                    mainDescription = mainDescriptionError?.toStringResId()
+                )
+            )
+        }
+
+        return titleError == null && mainDescriptionError == null
+    }
 
     private fun removeWorkout(workoutId: String) {
         updateState {

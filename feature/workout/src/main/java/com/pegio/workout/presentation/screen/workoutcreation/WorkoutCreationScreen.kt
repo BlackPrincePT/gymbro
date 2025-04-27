@@ -75,12 +75,14 @@ fun WorkoutCreationContent(
                 value = state.title,
                 onValueChange = { onEvent(WorkoutCreationUiEvent.OnTitleChange(it)) },
                 label = "Title",
+                error = state.validationError.title
             )
             Spacer(modifier = Modifier.height(8.dp))
             FormTextField(
                 value = state.description,
                 onValueChange = { onEvent(WorkoutCreationUiEvent.OnDescriptionChange(it)) },
                 label = "Description",
+                error = state.validationError.mainDescription
             )
             Spacer(modifier = Modifier.height(16.dp))
 

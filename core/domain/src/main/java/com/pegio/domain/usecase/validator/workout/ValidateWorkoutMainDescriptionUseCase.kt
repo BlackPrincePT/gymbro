@@ -2,8 +2,9 @@ package com.pegio.domain.usecase.validator.workout
 
 import com.pegio.common.core.Resource
 import com.pegio.common.core.WorkoutValidationError
+import javax.inject.Inject
 
-class ValidateWorkoutMainDescriptionUseCase {
+class ValidateWorkoutMainDescriptionUseCase @Inject constructor() {
     operator fun invoke(name: String): Resource<Unit, WorkoutValidationError.WorkoutDescription> {
         if (name.isBlank())
             return Resource.Failure(error = WorkoutValidationError.WorkoutDescription.EMPTY)
