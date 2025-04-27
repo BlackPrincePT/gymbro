@@ -1,35 +1,26 @@
 package com.pegio.workout.presentation.model.mapper
 
 import com.pegio.common.core.Mapper
-import com.pegio.model.Exercise
-import com.pegio.workout.presentation.model.UiExercise
+import com.pegio.model.Workout
+import com.pegio.workout.presentation.model.UiWorkout
 import javax.inject.Inject
 
-class UiWorkoutMapper @Inject constructor() : Mapper<UiExercise, Exercise> {
-    override fun mapFromDomain(data: Exercise): UiExercise {
-        return UiExercise(
-            description = data.description,
-            muscleGroups = data.muscleGroups,
-            name = data.name,
-            sets = data.sets,
-            value = data.value,
-            workoutImage = data.workoutImage,
-            type = data.type,
-            position = data.position
+class UiWorkoutMapper @Inject constructor() : Mapper<UiWorkout, Workout> {
+    override fun mapToDomain(data: UiWorkout): Workout = with(data) {
+        return Workout(
+            id = id,
+            authorId = authorId,
+            title = title,
+            description = description
         )
     }
 
-    override fun mapToDomain(data: UiExercise): Exercise {
-        return Exercise(
-            description = data.description,
-            muscleGroups = data.muscleGroups,
-            name = data.name,
-            sets = data.sets,
-            value = data.value,
-            workoutImage = data.workoutImage,
-            type = data.type,
-            position = data.position
-
+    override fun mapFromDomain(data: Workout): UiWorkout = with(data) {
+        return UiWorkout(
+            id = id,
+            authorId = authorId,
+            title = title,
+            description = description
         )
     }
 }

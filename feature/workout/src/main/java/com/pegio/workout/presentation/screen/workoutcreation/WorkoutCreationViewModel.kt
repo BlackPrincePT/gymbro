@@ -10,7 +10,7 @@ import com.pegio.domain.usecase.aggregator.WorkoutFormValidatorUseCases
 import com.pegio.domain.usecase.workout.UploadExerciseUseCase
 import com.pegio.domain.usecase.workout.UploadWorkoutUseCase
 import com.pegio.workout.presentation.model.UiExercise
-import com.pegio.workout.presentation.model.mapper.UiWorkoutMapper
+import com.pegio.workout.presentation.model.mapper.UiExerciseMapper
 import dagger.hilt.android.lifecycle.HiltViewModel
 import java.util.UUID
 import javax.inject.Inject
@@ -20,7 +20,7 @@ class WorkoutCreationViewModel @Inject constructor(
     private val workoutFormValidator: WorkoutFormValidatorUseCases,
     private val uploadExercise: UploadExerciseUseCase,
     private val uploadWorkout: UploadWorkoutUseCase,
-    private val uiWorkoutMapper: UiWorkoutMapper
+    private val uiExerciseMapper: UiExerciseMapper
 ) : BaseViewModel<WorkoutCreationUiState, WorkoutCreationUiEffect, WorkoutCreationUiEvent>(
     initialState = WorkoutCreationUiState()
 ) {
@@ -119,7 +119,7 @@ class WorkoutCreationViewModel @Inject constructor(
     private fun uploadWorkouts() {
         workoutFormValidator.validateWorkoutsListUseCase(
             uiState.exercises.map { uiWorkout ->
-                uiWorkoutMapper.mapToDomain(uiWorkout)
+                uiExerciseMapper.mapToDomain(uiWorkout)
             }
         )
             .onFailure {
@@ -137,7 +137,7 @@ class WorkoutCreationViewModel @Inject constructor(
         launchWithLoading {
             retryableCall {
                 val workoutsToUpload = uiState.exercises.map { uiWorkout ->
-                    uiWorkoutMapper.mapToDomain(uiWorkout)
+                    uiExerciseMapper.mapToDomain(uiWorkout)
                 }
                 uploadWorkout(title = uiState.title, description = uiState.description).onSuccess {
                     uploadExercise(workoutsToUpload, workoutId = it.id)

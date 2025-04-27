@@ -4,6 +4,8 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.VolumeOff
+import androidx.compose.material.icons.automirrored.filled.VolumeUp
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -33,7 +35,7 @@ fun WorkoutScreen(
     onSetupTopBar: (TopBarState) -> Unit
 ) {
 
-    SetupTopBar(onSetupTopBar, viewModel::onEvent)
+    SetupTopBar(onSetupTopBar, viewModel::onEvent, viewModel.uiState)
 
     val context = LocalContext.current
 
@@ -105,7 +107,8 @@ fun PreloadWorkoutImages(
 @Composable
 private fun SetupTopBar(
     onSetupTopBar: (TopBarState) -> Unit,
-    onEvent: (WorkoutUiEvent) -> Unit
+    onEvent: (WorkoutUiEvent) -> Unit,
+    state: WorkoutUiState
 ) {
     LaunchedEffect(Unit) {
         onSetupTopBar(
@@ -113,12 +116,17 @@ private fun SetupTopBar(
                 navigationIcon = TopBarAction(
                     icon = Icons.AutoMirrored.Default.ArrowBack,
                     onClick = { onEvent(WorkoutUiEvent.OnBackClick) }
+                ),
+                actions = listOf(
+                    TopBarAction(
+                        icon = if (state.isTTSActive) Icons.AutoMirrored.Default.VolumeUp else Icons.AutoMirrored.Default.VolumeOff,
+                        onClick = { onEvent(WorkoutUiEvent.OnToggleTTSClick) }
+                    )
                 )
             )
         )
     }
 }
-
 
 @Preview(showBackground = true)
 @Composable

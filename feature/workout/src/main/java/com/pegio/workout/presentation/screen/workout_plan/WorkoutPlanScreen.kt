@@ -62,7 +62,7 @@ fun WorkoutPlanContent(
         items(state.plans) { workoutPlan ->
             WorkoutPlanItemComponents(
                 workoutPlan =  workoutPlan,
-                onStartWorkout = { onEvent(WorkoutPlanUiEvent.StartWorkout(workoutPlan.difficulty)) }
+                onStartWorkout = { onEvent(WorkoutPlanUiEvent.StartWorkout(workoutPlan.workoutId)) }
             )
         }
 

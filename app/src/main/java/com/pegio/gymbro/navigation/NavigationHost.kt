@@ -105,8 +105,8 @@ fun NavigationHost(
                 onBackClick = navController::navigateUp,
                 onInfoClick = navController::navigateToAiChat,
                 onShowSnackbar = onShowSnackbar,
-                onStartWorkout = { difficulty ->
-                    navController.navigateToWorkout(difficulty)
+                onStartWorkout = { workoutId ->
+                    navController.navigateToWorkout(workoutId)
                 },
                 onSetupTopBar = onSetupAppBar,
             )
@@ -132,6 +132,12 @@ fun NavigationHost(
 
         composable<UserWorkoutsRoute>{
             UserWorkoutsScreen(
+                onBackClick = navController::navigateUp,
+                onShowSnackbar = onShowSnackbar,
+                onSetupTopBar = onSetupAppBar,
+                onStartWorkout = { workoutId ->
+                    navController.navigateToWorkout(workoutId)
+                }
             )
         }
 
