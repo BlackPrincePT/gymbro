@@ -6,4 +6,7 @@
     <string name="feature_auth_height_cm">Height (cm)</string>
     <string name="feature_auth_weight_kg">Weight (kg)</string>
     <string name="feature_auth_register">Register</string>
+    <string name="feature_auth_continue_as_guest">Continue as Guest</string>
+    <string name="feature_auth_warning">Warning:</string>
+    <string name="feature_auth_welcome_message">May cause\nexcessive flexing\nin front of\nreflective surfaces</string>
 </resources>

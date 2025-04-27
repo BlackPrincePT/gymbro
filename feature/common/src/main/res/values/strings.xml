@@ -3,6 +3,7 @@
     <string name="feature_common_edit_your_profile_picture">Edit your profile picture</string>
     <string name="feature_common_choose_from_gallery">Choose from gallery</string>
     <string name="feature_common_remove">Remove</string>
+    <string name="feature_common_sign_in_with_google">Sign in with Google</string>
 
     <!-- Generic fallback error message -->
     <string name="feature_common_presentation_error_generic">An error occurred. Please try again later.</string>

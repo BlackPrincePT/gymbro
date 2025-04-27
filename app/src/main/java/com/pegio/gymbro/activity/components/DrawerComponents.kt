@@ -30,6 +30,7 @@ import com.pegio.common.presentation.components.BackgroundImage
 import com.pegio.common.presentation.components.ProfileImage
 import com.pegio.common.presentation.model.UiUser
 import com.pegio.gymbro.R
+import com.pegio.common.R as cR
 
 @Composable
 fun DrawerContent(
@@ -91,10 +92,10 @@ fun DrawerContent(
             modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding)
         )
         else NavigationDrawerItem(
-            label = { Text(text = stringResource(R.string.sign_in_with_google)) },
+            label = { Text(text = stringResource(cR.string.feature_common_sign_in_with_google)) },
             icon = {
                 Icon(
-                    painter = painterResource(id = R.drawable.ic_google),
+                    painter = painterResource(id = cR.drawable.feature_common_ic_google_logo),
                     contentDescription = null,
                     tint = Color.Unspecified,
                     modifier = Modifier.size(18.dp)
