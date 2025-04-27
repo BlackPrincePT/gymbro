@@ -2,12 +2,12 @@ package com.pegio.workout.presentation.model.mapper
 
 import com.pegio.common.core.Mapper
 import com.pegio.model.Exercise
-import com.pegio.workout.presentation.model.UiWorkout
+import com.pegio.workout.presentation.model.UiExercise
 import javax.inject.Inject
 
-class UiWorkoutMapper @Inject constructor() : Mapper<UiWorkout, Exercise> {
-    override fun mapFromDomain(data: Exercise): UiWorkout {
-        return UiWorkout(
+class UiWorkoutMapper @Inject constructor() : Mapper<UiExercise, Exercise> {
+    override fun mapFromDomain(data: Exercise): UiExercise {
+        return UiExercise(
             description = data.description,
             muscleGroups = data.muscleGroups,
             name = data.name,
@@ -18,7 +18,7 @@ class UiWorkoutMapper @Inject constructor() : Mapper<UiWorkout, Exercise> {
         )
     }
 
-    override fun mapToDomain(data: UiWorkout): Exercise {
+    override fun mapToDomain(data: UiExercise): Exercise {
         return Exercise(
             description = data.description,
             muscleGroups = data.muscleGroups,

@@ -4,7 +4,6 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.pegio.common.core.DataError
 import com.pegio.common.core.Resource
-import com.pegio.common.core.map
 import com.pegio.common.core.mapList
 import com.pegio.firestore.core.FirestoreConstants.AUTHOR_ID
 import com.pegio.firestore.core.FirestoreConstants.TIMESTAMP
@@ -14,8 +13,8 @@ import com.pegio.firestore.model.WorkoutDto
 import com.pegio.firestore.model.mapper.WorkoutDtoMapper
 import com.pegio.firestore.repository.WorkoutRepository
 import com.pegio.firestore.util.FirestoreUtils
-import com.pegio.model.Exercise
 import com.pegio.model.Workout
+import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
 internal class WorkoutRepositoryImpl @Inject constructor(
@@ -31,9 +30,10 @@ internal class WorkoutRepositoryImpl @Inject constructor(
     private val workoutsPagingSource =
         FirestorePagingSource(WORKOUTS_PAGE_SIZE, WorkoutDto::class.java, firestoreUtils)
 
-    override suspend fun uploadWorkout(workout: Workout) {
+    override suspend fun uploadWorkout(workout: Workout): String {
         val workoutDto = workoutDtoMapper.mapFromDomain(workout)
-        db.collection(WORKOUTS).add(workoutDto)
+        val documentRef = db.collection(WORKOUTS).add(workoutDto).await()
+        return documentRef.id
     }
 
     override suspend fun fetchNextUserWorkoutsPage(authorId: String): Resource<List<Workout>, DataError> {

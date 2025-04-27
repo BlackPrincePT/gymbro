@@ -5,10 +5,10 @@ import com.pegio.common.core.onFailure
 import com.pegio.common.core.onSuccess
 import com.pegio.common.presentation.core.BaseViewModel
 import com.pegio.common.presentation.util.toStringResId
-import com.pegio.domain.usecase.workout.FetchWorkoutsByIdUseCase
+import com.pegio.domain.usecase.workout.FetchExerciseByIdUseCase
 import com.pegio.workout.presentation.core.TextToSpeechRepositoryImpl
 import com.pegio.workout.presentation.model.mapper.UiWorkoutMapper
-import com.pegio.workout.presentation.screen.workout.WorkoutUiState.*
+import com.pegio.workout.presentation.screen.workout.WorkoutUiState.TimerState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -18,7 +18,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class WorkoutViewModel @Inject constructor(
-    private val fetchWorkoutsById: FetchWorkoutsByIdUseCase,
+    private val fetchExerciseByIdUseCase: FetchExerciseByIdUseCase,
     private val uiWorkoutMapper: UiWorkoutMapper,
     private val textToSpeechRepository: TextToSpeechRepositoryImpl,
 ) : BaseViewModel<WorkoutUiState, WorkoutUiEffect, WorkoutUiEvent>(initialState = WorkoutUiState()) {
@@ -41,7 +41,7 @@ class WorkoutViewModel @Inject constructor(
 
     private fun fetchWorkouts(workoutId: String) {
         launchWithLoading {
-            fetchWorkoutsById(workoutId)
+            fetchExerciseByIdUseCase(workoutId)
                 .onSuccess { workouts ->
                     val mappedWorkouts = workouts.map(uiWorkoutMapper::mapFromDomain)
                     updateState {

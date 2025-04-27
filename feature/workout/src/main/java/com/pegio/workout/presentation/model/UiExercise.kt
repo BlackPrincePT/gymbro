@@ -1,9 +1,10 @@
 package com.pegio.workout.presentation.model
 
-import com.pegio.model.Exercise.*
+import com.pegio.model.Exercise.MuscleGroup
+import com.pegio.model.Exercise.Type
 import java.util.UUID
 
-data class UiWorkout(
+data class UiExercise(
     val id: String = UUID.randomUUID().toString(),
     val name: String,
     val description: String,
@@ -15,7 +16,7 @@ data class UiWorkout(
 ){
 
     companion object {
-        val EMPTY = UiWorkout(
+        val EMPTY = UiExercise(
             id = "",
             name = "",
             description = "",

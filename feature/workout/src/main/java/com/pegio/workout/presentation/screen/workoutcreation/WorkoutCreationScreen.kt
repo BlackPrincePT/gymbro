@@ -31,7 +31,7 @@ import com.pegio.common.presentation.state.TopBarState
 import com.pegio.common.presentation.util.CollectLatestEffect
 import com.pegio.workout.presentation.component.AddWorkoutDialog
 import com.pegio.workout.presentation.component.WorkoutItem
-import com.pegio.workout.presentation.model.UiWorkout
+import com.pegio.workout.presentation.model.UiExercise
 
 @Composable
 fun WorkoutCreationScreen(
@@ -69,7 +69,7 @@ fun WorkoutCreationContent(
                 .fillMaxSize()
                 .padding(16.dp)
         ) {
-            items(state.workouts) { workout ->
+            items(state.exercises) { workout ->
                 WorkoutItem(
                     workout = workout,
                     onEvent = onEvent
@@ -143,9 +143,9 @@ private fun SetupTopBar(
 @Composable
 fun PreviewWorkoutCreationContent() {
     val state = WorkoutCreationUiState(
-        workouts = listOf(
-            UiWorkout.EMPTY,
-            UiWorkout.EMPTY
+        exercises = listOf(
+            UiExercise.EMPTY,
+            UiExercise.EMPTY
         ),
     )
 

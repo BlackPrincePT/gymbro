@@ -39,7 +39,7 @@ import androidx.compose.ui.unit.dp
 import com.pegio.common.presentation.components.WorkoutImage
 import com.pegio.model.Exercise.MuscleGroup
 import com.pegio.model.Exercise.Type
-import com.pegio.workout.presentation.model.UiWorkout
+import com.pegio.workout.presentation.model.UiExercise
 import com.pegio.workout.presentation.screen.workout.WorkoutUiEvent
 import com.pegio.workout.presentation.screen.workout.WorkoutUiState
 
@@ -80,7 +80,7 @@ fun MuscleGroupsRow(muscleGroups: List<MuscleGroup>, modifier: Modifier = Modifi
 
 
 @Composable
-fun WorkoutDetailsCard(workout: UiWorkout) {
+fun WorkoutDetailsCard(workout: UiExercise) {
     Card(
         shape = RoundedCornerShape(12.dp),
         colors = CardDefaults.cardColors(
@@ -126,7 +126,7 @@ fun WorkoutDetailsCard(workout: UiWorkout) {
 
 @Composable
 fun WorkoutDetails(
-    workout: UiWorkout,
+    workout: UiExercise,
     onEvent: (WorkoutUiEvent) -> Unit,
     state: WorkoutUiState,
 ) {
@@ -220,7 +220,7 @@ fun WorkoutDetails(
 @Preview(showBackground = true)
 @Composable
 fun PreviewWorkoutDetails() {
-    val workout = UiWorkout(
+    val workout = UiExercise(
         type = Type.TIMED,
         value = 10,
         sets = 3,
@@ -241,7 +241,7 @@ fun PreviewWorkoutDetails() {
 @Preview(showBackground = true)
 @Composable
 fun PreviewWorkoutDetailsCard() {
-    val workout = UiWorkout(
+    val workout = UiExercise(
         type = Type.REPETITION,
         value = 10,
         sets = 3,

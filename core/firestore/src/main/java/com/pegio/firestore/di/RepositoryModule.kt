@@ -1,6 +1,7 @@
 package com.pegio.firestore.di
 
 import com.pegio.firestore.repository.AiMessagesRepository
+import com.pegio.firestore.repository.ExerciseRepository
 import com.pegio.firestore.repository.FcmTokenRepository
 import com.pegio.firestore.repository.FollowRecordRepository
 import com.pegio.firestore.repository.PostCommentRepository
@@ -9,8 +10,8 @@ import com.pegio.firestore.repository.UserRepository
 import com.pegio.firestore.repository.VoteRepository
 import com.pegio.firestore.repository.WorkoutPlanRepository
 import com.pegio.firestore.repository.WorkoutRepository
-import com.pegio.firestore.repository.impl.WorkoutRepositoryImpl
 import com.pegio.firestore.repository.impl.AiMessagesRepositoryImpl
+import com.pegio.firestore.repository.impl.ExerciseRepositoryImpl
 import com.pegio.firestore.repository.impl.FcmTokenRepositoryImpl
 import com.pegio.firestore.repository.impl.FollowRecordRepositoryImpl
 import com.pegio.firestore.repository.impl.PostCommentRepositoryImpl
@@ -18,6 +19,7 @@ import com.pegio.firestore.repository.impl.PostRepositoryImpl
 import com.pegio.firestore.repository.impl.UserRepositoryImpl
 import com.pegio.firestore.repository.impl.VoteRepositoryImpl
 import com.pegio.firestore.repository.impl.WorkoutPlanRepositoryImpl
+import com.pegio.firestore.repository.impl.WorkoutRepositoryImpl
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -53,4 +55,7 @@ internal abstract class RepositoryModule {
 
     @Binds
     abstract fun bindWorkoutRepository(impl: WorkoutRepositoryImpl): WorkoutRepository
+
+    @Binds
+    abstract fun bindExerciseRepository(impl: ExerciseRepositoryImpl): ExerciseRepository
 }
