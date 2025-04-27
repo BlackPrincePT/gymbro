@@ -14,11 +14,12 @@ data object FeedRoute
 fun NavController.popNavigateToFeed() = popNavigate(route = FeedRoute)
 
 fun NavGraphBuilder.feedScreen(
-    onCreatePostClick: () -> Unit,
+    onCreatePostClick: (Boolean) -> Unit,
     onShowPostDetails: (String) -> Unit,
     onPostAuthorClick: (String) -> Unit,
     onChatClick: () -> Unit,
     onOpenDrawerClick: () -> Unit,
+    onShowSnackbar: suspend (String) -> Unit,
     onSetupTopBar: (TopBarState) -> Unit
 ) {
     composable<FeedRoute> {
@@ -28,6 +29,7 @@ fun NavGraphBuilder.feedScreen(
             onUserProfileClick = onPostAuthorClick,
             onChatClick = onChatClick,
             onOpenDrawerClick = onOpenDrawerClick,
+            onShowSnackbar = onShowSnackbar,
             onSetupTopBar = onSetupTopBar
         )
     }

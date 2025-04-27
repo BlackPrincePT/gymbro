@@ -9,12 +9,10 @@ sealed interface FeedUiEvent {
     data object OnPostsRefresh : FeedUiEvent
     data class OnPostVote(val postId: String, val voteType: Vote.Type) : FeedUiEvent
 
-    // Top Bar
+    // Navigation
     data object OnChatClick : FeedUiEvent
     data object OnDrawerClick : FeedUiEvent
-
-    // Navigation
-    data object OnCreatePostClick : FeedUiEvent
+    data class OnCreatePostClick(val shouldOpenGallery: Boolean) : FeedUiEvent
     data class OnPostCommentClick(val postId: String) : FeedUiEvent
     data class OnUserProfileClick(val userId: String) : FeedUiEvent
 }

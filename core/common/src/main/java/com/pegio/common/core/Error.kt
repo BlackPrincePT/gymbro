@@ -2,6 +2,7 @@ package com.pegio.common.core
 
 interface Error
 interface Retryable
+interface Displayable
 
 sealed interface SessionError : Error {
     data object Unauthenticated : SessionError

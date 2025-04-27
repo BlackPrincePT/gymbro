@@ -15,7 +15,7 @@ fun NavController.navigateToAuth() = popNavigate(route = AuthRoute)
 fun NavGraphBuilder.authScreen(
     onAuthSuccess: () -> Unit,
     onRegistrationRequired: () -> Unit,
-    onShowSnackbar: suspend (String, String?) -> Boolean
+    onShowSnackbar: suspend (String) -> Unit,
 ) {
     composable<AuthRoute> {
         AuthScreen(

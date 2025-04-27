@@ -24,7 +24,7 @@
     <string name="feature_common_presentation_error_username_too_short">Username is too short. Please choose a longer username.</string>
 
     <!-- Age Errors -->
-    <string name="feature_common_presentation_error_age_invalid">Age must be greater than zero.</string>
+    <string name="feature_common_presentation_error_age_invalid">The age provided is invalid.</string>
     <string name="feature_common_presentation_error_age_too_young">You must be at least 18 years old.</string>
 
     <!-- Gender Errors -->

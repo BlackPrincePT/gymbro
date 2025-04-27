@@ -5,7 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.pegio.common.core.SessionError
 import com.pegio.common.core.onFailure
 import com.pegio.common.core.onSuccess
-import com.pegio.domain.usecase.common.GetCurrentUserUseCase
+import com.pegio.domain.usecase.auth.CheckUserAuthStateUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
@@ -15,7 +15,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SplashViewModel @Inject constructor(
-    private val getCurrentUser: GetCurrentUserUseCase
+    private val checkUserAuthState: CheckUserAuthStateUseCase
 ) : ViewModel() {
 
     private val _uiEffect = Channel<SplashUiEffect>()
@@ -26,14 +26,14 @@ class SplashViewModel @Inject constructor(
     }
 
     private fun checkForSavedAuthState() = viewModelScope.launch {
-        getCurrentUser()
+        checkUserAuthState()
             .onSuccess { sendEffect(SplashUiEffect.NavigateToHome) }
             .onFailure { error ->
                 when (error) {
                     SessionError.AnonymousUser -> sendEffect(SplashUiEffect.NavigateToHome)
                     SessionError.RegistrationIncomplete -> sendEffect(SplashUiEffect.NavigateToRegister)
                     SessionError.Unauthenticated -> sendEffect(SplashUiEffect.NavigateToAuth)
-                    SessionError.Unknown -> throw Exception("SplashViewModel: $error") // TODO HANDLE PROPERLY
+                    SessionError.Unknown -> throw Exception("SplashViewModel: $error")
                 }
             }
     }

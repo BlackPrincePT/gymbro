@@ -36,7 +36,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.pegio.designsystem.component.WorkoutImage
+import com.pegio.common.presentation.components.WorkoutImage
 import com.pegio.model.Workout.MuscleGroup
 import com.pegio.model.Workout.WorkoutType
 import com.pegio.workout.presentation.model.UiWorkout

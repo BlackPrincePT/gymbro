@@ -29,7 +29,7 @@ fun WorkoutScreen(
     viewModel: WorkoutViewModel = hiltViewModel(),
     onBackClick: () -> Unit,
     workoutPlanId: String,
-    onShowSnackbar: suspend (String, String?) -> Boolean,
+    onShowSnackbar: suspend (String) -> Unit,
     onSetupTopBar: (TopBarState) -> Unit
 ) {
 
@@ -45,7 +45,7 @@ fun WorkoutScreen(
 
     CollectLatestEffect(viewModel.uiEffect) { effect ->
         when (effect) {
-            is WorkoutUiEffect.Failure -> onShowSnackbar(context.getString(effect.errorRes), null)
+            is WorkoutUiEffect.Failure -> onShowSnackbar(context.getString(effect.errorRes))
             WorkoutUiEffect.NavigateBack -> onBackClick()
         }
     }

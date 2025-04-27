@@ -1,5 +1,6 @@
 package com.pegio.feed.presentation.screen.profile
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -18,113 +19,177 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.pegio.common.presentation.components.BackgroundImage
+import com.pegio.common.presentation.components.CameraIcon
+import com.pegio.common.presentation.components.LoadingItemsIndicator
+import com.pegio.common.presentation.components.ProfileAvatar
+import com.pegio.common.presentation.components.ProfileImage
 import com.pegio.common.presentation.model.UiUser
 import com.pegio.common.presentation.state.TopBarAction
 import com.pegio.common.presentation.state.TopBarState
 import com.pegio.common.presentation.util.CollectLatestEffect
 import com.pegio.common.presentation.util.PagingColumn
-import com.pegio.designsystem.component.BackgroundImage
-import com.pegio.designsystem.component.ProfileImage
+import com.pegio.common.presentation.util.rememberGalleryLauncher
 import com.pegio.feed.R
-import com.pegio.feed.presentation.component.CreatePost
+import com.pegio.feed.presentation.component.CreatePostContent
 import com.pegio.feed.presentation.component.PostContent
 import com.pegio.feed.presentation.model.UiPost
 import com.pegio.feed.presentation.screen.profile.state.ProfileUiEffect
 import com.pegio.feed.presentation.screen.profile.state.ProfileUiEvent
 import com.pegio.feed.presentation.screen.profile.state.ProfileUiState
 import com.pegio.model.FollowRecord
+import kotlinx.coroutines.launch
 
 @Composable
 internal fun ProfileScreen(
     onBackClick: () -> Unit,
     onFollowRecordClick: (String, FollowRecord.Type) -> Unit,
+    onCreatePostClick: (Boolean) -> Unit,
+    onShowPostDetails: (String) -> Unit,
     onSetupTopBar: (TopBarState) -> Unit,
+    onShowSnackbar: suspend (String) -> Unit,
     viewModel: ProfileViewModel = hiltViewModel()
 ) {
-    SetupTopBar(onSetupTopBar, viewModel::onEvent)
+    val context = LocalContext.current
+
+    val launchGallery = rememberGalleryLauncher(
+        onImageSelected = {
+            viewModel.editMode?.run { viewModel.onEvent(getUploadEvent(it)) }
+        }
+    )
+
+    SetupTopBar(viewModel.uiState.displayedUser.username, onSetupTopBar, viewModel::onEvent)
 
     CollectLatestEffect(viewModel.uiEffect) { effect ->
         when (effect) {
 
+            // Image
+            is ProfileUiEffect.LaunchGallery -> launchGallery.invoke()
+
+            // Failure
+            is ProfileUiEffect.ShowSnackbar -> onShowSnackbar(context.getString(effect.errorRes))
+
             // Navigation
             ProfileUiEffect.NavigateBack -> onBackClick()
+            is ProfileUiEffect.NavigateToCreatePost -> onCreatePostClick(effect.shouldOpenGallery)
+            is ProfileUiEffect.NavigateToPostDetail -> onShowPostDetails(effect.postId)
             is ProfileUiEffect.NavigateToFollowRecord ->
                 onFollowRecordClick(effect.userId, effect.mode)
         }
     }
 
     ProfileContent(state = viewModel.uiState, onEvent = viewModel::onEvent)
+
+    if (viewModel.uiState.shouldShowBottomSheet)
+        BottomSheetContent(mode = viewModel.editMode, onEvent = viewModel::onEvent)
 }
 
 @Composable
 private fun ProfileContent(
     state: ProfileUiState,
     onEvent: (ProfileUiEvent) -> Unit
-) {
-    PagingColumn(
-        itemCount = state.userPosts.size,
-        isLoading = state.isLoading,
-        onLoadAnotherPage = { onEvent(ProfileUiEvent.OnLoadMorePosts) },
-        verticalArrangement = Arrangement.spacedBy(12.dp),
-        modifier = Modifier
-            .fillMaxSize()
+) = with(state) {
+    PullToRefreshBox(
+        isRefreshing = isRefreshing,
+        onRefresh = { onEvent(ProfileUiEvent.OnPostsRefresh) }
     ) {
-        item {
-            ProfileHeader(
-                user = state.displayedUser,
-                onFollowRecordClick = {
-                    onEvent(ProfileUiEvent.OnFollowRecordClick(state.displayedUser.id, it))
-                },
-                modifier = Modifier
-                    .fillMaxWidth()
-            )
-        }
+        PagingColumn(
+            itemCount = userPosts.size,
+            isLoading = isLoading,
+            onLoadAnotherPage = { onEvent(ProfileUiEvent.OnLoadMorePosts) },
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+            modifier = Modifier
+                .fillMaxSize()
+                .background(color = MaterialTheme.colorScheme.surface)
+        ) {
+            item {
+                ProfileHeader(
+                    user = displayedUser,
+                    isProfileOwner = isProfileOwner,
+                    isLoadingAvatar = isAvatarLoading,
+                    isLoadingBackground = isBackgroundLoading,
+                    onCameraIconClick = { onEvent(ProfileUiEvent.OnBottomSheetStateUpdate(shouldShow = true)) },
+                    onFollowRecordClick = {
+                        onEvent(ProfileUiEvent.OnFollowRecordClick(displayedUser.id, it))
+                    },
+                    onEditModeChange = { onEvent(ProfileUiEvent.OnEditModeChange(it)) },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                )
+            }
 
-        item {
-            if (state.isProfileOwner) {
-                ProfileOwnerActions()
-            } else {
+            if (!isProfileOwner) item {
                 DefaultProfileActions(
-                    isFollowing = state.isFollowing,
+                    isFollowing = isFollowing,
                     onFollowClick = { onEvent(ProfileUiEvent.OnFollowClick) },
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 32.dp)
                 )
             }
-        }
 
-        if (state.isProfileOwner) item {
-            CreatePost(
-                currentUser = state.displayedUser,
-                onPostClick = { },
-                onProfileClick = { }
-            )
-        }
+            if (isProfileOwner) item {
+                CreatePostContent(
+                    onClick = { onEvent(ProfileUiEvent.OnCreatePostClick(it)) },
+                    modifier = Modifier
+                        .padding(16.dp)
+                )
+            }
 
-        items(state.userPosts) { post ->
-            PostContent(
-                post = post,
-                onProfileClick = { },
-                onVoteClick = { onEvent(ProfileUiEvent.OnPostVote(post.id, voteType = it)) },
-                onCommentClick = { },
-                onRatingClick = { }
-            )
+            if (userPosts.isEmpty() && !isLoading && !isRefreshing) item {
+                EmptyUsersContent(
+                    username = displayedUser.username,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(32.dp)
+                )
+            }
+            else items(userPosts) { post ->
+                PostContent(
+                    post = post,
+                    onVoteClick = { onEvent(ProfileUiEvent.OnPostVote(post.id, voteType = it)) },
+                    onCommentClick = { onEvent(ProfileUiEvent.OnPostCommentClick(post.id)) }
+                )
+            }
+
+            if (isLoading && !isRefreshing)
+                item { LoadingItemsIndicator() }
         }
     }
+}
+
+@Composable
+private fun EmptyUsersContent(
+    username: String,
+    modifier: Modifier = Modifier
+) {
+    Text(
+        text = stringResource(R.string.feature_feed_has_not_posted_yet, username),
+        textAlign = TextAlign.Center,
+        style = MaterialTheme.typography.headlineSmall,
+        color = Color.Gray,
+        modifier = modifier
+    )
 }
 
 
@@ -134,7 +199,12 @@ private fun ProfileContent(
 @Composable
 private fun ProfileHeader(
     user: UiUser,
+    isProfileOwner: Boolean,
+    isLoadingAvatar: Boolean,
+    isLoadingBackground: Boolean,
+    onCameraIconClick: () -> Unit,
     onFollowRecordClick: (FollowRecord.Type) -> Unit,
+    onEditModeChange: (ProfileEditMode) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -142,15 +212,27 @@ private fun ProfileHeader(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Box {
-            BackgroundImage(
+            ProfileBackground(
                 imageUrl = user.imgBackgroundUrl,
+                isProfileOwner = isProfileOwner,
+                isLoading = isLoadingBackground,
+                onCameraIconClick = {
+                    onEditModeChange(ProfileEditMode.Background)
+                    onCameraIconClick()
+                },
                 modifier = Modifier
                     .height(128.dp)
                     .fillMaxWidth()
             )
 
-            ProfileImage(
+            ProfileAvatar(
                 imageUrl = user.avatarUrl,
+                isCameraIconVisible = isProfileOwner,
+                isLoading = isLoadingAvatar,
+                onClick = {
+                    onEditModeChange(ProfileEditMode.Avatar)
+                    onCameraIconClick()
+                },
                 modifier = Modifier
                     .align(Alignment.BottomCenter)
                     .offset(y = 64.dp)
@@ -160,7 +242,7 @@ private fun ProfileHeader(
             )
         }
 
-        Spacer(modifier = Modifier.height(48.dp))
+        Spacer(modifier = Modifier.height(64.dp))
 
         Text(
             text = user.username,
@@ -169,7 +251,7 @@ private fun ProfileHeader(
             modifier = Modifier.padding(vertical = 16.dp)
         )
 
-        ProfileStatsRow(
+        ProfileFollowRecords(
             followersCount = user.followersCount,
             followingCount = user.followingCount,
             onFollowersClick = { onFollowRecordClick(FollowRecord.Type.FOLLOWERS) },
@@ -178,32 +260,9 @@ private fun ProfileHeader(
     }
 }
 
-@Composable
-private fun ProfileOwnerActions(
-    modifier: Modifier = Modifier
-) {
-    Row(
-        modifier = modifier
-    ) {
-        Button(
-            onClick = { },
-            modifier = Modifier
-                .weight(1f)
-                .padding(start = 16.dp, end = 8.dp)
-        ) {
-            Text(text = "Add to story")
-        }
 
-        Button(
-            onClick = { },
-            modifier = Modifier
-                .weight(1f)
-                .padding(start = 8.dp, end = 16.dp)
-        ) {
-            Text(text = "Edit Profile")
-        }
-    }
-}
+// <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> \\
+
 
 @Composable
 private fun DefaultProfileActions(
@@ -215,33 +274,38 @@ private fun DefaultProfileActions(
         onClick = onFollowClick,
         modifier = modifier
     ) {
-        val btnText =
+        val buttonText =
             if (isFollowing) stringResource(R.string.feature_feed_following)
             else stringResource(R.string.feature_feed_follow)
 
-        Text(text = btnText)
+        Text(text = buttonText)
     }
 }
 
+
+// <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> \\
+
+
 @Composable
-private fun ProfileStatsRow(
+private fun ProfileFollowRecords(
     followersCount: Int,
     followingCount: Int,
-    onFollowersClick: () -> Unit = { },
-    onFollowingClick: () -> Unit = { }
+    onFollowersClick: () -> Unit,
+    onFollowingClick: () -> Unit
 ) {
     Row(
+        horizontalArrangement = Arrangement.SpaceEvenly,
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 8.dp),
-        horizontalArrangement = Arrangement.SpaceEvenly
+            .padding(top = 8.dp)
     ) {
-        StatItem(
+        FollowRecordItem(
             count = followersCount,
             label = stringResource(R.string.feature_feed_followers),
             onClick = onFollowersClick
         )
-        StatItem(
+
+        FollowRecordItem(
             count = followingCount,
             label = stringResource(id = R.string.feature_feed_following),
             onClick = onFollowingClick
@@ -250,7 +314,7 @@ private fun ProfileStatsRow(
 }
 
 @Composable
-private fun StatItem(
+private fun FollowRecordItem(
     count: Int,
     label: String,
     onClick: () -> Unit = { }
@@ -281,13 +345,96 @@ private fun StatItem(
 
 
 @Composable
+private fun ProfileBackground(
+    imageUrl: String?,
+    isProfileOwner: Boolean,
+    isLoading: Boolean,
+    onCameraIconClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Box(modifier = modifier.clickable { onCameraIconClick() }) {
+        if (isProfileOwner) CameraIcon(
+            isLoading = isLoading,
+            onClick = onCameraIconClick,
+            modifier = Modifier
+                .align(Alignment.TopEnd)
+                .padding(8.dp)
+                .size(24.dp)
+                .zIndex(1f)
+        )
+
+        BackgroundImage(
+            imageUrl = imageUrl,
+            modifier = Modifier.fillMaxSize()
+        )
+    }
+}
+
+
+// <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> \\
+
+
+@Composable
+private fun BottomSheetContent(
+    mode: ProfileEditMode?,
+    onEvent: (ProfileUiEvent) -> Unit
+) {
+    val sheetState = rememberModalBottomSheetState()
+    val scope = rememberCoroutineScope()
+
+    val fnHideSheet = {
+        scope.launch { sheetState.hide() }.invokeOnCompletion {
+            if (!sheetState.isVisible)
+                onEvent(ProfileUiEvent.OnBottomSheetStateUpdate(shouldShow = false))
+        }
+    }
+
+    ModalBottomSheet(
+        onDismissRequest = { onEvent(ProfileUiEvent.OnBottomSheetStateUpdate(shouldShow = false)) },
+        sheetState = sheetState,
+        dragHandle = null
+    ) {
+        Button(
+            onClick = {
+                onEvent(ProfileUiEvent.OnOpenGallery)
+                fnHideSheet.invoke()
+            },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 24.dp)
+                .padding(top = 24.dp)
+        ) {
+            Text(text = stringResource(R.string.feature_feed_choose_from_gallery))
+        }
+
+        Button(
+            onClick = {
+                mode?.run { onEvent(getRemoveEvent()) }
+                fnHideSheet.invoke()
+            },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(24.dp)
+        ) {
+            Text(text = stringResource(R.string.feature_feed_remove))
+        }
+    }
+}
+
+
+// <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> \\
+
+
+@Composable
 private fun SetupTopBar(
+    title: String,
     onSetupTopBar: (TopBarState) -> Unit,
     onEvent: (ProfileUiEvent) -> Unit
 ) {
-    LaunchedEffect(Unit) {
+    LaunchedEffect(title) {
         onSetupTopBar(
             TopBarState(
+                title = title,
                 navigationIcon = TopBarAction(
                     icon = Icons.AutoMirrored.Default.ArrowBack,
                     onClick = { onEvent(ProfileUiEvent.OnBackClick) }
@@ -303,6 +450,20 @@ private fun SetupTopBar(
 
 @Preview(showBackground = true)
 @Composable
+private fun ProfileHeaderPreview() {
+    ProfileHeader(
+        user = UiUser.DEFAULT,
+        isProfileOwner = true,
+        isLoadingAvatar = false,
+        isLoadingBackground = false,
+        onCameraIconClick = { },
+        onFollowRecordClick = { },
+        onEditModeChange = { }
+    )
+}
+
+@Preview(showBackground = true)
+@Composable
 private fun ProfileContentPreview() {
     val uiState = ProfileUiState(
         displayedUser = UiUser.DEFAULT,
@@ -310,10 +471,4 @@ private fun ProfileContentPreview() {
     )
 
     ProfileContent(state = uiState, onEvent = { })
-}
-
-@Preview
-@Composable
-private fun ProfileHeaderPreview() {
-    ProfileHeader(user = UiUser.DEFAULT, onFollowRecordClick = { })
 }

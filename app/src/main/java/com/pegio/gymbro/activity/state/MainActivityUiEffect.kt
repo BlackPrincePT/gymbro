@@ -8,6 +8,7 @@ sealed interface MainActivityUiEffect {
 
     // Drawer
     data object NavigateToAccount: MainActivityUiEffect
+    data object NavigateToSettings: MainActivityUiEffect
     data object NavigateToWorkoutPlan: MainActivityUiEffect
     data object NavigateToAuth: MainActivityUiEffect
 }
