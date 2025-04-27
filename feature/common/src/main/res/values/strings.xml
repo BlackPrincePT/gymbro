@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="feature_common_edit_your_profile_picture">Edit your profile picture</string>
+    <string name="feature_common_you_aren_t_logged_in">You aren\'t logged in</string>
 </resources>
