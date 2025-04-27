@@ -1,191 +1,151 @@
 package com.pegio.auth.presentation.screen.register
 
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.CameraAlt
 import androidx.compose.material3.Button
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.pegio.auth.R
+import com.pegio.auth.presentation.screen.register.state.RegisterUiEffect
+import com.pegio.auth.presentation.screen.register.state.RegisterUiEvent
+import com.pegio.auth.presentation.screen.register.state.RegisterUiState
+import com.pegio.common.presentation.components.EditAvatarContent
+import com.pegio.common.presentation.components.EmptyLoadingScreen
+import com.pegio.common.presentation.util.CollectLatestEffect
+import com.pegio.common.presentation.util.rememberGalleryLauncher
 import com.pegio.designsystem.component.DropdownMenu
 import com.pegio.designsystem.component.FormTextField
-import com.pegio.common.presentation.components.ProfileImage
 import com.pegio.model.User.Gender
 import kotlinx.coroutines.flow.collectLatest
 
 @Composable
-@OptIn(ExperimentalMaterial3Api::class)
-fun RegisterScreen(
+internal fun RegisterScreen(
     onRegisterSuccess: () -> Unit,
     viewModel: RegisterViewModel = hiltViewModel()
 ) {
-    val uiState by viewModel.uiState
-        .collectAsStateWithLifecycle()
+    val launchGallery = rememberGalleryLauncher(
+        onImageSelected = { viewModel.onEvent(RegisterUiEvent.OnProfilePhotoSelected(it)) }
+    )
 
-    LaunchedEffect(Unit) {
-        viewModel.uiEffect.collectLatest { effect ->
-            when (effect) {
-                RegisterUiEffect.NavigateToHome -> onRegisterSuccess()
-            }
+    CollectLatestEffect(viewModel.uiEffect) { effect ->
+        when (effect) {
+
+            // Main
+            RegisterUiEffect.LaunchGallery -> launchGallery()
+
+            // Navigation
+            RegisterUiEffect.NavigateToHome -> onRegisterSuccess()
         }
     }
 
-    RegisterForm(state = uiState, onEvent = viewModel::onEvent)
+    with(viewModel.uiState) {
+        when {
+            isLoading -> EmptyLoadingScreen()
+            else -> RegisterContent(state = viewModel.uiState, onEvent = viewModel::onEvent)
+        }
+    }
 }
 
 @Composable
-@ExperimentalMaterial3Api
-fun RegisterForm(
+private fun RegisterContent(
     state: RegisterUiState,
     onEvent: (RegisterUiEvent) -> Unit
-) {
-    val galleryLauncher =
-        rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri ->
-            uri?.let { onEvent(RegisterUiEvent.OnProfilePhotoSelected(imageUri = uri)) }
-        }
-
+) = with(state) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp)
+            .padding(32.dp)
     ) {
+        EditAvatarContent(
+            imageUrl = selectedImageUri?.toString(),
+            isLoading = false,
+            onClick = { onEvent(RegisterUiEvent.OnLaunchGallery) }
+        )
 
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Center,
-            modifier = Modifier
-                .fillMaxWidth()
-        ) {
-            Box(
-                modifier = Modifier
-                    .size(100.dp)
-                    .clip(CircleShape)
-                    .background(Color.LightGray)
-                    .clickable { galleryLauncher.launch("image/*") },
-                contentAlignment = Alignment.Center
-            ) {
-                ProfileImage(
-                    imageUrl = state.selectedImageUri?.toString(),
-                    modifier = Modifier
-                        .fillMaxSize()
-                )
+        Spacer(modifier = Modifier.height(32.dp))
 
-                if (state.selectedImageUri == null)
-                    Icon(
-                        imageVector = Icons.Default.CameraAlt,
-                        tint = Color.White,
-                        contentDescription = "Camera",
-                        modifier = Modifier
-                            .size(50.dp)
-                    )
-            }
-
-            Spacer(modifier = Modifier.width(16.dp))
-
-            TextButton(onClick = { galleryLauncher.launch("image/*") }) {
-                Text(text = "Click to choose profile picture")
-            }
-        }
+        FormTextField(
+            value = formValue.username,
+            onValueChange = { onEvent(RegisterUiEvent.OnUsernameChanged(it)) },
+            label = stringResource(id = R.string.feature_auth_username),
+            error = validationError.username,
+            modifier = Modifier.fillMaxWidth()
+        )
 
         Spacer(modifier = Modifier.height(16.dp))
 
         FormTextField(
-            value = state.user.username,
-            onValueChange = { onEvent(RegisterUiEvent.OnUsernameChanged(it)) },
-            label = { Text("Username") },
-            error = state.validationError.username,
-            modifier = Modifier.fillMaxWidth()
-        )
-
-        Spacer(modifier = Modifier.height(8.dp))
-
-        FormTextField(
-            value = state.user.age,
+            value = formValue.age,
             onValueChange = { onEvent(RegisterUiEvent.OnAgeChanged(it)) },
-            label = { Text("Age") },
+            label = stringResource(id = R.string.feature_auth_age),
             isNumberOnly = true,
-            error = state.validationError.age,
+            error = validationError.age,
             modifier = Modifier.fillMaxWidth()
         )
 
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(16.dp))
 
         DropdownMenu(
             options = Gender.entries,
             onSelectionChanged = { onEvent(RegisterUiEvent.OnGenderChanged(it)) },
-            label = { Text(text = "Gender") },
-            selectedOption = state.user.gender?.name,
-            error = state.validationError.gender
+            label = stringResource(id = R.string.feature_auth_gender),
+            selectedOption = formValue.gender?.name,
+            error = validationError.gender
         )
 
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(16.dp))
 
         FormTextField(
-            value = state.user.heightCm,
+            value = formValue.height,
             onValueChange = { onEvent(RegisterUiEvent.OnHeightChanged(it)) },
-            label = { Text("Height (cm)") },
+            label = stringResource(id = R.string.feature_auth_height_cm),
             isNumberOnly = true,
-            error = state.validationError.height,
-            modifier = Modifier.fillMaxWidth()
-        )
-
-        Spacer(modifier = Modifier.height(8.dp))
-
-        FormTextField(
-            value = state.user.weightKg,
-            onValueChange = { onEvent(RegisterUiEvent.OnWeightChanged(it)) },
-            label = { Text("Weight (kg)") },
-            isNumberOnly = true,
-            error = state.validationError.weight,
+            error = validationError.height,
             modifier = Modifier.fillMaxWidth()
         )
 
         Spacer(modifier = Modifier.height(16.dp))
+
+        FormTextField(
+            value = formValue.weight,
+            onValueChange = { onEvent(RegisterUiEvent.OnWeightChanged(it)) },
+            label = stringResource(id = R.string.feature_auth_weight_kg),
+            isNumberOnly = true,
+            error = validationError.weight,
+            modifier = Modifier.fillMaxWidth()
+        )
+
+        Spacer(modifier = Modifier.height(64.dp))
 
         Button(
             onClick = { onEvent(RegisterUiEvent.OnSubmit) },
             modifier = Modifier.fillMaxWidth()
         ) {
-            Text(text = "Register")
+            Text(text = stringResource(R.string.feature_auth_register))
         }
     }
 }
 
+
+// <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> \\
+
+
 @Preview(showBackground = true)
 @Composable
-@OptIn(ExperimentalMaterial3Api::class)
 private fun RegisterFormPreview() {
-    RegisterForm(
-        state = RegisterUiState(),
-        onEvent = {}
-    )
+    RegisterContent(state = RegisterUiState(), onEvent = { })
 }

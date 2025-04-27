@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="feature_auth_username">Username</string>
+    <string name="feature_auth_age">Age</string>
+    <string name="feature_auth_gender">Gender</string>
+    <string name="feature_auth_height_cm">Height (cm)</string>
+    <string name="feature_auth_weight_kg">Weight (kg)</string>
+    <string name="feature_auth_register">Register</string>
+</resources>

@@ -1,27 +1,21 @@
 package com.pegio.splash.presentation.splash
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Place
 import androidx.compose.material3.Icon
-import androidx.compose.material3.Text
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.pegio.common.presentation.util.CollectLatestEffect
+import com.pegio.splash.R
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.collectLatest
 
 @Composable
 fun SplashScreen(
@@ -32,19 +26,17 @@ fun SplashScreen(
 ) {
     val startTime = remember { System.currentTimeMillis() }
 
-    LaunchedEffect(Unit) {
-        viewModel.uiEffect.collectLatest { effect ->
+    CollectLatestEffect(viewModel.uiEffect) { effect ->
 
-            val elapsedTime = System.currentTimeMillis() - startTime
-            if (elapsedTime < 1000) {
-                delay(timeMillis = 1000 - elapsedTime)
-            }
+        val elapsedTime = System.currentTimeMillis() - startTime
+        if (elapsedTime < 1000) {
+            delay(timeMillis = 1000 - elapsedTime)
+        }
 
-            when (effect) {
-                SplashUiEffect.NavigateToHome -> onUserAuthenticatedAndRegistrationComplete()
-                SplashUiEffect.NavigateToAuth -> onUserNotAuthenticated()
-                SplashUiEffect.NavigateToRegister -> onRegistrationIncomplete()
-            }
+        when (effect) {
+            SplashUiEffect.NavigateToHome -> onUserAuthenticatedAndRegistrationComplete()
+            SplashUiEffect.NavigateToAuth -> onUserNotAuthenticated()
+            SplashUiEffect.NavigateToRegister -> onRegistrationIncomplete()
         }
     }
 
@@ -54,27 +46,15 @@ fun SplashScreen(
 @Composable
 private fun SplashContent() {
     Box(
+        contentAlignment = Alignment.Center,
         modifier = Modifier
             .fillMaxSize()
-            .background(color = Color.LightGray)
+            .padding(16.dp)
     ) {
-        Text(
-            text = "Gymbro", // Fixme please ================
-            color = Color.White,
-            fontWeight = FontWeight.Bold,
-            fontSize = 48.sp,
-            modifier = Modifier
-                .align(Alignment.TopCenter)
-                .padding(top = 64.dp)
-        )
-
         Icon(
-            imageVector = Icons.Default.Place,
+            painter = painterResource(id = R.drawable.feature_splash_icon),
             contentDescription = null,
-            tint = Color.White,
-            modifier = Modifier
-                .align(Alignment.Center)
-                .size(128.dp)
+            tint = MaterialTheme.colorScheme.onSurface
         )
     }
 }

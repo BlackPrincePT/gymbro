@@ -8,6 +8,7 @@ import com.pegio.common.core.asFailure
 import com.pegio.common.core.asSuccess
 import com.pegio.common.core.errorOrElse
 import com.pegio.common.core.retryableCall
+import com.pegio.datastore.core.CacheManager
 import com.pegio.firestore.repository.UserRepository
 import com.pegio.model.User
 import javax.inject.Inject

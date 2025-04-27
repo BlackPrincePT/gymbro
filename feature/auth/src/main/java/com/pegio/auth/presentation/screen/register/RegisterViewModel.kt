@@ -1,121 +1,106 @@
 package com.pegio.auth.presentation.screen.register
 
-import android.net.Uri
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import com.pegio.auth.presentation.screen.register.state.RegisterFormValue
+import com.pegio.auth.presentation.screen.register.state.RegisterUiEffect
+import com.pegio.auth.presentation.screen.register.state.RegisterUiEvent
+import com.pegio.auth.presentation.screen.register.state.RegisterUiState
+import com.pegio.auth.presentation.screen.register.state.RegisterValidationError
 import com.pegio.common.core.errorOrNull
+import com.pegio.common.core.onFailure
 import com.pegio.common.core.onSuccess
-import com.pegio.common.presentation.model.UiUser
-import com.pegio.common.presentation.model.mapper.UiUserMapper
+import com.pegio.common.presentation.core.BaseViewModel
 import com.pegio.common.presentation.util.toStringResId
 import com.pegio.domain.usecase.aggregator.FormValidatorUseCases
-import com.pegio.domain.usecase.common.GetCurrentAuthUserUseCase
-import com.pegio.domain.usecase.common.SaveUserUseCase
-import com.pegio.uploadmanager.core.FileUploadManager
+import com.pegio.domain.usecase.auth.RegisterCurrentUserUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asSharedFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class RegisterViewModel @Inject constructor(
-    private val saveUser: SaveUserUseCase,
-    private val uiUserMapper: UiUserMapper,
-    private val fileUploadManager: FileUploadManager,
+    private val registerCurrentUser: RegisterCurrentUserUseCase,
     private val formValidator: FormValidatorUseCases,
-    getCurrentAuthUser: GetCurrentAuthUserUseCase
-) : ViewModel() {
+) : BaseViewModel<RegisterUiState, RegisterUiEffect, RegisterUiEvent>(initialState = RegisterUiState()) {
 
-    private val _uiState = MutableStateFlow(RegisterUiState())
-    val uiState = _uiState.asStateFlow()
 
-    private val _uiEffect = MutableSharedFlow<RegisterUiEffect>()
-    val uiEffect = _uiEffect.asSharedFlow()
-
-    init {
-        getCurrentAuthUser()?.let { updateUser { copy(id = it.id) } }
-    }
-
-    fun onEvent(event: RegisterUiEvent) {
+    override fun onEvent(event: RegisterUiEvent) {
         when (event) {
-            is RegisterUiEvent.OnUsernameChanged -> updateUser { copy(username = event.username) }
-            is RegisterUiEvent.OnAgeChanged -> updateUser { copy(age = event.age) }
-            is RegisterUiEvent.OnGenderChanged -> updateUser { copy(gender = event.gender) }
-            is RegisterUiEvent.OnHeightChanged -> updateUser { copy(heightCm = event.height) }
-            is RegisterUiEvent.OnWeightChanged -> updateUser { copy(weightKg = event.weight) }
-            is RegisterUiEvent.OnProfilePhotoSelected -> _uiState.update { it.copy(selectedImageUri = event.imageUri) }
-            RegisterUiEvent.OnSubmit -> onSubmit()
+
+            // Main
+            RegisterUiEvent.OnSubmit -> handleSubmitClick()
+            RegisterUiEvent.OnLaunchGallery -> sendEffect(RegisterUiEffect.LaunchGallery)
+
+            // Compose State
+            is RegisterUiEvent.OnUsernameChanged -> updateForm { copy(username = event.username) }
+            is RegisterUiEvent.OnAgeChanged -> updateForm { copy(age = event.age) }
+            is RegisterUiEvent.OnGenderChanged -> updateForm { copy(gender = event.gender) }
+            is RegisterUiEvent.OnHeightChanged -> updateForm { copy(height = event.height) }
+            is RegisterUiEvent.OnWeightChanged -> updateForm { copy(weight = event.weight) }
+            is RegisterUiEvent.OnProfilePhotoSelected -> updateState { copy(selectedImageUri = event.imageUri) }
         }
     }
 
-    private fun onSubmit() {
-        if (areFieldsValid().not())
+    override fun setLoading(isLoading: Boolean) = updateState { copy(isLoading = isLoading) }
+
+
+    // <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> \\
+
+
+    private fun handleSubmitClick() = with(uiState.formValue) {
+        if (!areFieldsValid()) return
+
+        val ageValue = age.toIntOrNull()
+        val heightValue = height.toIntOrNull()
+        val weightValue = weight.toIntOrNull()
+
+        if (ageValue == null || heightValue == null || weightValue == null || gender == null)
             return
 
-        uiState.value.selectedImageUri?.let { imageUri ->
-            saveUserWithProfilePhoto(uri = imageUri)
-        } ?: run {
-            saveUser(uiUserMapper.mapToDomain(uiState.value.user))
-            sendEffect(RegisterUiEffect.NavigateToHome)
+        launchWithLoading {
+            registerCurrentUser(
+                username = username,
+                age = ageValue,
+                gender = gender,
+                height = heightValue,
+                weight = weightValue,
+                imageUri = uiState.selectedImageUri?.toString()
+            )
+                .onSuccess { sendEffect(RegisterUiEffect.NavigateToHome) }
         }
     }
 
-    private fun saveUserWithProfilePhoto(uri: Uri) = viewModelScope.launch {
-        fileUploadManager.enqueueFileUpload(uri.toString())
-            .onSuccess {
-                saveUser(uiUserMapper.mapToDomain(uiState.value.user.copy(avatarUrl = it)))
-                sendEffect(RegisterUiEffect.NavigateToHome)
-            }
-    }
 
-    private fun areFieldsValid(): Boolean {
-        val currentUser = uiState.value.user
+    // <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> \\
 
-        var isValid = true
 
-        formValidator.validateUsername(currentUser.username)
-            .errorOrNull()
-            .let { updateError { copy(username = it?.toStringResId()) }; isValid = it == null }
+    private fun areFieldsValid(): Boolean = with(uiState.formValue) {
 
-        formValidator.validateAge(ageString = currentUser.age)
-            .errorOrNull()
-            .let { updateError { copy(age = it?.toStringResId()) }; isValid = it == null }
+        val usernameError = formValidator.validateUsername(username).errorOrNull()
+        val ageError = formValidator.validateAge(age).errorOrNull()
+        val genderError = formValidator.validateGender(gender).errorOrNull()
+        val heightError = formValidator.validateHeight(height).errorOrNull()
+        val weightError = formValidator.validateWeight(weight).errorOrNull()
 
-        formValidator.validateGender(gender = currentUser.gender)
-            .errorOrNull()
-            .let { updateError { copy(gender = it?.toStringResId()) }; isValid = it == null }
-
-        formValidator.validateHeight(heightString = currentUser.heightCm)
-            .errorOrNull()
-            .let { updateError { copy(height = it?.toStringResId()) }; isValid = it == null }
-
-        formValidator.validateWeight(weightString = currentUser.weightKg)
-            .errorOrNull()
-            .let { updateError { copy(weight = it?.toStringResId()) }; isValid = it == null }
-
-        return isValid
-    }
-
-    private fun updateUser(update: UiUser.() -> UiUser) {
-        _uiState.update { currentState ->
-            currentState.copy(user = currentState.user.update())
+        updateError {
+            copy(
+                username = usernameError?.toStringResId(),
+                age = ageError?.toStringResId(),
+                gender = genderError?.toStringResId(),
+                height = heightError?.toStringResId(),
+                weight = weightError?.toStringResId()
+            )
         }
+
+        return usernameError == null && ageError == null && genderError == null && heightError == null && weightError == null
     }
 
-    private fun updateError(update: RegisterValidationError.() -> RegisterValidationError) {
-        _uiState.update { currentState ->
-            currentState.copy(validationError = currentState.validationError.update())
-        }
+
+    // <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> \\
+
+    private fun updateForm(transform: RegisterFormValue.() -> RegisterFormValue) {
+        updateState { copy(formValue = formValue.transform()) }
     }
 
-    private fun sendEffect(effect: RegisterUiEffect) {
-        viewModelScope.launch(Dispatchers.Main.immediate) {
-            _uiEffect.emit(effect)
-        }
+    private fun updateError(transform: RegisterValidationError.() -> RegisterValidationError) {
+        updateState { copy(validationError = validationError.transform()) }
     }
 }

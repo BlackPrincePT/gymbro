@@ -2,8 +2,11 @@ package com.pegio.designsystem.component
 
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
@@ -17,7 +20,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -27,10 +32,11 @@ import androidx.compose.ui.unit.dp
 fun <T> DropdownMenu(
     options: List<T>,
     onSelectionChanged: (T) -> Unit,
-    label: @Composable () -> Unit,
+    label: String,
     modifier: Modifier = Modifier,
     @StringRes error: Int? = null,
-    selectedOption: String? = null
+    selectedOption: String? = null,
+    trailingIcon: @Composable (() -> Unit)? = null
 ) {
     var isExpanded by remember { mutableStateOf(false) }
 
@@ -43,9 +49,21 @@ fun <T> DropdownMenu(
                 readOnly = true,
                 value = selectedOption.orEmpty(),
                 onValueChange = { },
-                label = label,
-                trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = isExpanded) },
-                colors = ExposedDropdownMenuDefaults.textFieldColors(),
+                label = { Text(text = label) },
+                trailingIcon = {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        ExposedDropdownMenuDefaults.TrailingIcon(expanded = isExpanded)
+
+                        if (trailingIcon != null){
+                            Spacer(modifier = Modifier.width(4.dp))
+                            trailingIcon()
+                        }
+                    }
+                },
+                colors = ExposedDropdownMenuDefaults.textFieldColors(
+                    unfocusedContainerColor = Color.Transparent,
+                    focusedContainerColor = Color.Transparent
+                ),
                 isError = error != null,
                 modifier = modifier
                     .fillMaxWidth()
@@ -85,6 +103,6 @@ private fun DropdownMenuPreview() {
     DropdownMenu(
         options = emptyList<String>(),
         onSelectionChanged = { },
-        label = { Text(text = "Categories") }
+        label = "Categories"
     )
 }

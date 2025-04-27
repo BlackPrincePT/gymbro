@@ -1,13 +1,26 @@
-package com.pegio.auth.presentation.screen.register
+package com.pegio.auth.presentation.screen.register.state
 
 import android.net.Uri
 import androidx.annotation.StringRes
-import com.pegio.common.presentation.model.UiUser
+import com.pegio.model.User.Gender
 
 data class RegisterUiState(
-    val user: UiUser = UiUser.EMPTY,
+
+    // Loading
+    val isLoading: Boolean = false,
+
+    // Compose State
     val selectedImageUri: Uri? = null,
+    val formValue: RegisterFormValue = RegisterFormValue(),
     val validationError: RegisterValidationError = RegisterValidationError()
+)
+
+data class RegisterFormValue(
+    val username: String = "",
+    val age: String = "",
+    val gender: Gender? = null,
+    val height: String = "",
+    val weight: String = "",
 )
 
 data class RegisterValidationError(

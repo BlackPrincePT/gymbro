@@ -60,5 +60,6 @@
     <string name="chat_image">Chat Image</string>
     <string name="remove_image">Remove Image</string>
     <string name="built_in_workout_plans">Built-in workout plans</string>
+    <string name="settings">Settings</string>
 
 </resources>

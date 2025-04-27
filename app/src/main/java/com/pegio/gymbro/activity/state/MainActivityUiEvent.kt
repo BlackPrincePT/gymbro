@@ -10,6 +10,7 @@ sealed interface MainActivityUiEvent {
     // Drawer
     data object OnOpenDrawer : MainActivityUiEvent
     data object OnAccountClick : MainActivityUiEvent
+    data object OnSettingsClick : MainActivityUiEvent
     data object OnWorkoutPlanClick : MainActivityUiEvent
     data object OnSignOutClick : MainActivityUiEvent
 }
