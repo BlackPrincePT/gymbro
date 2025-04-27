@@ -21,7 +21,7 @@ import com.pegio.common.presentation.state.TopBarState
 import com.pegio.common.presentation.util.CollectLatestEffect
 import com.pegio.model.Exercise
 import com.pegio.workout.presentation.component.WorkoutDetails
-import com.pegio.workout.presentation.model.UiWorkout
+import com.pegio.workout.presentation.model.UiExercise
 
 
 @Composable
@@ -83,7 +83,7 @@ fun WorkoutContent(
 
 @Composable
 fun PreloadWorkoutImages(
-    workouts: List<UiWorkout>
+    workouts: List<UiExercise>
 ) {
     val context = LocalContext.current
     val imageLoader = ImageLoader(context)
@@ -123,7 +123,7 @@ private fun SetupTopBar(
 @Preview(showBackground = true)
 @Composable
 fun WorkoutContentPreview() {
-    val sampleExercise = UiWorkout(
+    val sampleExercise = UiExercise(
         name = "Plank",
         description = "Hold the plank position for 60 seconds.",
         type = Exercise.Type.TIMED,

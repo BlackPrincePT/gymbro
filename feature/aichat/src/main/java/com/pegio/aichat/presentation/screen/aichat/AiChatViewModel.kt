@@ -13,7 +13,6 @@ import com.pegio.domain.usecase.aichat.SaveFireStoreMessagesUseCase
 import com.pegio.domain.usecase.aichat.SendMessageToAiUseCase
 import com.pegio.domain.usecase.common.EnqueueFileUploadUseCase
 import com.pegio.domain.usecase.common.GetCurrentAuthUserUseCase
-import com.pegio.uploadmanager.core.FileUploadManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.launchIn
 import javax.inject.Inject

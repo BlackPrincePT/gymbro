@@ -1,14 +1,15 @@
 package com.pegio.workout.presentation.screen.workoutcreation
 
 import androidx.annotation.StringRes
-import com.pegio.workout.presentation.model.UiWorkout
+import com.pegio.model.Workout
+import com.pegio.workout.presentation.model.UiExercise
 
 data class WorkoutCreationUiState(
-    val workouts: List<UiWorkout> = emptyList(),
+    val exercises: List<UiExercise> = emptyList(),
     val isLoading: Boolean = false,
     val showAddWorkoutDialog: Boolean = false,
     val validationError: WorkoutValidationError = WorkoutValidationError(),
-    val newWorkout: UiWorkout = UiWorkout.EMPTY
+    val newWorkout: UiExercise = UiExercise.EMPTY
 )
 
 data class WorkoutValidationError(

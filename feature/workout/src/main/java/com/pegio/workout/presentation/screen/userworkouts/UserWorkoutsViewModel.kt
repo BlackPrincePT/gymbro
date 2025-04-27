@@ -2,14 +2,13 @@ package com.pegio.workout.presentation.screen.userworkouts
 
 import com.pegio.common.presentation.core.BaseViewModel
 import com.pegio.domain.usecase.common.GetCurrentAuthUserUseCase
-import com.pegio.domain.usecase.workout.FetchWorkoutsByUserIdUseCase
 import com.pegio.workout.presentation.model.mapper.UiWorkoutMapper
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
 class UserWorkoutsViewModel @Inject constructor(
-    private val fetchWorkoutsByUserId: FetchWorkoutsByUserIdUseCase,
+//    private val fetchWorkoutsByUserId: FetchWorkoutsByUserIdUseCase,
     private val uiWorkoutMapper: UiWorkoutMapper,
     getCurrentAuthUser: GetCurrentAuthUserUseCase
 ) : BaseViewModel<UserWorkoutsUiState, UserWorkoutsUiEffect, UserWorkoutsUiEvent>(initialState = UserWorkoutsUiState()) {

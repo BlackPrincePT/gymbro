@@ -7,9 +7,9 @@ import com.pegio.common.core.retryableCall
 import com.pegio.common.presentation.core.BaseViewModel
 import com.pegio.common.presentation.util.toStringResId
 import com.pegio.domain.usecase.aggregator.WorkoutFormValidatorUseCases
+import com.pegio.domain.usecase.workout.UploadExerciseUseCase
 import com.pegio.domain.usecase.workout.UploadWorkoutUseCase
-import com.pegio.model.Exercise
-import com.pegio.workout.presentation.model.UiWorkout
+import com.pegio.workout.presentation.model.UiExercise
 import com.pegio.workout.presentation.model.mapper.UiWorkoutMapper
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -17,6 +17,7 @@ import javax.inject.Inject
 @HiltViewModel
 class WorkoutCreationViewModel @Inject constructor(
     private val workoutFormValidator: WorkoutFormValidatorUseCases,
+    private val uploadExercise: UploadExerciseUseCase,
     private val uploadWorkout: UploadWorkoutUseCase,
     private val uiWorkoutMapper: UiWorkoutMapper
 ) : BaseViewModel<WorkoutCreationUiState, WorkoutCreationUiEffect, WorkoutCreationUiEvent>(
@@ -38,20 +39,12 @@ class WorkoutCreationViewModel @Inject constructor(
         updateState {
             copy(
                 showAddWorkoutDialog = true,
-                newWorkout = UiWorkout(
-                    name = "",
-                    description = "",
-                    type = Exercise.Type.TIMED,
-                    value = 0,
-                    sets = 0,
-                    muscleGroups = emptyList(),
-                    workoutImage = ""
-                )
+                newWorkout = UiExercise.EMPTY
             )
         }
     }
 
-    private fun editWorkout(workout: UiWorkout) {
+    private fun editWorkout(workout: UiExercise) {
         updateState {
             copy(
                 newWorkout = workout,
@@ -74,7 +67,7 @@ class WorkoutCreationViewModel @Inject constructor(
             val workout = uiState.newWorkout
 
             updateState {
-                val updatedList = workouts.toMutableList()
+                val updatedList = exercises.toMutableList()
                 val index = updatedList.indexOfFirst { it.id == workout.id }
 
                 if (index >= 0) {
@@ -84,7 +77,7 @@ class WorkoutCreationViewModel @Inject constructor(
                 }
 
                 copy(
-                    workouts = updatedList,
+                    exercises = updatedList,
                     showAddWorkoutDialog = false
                 )
             }
@@ -155,26 +148,16 @@ class WorkoutCreationViewModel @Inject constructor(
 
 
     private fun uploadWorkouts() {
-        workoutFormValidator.validateWorkoutsListUseCase(
-            uiState.workouts.map { uiWorkout ->
-                uiWorkoutMapper.mapToDomain(uiWorkout)
-            }
-        )
-            .onFailure {
-                sendEffect(
-                    WorkoutCreationUiEffect.Failure(
-                        errorRes = it.toStringResId()
-                    )
-                )
-                return
-            }
+
 
         launchWithLoading {
             retryableCall {
-                val workoutsToUpload = uiState.workouts.map { uiWorkout ->
+                val workoutsToUpload = uiState.exercises.map { uiWorkout ->
                     uiWorkoutMapper.mapToDomain(uiWorkout)
                 }
-                uploadWorkout(workoutsToUpload)
+                uploadWorkout(description = "zaza", title = "").onSuccess {
+                    uploadExercise(workoutsToUpload, workoutId = it.id)
+                }
             }
                 .onSuccess {
                     sendEffect(WorkoutCreationUiEffect.NavigateBack)
@@ -188,7 +171,7 @@ class WorkoutCreationViewModel @Inject constructor(
 
     private fun removeWorkout(workoutId: String) {
         updateState {
-            copy(workouts = workouts.filter { it.id != workoutId })
+            copy(exercises = exercises.filter { it.id != workoutId })
         }
     }
 

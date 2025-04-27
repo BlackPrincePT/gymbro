@@ -55,14 +55,14 @@ import coil3.compose.AsyncImage
 import com.pegio.designsystem.component.FormTextField
 import com.pegio.model.Exercise.MuscleGroup
 import com.pegio.model.Exercise.Type
-import com.pegio.workout.presentation.model.UiWorkout
+import com.pegio.workout.presentation.model.UiExercise
 import com.pegio.workout.presentation.screen.workoutcreation.WorkoutCreationUiEvent
 import com.pegio.workout.presentation.screen.workoutcreation.WorkoutCreationUiState
 
 
 @Composable
 fun WorkoutItem(
-    workout: UiWorkout,
+    workout: UiExercise,
     onEvent: (WorkoutCreationUiEvent) -> Unit
 ) {
     Card(
@@ -457,7 +457,7 @@ fun AddWorkoutDialog(
 @Composable
 fun PreviewWorkoutItem() {
     WorkoutItem(
-        workout = UiWorkout.EMPTY,
+        workout = UiExercise.EMPTY,
         onEvent = {}
     )
 }
