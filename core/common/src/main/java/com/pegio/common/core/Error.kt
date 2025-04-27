@@ -42,7 +42,7 @@ sealed interface DataError : Error {
         data object Unknown : Firestore
     }
 
-    enum class Pagination: DataError {
+    enum class Pagination : DataError {
         END_OF_PAGINATION_REACHED
     }
 }
@@ -72,5 +72,41 @@ sealed interface ValidationError : Error {
     enum class Weight : ValidationError {
         INVALID,    // When the weight value is nonsensical
         TOO_LOW     // When the weight is below a certain acceptable threshold
+    }
+}
+
+sealed interface WorkoutValidationError : Error {
+
+    enum class Name : WorkoutValidationError {
+        EMPTY,          // When the workout name is blank
+        TOO_SHORT       // When the name is too short
+    }
+
+    enum class Description : WorkoutValidationError {
+        EMPTY,          // When the description is blank
+        TOO_SHORT       // When the description is too short
+    }
+
+    enum class Value : WorkoutValidationError {
+        INVALID,        // When the value (e.g., reps or duration) is non-positive
+        TOO_LOW         // When the value is below a logical threshold
+    }
+
+    enum class Sets : WorkoutValidationError {
+        INVALID,        // When sets are non-positive
+        TOO_MANY        // When sets exceed a reasonable upper limit
+    }
+
+    enum class MuscleGroups : WorkoutValidationError {
+        EMPTY           // When no muscle group is selected
+    }
+
+    enum class WorkoutImage : WorkoutValidationError {
+        EMPTY,          // When no image is provided
+    }
+
+    enum class Workouts : WorkoutValidationError {
+        TOO_FEW,         // When workouts size is fewer than 5
+        TOO_MANY         // When workouts size is more than 30
     }
 }

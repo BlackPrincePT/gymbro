@@ -6,14 +6,12 @@ import com.pegio.aichat.presentation.model.UiAiMessage
 import com.pegio.aichat.presentation.model.mapper.UiAiMessageMapper
 import com.pegio.common.core.onFailure
 import com.pegio.common.core.onSuccess
-import com.pegio.common.core.onSuccessAsync
 import com.pegio.common.presentation.core.BaseViewModel
 import com.pegio.common.presentation.util.toStringResId
 import com.pegio.domain.usecase.aichat.ObserveAiMessagesPagingStreamUseCase
 import com.pegio.domain.usecase.aichat.SaveFireStoreMessagesUseCase
 import com.pegio.domain.usecase.aichat.SendMessageToAiUseCase
 import com.pegio.domain.usecase.common.GetCurrentAuthUserUseCase
-import com.pegio.domain.usecase.common.GetCurrentUserUseCase
 import com.pegio.uploadmanager.core.FileUploadManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.launchIn
@@ -31,7 +29,6 @@ class AiChatViewModel @Inject constructor(
 
 
     init {
-//        loadCurrentUser()
         getCurrentAuthUser()?.let { user ->
             updateState { copy(userId = user.id) }
         }
@@ -141,19 +138,6 @@ class AiChatViewModel @Inject constructor(
             copy(inputText = "", selectedImageUri = null)
         }
     }
-
-
-//    private fun loadCurrentUser() {
-//        viewModelScope.launch {
-//            getCurrentUser()
-//                .onSuccess {
-//                    updateState { copy(userId = it.id) }
-//                }
-//                .onFailure {
-//                    sendEffect(AiChatUiEffect.Failure(errorRes = it.toStringResId()))
-//                }
-//        }
-//    }
 
     override fun setLoading(isLoading: Boolean) {
         updateState { copy(isLoading = isLoading) }

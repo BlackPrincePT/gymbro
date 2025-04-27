@@ -12,8 +12,11 @@ data class WorkoutCreationUiState(
 )
 
 data class WorkoutValidationError(
+    @StringRes val workoutImage: Int? = null,
     @StringRes val name: Int? = null,
     @StringRes val description: Int? = null,
     @StringRes val value: Int? = null,
-    @StringRes val sets: Int? = null
+    @StringRes val sets: Int? = null,
+    @StringRes val muscleGroups: Int? = null,
+    @StringRes val workouts: Int? = null
 )

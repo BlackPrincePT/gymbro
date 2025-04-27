@@ -1,7 +1,5 @@
 package com.pegio.model
 
-
-
 data class Workout(
     val name: String,
     val description: String,

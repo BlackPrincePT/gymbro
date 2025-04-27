@@ -28,4 +28,15 @@ internal class WorkoutRepositoryImpl @Inject constructor(
         }
     }
 
+
+    override suspend fun uploadWorkouts(authorId: String, workouts: List<Workout>) {
+        val workoutsList = workouts.map { exerciseDtoMapper.mapFromDomain(it) }
+        val workoutDto = WorkoutDto(
+            authorId = authorId,
+            workouts = workoutsList
+        )
+        db.collection(WORKOUTS).add(workoutDto)
+    }
+
+
 }

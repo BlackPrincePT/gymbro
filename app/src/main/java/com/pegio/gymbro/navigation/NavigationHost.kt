@@ -23,15 +23,26 @@ import com.pegio.feed.presentation.screen.postdetails.navigation.postDetailsScre
 import com.pegio.feed.presentation.screen.profile.navigation.navigateToProfile
 import com.pegio.feed.presentation.screen.profile.navigation.profileScreen
 import com.pegio.gymbro.navigation.route.AiChatRoute
+
+import com.pegio.gymbro.navigation.route.RegisterRoute
+import com.pegio.gymbro.navigation.route.SplashRoute
+import com.pegio.gymbro.navigation.route.UserWorkoutsRoute
+
 import com.pegio.gymbro.navigation.route.WorkoutCreationRoute
 import com.pegio.gymbro.navigation.route.WorkoutPlanRoute
 import com.pegio.gymbro.navigation.route.WorkoutRoute
 import com.pegio.gymbro.navigation.route.navigateToAiChat
 import com.pegio.gymbro.navigation.route.navigateToWorkout
+
+import com.pegio.settings.presentation.screen.AccountScreen
+import com.pegio.splash.presentation.splash.SplashScreen
+import com.pegio.workout.presentation.screen.userworkouts.UserWorkoutsScreen
+
 import com.pegio.settings.presentation.screen.account.navigation.accountScreen
 import com.pegio.settings.presentation.screen.settings.navigation.settingsScreen
 import com.pegio.splash.presentation.splash.navigation.SplashRoute
 import com.pegio.splash.presentation.splash.navigation.splashScreen
+
 import com.pegio.workout.presentation.screen.workout.WorkoutScreen
 import com.pegio.workout.presentation.screen.workout_plan.WorkoutPlanScreen
 import com.pegio.workout.presentation.screen.workoutcreation.WorkoutCreationScreen
@@ -128,7 +139,16 @@ fun NavigationHost(
         }
 
 
+        composable<UserWorkoutsRoute>{
+            UserWorkoutsScreen(
+            )
+        }
+
+        // ========= Feed ========= \\
+
+
         // <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> \\
+
 
 
         feedScreen(

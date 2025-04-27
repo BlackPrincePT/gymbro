@@ -1,4 +1,4 @@
-package com.pegio.domain.usecase.validator
+package com.pegio.domain.usecase.validator.user
 
 import com.pegio.common.core.Resource
 import com.pegio.common.core.ValidationError
