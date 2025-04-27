@@ -6,7 +6,6 @@ import com.pegio.auth.presentation.screen.register.state.RegisterUiEvent
 import com.pegio.auth.presentation.screen.register.state.RegisterUiState
 import com.pegio.auth.presentation.screen.register.state.RegisterValidationError
 import com.pegio.common.core.errorOrNull
-import com.pegio.common.core.onFailure
 import com.pegio.common.core.onSuccess
 import com.pegio.common.presentation.core.BaseViewModel
 import com.pegio.common.presentation.util.toStringResId
@@ -27,7 +26,10 @@ class RegisterViewModel @Inject constructor(
 
             // Main
             RegisterUiEvent.OnSubmit -> handleSubmitClick()
-            RegisterUiEvent.OnLaunchGallery -> sendEffect(RegisterUiEffect.LaunchGallery)
+            RegisterUiEvent.OnLaunchGallery -> handleGalleryLaunch()
+
+            // Bottom Sheet
+            is RegisterUiEvent.OnBottomSheetStateUpdate -> updateState { copy(shouldShowBottomSheet = event.shouldShow) }
 
             // Compose State
             is RegisterUiEvent.OnUsernameChanged -> updateForm { copy(username = event.username) }
@@ -66,6 +68,11 @@ class RegisterViewModel @Inject constructor(
             )
                 .onSuccess { sendEffect(RegisterUiEffect.NavigateToHome) }
         }
+    }
+
+    private fun handleGalleryLaunch() {
+        if (uiState.selectedImageUri != null) updateState { copy(shouldShowBottomSheet = true) }
+        else sendEffect(RegisterUiEffect.LaunchGallery)
     }
 
 

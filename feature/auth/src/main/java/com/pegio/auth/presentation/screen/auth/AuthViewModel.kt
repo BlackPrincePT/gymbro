@@ -11,14 +11,14 @@ import com.pegio.common.core.onSuccessAsync
 import com.pegio.common.presentation.core.BaseViewModel
 import com.pegio.common.presentation.util.toStringResId
 import com.pegio.domain.usecase.auth.SignInAnonymouslyUseCase
-import com.pegio.domain.usecase.auth.LaunchGoogleAuthOptionsUseCase
+import com.pegio.domain.usecase.auth.SignInWithGoogleUseCase
 import com.pegio.domain.usecase.auth.CheckUserAuthStateUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
 class AuthViewModel @Inject constructor(
-    private val launchGoogleAuthOptions: LaunchGoogleAuthOptionsUseCase,
+    private val launchGoogleAuthOptions: SignInWithGoogleUseCase,
     private val signInAnonymously: SignInAnonymouslyUseCase,
     private val checkForAuthState: CheckUserAuthStateUseCase
 ) : BaseViewModel<AuthUiState, AuthUiEffect, AuthUiEvent>(initialState = AuthUiState()) {

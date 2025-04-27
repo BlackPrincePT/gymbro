@@ -1,7 +1,12 @@
 package com.pegio.domain.usecase.common
 
 import com.pegio.auth.repository.AuthRepository
-import com.pegio.common.core.isSuccess
+import com.pegio.common.core.Resource
+import com.pegio.common.core.SessionError
+import com.pegio.common.core.asFailure
+import com.pegio.common.core.asSuccess
+import com.pegio.common.core.onFailure
+import com.pegio.common.core.onSuccess
 import com.pegio.firestore.repository.UserRepository
 import com.pegio.model.User
 import kotlinx.coroutines.flow.Flow
@@ -14,13 +19,18 @@ class GetCurrentUserStreamUseCase @Inject constructor(
     private val authRepository: AuthRepository,
     private val userRepository: UserRepository
 ) {
-    operator fun invoke(): Flow<User> {
+    operator fun invoke(): Flow<Resource<User, SessionError.AnonymousUser>> {
         return authRepository.getCurrentUserStream()
             .filterNotNull()
             .flatMapLatest { authUser ->
                 userRepository.fetchUserSteamById(id = authUser.id)
-                    .transform {
-                        if (it.isSuccess()) emit(it.data)
+                    .transform { resource ->
+                        resource
+                            .onSuccess { emit(it.asSuccess()) }
+                            .onFailure {
+                                if (authUser.isAnonymous)
+                                    emit(SessionError.AnonymousUser.asFailure())
+                            }
                     }
             }
     }

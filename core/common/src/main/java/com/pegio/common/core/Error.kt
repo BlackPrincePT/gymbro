@@ -7,8 +7,8 @@ interface Displayable
 sealed interface SessionError : Error {
     data object Unauthenticated : SessionError
     data object RegistrationIncomplete : SessionError
-    data object AnonymousUser : SessionError
-    data object Unknown : SessionError
+    data object AnonymousUser : SessionError, Displayable
+    data object Unknown : SessionError, Retryable, Displayable
 }
 
 sealed interface DataError : Error {
@@ -49,7 +49,7 @@ sealed interface DataError : Error {
 
 sealed interface ValidationError : Error {
 
-    enum class Username : ValidationError {
+    enum class Username : ValidationError, Displayable {
         EMPTY,      // When the username is blank
         TOO_SHORT   // When the username is shorter than required
     }

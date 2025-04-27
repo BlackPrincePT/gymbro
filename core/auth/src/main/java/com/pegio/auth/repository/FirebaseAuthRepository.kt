@@ -13,6 +13,8 @@ import com.google.firebase.auth.FirebaseAuthInvalidUserException
 import com.google.firebase.auth.GoogleAuthProvider
 import com.pegio.common.core.DataError
 import com.pegio.common.core.Resource
+import com.pegio.common.core.asFailure
+import com.pegio.common.core.asSuccess
 import com.pegio.model.User
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.channels.awaitClose
@@ -59,9 +61,36 @@ internal class FirebaseAuthRepository @Inject constructor(
     // <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> \\
 
 
-    override suspend fun signInAnonymously(): Resource<Unit, DataError.Auth> {
+    override suspend fun launchGoogleAuthOptionsAndCreateToken(context: Context): Resource<String, DataError.Auth> {
         return try {
-            auth.signInAnonymously().await()
+            val result = CredentialManager.create(context)
+                .getCredential(request = getCredentialRequest, context = context)
+
+            createTokenWithCredentials(result.credential)
+        } catch (e: Exception) {
+            mapExceptionToSignInError(e).asFailure()
+        }
+    }
+
+    private fun createTokenWithCredentials(credential: Credential): Resource<String, DataError.Auth> {
+        return if (credential is CustomCredential && credential.type == TYPE_GOOGLE_ID_TOKEN_CREDENTIAL) {
+            val googleIdTokenCredential = GoogleIdTokenCredential.createFrom(credential.data)
+
+            googleIdTokenCredential.idToken.asSuccess()
+        } else {
+            DataError.Auth.INVALID_CREDENTIAL.asFailure()
+        }
+    }
+
+
+    // <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> \\
+
+
+    override suspend fun signInWithGoogle(token: String): Resource<Unit, DataError.Auth> {
+        return try {
+            val authCredential = GoogleAuthProvider.getCredential(token, null)
+
+            auth.signInWithCredential(authCredential).await()
             Resource.Success(Unit)
         } catch (e: Exception) {
             Resource.Failure(error = mapExceptionToSignInError(e))
@@ -72,36 +101,28 @@ internal class FirebaseAuthRepository @Inject constructor(
     // <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> \\
 
 
-    override suspend fun launchGoogleAuthOptions(context: Context): Resource<Unit, DataError.Auth> {
+    override suspend fun signInAnonymously(): Resource<Unit, DataError.Auth> {
         return try {
-            val result = CredentialManager.create(context)
-                .getCredential(request = getCredentialRequest, context = context)
-
-            createTokenWithCredentials(result.credential)
-
+            auth.signInAnonymously().await()
+            Unit.asSuccess()
         } catch (e: Exception) {
-            Resource.Failure(error = mapExceptionToSignInError(e))
+            mapExceptionToSignInError(e).asFailure()
         }
     }
 
-    private suspend fun createTokenWithCredentials(credential: Credential): Resource<Unit, DataError.Auth> {
-        return if (credential is CustomCredential && credential.type == TYPE_GOOGLE_ID_TOKEN_CREDENTIAL) {
-            val googleIdTokenCredential = GoogleIdTokenCredential.createFrom(credential.data)
+    override suspend fun linkAnonymousAccount(token: String): Resource<Unit, DataError.Auth> {
+        val currentUser = auth.currentUser ?: return DataError.Auth.UNAUTHENTICATED.asFailure()
 
-            signInWithGoogle(googleIdTokenCredential.idToken)
-        } else {
-            Resource.Failure(error = DataError.Auth.INVALID_CREDENTIAL)
-        }
-    }
-
-    private suspend fun signInWithGoogle(idToken: String): Resource<Unit, DataError.Auth> {
-        val firebaseCredential = GoogleAuthProvider.getCredential(idToken, null)
+        if (!currentUser.isAnonymous)
+            return DataError.Auth.INVALID_USER.asFailure()
 
         return try {
-            auth.signInWithCredential(firebaseCredential).await()
-            Resource.Success(Unit)
+            val authCredential = GoogleAuthProvider.getCredential(token, null)
+            currentUser.linkWithCredential(authCredential).await()
+
+            Unit.asSuccess()
         } catch (e: Exception) {
-            Resource.Failure(error = mapExceptionToSignInError(e))
+            mapExceptionToSignInError(e).asFailure()
         }
     }
 

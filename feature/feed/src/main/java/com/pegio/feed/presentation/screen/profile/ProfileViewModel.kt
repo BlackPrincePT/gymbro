@@ -64,9 +64,6 @@ class ProfileViewModel @Inject constructor(
 
     private val userId = savedStateHandle.toRoute<ProfileRoute>().userId
 
-    var editMode: ProfileEditMode? = null
-        private set
-
     init {
         resetPostPagination()
         updateProfileOwnershipStatus()
@@ -82,7 +79,7 @@ class ProfileViewModel @Inject constructor(
         when (event) {
 
             // Main
-            is ProfileUiEvent.OnEditModeChange -> editMode = event.mode
+            is ProfileUiEvent.OnEditModeChange -> updateState { copy(editMode = event.mode) }
             is ProfileUiEvent.OnPostVote -> handlePostVote(event.postId, event.voteType)
             ProfileUiEvent.OnLoadMorePosts -> loadMorePosts()
             ProfileUiEvent.OnPostsRefresh -> refreshPosts()
