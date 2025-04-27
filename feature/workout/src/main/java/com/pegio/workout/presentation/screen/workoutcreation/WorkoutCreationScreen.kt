@@ -29,6 +29,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.pegio.common.presentation.state.TopBarAction
 import com.pegio.common.presentation.state.TopBarState
 import com.pegio.common.presentation.util.CollectLatestEffect
+import com.pegio.designsystem.component.FormTextField
 import com.pegio.workout.presentation.component.AddWorkoutDialog
 import com.pegio.workout.presentation.component.WorkoutItem
 import com.pegio.workout.presentation.model.UiExercise
@@ -64,17 +65,35 @@ fun WorkoutCreationContent(
     onEvent: (WorkoutCreationUiEvent) -> Unit,
 ) {
     Box {
-        LazyColumn(
+        Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(16.dp)
         ) {
-            items(state.exercises) { workout ->
-                WorkoutItem(
-                    workout = workout,
-                    onEvent = onEvent
-                )
-                Spacer(modifier = Modifier.height(8.dp))
+
+            FormTextField(
+                value = state.title,
+                onValueChange = { onEvent(WorkoutCreationUiEvent.OnTitleChange(it)) },
+                label = "Title",
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            FormTextField(
+                value = state.description,
+                onValueChange = { onEvent(WorkoutCreationUiEvent.OnDescriptionChange(it)) },
+                label = "Description",
+            )
+            Spacer(modifier = Modifier.height(16.dp))
+
+            LazyColumn(
+                modifier = Modifier.fillMaxSize()
+            ) {
+                items(state.exercises) { workout ->
+                    WorkoutItem(
+                        workout = workout,
+                        onEvent = onEvent
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                }
             }
         }
 
@@ -90,14 +109,6 @@ fun WorkoutCreationContent(
                 }
             ) {
                 Icon(Icons.Default.Add, contentDescription = "Add Workout")
-            }
-
-            FloatingActionButton(
-                onClick = {
-                    onEvent(WorkoutCreationUiEvent.OnUploadWorkouts)
-                }
-            ) {
-                Icon(Icons.Default.Upload, contentDescription = "Upload Workouts")
             }
         }
 
@@ -122,6 +133,7 @@ fun WorkoutCreationContent(
     }
 }
 
+
 @Composable
 private fun SetupTopBar(
     onSetupTopBar: (TopBarState) -> Unit,
@@ -133,7 +145,11 @@ private fun SetupTopBar(
                 navigationIcon = TopBarAction(
                     icon = Icons.AutoMirrored.Default.ArrowBack,
                     onClick = { onEvent(WorkoutCreationUiEvent.OnBackClick) }
-                )
+                ),
+                actions = listOf(TopBarAction(
+                    icon = Icons.Default.Upload,
+                    onClick = { onEvent(WorkoutCreationUiEvent.OnUploadWorkouts) }
+                ))
             )
         )
     }

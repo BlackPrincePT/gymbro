@@ -12,6 +12,7 @@ import com.pegio.domain.usecase.workout.UploadWorkoutUseCase
 import com.pegio.workout.presentation.model.UiExercise
 import com.pegio.workout.presentation.model.mapper.UiWorkoutMapper
 import dagger.hilt.android.lifecycle.HiltViewModel
+import java.util.UUID
 import javax.inject.Inject
 
 @HiltViewModel
@@ -32,6 +33,8 @@ class WorkoutCreationViewModel @Inject constructor(
             WorkoutCreationUiEvent.OnDismissDialog -> hideAddWorkoutDialog()
             WorkoutCreationUiEvent.OnSaveWorkout -> saveWorkout()
             WorkoutCreationUiEvent.OnUploadWorkouts -> uploadWorkouts()
+            is WorkoutCreationUiEvent.OnDescriptionChange -> updateState { copy(description = event.description) }
+            is WorkoutCreationUiEvent.OnTitleChange -> updateState { copy(title = event.title) }
         }
     }
 
@@ -39,7 +42,7 @@ class WorkoutCreationViewModel @Inject constructor(
         updateState {
             copy(
                 showAddWorkoutDialog = true,
-                newWorkout = UiExercise.EMPTY
+                newWorkout = UiExercise.EMPTY.copy(id = UUID.randomUUID().toString())
             )
         }
     }
@@ -68,12 +71,14 @@ class WorkoutCreationViewModel @Inject constructor(
 
             updateState {
                 val updatedList = exercises.toMutableList()
+
                 val index = updatedList.indexOfFirst { it.id == workout.id }
 
                 if (index >= 0) {
-                    updatedList[index] = workout
+                    updatedList[index] = workout.copy(position = updatedList[index].position)
                 } else {
-                    updatedList.add(workout)
+                    val newPosition = updatedList.size
+                    updatedList.add(workout.copy(position = newPosition))
                 }
 
                 copy(
@@ -83,6 +88,8 @@ class WorkoutCreationViewModel @Inject constructor(
             }
         }
     }
+
+
 
     private fun areWorkoutFieldsValid(): Boolean {
         val currentWorkout = uiState.newWorkout
@@ -148,14 +155,26 @@ class WorkoutCreationViewModel @Inject constructor(
 
 
     private fun uploadWorkouts() {
-
+        workoutFormValidator.validateWorkoutsListUseCase(
+            uiState.exercises.map { uiWorkout ->
+                uiWorkoutMapper.mapToDomain(uiWorkout)
+            }
+        )
+            .onFailure {
+                sendEffect(
+                    WorkoutCreationUiEffect.Failure(
+                        errorRes = it.toStringResId()
+                    )
+                )
+                return
+            }
 
         launchWithLoading {
             retryableCall {
                 val workoutsToUpload = uiState.exercises.map { uiWorkout ->
                     uiWorkoutMapper.mapToDomain(uiWorkout)
                 }
-                uploadWorkout(description = "zaza", title = "").onSuccess {
+                uploadWorkout(title = uiState.title, description = uiState.description).onSuccess {
                     uploadExercise(workoutsToUpload, workoutId = it.id)
                 }
             }

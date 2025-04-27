@@ -5,7 +5,7 @@ import com.pegio.firestore.model.ExerciseDto
 import com.pegio.model.Exercise
 import javax.inject.Inject
 
-class ExerciseDtoMapper @Inject constructor(): Mapper<ExerciseDto, Exercise> {
+class ExerciseDtoMapper @Inject constructor() : Mapper<ExerciseDto, Exercise> {
 
     override fun mapToDomain(data: ExerciseDto): Exercise {
         return Exercise(
@@ -15,7 +15,8 @@ class ExerciseDtoMapper @Inject constructor(): Mapper<ExerciseDto, Exercise> {
             sets = data.sets,
             value = data.value,
             workoutImage = data.workoutImage,
-            type = data.type
+            type = data.type,
+            position = data.position
         )
     }
 
@@ -27,7 +28,8 @@ class ExerciseDtoMapper @Inject constructor(): Mapper<ExerciseDto, Exercise> {
             sets = data.sets,
             value = data.value,
             workoutImage = data.workoutImage,
-            type = data.type
+            type = data.type,
+            position = data.position
         )
     }
 }

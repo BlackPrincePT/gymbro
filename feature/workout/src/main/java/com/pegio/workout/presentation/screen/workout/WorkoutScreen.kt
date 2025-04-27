@@ -130,7 +130,8 @@ fun WorkoutContentPreview() {
         value = 60,
         sets = 3,
         muscleGroups = listOf(Exercise.MuscleGroup.CORE, Exercise.MuscleGroup.SHOULDERS),
-        workoutImage = ""
+        workoutImage = "",
+        position = 0
     )
 
     WorkoutContent(

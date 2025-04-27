@@ -11,5 +11,8 @@ sealed interface WorkoutCreationUiEvent {
     data object OnSaveWorkout : WorkoutCreationUiEvent
     data object OnUploadWorkouts : WorkoutCreationUiEvent
 
+    data class OnTitleChange(val title: String) : WorkoutCreationUiEvent
+    data class OnDescriptionChange(val description: String) : WorkoutCreationUiEvent
+
     data object OnBackClick: WorkoutCreationUiEvent
 }

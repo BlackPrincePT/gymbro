@@ -77,6 +77,18 @@ sealed interface ValidationError : Error {
 
 sealed interface WorkoutValidationError : Error {
 
+    enum class WorkoutTitle : WorkoutValidationError{
+        EMPTY, // When the workout title is blank
+        TOO_SHORT,  // When the title is too short
+        TOO_LONG // When the title is too long
+    }
+
+    enum class WorkoutDescription : WorkoutValidationError{
+        EMPTY, // When the workout description is blank
+        TOO_SHORT,  // When the description is too short
+        TOO_LONG // When the description is too long
+    }
+
     enum class Name : WorkoutValidationError {
         EMPTY,          // When the workout name is blank
         TOO_SHORT       // When the name is too short

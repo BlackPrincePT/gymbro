@@ -14,7 +14,8 @@ class UiWorkoutMapper @Inject constructor() : Mapper<UiExercise, Exercise> {
             sets = data.sets,
             value = data.value,
             workoutImage = data.workoutImage,
-            type = data.type
+            type = data.type,
+            position = data.position
         )
     }
 
@@ -26,7 +27,9 @@ class UiWorkoutMapper @Inject constructor() : Mapper<UiExercise, Exercise> {
             sets = data.sets,
             value = data.value,
             workoutImage = data.workoutImage,
-            type = data.type
+            type = data.type,
+            position = data.position
+
         )
     }
 }

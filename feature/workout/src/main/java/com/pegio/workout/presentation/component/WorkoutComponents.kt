@@ -227,7 +227,8 @@ fun PreviewWorkoutDetails() {
         muscleGroups = listOf(MuscleGroup.CHEST, MuscleGroup.ARMS),
         description = "A workout that targets the chest and arms.",
         name = "Push Up",
-        workoutImage = ""
+        workoutImage = "",
+        position = 0
     )
 
     WorkoutDetails(
@@ -248,7 +249,8 @@ fun PreviewWorkoutDetailsCard() {
         muscleGroups = listOf(MuscleGroup.CHEST, MuscleGroup.ARMS),
         description = "",
         name = "",
-        workoutImage = ""
+        workoutImage = "",
+        position = 0
     )
 
     WorkoutDetailsCard(workout = workout)

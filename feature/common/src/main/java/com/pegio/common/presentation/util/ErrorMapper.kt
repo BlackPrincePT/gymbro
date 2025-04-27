@@ -45,6 +45,8 @@ private fun WorkoutValidationError.toStringResId(): Int = when (this) {
     is WorkoutValidationError.MuscleGroups -> this.toStringResId()
     is WorkoutValidationError.WorkoutImage -> this.toStringResId()
     is WorkoutValidationError.Workouts -> this.toStringResId()
+    is WorkoutValidationError.WorkoutTitle -> this.toStringResId()
+    is WorkoutValidationError.WorkoutDescription -> this.toStringResId()
 }
 
 
@@ -85,6 +87,18 @@ private fun ValidationError.Height.toStringResId(): Int = when (this) {
 private fun ValidationError.Weight.toStringResId(): Int = when (this) {
     ValidationError.Weight.INVALID -> R.string.feature_common_presentation_error_weight_invalid
     ValidationError.Weight.TOO_LOW -> R.string.feature_common_presentation_error_weight_too_low
+}
+
+private fun WorkoutValidationError.WorkoutTitle.toStringResId(): Int = when (this) {
+    WorkoutValidationError.WorkoutTitle.EMPTY -> R.string.feature_common_presentation_error_workouts_title_too_empty
+    WorkoutValidationError.WorkoutTitle.TOO_SHORT -> R.string.feature_common_presentation_error_workouts_title_too_short
+    WorkoutValidationError.WorkoutTitle.TOO_LONG -> R.string.feature_common_presentation_error_workouts_title_too_long
+}
+
+private fun WorkoutValidationError.WorkoutDescription.toStringResId(): Int = when (this) {
+    WorkoutValidationError.WorkoutDescription.EMPTY -> R.string.feature_common_presentation_error_workouts_description_empty
+    WorkoutValidationError.WorkoutDescription.TOO_SHORT -> R.string.feature_common_presentation_error_workouts_description_too_short
+    WorkoutValidationError.WorkoutDescription.TOO_LONG -> R.string.feature_common_presentation_error_workouts_description_too_long
 }
 
 private fun WorkoutValidationError.Name.toStringResId(): Int = when (this) {
