@@ -136,7 +136,7 @@ private fun AppContent(
         }
     ) {
         Scaffold(
-            topBar = { if (isEntryScreenDisplayed.not()) TopBarContent(state.topBarState) },
+            topBar = { if (!isEntryScreenDisplayed) TopBarContent(state.topBarState) },
             snackbarHost = {
                 SnackbarHost(
                     hostState = snackbarHostState,

@@ -7,10 +7,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Button
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -27,8 +28,10 @@ import com.pegio.common.presentation.util.CollectLatestEffect
 import com.pegio.common.presentation.util.rememberGalleryLauncher
 import com.pegio.designsystem.component.DropdownMenu
 import com.pegio.designsystem.component.FormTextField
+import com.pegio.designsystem.component.GymBroButton
 import com.pegio.model.User.Gender
-import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
+import com.pegio.common.R as cR
 
 @Composable
 internal fun RegisterScreen(
@@ -50,10 +53,21 @@ internal fun RegisterScreen(
         }
     }
 
-    with(viewModel.uiState) {
+    with(viewModel) {
         when {
-            isLoading -> EmptyLoadingScreen()
-            else -> RegisterContent(state = viewModel.uiState, onEvent = viewModel::onEvent)
+            uiState.isLoading -> EmptyLoadingScreen()
+            else -> {
+                RegisterContent(state = uiState, onEvent = viewModel::onEvent)
+
+                if (uiState.shouldShowBottomSheet)
+                    BottomSheetContent(
+                        onChooseFromGalleryClick = { onEvent(RegisterUiEvent.OnLaunchGallery) },
+                        onRemoveClick = { onEvent(RegisterUiEvent.OnProfilePhotoSelected(imageUri = null)) },
+                        onBottomSheetClose = {
+                            onEvent(RegisterUiEvent.OnBottomSheetStateUpdate(shouldShow = false))
+                        }
+                    )
+            }
         }
     }
 }
@@ -131,11 +145,62 @@ private fun RegisterContent(
 
         Spacer(modifier = Modifier.height(64.dp))
 
-        Button(
+        GymBroButton(
             onClick = { onEvent(RegisterUiEvent.OnSubmit) },
             modifier = Modifier.fillMaxWidth()
         ) {
             Text(text = stringResource(R.string.feature_auth_register))
+        }
+    }
+}
+
+
+// <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> \\
+
+
+@Composable
+private fun BottomSheetContent(
+    onChooseFromGalleryClick: () -> Unit,
+    onRemoveClick: () -> Unit,
+    onBottomSheetClose: () -> Unit
+) {
+    val sheetState = rememberModalBottomSheetState()
+    val scope = rememberCoroutineScope()
+
+    val fnHideSheet = {
+        scope.launch { sheetState.hide() }.invokeOnCompletion {
+            if (!sheetState.isVisible) onBottomSheetClose()
+        }
+    }
+
+    ModalBottomSheet(
+        onDismissRequest = { onBottomSheetClose() },
+        sheetState = sheetState,
+        dragHandle = null
+    ) {
+        GymBroButton(
+            onClick = {
+                onChooseFromGalleryClick()
+                fnHideSheet.invoke()
+            },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 24.dp)
+                .padding(top = 24.dp)
+        ) {
+            Text(text = stringResource(cR.string.feature_common_choose_from_gallery))
+        }
+
+        GymBroButton(
+            onClick = {
+                onRemoveClick()
+                fnHideSheet.invoke()
+            },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(24.dp)
+        ) {
+            Text(text = stringResource(cR.string.feature_common_remove))
         }
     }
 }
