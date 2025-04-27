@@ -7,6 +7,6 @@ import kotlinx.serialization.Serializable
 @Serializable
 data object UserWorkoutsRoute
 
-fun NavController.navigateToUser(navOptions: NavOptions? = null) {
+fun NavController.navigateToUserWorkouts(navOptions: NavOptions? = null) {
     navigate(route = UserWorkoutsRoute, navOptions = navOptions)
 }

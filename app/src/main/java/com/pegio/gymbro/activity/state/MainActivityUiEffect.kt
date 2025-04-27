@@ -11,4 +11,5 @@ sealed interface MainActivityUiEffect {
     data object NavigateToSettings: MainActivityUiEffect
     data object NavigateToWorkoutPlan: MainActivityUiEffect
     data object NavigateToAuth: MainActivityUiEffect
+    data object NavigateToUserWorkouts: MainActivityUiEffect
 }

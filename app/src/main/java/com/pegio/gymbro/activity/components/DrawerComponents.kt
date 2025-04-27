@@ -23,9 +23,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
-import com.pegio.common.presentation.model.UiUser
 import com.pegio.common.presentation.components.BackgroundImage
 import com.pegio.common.presentation.components.ProfileImage
+import com.pegio.common.presentation.model.UiUser
 import com.pegio.gymbro.R
 
 @Composable
@@ -54,6 +54,7 @@ fun DrawerContent(
 fun DrawerContent(
     displayedUser: UiUser,
     onWorkoutPlanClick: () -> Unit,
+    onUserWorkoutsClick: () -> Unit,
     onAccountClick: () -> Unit,
     onSettingsClick: () -> Unit,
     onSignOutClick: () -> Unit
@@ -75,6 +76,13 @@ fun DrawerContent(
                 label = { Text(text = stringResource(R.string.built_in_workout_plans)) },
                 selected = false,
                 onClick = onWorkoutPlanClick,
+                modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding)
+            )
+
+            NavigationDrawerItem(
+                label = { Text(text = stringResource(R.string.my_workouts)) },
+                selected = false,
+                onClick = onUserWorkoutsClick,
                 modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding)
             )
 
@@ -154,6 +162,7 @@ private fun AppDrawerContentPreview() {
         onAccountClick = {},
         onWorkoutPlanClick = {},
         onSettingsClick = {},
-        onSignOutClick = {}
+        onSignOutClick = {},
+        onUserWorkoutsClick = {}
     )
 }

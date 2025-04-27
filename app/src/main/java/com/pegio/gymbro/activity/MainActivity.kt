@@ -37,6 +37,7 @@ import com.pegio.gymbro.activity.state.MainActivityUiEffect
 import com.pegio.gymbro.activity.state.MainActivityUiEvent
 import com.pegio.gymbro.activity.state.MainActivityUiState
 import com.pegio.gymbro.navigation.NavigationHost
+import com.pegio.gymbro.navigation.route.navigateToUserWorkouts
 import com.pegio.gymbro.navigation.route.navigateToWorkoutPlan
 import com.pegio.settings.presentation.screen.account.navigation.navigateToAccount
 import com.pegio.settings.presentation.screen.settings.navigation.navigateToSettings
@@ -82,6 +83,7 @@ class MainActivity : ComponentActivity() {
                         MainActivityUiEffect.NavigateToSettings -> navController.navigateToSettings()
                         MainActivityUiEffect.NavigateToWorkoutPlan -> navController.navigateToWorkoutPlan()
                         MainActivityUiEffect.NavigateToAuth -> navController.navigateToAuth()
+                        MainActivityUiEffect.NavigateToUserWorkouts -> navController.navigateToUserWorkouts()
                     }
                 }
 
@@ -118,7 +120,8 @@ private fun AppContent(
                     onAccountClick = { onEvent(MainActivityUiEvent.OnAccountClick) },
                     onSettingsClick = { onEvent(MainActivityUiEvent.OnSettingsClick) },
                     onWorkoutPlanClick = { onEvent(MainActivityUiEvent.OnWorkoutPlanClick) },
-                    onSignOutClick = { onEvent(MainActivityUiEvent.OnSignOutClick) }
+                    onSignOutClick = { onEvent(MainActivityUiEvent.OnSignOutClick) },
+                    onUserWorkoutsClick = { onEvent(MainActivityUiEvent.OnUserWorkoutsClick) }
                 )
             } ?: DrawerContent(onGoogleAuthClick = { })
         }

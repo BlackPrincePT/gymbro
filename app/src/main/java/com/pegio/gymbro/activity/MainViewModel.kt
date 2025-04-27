@@ -40,6 +40,7 @@ class MainViewModel @Inject constructor(
             MainActivityUiEvent.OnAccountClick -> sendDrawerEffect(MainActivityUiEffect.NavigateToAccount)
             MainActivityUiEvent.OnSettingsClick -> sendDrawerEffect(MainActivityUiEffect.NavigateToSettings)
             MainActivityUiEvent.OnWorkoutPlanClick -> sendDrawerEffect(MainActivityUiEffect.NavigateToWorkoutPlan)
+            MainActivityUiEvent.OnUserWorkoutsClick -> sendDrawerEffect(MainActivityUiEffect.NavigateToUserWorkouts)
             MainActivityUiEvent.OnSignOutClick -> handleSignOut()
         }
     }
