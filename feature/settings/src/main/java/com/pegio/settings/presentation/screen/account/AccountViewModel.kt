@@ -3,6 +3,7 @@ package com.pegio.settings.presentation.screen.account
 import android.net.Uri
 import androidx.lifecycle.viewModelScope
 import com.pegio.common.core.errorOrNull
+import com.pegio.common.core.onFailure
 import com.pegio.common.core.onSuccess
 import com.pegio.common.presentation.core.BaseViewModel
 import com.pegio.common.presentation.model.UiUser
@@ -20,6 +21,7 @@ import com.pegio.settings.presentation.screen.account.state.AccountUiState
 import com.pegio.settings.presentation.screen.account.state.AccountValidationError
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -154,7 +156,9 @@ class AccountViewModel @Inject constructor(
 
     private fun observeCurrentUser() = viewModelScope.launch {
         getCurrentUserStream()
-            .collectLatest { updateState { copy(user = uiUserMapper.mapFromDomain(it)) } }
+            .onSuccess { updateState { copy(user = uiUserMapper.mapFromDomain(it)) } }
+            .onFailure {  } // TODO HANDLE FAILURE
+            .launchIn(viewModelScope)
     }
 
 
