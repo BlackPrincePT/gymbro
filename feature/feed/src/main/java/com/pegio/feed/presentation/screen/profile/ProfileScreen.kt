@@ -354,7 +354,10 @@ private fun ProfileBackground(
     onCameraIconClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Box(modifier = modifier.clickable { onCameraIconClick() }) {
+    Box(
+        modifier = modifier
+            .clickable { if (isProfileOwner) onCameraIconClick() }
+    ) {
         if (isProfileOwner) CameraIcon(
             isLoading = isLoading,
             onClick = onCameraIconClick,
