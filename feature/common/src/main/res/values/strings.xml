@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="feature_common_edit_your_profile_picture">Edit your profile picture</string>
-    <string name="feature_common_you_aren_t_logged_in">You aren\'t logged in</string>
-
     <string name="feature_common_choose_from_gallery">Choose from gallery</string>
     <string name="feature_common_remove">Remove</string>
 
     <!-- Generic fallback error message -->
     <string name="feature_common_presentation_error_generic">An error occurred. Please try again later.</string>
+
+    <!-- Session errors -->
+    <string name="feature_common_presentation_error_anonymous_user">Authentication required. Please sign in to continue.</string>
 
     <!-- Network errors -->
     <string name="feature_common_presentation_error_no_connection">No internet connection. Please check your network settings.</string>

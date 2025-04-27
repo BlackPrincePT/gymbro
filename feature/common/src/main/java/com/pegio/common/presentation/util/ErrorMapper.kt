@@ -16,7 +16,7 @@ fun Error.toStringResId(): Int = when (this) {
 }
 
 private fun SessionError.toStringResId(): Int = when (this) {
-    SessionError.AnonymousUser -> R.string.feature_common_you_aren_t_logged_in
+    SessionError.AnonymousUser -> R.string.feature_common_presentation_error_anonymous_user
     else -> R.string.feature_common_presentation_error_generic
 }
 

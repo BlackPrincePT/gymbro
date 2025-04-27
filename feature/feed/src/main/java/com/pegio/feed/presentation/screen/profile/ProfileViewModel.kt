@@ -187,12 +187,14 @@ class ProfileViewModel @Inject constructor(
 
     private fun follow() {
         followUser(targetUserId = userId)
-        updateState { copy(isFollowing = true) }
+            .onSuccess { updateState { copy(isFollowing = true) } }
+            .onFailure { showDisplayableError(it) }
     }
 
     private fun unfollow() {
         unfollowUser(targetUserId = userId)
-        updateState { copy(isFollowing = false) }
+            .onSuccess { updateState { copy(isFollowing = false) } }
+            .onFailure { showDisplayableError(it) }
     }
 
     private fun updateFollowingStatus() = viewModelScope.launch {

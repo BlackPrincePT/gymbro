@@ -1,9 +1,13 @@
 package com.pegio.gymbro.activity
 
+import android.Manifest
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.padding
@@ -19,6 +23,7 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -72,6 +77,8 @@ class MainActivity : ComponentActivity() {
                     AuthRoute::class.qualifiedName,
                     RegisterRoute::class.qualifiedName
                 )
+
+                RequestNotificationPermission()
 
                 CollectLatestEffect(viewModel.uiEffect) { effect ->
                     when (effect) {
@@ -154,5 +161,22 @@ private fun AppContent(
                     .padding(innerPadding)
             )
         }
+    }
+}
+
+
+// <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> \\
+
+
+@Composable
+private fun RequestNotificationPermission() {
+    val permissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission(),
+        onResult = { }
+    )
+
+    LaunchedEffect(Unit) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
+            permissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
     }
 }
