@@ -31,6 +31,7 @@ import com.pegio.gymbro.navigation.route.navigateToAiChat
 import com.pegio.gymbro.navigation.route.navigateToWorkout
 import com.pegio.settings.presentation.screen.account.navigation.accountScreen
 import com.pegio.settings.presentation.screen.settings.navigation.settingsScreen
+import com.pegio.splash.presentation.splash.navigation.SplashRoute
 import com.pegio.splash.presentation.splash.navigation.splashScreen
 import com.pegio.workout.presentation.screen.userworkouts.UserWorkoutsScreen
 import com.pegio.workout.presentation.screen.workout.WorkoutScreen
@@ -47,7 +48,7 @@ fun NavigationHost(
 ) {
     NavHost(
         navController = navController,
-        startDestination = WorkoutCreationRoute,
+        startDestination = SplashRoute,
         modifier = modifier
     ) {
 

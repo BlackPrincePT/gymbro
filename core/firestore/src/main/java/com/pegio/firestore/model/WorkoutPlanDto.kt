@@ -1,7 +1,7 @@
 package com.pegio.firestore.model
 
-import com.pegio.model.WorkoutPlan.DifficultyLevel
 import com.google.firebase.firestore.DocumentId
+import com.pegio.model.WorkoutPlan.DifficultyLevel
 
 data class WorkoutPlanDto(
     @DocumentId val id: String = "",
@@ -10,5 +10,6 @@ data class WorkoutPlanDto(
     val description: String = "",
     val duration: String = "",
     val intensity: String = "",
-    val imageUrl: String = ""
+    val imageUrl: String = "",
+    val workoutId: String = ""
 )

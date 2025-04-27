@@ -157,7 +157,8 @@ private fun WorkoutPlanItemView() {
             difficulty = "Easy",
             duration = "4 days/week - 45 minutes per session",
             intensity = "Low",
-            imageUrl = "https://avatars.githubusercontent.com/u/172249902?v=4"
+            imageUrl = "https://avatars.githubusercontent.com/u/172249902?v=4",
+            workoutId = ""
         ),
         onStartWorkout = {}
     )
