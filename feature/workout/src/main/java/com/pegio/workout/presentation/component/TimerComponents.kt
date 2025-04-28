@@ -24,7 +24,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.pegio.model.Exercise.Type
-import com.pegio.workout.presentation.screen.workout.WorkoutUiState.TimerState
+import com.pegio.workout.presentation.screen.workout.state.WorkoutUiState.TimerState
 
 @Composable
 fun TimerSection(

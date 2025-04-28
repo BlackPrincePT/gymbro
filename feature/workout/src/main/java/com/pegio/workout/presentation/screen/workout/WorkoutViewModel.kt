@@ -8,7 +8,7 @@ import com.pegio.common.core.onSuccess
 import com.pegio.common.presentation.core.BaseViewModel
 import com.pegio.common.presentation.util.toStringResId
 import com.pegio.domain.usecase.workout.FetchExerciseByIdUseCase
-import com.pegio.workout.presentation.core.TextToSpeechRepositoryImpl
+import com.pegio.workout.presentation.core.TextToSpeechManagerImpl
 import com.pegio.workout.presentation.model.mapper.UiExerciseMapper
 import com.pegio.workout.presentation.screen.workout.navigation.WorkoutRoute
 import com.pegio.workout.presentation.screen.workout.state.WorkoutUiEffect
@@ -26,7 +26,7 @@ import javax.inject.Inject
 class WorkoutViewModel @Inject constructor(
     private val fetchExerciseByIdUseCase: FetchExerciseByIdUseCase,
     private val uiExerciseMapper: UiExerciseMapper,
-    private val textToSpeechRepository: TextToSpeechRepositoryImpl,
+    private val textToSpeechRepository: TextToSpeechManagerImpl,
     savedStateHandle: SavedStateHandle
 ) : BaseViewModel<WorkoutUiState, WorkoutUiEffect, WorkoutUiEvent>(initialState = WorkoutUiState()) {
 

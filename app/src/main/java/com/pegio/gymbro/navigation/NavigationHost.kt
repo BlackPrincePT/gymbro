@@ -5,7 +5,6 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.toRoute
 import com.pegio.aichat.presentation.screen.aichat.AiChatScreen
 import com.pegio.auth.presentation.screen.auth.navigation.authScreen
 import com.pegio.auth.presentation.screen.auth.navigation.navigateToAuth
@@ -23,16 +22,14 @@ import com.pegio.feed.presentation.screen.postdetails.navigation.postDetailsScre
 import com.pegio.feed.presentation.screen.profile.navigation.navigateToProfile
 import com.pegio.feed.presentation.screen.profile.navigation.profileScreen
 import com.pegio.gymbro.navigation.route.AiChatRoute
-import com.pegio.gymbro.navigation.route.UserWorkoutsRoute
-import com.pegio.gymbro.navigation.route.WorkoutRoute
 import com.pegio.gymbro.navigation.route.navigateToAiChat
-import com.pegio.gymbro.navigation.route.navigateToWorkout
 import com.pegio.settings.presentation.screen.account.navigation.accountScreen
 import com.pegio.settings.presentation.screen.settings.navigation.settingsScreen
 import com.pegio.splash.presentation.splash.navigation.SplashRoute
 import com.pegio.splash.presentation.splash.navigation.splashScreen
-import com.pegio.workout.presentation.screen.userworkouts.UserWorkoutsScreen
-import com.pegio.workout.presentation.screen.workout.WorkoutScreen
+import com.pegio.workout.presentation.screen.userworkouts.navigation.userWorkoutsScreen
+import com.pegio.workout.presentation.screen.workout.navigation.navigateToWorkout
+import com.pegio.workout.presentation.screen.workout.navigation.workoutScreen
 import com.pegio.workout.presentation.screen.workoutcreation.navigation.navigateToWorkoutCreation
 import com.pegio.workout.presentation.screen.workoutcreation.navigation.workoutCreationScreen
 import com.pegio.workout.presentation.screen.workoutplan.navigation.workoutPlanScreen
@@ -108,14 +105,12 @@ fun NavigationHost(
             onSetupTopBar = onSetupAppBar,
         )
 
-        composable<WorkoutRoute> {
-            WorkoutScreen(
-                onBackClick = navController::navigateUp,
-                onShowSnackbar = onShowSnackbar,
-                workoutPlanId = it.toRoute<WorkoutRoute>().workoutPlanId,
-                onSetupTopBar = onSetupAppBar,
-            )
-        }
+
+        workoutScreen(
+            onBackClick = navController::navigateUp,
+            onShowSnackbar = onShowSnackbar,
+            onSetupTopBar = onSetupAppBar,
+        )
 
         workoutCreationScreen(
             onBackClick = navController::navigateUp,
@@ -123,18 +118,15 @@ fun NavigationHost(
             onSetupTopBar = onSetupAppBar,
         )
 
-        composable<UserWorkoutsRoute>{
-            UserWorkoutsScreen(
-                onBackClick = navController::navigateUp,
-                onShowSnackbar = onShowSnackbar,
-                onSetupTopBar = onSetupAppBar,
-                onStartWorkout = { workoutId ->
-                    navController.navigateToWorkout(workoutId)
-                },
-                onCreateWorkoutClick = navController::navigateToWorkoutCreation
-            )
-        }
-
+        userWorkoutsScreen(
+            onBackClick = navController::navigateUp,
+            onShowSnackbar = onShowSnackbar,
+            onSetupTopBar = onSetupAppBar,
+            onStartWorkout = { workoutId ->
+                navController.navigateToWorkout(workoutId)
+            },
+            onCreateWorkoutClick = navController::navigateToWorkoutCreation
+        )
 
         // <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> \\
 

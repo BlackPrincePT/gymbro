@@ -1,4 +1,4 @@
-package com.pegio.workout.presentation.screen.userworkouts
+package com.pegio.workout.presentation.screen.userworkouts.state
 
 import com.pegio.workout.presentation.model.UiWorkout
 
