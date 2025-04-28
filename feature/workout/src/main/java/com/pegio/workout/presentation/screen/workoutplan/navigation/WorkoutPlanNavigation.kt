@@ -14,7 +14,6 @@ fun NavController.navigateToWorkoutPlan() = navigate(route = WorkoutPlanRoute)
 
 fun NavGraphBuilder.workoutPlanScreen(
     onBackClick: () -> Unit,
-    onInfoClick: () -> Unit,
     onShowSnackbar: suspend (String) -> Unit,
     onStartWorkout: (String) -> Unit,
     onSetupTopBar: (TopBarState) -> Unit
@@ -22,7 +21,6 @@ fun NavGraphBuilder.workoutPlanScreen(
     composable<WorkoutPlanRoute> {
         WorkoutPlanScreen(
             onBackClick = onBackClick,
-            onInfoClick = onInfoClick,
             onShowSnackbar = onShowSnackbar,
             onStartWorkout = onStartWorkout,
             onSetupTopBar = onSetupTopBar,

@@ -97,7 +97,6 @@ fun NavigationHost(
 
         workoutPlanScreen(
             onBackClick = navController::navigateUp,
-            onInfoClick = navController::navigateToAiChat,
             onShowSnackbar = onShowSnackbar,
             onStartWorkout = { workoutId ->
                 navController.navigateToWorkout(workoutId)

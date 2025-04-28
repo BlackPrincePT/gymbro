@@ -1,9 +1,7 @@
 package com.pegio.workout.presentation.screen.workoutplan.state
 
 sealed interface WorkoutPlanUiEvent {
-    data object LoadInitialPlans : WorkoutPlanUiEvent
-    data object OnInfoClick: WorkoutPlanUiEvent
-    data class StartWorkout(val workoutId: String) : WorkoutPlanUiEvent
-
+    // Navigation
     data object OnBackClick: WorkoutPlanUiEvent
+    data class StartWorkout(val workoutId: String) : WorkoutPlanUiEvent
 }

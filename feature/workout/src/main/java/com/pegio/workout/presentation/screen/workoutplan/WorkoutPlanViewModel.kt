@@ -26,9 +26,7 @@ class WorkoutPlanViewModel @Inject constructor(
 
     override fun onEvent(event: WorkoutPlanUiEvent) {
         when (event) {
-            WorkoutPlanUiEvent.LoadInitialPlans -> loadWorkoutPlans()
             WorkoutPlanUiEvent.OnBackClick -> sendEffect(WorkoutPlanUiEffect.NavigateBack)
-            WorkoutPlanUiEvent.OnInfoClick -> sendEffect(WorkoutPlanUiEffect.NavigateToAiChat)
             is WorkoutPlanUiEvent.StartWorkout -> sendEffect(WorkoutPlanUiEffect.NavigateToWorkout(event.workoutId))
         }
     }
