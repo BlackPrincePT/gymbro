@@ -8,8 +8,7 @@ import androidx.credentials.GetCredentialRequest
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential.Companion.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
-import com.google.firebase.auth.FirebaseAuthInvalidUserException
+import com.google.firebase.auth.FirebaseAuthUserCollisionException
 import com.google.firebase.auth.GoogleAuthProvider
 import com.pegio.common.core.DataError
 import com.pegio.common.core.Resource
@@ -78,7 +77,7 @@ internal class FirebaseAuthRepository @Inject constructor(
 
             googleIdTokenCredential.idToken.asSuccess()
         } else {
-            DataError.Auth.INVALID_CREDENTIAL.asFailure()
+            DataError.Auth.InvalidCredential.asFailure()
         }
     }
 
@@ -111,10 +110,10 @@ internal class FirebaseAuthRepository @Inject constructor(
     }
 
     override suspend fun linkAnonymousAccount(token: String): Resource<Unit, DataError.Auth> {
-        val currentUser = auth.currentUser ?: return DataError.Auth.UNAUTHENTICATED.asFailure()
+        val currentUser = auth.currentUser ?: return DataError.Auth.Unauthenticated.asFailure()
 
         if (!currentUser.isAnonymous)
-            return DataError.Auth.INVALID_USER.asFailure()
+            return DataError.Auth.AccountAlreadyExists.asFailure()
 
         return try {
             val authCredential = GoogleAuthProvider.getCredential(token, null)
@@ -132,10 +131,9 @@ internal class FirebaseAuthRepository @Inject constructor(
 
     private fun mapExceptionToSignInError(e: Exception): DataError.Auth {
         return when (e) {
-            is FirebaseAuthInvalidCredentialsException -> DataError.Auth.INVALID_CREDENTIAL
-            is FirebaseAuthInvalidUserException -> DataError.Auth.INVALID_USER
-            is CancellationException -> DataError.Auth.CANCELLED
-            else -> DataError.Auth.UNKNOWN
+            is FirebaseAuthUserCollisionException -> DataError.Auth.AccountAlreadyExists
+            is CancellationException -> DataError.Auth.Cancelled
+            else -> DataError.Auth.Unknown
         }
     }
 }

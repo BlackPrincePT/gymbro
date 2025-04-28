@@ -88,6 +88,10 @@ class MainActivity : ComponentActivity() {
                         MainActivityUiEffect.OpenDrawer -> coroutineScope.launch { drawerState.open() }
                         MainActivityUiEffect.CloseDrawer -> coroutineScope.launch { drawerState.close() }
 
+                        // Failure
+                        is MainActivityUiEffect.ShowSnackbar ->
+                            snackbarHostState.showSnackbar(message = getString(effect.errorRes))
+
                         // Navigation
                         MainActivityUiEffect.NavigateToAccount -> navController.navigateToAccount()
                         MainActivityUiEffect.NavigateToSettings -> navController.navigateToSettings()

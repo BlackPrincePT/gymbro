@@ -2,10 +2,13 @@ package com.pegio.gymbro.activity
 
 import android.content.Context
 import androidx.lifecycle.viewModelScope
+import com.pegio.common.core.Displayable
+import com.pegio.common.core.Error
 import com.pegio.common.core.onFailure
 import com.pegio.common.core.onSuccess
 import com.pegio.common.presentation.core.BaseViewModel
 import com.pegio.common.presentation.model.mapper.UiUserMapper
+import com.pegio.common.presentation.util.toStringResId
 import com.pegio.designsystem.theme.ThemeMode
 import com.pegio.domain.usecase.account.SignOutUseCase
 import com.pegio.domain.usecase.app.LinkAnonymousAccountUseCase
@@ -57,7 +60,6 @@ class MainViewModel @Inject constructor(
             MainActivityUiEvent.OnWorkoutPlanClick -> sendDrawerEffect(MainActivityUiEffect.NavigateToWorkoutPlan)
             MainActivityUiEvent.OnProfileClick -> handleProfileClick()
             MainActivityUiEvent.OnUserWorkoutsClick -> sendDrawerEffect(MainActivityUiEffect.NavigateToUserWorkouts)
-            MainActivityUiEvent.OnSignOutClick -> handleSignOut()
         }
     }
 
@@ -94,6 +96,10 @@ class MainViewModel @Inject constructor(
 
     private fun handleLinkAnonymousAccount(context: Context) = launchWithLoading {
         linkAnonymousAccount(context)
+            .onFailure {
+                sendEffect(MainActivityUiEffect.CloseDrawer)
+                showDisplayableError(it)
+            }
             .onSuccess {
                 updateState { copy(isAnonymous = false) }
                 sendDrawerEffect(MainActivityUiEffect.NavigateToRegister)
@@ -112,5 +118,9 @@ class MainViewModel @Inject constructor(
     private fun sendDrawerEffect(drawerEffect: MainActivityUiEffect) {
         sendEffect(drawerEffect)
         sendEffect(MainActivityUiEffect.CloseDrawer)
+    }
+
+    private fun showDisplayableError(error: Error) {
+        if (error is Displayable) sendEffect(MainActivityUiEffect.ShowSnackbar(error.toStringResId()))
     }
 }
