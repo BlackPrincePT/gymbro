@@ -1,14 +1,13 @@
-package com.pegio.firestore.model.mapper
+package com.pegio.workout.presentation.model.mapper
 
 import com.pegio.common.core.Mapper
-import com.pegio.firestore.model.ExerciseDto
 import com.pegio.model.Exercise
+import com.pegio.workout.presentation.model.UiExercise
 import javax.inject.Inject
 
-class ExerciseDtoMapper @Inject constructor() : Mapper<ExerciseDto, Exercise> {
-
-    override fun mapToDomain(data: ExerciseDto): Exercise {
-        return Exercise(
+class UiExerciseMapper @Inject constructor() : Mapper<UiExercise, Exercise> {
+    override fun mapFromDomain(data: Exercise): UiExercise {
+        return UiExercise(
             description = data.description,
             muscleGroups = data.muscleGroups,
             name = data.name,
@@ -20,8 +19,8 @@ class ExerciseDtoMapper @Inject constructor() : Mapper<ExerciseDto, Exercise> {
         )
     }
 
-    override fun mapFromDomain(data: Exercise): ExerciseDto {
-        return ExerciseDto(
+    override fun mapToDomain(data: UiExercise): Exercise {
+        return Exercise(
             description = data.description,
             muscleGroups = data.muscleGroups,
             name = data.name,
@@ -30,6 +29,7 @@ class ExerciseDtoMapper @Inject constructor() : Mapper<ExerciseDto, Exercise> {
             workoutImage = data.workoutImage,
             type = data.type,
             position = data.position
+
         )
     }
 }

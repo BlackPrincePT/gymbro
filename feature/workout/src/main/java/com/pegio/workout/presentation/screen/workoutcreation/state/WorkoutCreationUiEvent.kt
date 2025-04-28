@@ -1,4 +1,5 @@
-package com.pegio.workout.presentation.screen.workoutcreation
+package com.pegio.workout.presentation.screen.workoutcreation.state
+
 
 import com.pegio.workout.presentation.model.UiExercise
 
@@ -10,6 +11,9 @@ sealed interface WorkoutCreationUiEvent {
     data object OnDismissDialog : WorkoutCreationUiEvent
     data object OnSaveWorkout : WorkoutCreationUiEvent
     data object OnUploadWorkouts : WorkoutCreationUiEvent
+
+    data class OnTitleChange(val title: String) : WorkoutCreationUiEvent
+    data class OnDescriptionChange(val description: String) : WorkoutCreationUiEvent
 
     data object OnBackClick: WorkoutCreationUiEvent
 }

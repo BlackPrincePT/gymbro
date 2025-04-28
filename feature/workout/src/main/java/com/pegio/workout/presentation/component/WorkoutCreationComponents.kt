@@ -56,8 +56,8 @@ import com.pegio.designsystem.component.FormTextField
 import com.pegio.model.Exercise.MuscleGroup
 import com.pegio.model.Exercise.Type
 import com.pegio.workout.presentation.model.UiExercise
-import com.pegio.workout.presentation.screen.workoutcreation.WorkoutCreationUiEvent
-import com.pegio.workout.presentation.screen.workoutcreation.WorkoutCreationUiState
+import com.pegio.workout.presentation.screen.workoutcreation.state.WorkoutCreationUiEvent
+import com.pegio.workout.presentation.screen.workoutcreation.state.WorkoutCreationUiState
 
 
 @Composable

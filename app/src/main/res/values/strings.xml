@@ -60,5 +60,6 @@
     <string name="remove_image">Remove Image</string>
     <string name="built_in_workout_plans">Built-in workout plans</string>
     <string name="settings">Settings</string>
+    <string name="my_workouts">My workouts</string>
 
 </resources>

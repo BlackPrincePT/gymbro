@@ -40,6 +40,7 @@ fun DrawerContent(
     avatarUrl: String?,
     onAvatarClick: () -> Unit,
     onWorkoutPlanClick: () -> Unit,
+    onUserWorkoutsClick: () -> Unit,
     onAccountClick: () -> Unit,
     onSettingsClick: () -> Unit,
     onSignOutClick: () -> Unit,
@@ -61,6 +62,13 @@ fun DrawerContent(
             label = { Text(text = stringResource(R.string.built_in_workout_plans)) },
             selected = false,
             onClick = onWorkoutPlanClick,
+            modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding)
+        )
+
+        if (!isAnonymous) NavigationDrawerItem(
+            label = { Text(text = stringResource(R.string.my_workouts)) },
+            selected = false,
+            onClick = onUserWorkoutsClick,
             modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding)
         )
 
@@ -164,7 +172,8 @@ private fun DefaultDrawerContentPreview() = with(UiUser.DEFAULT) {
         onWorkoutPlanClick = { },
         onSettingsClick = { },
         onSignOutClick = { },
-        onGoogleAuthClick = { }
+        onGoogleAuthClick = { },
+        onUserWorkoutsClick = { }
     )
 }
 
@@ -181,6 +190,7 @@ private fun AnonymousDrawerContentPreview() {
         onWorkoutPlanClick = { },
         onSettingsClick = { },
         onSignOutClick = { },
-        onGoogleAuthClick = { }
+        onGoogleAuthClick = { },
+        onUserWorkoutsClick = { }
     )
 }

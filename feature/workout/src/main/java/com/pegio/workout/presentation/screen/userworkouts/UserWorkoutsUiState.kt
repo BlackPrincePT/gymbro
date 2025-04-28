@@ -1,9 +1,8 @@
 package com.pegio.workout.presentation.screen.userworkouts
 
-import com.pegio.workout.presentation.model.UiExercise
+import com.pegio.workout.presentation.model.UiWorkout
 
 data class UserWorkoutsUiState(
     val isLoading: Boolean = false,
-    val workouts: List<UiExercise> = emptyList(),
-    val authorId: String = ""
+    val workouts: List<UiWorkout> = emptyList(),
 )

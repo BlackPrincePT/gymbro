@@ -10,8 +10,12 @@ import com.pegio.domain.usecase.aggregator.WorkoutFormValidatorUseCases
 import com.pegio.domain.usecase.workout.UploadExerciseUseCase
 import com.pegio.domain.usecase.workout.UploadWorkoutUseCase
 import com.pegio.workout.presentation.model.UiExercise
-import com.pegio.workout.presentation.model.mapper.UiWorkoutMapper
+import com.pegio.workout.presentation.model.mapper.UiExerciseMapper
+import com.pegio.workout.presentation.screen.workoutcreation.state.WorkoutCreationUiEffect
+import com.pegio.workout.presentation.screen.workoutcreation.state.WorkoutCreationUiEvent
+import com.pegio.workout.presentation.screen.workoutcreation.state.WorkoutCreationUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import java.util.UUID
 import javax.inject.Inject
 
 @HiltViewModel
@@ -19,7 +23,7 @@ class WorkoutCreationViewModel @Inject constructor(
     private val workoutFormValidator: WorkoutFormValidatorUseCases,
     private val uploadExercise: UploadExerciseUseCase,
     private val uploadWorkout: UploadWorkoutUseCase,
-    private val uiWorkoutMapper: UiWorkoutMapper
+    private val uiExerciseMapper: UiExerciseMapper
 ) : BaseViewModel<WorkoutCreationUiState, WorkoutCreationUiEffect, WorkoutCreationUiEvent>(
     initialState = WorkoutCreationUiState()
 ) {
@@ -32,6 +36,8 @@ class WorkoutCreationViewModel @Inject constructor(
             WorkoutCreationUiEvent.OnDismissDialog -> hideAddWorkoutDialog()
             WorkoutCreationUiEvent.OnSaveWorkout -> saveWorkout()
             WorkoutCreationUiEvent.OnUploadWorkouts -> uploadWorkouts()
+            is WorkoutCreationUiEvent.OnDescriptionChange -> updateState { copy(description = event.description) }
+            is WorkoutCreationUiEvent.OnTitleChange -> updateState { copy(title = event.title) }
         }
     }
 
@@ -39,7 +45,7 @@ class WorkoutCreationViewModel @Inject constructor(
         updateState {
             copy(
                 showAddWorkoutDialog = true,
-                newWorkout = UiExercise.EMPTY
+                newWorkout = UiExercise.EMPTY.copy(id = UUID.randomUUID().toString())
             )
         }
     }
@@ -68,12 +74,14 @@ class WorkoutCreationViewModel @Inject constructor(
 
             updateState {
                 val updatedList = exercises.toMutableList()
+
                 val index = updatedList.indexOfFirst { it.id == workout.id }
 
                 if (index >= 0) {
-                    updatedList[index] = workout
+                    updatedList[index] = workout.copy(position = updatedList[index].position)
                 } else {
-                    updatedList.add(workout)
+                    val newPosition = updatedList.size
+                    updatedList.add(workout.copy(position = newPosition))
                 }
 
                 copy(
@@ -84,78 +92,57 @@ class WorkoutCreationViewModel @Inject constructor(
         }
     }
 
-    private fun areWorkoutFieldsValid(): Boolean {
-        val currentWorkout = uiState.newWorkout
 
-        var isValid = true
 
-        workoutFormValidator.validateWorkoutName(currentWorkout.name)
-            .errorOrNull()
-            .let {
-                updateState {
-                    copy(validationError = validationError.copy(name = it?.toStringResId()))
-                }
-                isValid = it == null
-            }
+    private fun areWorkoutFieldsValid(): Boolean = with(uiState.newWorkout) {
+        val nameError = workoutFormValidator.validateWorkoutName(name).errorOrNull()
+        val descriptionError = workoutFormValidator.validateWorkoutDescription(description).errorOrNull()
+        val valueError = workoutFormValidator.validateWorkoutValue(value).errorOrNull()
+        val setsError = workoutFormValidator.validateWorkoutSets(sets).errorOrNull()
+        val muscleGroupsError = workoutFormValidator.validateWorkoutMuscleGroups(muscleGroups).errorOrNull()
+        val workoutImageError = workoutFormValidator.validateWorkoutImage(workoutImage).errorOrNull()
 
-        workoutFormValidator.validateWorkoutDescription(currentWorkout.description)
-            .errorOrNull()
-            .let {
-                updateState {
-                    copy(validationError = validationError.copy(description = it?.toStringResId()))
-                }
-                isValid = isValid && it == null
-            }
+        updateState {
+            copy(
+                validationError = validationError.copy(
+                    name = nameError?.toStringResId(),
+                    description = descriptionError?.toStringResId(),
+                    value = valueError?.toStringResId(),
+                    sets = setsError?.toStringResId(),
+                    muscleGroups = muscleGroupsError?.toStringResId(),
+                    workoutImage = workoutImageError?.toStringResId()
+                )
+            )
+        }
 
-        workoutFormValidator.validateWorkoutValue(currentWorkout.value)
-            .errorOrNull()
-            .let {
-                updateState {
-                    copy(validationError = validationError.copy(value = it?.toStringResId()))
-                }
-                isValid = isValid && it == null
-            }
-
-        workoutFormValidator.validateWorkoutSets(currentWorkout.sets)
-            .errorOrNull()
-            .let {
-                updateState {
-                    copy(validationError = validationError.copy(sets = it?.toStringResId()))
-                }
-                isValid = isValid && it == null
-            }
-
-        workoutFormValidator.validateWorkoutMuscleGroups(currentWorkout.muscleGroups)
-            .errorOrNull()
-            .let {
-                updateState {
-                    copy(validationError = validationError.copy(muscleGroups = it?.toStringResId()))
-                }
-                isValid = isValid && it == null
-            }
-
-        workoutFormValidator.validateWorkoutImage(currentWorkout.workoutImage)
-            .errorOrNull()
-            .let {
-                updateState {
-                    copy(validationError = validationError.copy(workoutImage = it?.toStringResId()))
-                }
-                isValid = isValid && it == null
-            }
-
-        return isValid
+        return nameError == null && descriptionError == null && valueError == null && setsError == null && muscleGroupsError == null && workoutImageError == null
     }
 
 
     private fun uploadWorkouts() {
-
+        workoutFormValidator.validateWorkoutsListUseCase(
+            uiState.exercises.map { uiWorkout ->
+                uiExerciseMapper.mapToDomain(uiWorkout)
+            }
+        )
+            .onFailure {
+                sendEffect(
+                    WorkoutCreationUiEffect.Failure(
+                        errorRes = it.toStringResId()
+                    )
+                )
+                return
+            }
+        if (!validateWorkoutFields()) {
+            return
+        }
 
         launchWithLoading {
             retryableCall {
                 val workoutsToUpload = uiState.exercises.map { uiWorkout ->
-                    uiWorkoutMapper.mapToDomain(uiWorkout)
+                    uiExerciseMapper.mapToDomain(uiWorkout)
                 }
-                uploadWorkout(description = "zaza", title = "").onSuccess {
+                uploadWorkout(title = uiState.title, description = uiState.description).onSuccess {
                     uploadExercise(workoutsToUpload, workoutId = it.id)
                 }
             }
@@ -168,6 +155,21 @@ class WorkoutCreationViewModel @Inject constructor(
         }
     }
 
+    private fun validateWorkoutFields(): Boolean {
+        val titleError = workoutFormValidator.validateWorkoutTitle(uiState.title).errorOrNull()
+        val mainDescriptionError = workoutFormValidator.validateWorkoutMainDescription(uiState.description).errorOrNull()
+
+        updateState {
+            copy(
+                validationError = validationError.copy(
+                    title = titleError?.toStringResId(),
+                    mainDescription = mainDescriptionError?.toStringResId()
+                )
+            )
+        }
+
+        return titleError == null && mainDescriptionError == null
+    }
 
     private fun removeWorkout(workoutId: String) {
         updateState {

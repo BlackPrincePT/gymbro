@@ -129,7 +129,7 @@ private fun SetupTopBar(
                 onClick = { onEvent(FeedUiEvent.OnChatClick) })
         )
 
-    LaunchedEffect(Unit) {
+    LaunchedEffect(actions) {
         onSetupTopBar(
             TopBarState(
                 navigationIcon = TopBarAction(

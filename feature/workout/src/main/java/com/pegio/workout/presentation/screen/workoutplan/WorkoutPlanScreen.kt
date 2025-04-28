@@ -1,4 +1,4 @@
-package com.pegio.workout.presentation.screen.workout_plan
+package com.pegio.workout.presentation.screen.workoutplan
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
@@ -13,10 +13,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.pegio.common.presentation.state.TopBarAction
 import com.pegio.common.presentation.state.TopBarState
+import com.pegio.common.presentation.util.CollectLatestEffect
 import com.pegio.workout.presentation.component.TipCardComponents
 import com.pegio.workout.presentation.component.WorkoutPlanItemComponents
 import com.pegio.workout.presentation.model.UiWorkoutPlan
-import com.pegio.common.presentation.util.CollectLatestEffect
+import com.pegio.workout.presentation.screen.workoutplan.state.WorkoutPlanUiEffect
+import com.pegio.workout.presentation.screen.workoutplan.state.WorkoutPlanUiEvent
+import com.pegio.workout.presentation.screen.workoutplan.state.WorkoutPlanUiState
 
 @Composable
 fun WorkoutPlanScreen(
@@ -32,14 +35,11 @@ fun WorkoutPlanScreen(
 
     val context = LocalContext.current
 
-    LaunchedEffect(Unit) {
-        viewModel.onEvent(WorkoutPlanUiEvent.LoadInitialPlans)
-    }
 
     CollectLatestEffect(viewModel.uiEffect) { effect ->
         when (effect) {
             is WorkoutPlanUiEffect.Failure -> onShowSnackbar(context.getString(effect.errorRes))
-            is WorkoutPlanUiEffect.NavigateToWorkout -> onStartWorkout(effect.difficulty)
+            is WorkoutPlanUiEffect.NavigateToWorkout -> onStartWorkout(effect.workoutId)
             WorkoutPlanUiEffect.NavigateBack -> onBackClick()
             WorkoutPlanUiEffect.NavigateToAiChat -> onInfoClick()
         }
@@ -65,7 +65,7 @@ fun WorkoutPlanContent(
         items(state.plans) { workoutPlan ->
             WorkoutPlanItemComponents(
                 workoutPlan =  workoutPlan,
-                onStartWorkout = { onEvent(WorkoutPlanUiEvent.StartWorkout(workoutPlan.difficulty)) }
+                onStartWorkout = { onEvent(WorkoutPlanUiEvent.StartWorkout(workoutPlan.workoutId)) }
             )
         }
 
@@ -84,6 +84,7 @@ private fun SetupTopBar(
     LaunchedEffect(Unit) {
         onSetupTopBar(
             TopBarState(
+                title = "Workout plan",
                 navigationIcon = TopBarAction(
                     icon = Icons.AutoMirrored.Default.ArrowBack,
                     onClick = { onEvent(WorkoutPlanUiEvent.OnBackClick) }
@@ -104,7 +105,8 @@ fun WorkoutPlanContentPreview() {
             difficulty = "Easy",
             duration = "4 days/week - 45 minutes per session",
             intensity = "Low",
-            imageUrl = ""
+            imageUrl = "",
+            workoutId = ""
         )
     )
 

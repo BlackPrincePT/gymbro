@@ -4,6 +4,8 @@ import androidx.annotation.StringRes
 
 sealed interface UserWorkoutsUiEffect {
     data class Failure(@StringRes val errorRes: Int) : UserWorkoutsUiEffect
+    data class NavigateToWorkout(val workoutId: String) : UserWorkoutsUiEffect
+    data object NavigateToWorkoutCreation : UserWorkoutsUiEffect
 
     data object NavigateBack: UserWorkoutsUiEffect
 }

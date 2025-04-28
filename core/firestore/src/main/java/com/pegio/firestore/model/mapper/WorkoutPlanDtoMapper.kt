@@ -1,8 +1,8 @@
 package com.pegio.firestore.model.mapper
 
-import com.pegio.model.WorkoutPlan
 import com.pegio.common.core.Mapper
 import com.pegio.firestore.model.WorkoutPlanDto
+import com.pegio.model.WorkoutPlan
 import javax.inject.Inject
 
 internal class WorkoutPlanDtoMapper @Inject constructor() : Mapper<WorkoutPlanDto, WorkoutPlan> {
@@ -15,7 +15,8 @@ internal class WorkoutPlanDtoMapper @Inject constructor() : Mapper<WorkoutPlanDt
             description = data.description,
             duration = data.duration,
             intensity = data.intensity,
-            imageUrl = data.imageUrl
+            imageUrl = data.imageUrl,
+            workoutId = data.workoutId
         )
     }
 

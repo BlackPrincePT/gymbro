@@ -7,5 +7,6 @@ data class UiWorkoutPlan(
     val duration: String,
     val intensity: String,
     val difficulty: String,
+    val workoutId: String,
     val imageUrl: String
 )

@@ -20,4 +20,5 @@ sealed interface MainActivityUiEvent {
     data object OnAccountClick : MainActivityUiEvent
     data object OnSettingsClick : MainActivityUiEvent
     data object OnWorkoutPlanClick : MainActivityUiEvent
+    data object OnUserWorkoutsClick : MainActivityUiEvent
 }

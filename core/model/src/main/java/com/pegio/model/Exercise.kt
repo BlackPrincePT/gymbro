@@ -5,6 +5,7 @@ data class Exercise(
     val description: String,
     val type: Type,
     val value: Int,
+    val position: Int,
     val sets: Int,
     val muscleGroups: List<MuscleGroup>,
     val workoutImage: String

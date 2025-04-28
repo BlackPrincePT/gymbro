@@ -47,6 +47,16 @@
     <string name="feature_common_presentation_error_weight_invalid">The weight value provided is invalid.</string>
     <string name="feature_common_presentation_error_weight_too_low">The weight is below the acceptable threshold.</string>
 
+    <!-- Workout Title Error -->
+    <string name="feature_common_presentation_error_workouts_title_too_empty">Title cannot be empty</string>
+    <string name="feature_common_presentation_error_workouts_title_too_short">Title is too short</string>
+    <string name="feature_common_presentation_error_workouts_title_too_long">Title is too long</string>
+
+    <!-- Workout Description Error -->
+    <string name="feature_common_presentation_error_workouts_description_empty">Description cannot be empty</string>
+    <string name="feature_common_presentation_error_workouts_description_too_short">Description is too short</string>
+    <string name="feature_common_presentation_error_workouts_description_too_long">Description is too long</string>
+
     <!-- Workout Name Error -->
     <string name="feature_common_presentation_error_name_empty">Workout name cannot be empty</string>
     <string name="feature_common_presentation_error_name_too_short">Workout name is too short</string>

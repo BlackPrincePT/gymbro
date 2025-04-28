@@ -1,12 +1,10 @@
 package com.pegio.firestore.repository.impl
 
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.Query
 import com.pegio.common.core.DataError
 import com.pegio.common.core.Resource
 import com.pegio.common.core.mapList
 import com.pegio.firestore.core.FirestoreConstants.AUTHOR_ID
-import com.pegio.firestore.core.FirestoreConstants.TIMESTAMP
 import com.pegio.firestore.core.FirestoreConstants.WORKOUTS
 import com.pegio.firestore.core.FirestorePagingSource
 import com.pegio.firestore.model.WorkoutDto
@@ -39,7 +37,6 @@ internal class WorkoutRepositoryImpl @Inject constructor(
     override suspend fun fetchNextUserWorkoutsPage(authorId: String): Resource<List<Workout>, DataError> {
         val baseQuery = db.collection(WORKOUTS)
             .whereEqualTo(AUTHOR_ID, authorId)
-            .orderBy(TIMESTAMP, Query.Direction.DESCENDING)
 
         return workoutsPagingSource.loadNextPage(baseQuery)
             .mapList(workoutDtoMapper::mapToDomain)
