@@ -6,7 +6,7 @@ import com.pegio.model.Vote
 data class UiPost(
     val id: String,
     val author: UiUser,
-    val workoutId: String? = null,
+    val workoutId: String?,
     val content: String,
     val imageUrl: String?,
     val voteCount: String,
@@ -28,6 +28,7 @@ data class UiPost(
         val DEFAULT = UiPost(
             id = "",
             author = UiUser.DEFAULT,
+            workoutId = null,
             content = "My name is Patrick Bateman. I'm 27 years old.",
             imageUrl = null,
             voteCount = "108",

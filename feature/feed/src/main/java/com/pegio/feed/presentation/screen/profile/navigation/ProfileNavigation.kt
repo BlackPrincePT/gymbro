@@ -20,6 +20,7 @@ fun NavGraphBuilder.profileScreen(
     onBackClick: () -> Unit,
     onFollowRecordClick: (String, FollowRecord.Type) -> Unit,
     onCreatePostClick: (Boolean) -> Unit,
+    onPostWorkoutClick: (String) -> Unit,
     onShowPostDetails: (String) -> Unit,
     onSetupTopBar: (TopBarState) -> Unit,
     onShowSnackbar: suspend (String) -> Unit
@@ -29,6 +30,7 @@ fun NavGraphBuilder.profileScreen(
             onBackClick = onBackClick,
             onFollowRecordClick = onFollowRecordClick,
             onCreatePostClick = onCreatePostClick,
+            onPostWorkoutClick = onPostWorkoutClick,
             onShowPostDetails = onShowPostDetails,
             onSetupTopBar = onSetupTopBar,
             onShowSnackbar = onShowSnackbar

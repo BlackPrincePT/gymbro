@@ -23,6 +23,7 @@ sealed interface ProfileUiEvent {
 
     // Navigation
     data object OnBackClick : ProfileUiEvent
+    data class OnPostWorkoutClick(val workoutId: String) : ProfileUiEvent
     data class OnFollowRecordClick(val userId: String, val mode: FollowRecord.Type) : ProfileUiEvent
     data class OnCreatePostClick(val shouldOpenGallery: Boolean) : ProfileUiEvent
     data class OnPostCommentClick(val postId: String) : ProfileUiEvent

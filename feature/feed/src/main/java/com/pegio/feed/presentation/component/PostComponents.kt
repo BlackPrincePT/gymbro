@@ -62,6 +62,7 @@ internal fun PostContent(
             post = post,
             onVoteClick = onVoteClick,
             onCommentClick = onCommentClick,
+            onWorkoutClick = onWorkoutClick
         )
     }
 }
@@ -141,7 +142,8 @@ private fun PostHeader(
 private fun PostActions(
     post: UiPost,
     onVoteClick: (Vote.Type) -> Unit,
-    onCommentClick: () -> Unit
+    onCommentClick: () -> Unit,
+    onWorkoutClick: () -> Unit
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -163,7 +165,7 @@ private fun PostActions(
         Spacer(modifier = Modifier.weight(1f))
 
         if (post.hasWorkout) WorkoutAction(
-            onClick = { }
+            onClick = onWorkoutClick
         )
     }
 }
@@ -324,6 +326,7 @@ private fun PostActionsPreview() {
         post = UiPost.DEFAULT,
         onVoteClick = { },
         onCommentClick = { },
+        onWorkoutClick = { }
     )
 }
 

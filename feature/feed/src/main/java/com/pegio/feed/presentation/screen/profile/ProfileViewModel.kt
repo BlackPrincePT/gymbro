@@ -104,6 +104,8 @@ class ProfileViewModel @Inject constructor(
                 sendEffect(ProfileUiEffect.NavigateToPostDetail(event.postId))
 
             ProfileUiEvent.OnBackClick -> sendEffect(ProfileUiEffect.NavigateBack)
+            is ProfileUiEvent.OnPostWorkoutClick ->
+                sendEffect(ProfileUiEffect.NavigateToWorkout(event.workoutId))
 
             // Bottom Sheet
             is ProfileUiEvent.OnBottomSheetStateUpdate -> updateState { copy(shouldShowBottomSheet = event.shouldShow) }

@@ -65,6 +65,7 @@ internal fun ProfileScreen(
     onBackClick: () -> Unit,
     onFollowRecordClick: (String, FollowRecord.Type) -> Unit,
     onCreatePostClick: (Boolean) -> Unit,
+    onPostWorkoutClick: (String) -> Unit,
     onShowPostDetails: (String) -> Unit,
     onSetupTopBar: (TopBarState) -> Unit,
     onShowSnackbar: suspend (String) -> Unit,
@@ -91,6 +92,7 @@ internal fun ProfileScreen(
 
             // Navigation
             ProfileUiEffect.NavigateBack -> onBackClick()
+            is ProfileUiEffect.NavigateToWorkout -> onPostWorkoutClick(effect.workoutId)
             is ProfileUiEffect.NavigateToCreatePost -> onCreatePostClick(effect.shouldOpenGallery)
             is ProfileUiEffect.NavigateToPostDetail -> onShowPostDetails(effect.postId)
             is ProfileUiEffect.NavigateToFollowRecord ->
@@ -170,7 +172,10 @@ private fun ProfileContent(
                 PostContent(
                     post = post,
                     onVoteClick = { onEvent(ProfileUiEvent.OnPostVote(post.id, voteType = it)) },
-                    onCommentClick = { onEvent(ProfileUiEvent.OnPostCommentClick(post.id)) }
+                    onCommentClick = { onEvent(ProfileUiEvent.OnPostCommentClick(post.id)) },
+                    onWorkoutClick = {
+                        post.workoutId?.let { onEvent(ProfileUiEvent.OnPostWorkoutClick(it)) }
+                    }
                 )
             }
 

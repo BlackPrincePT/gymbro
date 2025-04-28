@@ -20,7 +20,8 @@ class UploadPostUseCase @Inject constructor(
 ) {
     suspend operator fun invoke(
         content: String,
-        imageUri: String? = null
+        imageUri: String? = null,
+        workoutId: String? = null
     ): Resource<Unit, Error> {
 
         val currentUser =
@@ -32,6 +33,7 @@ class UploadPostUseCase @Inject constructor(
         val newPost = Post.EMPTY
             .copy(
                 authorId = currentUser.id,
+                workoutId = workoutId,
                 content = content,
                 timestamp = System.currentTimeMillis()
             )

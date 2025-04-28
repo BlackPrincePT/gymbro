@@ -8,5 +8,5 @@ sealed interface UserWorkoutsUiEffect {
     // Navigation
     data class NavigateToWorkout(val workoutId: String) : UserWorkoutsUiEffect
     data object NavigateToWorkoutCreation : UserWorkoutsUiEffect
-    data object NavigateBack: UserWorkoutsUiEffect
+    data class NavigateBack(val selectedWorkoutId: String? = null) : UserWorkoutsUiEffect
 }

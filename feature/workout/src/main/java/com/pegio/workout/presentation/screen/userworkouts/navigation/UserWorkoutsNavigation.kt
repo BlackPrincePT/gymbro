@@ -8,12 +8,14 @@ import com.pegio.workout.presentation.screen.userworkouts.UserWorkoutsScreen
 import kotlinx.serialization.Serializable
 
 @Serializable
-data object UserWorkoutsRoute
+data class UserWorkoutsRoute(val isChoosing: Boolean)
 
-fun NavController.navigateToUsersWorkouts() = navigate(route = UserWorkoutsRoute)
+fun NavController.navigateToUsersWorkouts(isChoosing: Boolean = false) {
+    navigate(route = UserWorkoutsRoute(isChoosing))
+}
 
 fun NavGraphBuilder.userWorkoutsScreen(
-    onBackClick: () -> Unit,
+    onBackClick: (String?) -> Unit,
     onShowSnackbar: suspend (String) -> Unit,
     onStartWorkout: (String) -> Unit,
     onCreateWorkoutClick: () -> Unit,

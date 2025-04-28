@@ -9,7 +9,7 @@ import com.pegio.firestore.repository.WorkoutRepository
 import com.pegio.model.Workout
 import javax.inject.Inject
 
-class FetchWorkoutsByIdUseCase @Inject constructor(
+class FetchUserWorkoutsUseCase @Inject constructor(
     private val workoutRepository: WorkoutRepository,
     private val authRepository: AuthRepository,
 ) {

@@ -7,6 +7,7 @@ data class PostDto(
     val authorId: String = "",
     val content: String = "",
     val imageUrl: String? = null,
+    val workoutId: String? = null,
     val upVotesInLast24Hours: Int = 0,
     val voteCount: Int = 0,
     val commentCount: Int = 0,
