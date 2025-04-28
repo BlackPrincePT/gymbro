@@ -13,6 +13,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -22,7 +23,7 @@ import com.pegio.common.presentation.state.TopBarAction
 import com.pegio.common.presentation.state.TopBarState
 import com.pegio.common.presentation.util.CollectLatestEffect
 import com.pegio.common.presentation.util.rememberGalleryLauncher
-import com.pegio.designsystem.component.DropdownMenu
+import com.pegio.designsystem.component.GymBroDropdownMenu
 import com.pegio.designsystem.component.FormTextField
 import com.pegio.designsystem.component.GymBroTextButton
 import com.pegio.model.User.Gender
@@ -37,6 +38,8 @@ fun AccountScreen(
     onSetupTopBar: (TopBarState) -> Unit,
     viewModel: AccountViewModel = hiltViewModel()
 ) {
+    val focusManager = LocalFocusManager.current
+
     val launchGallery = rememberGalleryLauncher(
         onImageSelected = { viewModel.onEvent(AccountUiEvent.OnPhotoSelected(imageUri = it)) }
     )
@@ -48,6 +51,7 @@ fun AccountScreen(
 
             // Main
             AccountUiEffect.LaunchGallery -> launchGallery()
+            AccountUiEffect.ClearFocus -> focusManager.clearFocus()
 
             // Navigation
             AccountUiEffect.NavigateBack -> onBackClick.invoke()
@@ -109,18 +113,23 @@ private fun AccountContent(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        DropdownMenu(
+        GymBroDropdownMenu(
+            isExpanded = isGenderMenuExpanded,
             options = Gender.entries,
-            onSelectionChanged = { onEvent(AccountUiEvent.OnGenderChanged(it)) },
             label = user.gender.name,
+            onSelectionChanged = { onEvent(AccountUiEvent.OnGenderChanged(it)) },
+            onExpandedChange = { onEvent(AccountUiEvent.OnGenderMenuExpandedChange(it)) },
             selectedOption = formValue.gender?.name,
-            error = validationError.gender,
             trailingIcon = {
                 SubmitButton(
                     condition = formValue.gender != null && user.gender != formValue.gender,
-                    onClick = { onEvent(AccountUiEvent.OnGenderSubmit) }
+                    onClick = {
+                        onEvent(AccountUiEvent.OnGenderSubmit)
+                        onEvent(AccountUiEvent.OnGenderMenuExpandedChange(false))
+                    }
                 )
             },
+            errorRes = validationError.gender,
             modifier = Modifier.fillMaxWidth()
         )
 

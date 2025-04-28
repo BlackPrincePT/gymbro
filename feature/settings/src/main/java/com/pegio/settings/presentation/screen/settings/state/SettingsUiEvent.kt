@@ -9,4 +9,7 @@ sealed interface SettingsUiEvent {
 
     // Navigation
     data object OnBackClick : SettingsUiEvent
+
+    // Compose State
+    data class OnThemeMenuExpandedChange(val isExpanded: Boolean) : SettingsUiEvent
 }

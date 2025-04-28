@@ -7,7 +7,7 @@ sealed interface RegisterUiEvent {
 
     // Main
     data object OnSubmit : RegisterUiEvent
-    data object OnLaunchGallery: RegisterUiEvent
+    data object OnLaunchGallery : RegisterUiEvent
 
     // Bottom Sheet
     data class OnBottomSheetStateUpdate(val shouldShow: Boolean) : RegisterUiEvent
@@ -19,4 +19,5 @@ sealed interface RegisterUiEvent {
     data class OnHeightChanged(val height: String) : RegisterUiEvent
     data class OnWeightChanged(val weight: String) : RegisterUiEvent
     data class OnProfilePhotoSelected(val imageUri: Uri?) : RegisterUiEvent
+    data class OnGenderMenuExpandedChange(val isExpanded: Boolean) : RegisterUiEvent
 }

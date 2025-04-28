@@ -3,7 +3,6 @@ package com.pegio.settings.presentation.screen.account
 import android.net.Uri
 import androidx.lifecycle.viewModelScope
 import com.pegio.common.core.errorOrNull
-import com.pegio.common.core.onFailure
 import com.pegio.common.core.onSuccess
 import com.pegio.common.presentation.core.BaseViewModel
 import com.pegio.common.presentation.model.UiUser
@@ -58,7 +57,10 @@ class AccountViewModel @Inject constructor(
             AccountUiEvent.OnAgeSubmit,
             AccountUiEvent.OnGenderSubmit,
             AccountUiEvent.OnHeightSubmit,
-            AccountUiEvent.OnWeightSubmit -> validateAndUpdateUserInfo(event)
+            AccountUiEvent.OnWeightSubmit -> {
+                validateAndUpdateUserInfo(event)
+                sendEffect(AccountUiEffect.ClearFocus)
+            }
 
             // Navigation
             AccountUiEvent.OnBackClick -> sendEffect(AccountUiEffect.NavigateBack)
@@ -69,6 +71,7 @@ class AccountViewModel @Inject constructor(
             is AccountUiEvent.OnGenderChanged -> updateFormState { copy(gender = event.gender) }
             is AccountUiEvent.OnHeightChanged -> updateFormState { copy(height = event.height) }
             is AccountUiEvent.OnWeightChanged -> updateFormState { copy(weight = event.weight) }
+            is AccountUiEvent.OnGenderMenuExpandedChange -> updateState { copy(isGenderMenuExpanded = event.isExpanded) }
         }
     }
 
@@ -156,7 +159,6 @@ class AccountViewModel @Inject constructor(
     private fun observeCurrentUser() = viewModelScope.launch {
         getCurrentUserStream()
             .onSuccess { updateState { copy(user = uiUserMapper.mapFromDomain(it)) } }
-            .onFailure {  } // TODO HANDLE FAILURE
             .launchIn(viewModelScope)
     }
 
