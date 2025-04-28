@@ -2,6 +2,7 @@ package com.pegio.workout.presentation.screen.workout
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.toRoute
 import com.pegio.common.core.onFailure
 import com.pegio.common.core.onSuccess
 import com.pegio.common.presentation.core.BaseViewModel
@@ -9,7 +10,11 @@ import com.pegio.common.presentation.util.toStringResId
 import com.pegio.domain.usecase.workout.FetchExerciseByIdUseCase
 import com.pegio.workout.presentation.core.TextToSpeechRepositoryImpl
 import com.pegio.workout.presentation.model.mapper.UiExerciseMapper
-import com.pegio.workout.presentation.screen.workout.WorkoutUiState.TimerState
+import com.pegio.workout.presentation.screen.workout.navigation.WorkoutRoute
+import com.pegio.workout.presentation.screen.workout.state.WorkoutUiEffect
+import com.pegio.workout.presentation.screen.workout.state.WorkoutUiEvent
+import com.pegio.workout.presentation.screen.workout.state.WorkoutUiState
+import com.pegio.workout.presentation.screen.workout.state.WorkoutUiState.TimerState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -26,20 +31,38 @@ class WorkoutViewModel @Inject constructor(
 ) : BaseViewModel<WorkoutUiState, WorkoutUiEffect, WorkoutUiEvent>(initialState = WorkoutUiState()) {
 
     private var timerJob: Job? = null
+    private val workoutId = savedStateHandle.toRoute<WorkoutRoute>().workoutId
+
+    init {
+        fetchWorkouts(workoutId)
+    }
 
     override fun onEvent(event: WorkoutUiEvent) {
         when (event) {
-
-            is WorkoutUiEvent.FetchWorkouts -> fetchWorkouts(event.workoutId)
+            // Main buttons
             is WorkoutUiEvent.OnNextClick -> nextWorkout()
             WorkoutUiEvent.OnPreviousClick -> previousWorkout()
+
+            // Navigation
             WorkoutUiEvent.OnBackClick -> sendEffect(WorkoutUiEffect.NavigateBack)
+
+            // TTS
             is WorkoutUiEvent.OnReadTTSClick -> readDescription(event.textToRead)
             WorkoutUiEvent.OnToggleTTSClick -> toggleTTSState()
+
+            // Timer
             WorkoutUiEvent.PauseTimer -> pauseTimer()
             WorkoutUiEvent.ResumeTimer -> resumeTimer()
         }
     }
+
+    override fun onCleared() {
+        super.onCleared()
+        stopTimer()
+        textToSpeechRepository.shutdown()
+    }
+
+    override fun setLoading(isLoading: Boolean) = updateState { copy(isLoading = isLoading) }
 
     private fun fetchWorkouts(workoutId: String) {
         launchWithLoading {
@@ -143,15 +166,4 @@ class WorkoutViewModel @Inject constructor(
         timerJob?.cancel()
         timerJob = null
     }
-
-    override fun onCleared() {
-        super.onCleared()
-        stopTimer()
-        textToSpeechRepository.shutdown()
-    }
-
-    override fun setLoading(isLoading: Boolean) {
-        updateState { copy(isLoading = isLoading) }
-    }
-
 }

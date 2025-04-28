@@ -1,9 +1,6 @@
-package com.pegio.workout.presentation.screen.workout
-
+package com.pegio.workout.presentation.screen.workout.state
 
 sealed interface WorkoutUiEvent {
-    //Workout fetch
-    data class FetchWorkouts(val workoutId: String) : WorkoutUiEvent
 
     //Main buttons
     data object OnNextClick : WorkoutUiEvent

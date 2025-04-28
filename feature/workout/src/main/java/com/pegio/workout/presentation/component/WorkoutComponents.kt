@@ -37,8 +37,8 @@ import com.pegio.common.presentation.components.WorkoutImage
 import com.pegio.model.Exercise.MuscleGroup
 import com.pegio.model.Exercise.Type
 import com.pegio.workout.presentation.model.UiExercise
-import com.pegio.workout.presentation.screen.workout.WorkoutUiEvent
-import com.pegio.workout.presentation.screen.workout.WorkoutUiState
+import com.pegio.workout.presentation.screen.workout.state.WorkoutUiEvent
+import com.pegio.workout.presentation.screen.workout.state.WorkoutUiState
 
 @Composable
 fun WorkoutDetailChip(
