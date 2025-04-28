@@ -1,4 +1,4 @@
-package com.pegio.aichat.presentation.screen.aichat
+package com.pegio.aichat.presentation.screen.aichat.state
 
 import androidx.annotation.StringRes
 

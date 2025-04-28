@@ -23,6 +23,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -30,6 +31,7 @@ import com.pegio.common.presentation.state.TopBarAction
 import com.pegio.common.presentation.state.TopBarState
 import com.pegio.common.presentation.util.CollectLatestEffect
 import com.pegio.designsystem.component.FormTextField
+import com.pegio.workout.R
 import com.pegio.workout.presentation.component.AddWorkoutDialog
 import com.pegio.workout.presentation.component.WorkoutItem
 import com.pegio.workout.presentation.model.UiExercise
@@ -77,14 +79,14 @@ fun WorkoutCreationContent(
             FormTextField(
                 value = state.title,
                 onValueChange = { onEvent(WorkoutCreationUiEvent.OnTitleChange(it)) },
-                label = "Title",
+                label = stringResource(R.string.feature_workout_title),
                 error = state.validationError.title
             )
             Spacer(modifier = Modifier.height(8.dp))
             FormTextField(
                 value = state.description,
                 onValueChange = { onEvent(WorkoutCreationUiEvent.OnDescriptionChange(it)) },
-                label = "Description",
+                label = stringResource(R.string.feature_workout_description),
                 error = state.validationError.mainDescription
             )
             Spacer(modifier = Modifier.height(16.dp))
@@ -113,7 +115,7 @@ fun WorkoutCreationContent(
                     onEvent(WorkoutCreationUiEvent.OnAddWorkoutClick)
                 }
             ) {
-                Icon(Icons.Default.Add, contentDescription = "Add Workout")
+                Icon(Icons.Default.Add, contentDescription = stringResource(R.string.feature_workout_add_workout))
             }
         }
 

@@ -31,7 +31,7 @@ fun InputTextField(
 fun PreviewInputTextField() {
 
     InputTextField(
-        text = "fwafwafwa",
+        text = "I am superman",
         onTextChange = {},
         placeholder = "holding place"
     )

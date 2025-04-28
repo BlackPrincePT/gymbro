@@ -29,27 +29,33 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.pegio.aichat.R
 import com.pegio.aichat.presentation.component.AttachImageButton
 import com.pegio.aichat.presentation.component.InputTextField
 import com.pegio.aichat.presentation.component.SendButton
 import com.pegio.aichat.presentation.model.UiAiMessage
+import com.pegio.aichat.presentation.screen.aichat.state.AiChatUiEffect
+import com.pegio.aichat.presentation.screen.aichat.state.AiChatUiEvent
+import com.pegio.aichat.presentation.screen.aichat.state.AiChatUiState
+import com.pegio.common.presentation.components.MessageImage
 import com.pegio.common.presentation.state.TopBarAction
 import com.pegio.common.presentation.state.TopBarState
 import com.pegio.common.presentation.util.CollectLatestEffect
-import com.pegio.common.presentation.components.MessageImage
 
 @Composable
 fun AiChatScreen(
+    viewModel: AiChatViewModel = hiltViewModel(),
     onBackClick: () -> Unit,
     onSetupTopBar: (TopBarState) -> Unit,
-    onShowSnackbar: suspend (String) -> Unit,
-    viewModel: AiChatViewModel = hiltViewModel()
+    onShowSnackbar: suspend (String) -> Unit
 ) {
 
     SetupTopBar(onSetupTopBar, viewModel::onEvent)
+
     val context = LocalContext.current
 
     CollectLatestEffect(viewModel.uiEffect) { effect ->
@@ -129,7 +135,7 @@ private fun AiChatContent(
                     ) {
                         Icon(
                             imageVector = Icons.Default.Close,
-                            contentDescription = "Remove image",
+                            contentDescription = stringResource(R.string.feature_aichat_remove_image),
                             tint = Color.Red
                         )
                     }
@@ -203,7 +209,7 @@ fun ChatBubble(message: UiAiMessage) {
 @Composable
 fun ChatBubblePlaceholder() {
     val placeholderMessage =
-        UiAiMessage(text = "Typing...", isFromUser = false)
+        UiAiMessage(text = stringResource(R.string.feature_aichat_typing), isFromUser = false)
 
     ChatBubble(message = placeholderMessage)
 }
@@ -226,7 +232,7 @@ fun ChatInput(
         InputTextField(
             text = text,
             onTextChange = onTextChange,
-            placeholder = "Type a message…",
+            placeholder = stringResource(R.string.feature_aichat_type_a_message),
             modifier = Modifier.weight(1f)
         )
         SendButton(text = text, onSend = onSend, isLoading = isLoading)

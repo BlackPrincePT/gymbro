@@ -4,6 +4,9 @@ import android.net.Uri
 import androidx.lifecycle.viewModelScope
 import com.pegio.aichat.presentation.model.UiAiMessage
 import com.pegio.aichat.presentation.model.mapper.UiAiMessageMapper
+import com.pegio.aichat.presentation.screen.aichat.state.AiChatUiEffect
+import com.pegio.aichat.presentation.screen.aichat.state.AiChatUiEvent
+import com.pegio.aichat.presentation.screen.aichat.state.AiChatUiState
 import com.pegio.common.core.onFailure
 import com.pegio.common.core.onSuccess
 import com.pegio.common.presentation.core.BaseViewModel
@@ -34,19 +37,25 @@ class AiChatViewModel @Inject constructor(
         }
     }
 
-
     override fun onEvent(event: AiChatUiEvent) {
         when (event) {
+            // Fields
             is AiChatUiEvent.OnTextChanged -> updateState { copy(inputText = event.text) }
+
+            // Actions
             is AiChatUiEvent.OnImageSelected -> updateState { copy(selectedImageUri = event.imageUri) }
-            is AiChatUiEvent.OnSendMessage -> onSendMessage()
-            AiChatUiEvent.LoadMoreMessages -> loadMoreMessages()
             AiChatUiEvent.OnRemoveImage -> updateState { copy(selectedImageUri = null) }
+            is AiChatUiEvent.OnSendMessage -> onSendMessage()
+
+            // Chat old messages
+            AiChatUiEvent.LoadMoreMessages -> loadMoreMessages()
 
             // Top Bar
             AiChatUiEvent.OnBackClick -> sendEffect(AiChatUiEffect.NavigateBack)
         }
     }
+
+    override fun setLoading(isLoading: Boolean) = updateState { copy(isLoading = isLoading) }
 
     private fun loadMoreMessages() {
         val currentMessages = uiState.messages
@@ -93,7 +102,6 @@ class AiChatViewModel @Inject constructor(
         sendAiResponse(currentUserId)
     }
 
-
     private fun handleTextMessage(uiMessage: UiAiMessage, userId: String) {
         val domainMessage = uiAiMessageMapper.mapToDomain(uiMessage)
 
@@ -137,9 +145,5 @@ class AiChatViewModel @Inject constructor(
         updateState {
             copy(inputText = "", selectedImageUri = null)
         }
-    }
-
-    override fun setLoading(isLoading: Boolean) {
-        updateState { copy(isLoading = isLoading) }
     }
 }

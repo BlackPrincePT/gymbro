@@ -4,8 +4,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import com.pegio.aichat.presentation.screen.aichat.AiChatScreen
+import com.pegio.aichat.presentation.screen.aichat.navigation.aiChatScreen
+import com.pegio.aichat.presentation.screen.aichat.navigation.navigateToAiChat
 import com.pegio.auth.presentation.screen.auth.navigation.authScreen
 import com.pegio.auth.presentation.screen.auth.navigation.navigateToAuth
 import com.pegio.auth.presentation.screen.register.navigation.navigateToRegister
@@ -21,8 +21,6 @@ import com.pegio.feed.presentation.screen.postdetails.navigation.navigateToPostD
 import com.pegio.feed.presentation.screen.postdetails.navigation.postDetailsScreen
 import com.pegio.feed.presentation.screen.profile.navigation.navigateToProfile
 import com.pegio.feed.presentation.screen.profile.navigation.profileScreen
-import com.pegio.gymbro.navigation.route.AiChatRoute
-import com.pegio.gymbro.navigation.route.navigateToAiChat
 import com.pegio.settings.presentation.screen.account.navigation.accountScreen
 import com.pegio.settings.presentation.screen.settings.navigation.settingsScreen
 import com.pegio.splash.presentation.splash.navigation.SplashRoute
@@ -70,13 +68,11 @@ fun NavigationHost(
         // <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> \\
 
 
-        composable<AiChatRoute> {
-            AiChatScreen(
-                onBackClick = navController::navigateUp,
-                onSetupTopBar = onSetupAppBar,
-                onShowSnackbar = onShowSnackbar
-            )
-        }
+        aiChatScreen(
+            onBackClick = navController::navigateUp,
+            onSetupTopBar = onSetupAppBar,
+            onShowSnackbar = onShowSnackbar
+        )
 
 
         // <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> \\
@@ -128,7 +124,6 @@ fun NavigationHost(
         )
 
         // <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> \\
-
 
 
         feedScreen(

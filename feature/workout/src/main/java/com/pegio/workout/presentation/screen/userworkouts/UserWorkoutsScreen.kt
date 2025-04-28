@@ -17,11 +17,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.pegio.common.presentation.state.TopBarAction
 import com.pegio.common.presentation.state.TopBarState
 import com.pegio.common.presentation.util.CollectLatestEffect
+import com.pegio.workout.R
 import com.pegio.workout.presentation.model.UiWorkout
 import com.pegio.workout.presentation.screen.userworkouts.state.UserWorkoutsUiEffect
 import com.pegio.workout.presentation.screen.userworkouts.state.UserWorkoutsUiEvent
@@ -37,7 +39,7 @@ fun UserWorkoutsScreen(
     onSetupTopBar: (TopBarState) -> Unit
 ) {
 
-    SetupTopBar(onSetupTopBar, viewModel::onEvent)
+    SetupTopBar(stringResource(R.string.feature_workout_my_workouts), onSetupTopBar, viewModel::onEvent)
 
     val context = LocalContext.current
 
@@ -102,13 +104,14 @@ fun UserWorkoutItem(
 
 @Composable
 private fun SetupTopBar(
+    title: String,
     onSetupTopBar: (TopBarState) -> Unit,
     onEvent: (UserWorkoutsUiEvent) -> Unit
 ) {
     LaunchedEffect(Unit) {
         onSetupTopBar(
             TopBarState(
-                title = "My workouts",
+                title = title,
                 navigationIcon = TopBarAction(
                     icon = Icons.AutoMirrored.Default.ArrowBack,
                     onClick = { onEvent(UserWorkoutsUiEvent.OnBackClick) }
