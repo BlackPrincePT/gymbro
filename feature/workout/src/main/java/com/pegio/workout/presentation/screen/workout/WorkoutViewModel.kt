@@ -2,14 +2,19 @@ package com.pegio.workout.presentation.screen.workout
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.toRoute
 import com.pegio.common.core.onFailure
 import com.pegio.common.core.onSuccess
 import com.pegio.common.presentation.core.BaseViewModel
 import com.pegio.common.presentation.util.toStringResId
 import com.pegio.domain.usecase.workout.FetchExerciseByIdUseCase
-import com.pegio.workout.presentation.core.TextToSpeechRepositoryImpl
+import com.pegio.workout.presentation.core.TextToSpeechManagerImpl
 import com.pegio.workout.presentation.model.mapper.UiExerciseMapper
-import com.pegio.workout.presentation.screen.workout.WorkoutUiState.TimerState
+import com.pegio.workout.presentation.screen.workout.navigation.WorkoutRoute
+import com.pegio.workout.presentation.screen.workout.state.WorkoutUiEffect
+import com.pegio.workout.presentation.screen.workout.state.WorkoutUiEvent
+import com.pegio.workout.presentation.screen.workout.state.WorkoutUiState
+import com.pegio.workout.presentation.screen.workout.state.WorkoutUiState.TimerState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -21,25 +26,44 @@ import javax.inject.Inject
 class WorkoutViewModel @Inject constructor(
     private val fetchExerciseByIdUseCase: FetchExerciseByIdUseCase,
     private val uiExerciseMapper: UiExerciseMapper,
-    private val textToSpeechRepository: TextToSpeechRepositoryImpl,
+    private val textToSpeechRepository: TextToSpeechManagerImpl,
     savedStateHandle: SavedStateHandle
 ) : BaseViewModel<WorkoutUiState, WorkoutUiEffect, WorkoutUiEvent>(initialState = WorkoutUiState()) {
 
     private var timerJob: Job? = null
+    private val workoutId = savedStateHandle.toRoute<WorkoutRoute>().workoutId
+
+    init {
+        fetchWorkouts(workoutId)
+    }
 
     override fun onEvent(event: WorkoutUiEvent) {
         when (event) {
-
-            is WorkoutUiEvent.FetchWorkouts -> fetchWorkouts(event.workoutId)
+            // Main buttons
             is WorkoutUiEvent.OnNextClick -> nextWorkout()
             WorkoutUiEvent.OnPreviousClick -> previousWorkout()
+
+            // Navigation
             WorkoutUiEvent.OnBackClick -> sendEffect(WorkoutUiEffect.NavigateBack)
+
+            // TTS
             is WorkoutUiEvent.OnReadTTSClick -> readDescription(event.textToRead)
             WorkoutUiEvent.OnToggleTTSClick -> toggleTTSState()
+
+            // Timer
             WorkoutUiEvent.PauseTimer -> pauseTimer()
             WorkoutUiEvent.ResumeTimer -> resumeTimer()
+            WorkoutUiEvent.ResetTimer -> resetTimer()
         }
     }
+
+    override fun onCleared() {
+        super.onCleared()
+        stopTimer()
+        textToSpeechRepository.shutdown()
+    }
+
+    override fun setLoading(isLoading: Boolean) = updateState { copy(isLoading = isLoading) }
 
     private fun fetchWorkouts(workoutId: String) {
         launchWithLoading {
@@ -120,11 +144,15 @@ class WorkoutViewModel @Inject constructor(
 
         startCountdownTimer(currentTimeRemaining)
     }
+    private fun resetTimer(){
+        cancelExistingTimer()
+        updateState { copy(timeRemaining = workouts[currentWorkoutIndex].value, timerState = TimerState.NOT_STARTED) }
+    }
 
 
     private fun stopTimer() {
         cancelExistingTimer()
-        updateState { copy(timeRemaining = 0, timerState = TimerState.PAUSED) }
+        updateState { copy(timeRemaining = 0, timerState = TimerState.NOT_STARTED) }
     }
 
     private fun startCountdownTimer(startTimeInSeconds: Int) {
@@ -135,7 +163,6 @@ class WorkoutViewModel @Inject constructor(
             }
 
             updateState { copy(timerState = TimerState.PAUSED) }
-            nextWorkout()
         }
     }
 
@@ -143,15 +170,4 @@ class WorkoutViewModel @Inject constructor(
         timerJob?.cancel()
         timerJob = null
     }
-
-    override fun onCleared() {
-        super.onCleared()
-        stopTimer()
-        textToSpeechRepository.shutdown()
-    }
-
-    override fun setLoading(isLoading: Boolean) {
-        updateState { copy(isLoading = isLoading) }
-    }
-
 }

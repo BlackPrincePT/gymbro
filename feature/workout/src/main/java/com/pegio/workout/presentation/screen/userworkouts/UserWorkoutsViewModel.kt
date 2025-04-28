@@ -6,6 +6,9 @@ import com.pegio.common.presentation.core.BaseViewModel
 import com.pegio.common.presentation.util.toStringResId
 import com.pegio.domain.usecase.workout.FetchWorkoutsByIdUseCase
 import com.pegio.workout.presentation.model.mapper.UiWorkoutMapper
+import com.pegio.workout.presentation.screen.userworkouts.state.UserWorkoutsUiEffect
+import com.pegio.workout.presentation.screen.userworkouts.state.UserWorkoutsUiEvent
+import com.pegio.workout.presentation.screen.userworkouts.state.UserWorkoutsUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
@@ -15,20 +18,20 @@ class UserWorkoutsViewModel @Inject constructor(
     private val uiWorkoutMapper: UiWorkoutMapper
 ) : BaseViewModel<UserWorkoutsUiState, UserWorkoutsUiEffect, UserWorkoutsUiEvent>(initialState = UserWorkoutsUiState()) {
 
-
+    init {
+        fetchWorkoutsId()
+    }
 
     override fun onEvent(event: UserWorkoutsUiEvent) {
         when (event) {
-            is UserWorkoutsUiEvent.FetchWorkouts -> fetchWorkoutsId()
+            //Navigation
             UserWorkoutsUiEvent.OnBackClick -> sendEffect(UserWorkoutsUiEffect.NavigateBack)
             is UserWorkoutsUiEvent.StartWorkout -> startWorkout(event.workoutId)
             UserWorkoutsUiEvent.OnCreateWorkoutClick -> sendEffect(UserWorkoutsUiEffect.NavigateToWorkoutCreation)
         }
     }
 
-    init {
-        fetchWorkoutsId()
-    }
+    override fun setLoading(isLoading: Boolean) = updateState { copy(isLoading = isLoading) }
 
     private fun fetchWorkoutsId() {
         launchWithLoading {
@@ -47,13 +50,7 @@ class UserWorkoutsViewModel @Inject constructor(
         }
     }
 
-
     private fun startWorkout(workoutId: String) {
         sendEffect(UserWorkoutsUiEffect.NavigateToWorkout(workoutId))
-    }
-
-
-    override fun setLoading(isLoading: Boolean) {
-        updateState { copy(isLoading = isLoading) }
     }
 }

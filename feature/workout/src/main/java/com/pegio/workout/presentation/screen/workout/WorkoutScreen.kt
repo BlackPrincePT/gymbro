@@ -24,13 +24,15 @@ import com.pegio.common.presentation.util.CollectLatestEffect
 import com.pegio.model.Exercise
 import com.pegio.workout.presentation.component.WorkoutDetails
 import com.pegio.workout.presentation.model.UiExercise
+import com.pegio.workout.presentation.screen.workout.state.WorkoutUiEffect
+import com.pegio.workout.presentation.screen.workout.state.WorkoutUiEvent
+import com.pegio.workout.presentation.screen.workout.state.WorkoutUiState
 
 
 @Composable
 fun WorkoutScreen(
     viewModel: WorkoutViewModel = hiltViewModel(),
     onBackClick: () -> Unit,
-    workoutPlanId: String,
     onShowSnackbar: suspend (String) -> Unit,
     onSetupTopBar: (TopBarState) -> Unit
 ) {
@@ -39,11 +41,6 @@ fun WorkoutScreen(
 
     val context = LocalContext.current
 
-    LaunchedEffect(Unit) {
-        if (viewModel.uiState.workouts.isEmpty()) {
-            viewModel.onEvent(WorkoutUiEvent.FetchWorkouts(workoutPlanId))
-        }
-    }
 
     CollectLatestEffect(viewModel.uiEffect) { effect ->
         when (effect) {
@@ -110,19 +107,21 @@ private fun SetupTopBar(
     onEvent: (WorkoutUiEvent) -> Unit,
     state: WorkoutUiState
 ) {
-    LaunchedEffect(Unit) {
+    val actions = listOf(
+        TopBarAction(
+            icon = if (state.isTTSActive) Icons.AutoMirrored.Default.VolumeUp else Icons.AutoMirrored.Default.VolumeOff,
+            onClick = { onEvent(WorkoutUiEvent.OnToggleTTSClick) }
+        )
+    )
+
+    LaunchedEffect(state.isTTSActive) {
         onSetupTopBar(
             TopBarState(
                 navigationIcon = TopBarAction(
                     icon = Icons.AutoMirrored.Default.ArrowBack,
                     onClick = { onEvent(WorkoutUiEvent.OnBackClick) }
                 ),
-                actions = listOf(
-                    TopBarAction(
-                        icon = if (state.isTTSActive) Icons.AutoMirrored.Default.VolumeUp else Icons.AutoMirrored.Default.VolumeOff,
-                        onClick = { onEvent(WorkoutUiEvent.OnToggleTTSClick) }
-                    )
-                )
+                actions = actions
             )
         )
     }

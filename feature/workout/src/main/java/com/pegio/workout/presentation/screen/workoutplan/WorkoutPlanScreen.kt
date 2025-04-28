@@ -14,7 +14,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.pegio.common.presentation.state.TopBarAction
 import com.pegio.common.presentation.state.TopBarState
 import com.pegio.common.presentation.util.CollectLatestEffect
-import com.pegio.workout.presentation.component.TipCardComponents
 import com.pegio.workout.presentation.component.WorkoutPlanItemComponents
 import com.pegio.workout.presentation.model.UiWorkoutPlan
 import com.pegio.workout.presentation.screen.workoutplan.state.WorkoutPlanUiEffect
@@ -25,7 +24,6 @@ import com.pegio.workout.presentation.screen.workoutplan.state.WorkoutPlanUiStat
 fun WorkoutPlanScreen(
     viewModel: WorkoutPlanViewModel = hiltViewModel(),
     onBackClick: () -> Unit,
-    onInfoClick: () -> Unit,
     onShowSnackbar: suspend (String) -> Unit,
     onStartWorkout: (String) -> Unit,
     onSetupTopBar: (TopBarState) -> Unit
@@ -35,13 +33,11 @@ fun WorkoutPlanScreen(
 
     val context = LocalContext.current
 
-
     CollectLatestEffect(viewModel.uiEffect) { effect ->
         when (effect) {
             is WorkoutPlanUiEffect.Failure -> onShowSnackbar(context.getString(effect.errorRes))
             is WorkoutPlanUiEffect.NavigateToWorkout -> onStartWorkout(effect.workoutId)
             WorkoutPlanUiEffect.NavigateBack -> onBackClick()
-            WorkoutPlanUiEffect.NavigateToAiChat -> onInfoClick()
         }
     }
 
@@ -64,13 +60,9 @@ fun WorkoutPlanContent(
     LazyColumn(modifier = modifier.fillMaxSize()) {
         items(state.plans) { workoutPlan ->
             WorkoutPlanItemComponents(
-                workoutPlan =  workoutPlan,
+                workoutPlan = workoutPlan,
                 onStartWorkout = { onEvent(WorkoutPlanUiEvent.StartWorkout(workoutPlan.workoutId)) }
             )
-        }
-
-        item {
-            TipCardComponents(onClick = { onEvent(WorkoutPlanUiEvent.OnInfoClick) })
         }
     }
 }

@@ -6,9 +6,9 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import java.util.Locale
 import javax.inject.Inject
 
-class TextToSpeechRepositoryImpl @Inject constructor(
+class TextToSpeechManagerImpl @Inject constructor(
    @ApplicationContext context: Context
-) : TextToSpeechRepository {
+) : TextToSpeechManager {
 
     private var tts: TextToSpeech? = null
 

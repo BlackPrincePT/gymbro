@@ -45,10 +45,10 @@ import com.pegio.gymbro.activity.state.MainActivityUiEffect
 import com.pegio.gymbro.activity.state.MainActivityUiEvent
 import com.pegio.gymbro.activity.state.MainActivityUiState
 import com.pegio.gymbro.navigation.NavigationHost
-import com.pegio.gymbro.navigation.route.navigateToUserWorkouts
 import com.pegio.settings.presentation.screen.account.navigation.navigateToAccount
 import com.pegio.settings.presentation.screen.settings.navigation.navigateToSettings
 import com.pegio.splash.presentation.splash.navigation.SplashRoute
+import com.pegio.workout.presentation.screen.userworkouts.navigation.navigateToUsersWorkouts
 import com.pegio.workout.presentation.screen.workoutplan.navigation.navigateToWorkoutPlan
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -96,7 +96,7 @@ class MainActivity : ComponentActivity() {
                         MainActivityUiEffect.NavigateToAccount -> navController.navigateToAccount()
                         MainActivityUiEffect.NavigateToSettings -> navController.navigateToSettings()
                         MainActivityUiEffect.NavigateToWorkoutPlan -> navController.navigateToWorkoutPlan()
-                        MainActivityUiEffect.NavigateToUserWorkouts -> navController.navigateToUserWorkouts()
+                        MainActivityUiEffect.NavigateToUserWorkouts -> navController.navigateToUsersWorkouts()
                         MainActivityUiEffect.NavigateToAuth -> navController.navigateToAuth()
                         MainActivityUiEffect.NavigateToRegister -> navController.navigateToRegister()
                         is MainActivityUiEffect.NavigateToProfile ->

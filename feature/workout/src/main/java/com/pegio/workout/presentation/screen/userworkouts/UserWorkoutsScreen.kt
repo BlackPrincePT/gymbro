@@ -23,6 +23,9 @@ import com.pegio.common.presentation.state.TopBarAction
 import com.pegio.common.presentation.state.TopBarState
 import com.pegio.common.presentation.util.CollectLatestEffect
 import com.pegio.workout.presentation.model.UiWorkout
+import com.pegio.workout.presentation.screen.userworkouts.state.UserWorkoutsUiEffect
+import com.pegio.workout.presentation.screen.userworkouts.state.UserWorkoutsUiEvent
+import com.pegio.workout.presentation.screen.userworkouts.state.UserWorkoutsUiState
 
 @Composable
 fun UserWorkoutsScreen(

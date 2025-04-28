@@ -1,28 +1,27 @@
-package com.pegio.workout.presentation.screen.workoutplan.navigation
+package com.pegio.workout.presentation.screen.workout.navigation
 
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import com.pegio.common.presentation.state.TopBarState
-import com.pegio.workout.presentation.screen.workoutplan.WorkoutPlanScreen
+import com.pegio.workout.presentation.screen.workout.WorkoutScreen
 import kotlinx.serialization.Serializable
 
 @Serializable
-data object WorkoutPlanRoute
+data class WorkoutRoute(val workoutId: String)
 
-fun NavController.navigateToWorkoutPlan() = navigate(route = WorkoutPlanRoute)
+fun NavController.navigateToWorkout(workoutId: String) = navigate(route = WorkoutRoute(workoutId))
 
-fun NavGraphBuilder.workoutPlanScreen(
+
+fun NavGraphBuilder.workoutScreen(
     onBackClick: () -> Unit,
     onShowSnackbar: suspend (String) -> Unit,
-    onStartWorkout: (String) -> Unit,
     onSetupTopBar: (TopBarState) -> Unit
 ) {
-    composable<WorkoutPlanRoute> {
-        WorkoutPlanScreen(
+    composable<WorkoutRoute> {
+        WorkoutScreen(
             onBackClick = onBackClick,
             onShowSnackbar = onShowSnackbar,
-            onStartWorkout = onStartWorkout,
             onSetupTopBar = onSetupTopBar,
         )
     }
