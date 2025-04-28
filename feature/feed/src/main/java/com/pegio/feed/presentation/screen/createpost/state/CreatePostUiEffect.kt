@@ -8,8 +8,9 @@ sealed interface CreatePostUiEffect {
     data object LaunchGallery : CreatePostUiEffect
 
     // Failure
-    data class ShowSnackbar(@StringRes val errorRes: Int): CreatePostUiEffect
+    data class ShowSnackbar(@StringRes val errorRes: Int) : CreatePostUiEffect
 
     // Navigation
-    data object NavigateBack: CreatePostUiEffect
+    data object NavigateBack : CreatePostUiEffect
+    data object NavigateToChooseWorkout : CreatePostUiEffect
 }

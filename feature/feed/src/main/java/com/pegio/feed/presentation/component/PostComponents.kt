@@ -14,8 +14,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Comment
 import androidx.compose.material.icons.filled.ArrowDownward
 import androidx.compose.material.icons.filled.ArrowUpward
+import androidx.compose.material.icons.filled.FitnessCenter
 import androidx.compose.material.icons.filled.Image
-import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -33,8 +33,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
-import com.pegio.common.presentation.model.UiUser
 import com.pegio.common.presentation.components.ProfileImage
+import com.pegio.common.presentation.model.UiUser
 import com.pegio.feed.presentation.model.UiPost
 import com.pegio.model.Vote
 
@@ -45,6 +45,7 @@ internal fun PostContent(
     modifier: Modifier = Modifier,
     onCommentClick: () -> Unit = { },
     onProfileClick: () -> Unit = { },
+    onWorkoutClick: () -> Unit = { }
 ) {
     Column(
         modifier = modifier
@@ -161,8 +162,7 @@ private fun PostActions(
 
         Spacer(modifier = Modifier.weight(1f))
 
-        if (post.hasWorkout) RatingAction(
-            rating = post.ratingAverage,
+        if (post.hasWorkout) WorkoutAction(
             onClick = { }
         )
     }
@@ -221,26 +221,13 @@ private fun CommentAction(
 }
 
 @Composable
-private fun RatingAction(
-    rating: String,
+private fun WorkoutAction(
     onClick: () -> Unit
 ) {
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier
-            .clickable { onClick.invoke() }
-    ) {
-        PostAction(
-            onClick = { },
-            imageVector = Icons.Default.Star
-        )
-
-        Text(
-            text = rating,
-            color = Color.Gray,
-            fontSize = 16.sp
-        )
-    }
+    PostAction(
+        onClick = onClick,
+        imageVector = Icons.Default.FitnessCenter
+    )
 }
 
 @Composable
