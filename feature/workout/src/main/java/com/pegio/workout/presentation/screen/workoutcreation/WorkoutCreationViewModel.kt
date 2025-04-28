@@ -29,15 +29,22 @@ class WorkoutCreationViewModel @Inject constructor(
 ) {
     override fun onEvent(event: WorkoutCreationUiEvent) {
         when (event) {
+            // Workout actions
+            WorkoutCreationUiEvent.OnAddWorkoutClick -> showAddWorkoutDialog()
+            WorkoutCreationUiEvent.OnUploadWorkouts -> uploadWorkouts()
             is WorkoutCreationUiEvent.RemoveWorkout -> removeWorkout(event.workoutId)
             is WorkoutCreationUiEvent.OnEditWorkout -> editWorkout(event.workout)
-            WorkoutCreationUiEvent.OnBackClick -> sendEffect(WorkoutCreationUiEffect.NavigateBack)
-            WorkoutCreationUiEvent.OnAddWorkoutClick -> showAddWorkoutDialog()
+
+            // Workout Dialog
             WorkoutCreationUiEvent.OnDismissDialog -> hideAddWorkoutDialog()
             WorkoutCreationUiEvent.OnSaveWorkout -> saveWorkout()
-            WorkoutCreationUiEvent.OnUploadWorkouts -> uploadWorkouts()
+
+            // Fields
             is WorkoutCreationUiEvent.OnDescriptionChange -> updateState { copy(description = event.description) }
             is WorkoutCreationUiEvent.OnTitleChange -> updateState { copy(title = event.title) }
+
+            // Navigation
+            WorkoutCreationUiEvent.OnBackClick -> sendEffect(WorkoutCreationUiEffect.NavigateBack)
         }
     }
 

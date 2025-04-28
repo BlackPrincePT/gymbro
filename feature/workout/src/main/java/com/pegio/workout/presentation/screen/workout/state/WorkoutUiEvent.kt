@@ -1,7 +1,6 @@
 package com.pegio.workout.presentation.screen.workout.state
 
 sealed interface WorkoutUiEvent {
-
     //Main buttons
     data object OnNextClick : WorkoutUiEvent
     data object OnPreviousClick : WorkoutUiEvent

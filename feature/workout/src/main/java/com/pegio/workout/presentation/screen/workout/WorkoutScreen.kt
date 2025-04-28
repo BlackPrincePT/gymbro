@@ -107,19 +107,21 @@ private fun SetupTopBar(
     onEvent: (WorkoutUiEvent) -> Unit,
     state: WorkoutUiState
 ) {
-    LaunchedEffect(Unit) {
+    val actions = listOf(
+        TopBarAction(
+            icon = if (state.isTTSActive) Icons.AutoMirrored.Default.VolumeUp else Icons.AutoMirrored.Default.VolumeOff,
+            onClick = { onEvent(WorkoutUiEvent.OnToggleTTSClick) }
+        )
+    )
+
+    LaunchedEffect(state.isTTSActive) {
         onSetupTopBar(
             TopBarState(
                 navigationIcon = TopBarAction(
                     icon = Icons.AutoMirrored.Default.ArrowBack,
                     onClick = { onEvent(WorkoutUiEvent.OnBackClick) }
                 ),
-                actions = listOf(
-                    TopBarAction(
-                        icon = if (state.isTTSActive) Icons.AutoMirrored.Default.VolumeUp else Icons.AutoMirrored.Default.VolumeOff,
-                        onClick = { onEvent(WorkoutUiEvent.OnToggleTTSClick) }
-                    )
-                )
+                actions = actions
             )
         )
     }
