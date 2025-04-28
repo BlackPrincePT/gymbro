@@ -169,6 +169,7 @@ fun WorkoutDetails(
                 timerState = state.timerState,
                 onPauseTimer = { onEvent(WorkoutUiEvent.PauseTimer) },
                 onResumeTimer = { onEvent(WorkoutUiEvent.ResumeTimer) },
+                onResetTimer = { onEvent(WorkoutUiEvent.ResetTimer)}
             )
 
             Spacer(modifier = Modifier.weight(1f))

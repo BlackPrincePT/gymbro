@@ -12,6 +12,7 @@ sealed interface WorkoutUiEvent {
     //Timer
     data object PauseTimer : WorkoutUiEvent
     data object ResumeTimer : WorkoutUiEvent
+    data object ResetTimer: WorkoutUiEvent
 
     // Navigation
     data object OnBackClick : WorkoutUiEvent

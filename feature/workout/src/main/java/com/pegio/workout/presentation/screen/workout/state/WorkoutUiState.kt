@@ -8,10 +8,11 @@ data class WorkoutUiState(
     val isLoading: Boolean = false,
     val isTTSActive: Boolean = false,
     val timeRemaining: Int = 0,
-    val timerState: TimerState = TimerState.PAUSED,
+    val timerState: TimerState = TimerState.NOT_STARTED,
 ){
     enum class TimerState {
+        NOT_STARTED,
         RUNNING,
-        PAUSED,
+        PAUSED
     }
 }

@@ -53,6 +53,7 @@ class WorkoutViewModel @Inject constructor(
             // Timer
             WorkoutUiEvent.PauseTimer -> pauseTimer()
             WorkoutUiEvent.ResumeTimer -> resumeTimer()
+            WorkoutUiEvent.ResetTimer -> resetTimer()
         }
     }
 
@@ -143,11 +144,15 @@ class WorkoutViewModel @Inject constructor(
 
         startCountdownTimer(currentTimeRemaining)
     }
+    private fun resetTimer(){
+        cancelExistingTimer()
+        updateState { copy(timeRemaining = workouts[currentWorkoutIndex].value, timerState = TimerState.NOT_STARTED) }
+    }
 
 
     private fun stopTimer() {
         cancelExistingTimer()
-        updateState { copy(timeRemaining = 0, timerState = TimerState.PAUSED) }
+        updateState { copy(timeRemaining = 0, timerState = TimerState.NOT_STARTED) }
     }
 
     private fun startCountdownTimer(startTimeInSeconds: Int) {
@@ -158,7 +163,6 @@ class WorkoutViewModel @Inject constructor(
             }
 
             updateState { copy(timerState = TimerState.PAUSED) }
-            nextWorkout()
         }
     }
 

@@ -26,10 +26,17 @@ class WorkoutPlanViewModel @Inject constructor(
 
     override fun onEvent(event: WorkoutPlanUiEvent) {
         when (event) {
+            // Navigation
             WorkoutPlanUiEvent.OnBackClick -> sendEffect(WorkoutPlanUiEffect.NavigateBack)
-            is WorkoutPlanUiEvent.StartWorkout -> sendEffect(WorkoutPlanUiEffect.NavigateToWorkout(event.workoutId))
+            is WorkoutPlanUiEvent.StartWorkout -> sendEffect(
+                WorkoutPlanUiEffect.NavigateToWorkout(
+                    event.workoutId
+                )
+            )
         }
     }
+
+    override fun setLoading(isLoading: Boolean) = updateState { copy(isLoading = isLoading) }
 
     private fun loadWorkoutPlans() = launchWithLoading {
         observeWorkoutPlansPagingStreamUseCase()
@@ -41,11 +48,6 @@ class WorkoutPlanViewModel @Inject constructor(
                 sendEffect(WorkoutPlanUiEffect.Failure(error.toStringResId()))
             }
             .launchIn(viewModelScope)
-    }
-
-
-    override fun setLoading(isLoading: Boolean) {
-        updateState { copy(isLoading = isLoading) }
     }
 }
 
