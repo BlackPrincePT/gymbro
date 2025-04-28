@@ -16,6 +16,7 @@ fun NavController.popNavigateToFeed() = popNavigate(route = FeedRoute)
 fun NavGraphBuilder.feedScreen(
     onCreatePostClick: (Boolean) -> Unit,
     onShowPostDetails: (String) -> Unit,
+    onPostWorkoutClick: (String) -> Unit,
     onPostAuthorClick: (String) -> Unit,
     onChatClick: () -> Unit,
     onOpenDrawerClick: () -> Unit,
@@ -27,6 +28,7 @@ fun NavGraphBuilder.feedScreen(
             onCreatePostClick = onCreatePostClick,
             onShowPostDetails = onShowPostDetails,
             onUserProfileClick = onPostAuthorClick,
+            onPostWorkoutClick = onPostWorkoutClick,
             onChatClick = onChatClick,
             onOpenDrawerClick = onOpenDrawerClick,
             onShowSnackbar = onShowSnackbar,

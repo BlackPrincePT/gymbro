@@ -10,6 +10,7 @@ import com.pegio.auth.presentation.screen.auth.navigation.authScreen
 import com.pegio.auth.presentation.screen.auth.navigation.navigateToAuth
 import com.pegio.auth.presentation.screen.register.navigation.navigateToRegister
 import com.pegio.auth.presentation.screen.register.navigation.registerScreen
+import com.pegio.common.presentation.core.NavigationKeys.SELECTED_WORKOUT_KEY
 import com.pegio.common.presentation.state.TopBarState
 import com.pegio.feed.presentation.screen.createpost.navigation.createPostScreen
 import com.pegio.feed.presentation.screen.createpost.navigation.navigateToCreatePost
@@ -25,6 +26,7 @@ import com.pegio.settings.presentation.screen.account.navigation.accountScreen
 import com.pegio.settings.presentation.screen.settings.navigation.settingsScreen
 import com.pegio.splash.presentation.splash.navigation.SplashRoute
 import com.pegio.splash.presentation.splash.navigation.splashScreen
+import com.pegio.workout.presentation.screen.userworkouts.navigation.navigateToUsersWorkouts
 import com.pegio.workout.presentation.screen.userworkouts.navigation.userWorkoutsScreen
 import com.pegio.workout.presentation.screen.workout.navigation.navigateToWorkout
 import com.pegio.workout.presentation.screen.workout.navigation.workoutScreen
@@ -114,12 +116,16 @@ fun NavigationHost(
         )
 
         userWorkoutsScreen(
-            onBackClick = navController::navigateUp,
+            onBackClick = { workoutId ->
+                navController.previousBackStackEntry
+                    ?.savedStateHandle
+                    ?.set(SELECTED_WORKOUT_KEY, workoutId)
+
+                navController.navigateUp()
+            },
             onShowSnackbar = onShowSnackbar,
             onSetupTopBar = onSetupAppBar,
-            onStartWorkout = { workoutId ->
-                navController.navigateToWorkout(workoutId)
-            },
+            onStartWorkout = navController::navigateToWorkout,
             onCreateWorkoutClick = navController::navigateToWorkoutCreation
         )
 
@@ -130,6 +136,7 @@ fun NavigationHost(
             onCreatePostClick = navController::navigateToCreatePost,
             onShowPostDetails = navController::navigateToPostDetails,
             onPostAuthorClick = navController::navigateToProfile,
+            onPostWorkoutClick = navController::navigateToWorkout,
             onChatClick = navController::navigateToAiChat,
             onOpenDrawerClick = dynamicallyOpenDrawer,
             onShowSnackbar = onShowSnackbar,
@@ -138,6 +145,7 @@ fun NavigationHost(
 
         createPostScreen(
             onDismiss = navController::navigateUp,
+            onChooseWorkoutClick = navController::navigateToUsersWorkouts,
             onSetupTopBar = onSetupAppBar,
             onShowSnackbar = onShowSnackbar
         )
@@ -152,6 +160,7 @@ fun NavigationHost(
         profileScreen(
             onBackClick = navController::navigateUp,
             onFollowRecordClick = navController::navigateToFollowRecord,
+            onPostWorkoutClick = navController::navigateToWorkout,
             onCreatePostClick = navController::navigateToCreatePost,
             onShowPostDetails = navController::navigateToPostDetails,
             onSetupTopBar = onSetupAppBar,

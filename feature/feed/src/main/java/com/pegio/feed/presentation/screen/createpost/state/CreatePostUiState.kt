@@ -9,6 +9,7 @@ data class CreatePostUiState(
 
     // Main
     val imageUri: Uri? = null,
+    val selectedWorkoutTitle: String? = null,
 
     // Compose State
     val postText: String = ""

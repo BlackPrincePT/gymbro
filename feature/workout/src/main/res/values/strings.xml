@@ -8,6 +8,7 @@
 
     <!--    User Workouts Screen   -->
     <string name="feature_workout_my_workouts">My workouts</string>
+    <string name="feature_workout_choose">Choose</string>
 
     <!--    Timer Components   -->
     <string name="feature_workout_pause_timer">Pause Timer</string>

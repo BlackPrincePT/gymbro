@@ -13,4 +13,5 @@ sealed interface FeedUiEffect {
     data class NavigateToCreatePost(val shouldOpenGallery: Boolean) : FeedUiEffect
     data class NavigateToPostDetails(val postId: String) : FeedUiEffect
     data class NavigateToUserProfile(val userId: String) : FeedUiEffect
+    data class NavigateToWorkout(val workoutId: String) : FeedUiEffect
 }

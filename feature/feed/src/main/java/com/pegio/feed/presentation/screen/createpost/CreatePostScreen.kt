@@ -42,8 +42,9 @@ import com.pegio.feed.presentation.screen.createpost.state.CreatePostUiState
 
 @Composable
 internal fun CreatePostScreen(
+    selectedWorkoutId: String?,
     onDismiss: () -> Unit,
-    onChooseWorkoutClick: () -> Unit,
+    onChooseWorkoutClick: (Boolean) -> Unit,
     onSetupTopBar: (TopBarState) -> Unit,
     onShowSnackbar: suspend (String) -> Unit,
     viewModel: CreatePostViewModel = hiltViewModel()
@@ -53,6 +54,10 @@ internal fun CreatePostScreen(
     val launchGallery = rememberGalleryLauncher(
         onImageSelected = { viewModel.onEvent(CreatePostUiEvent.OnPhotoSelected(it)) }
     )
+
+    LaunchedEffect(Unit) {
+        viewModel.onEvent(CreatePostUiEvent.OnSelectedWorkoutUpdate(selectedWorkoutId))
+    }
 
     SetupTopBar(viewModel.uiState.isLoading, onSetupTopBar, viewModel::onEvent)
 
@@ -67,7 +72,7 @@ internal fun CreatePostScreen(
 
             // Navigation
             CreatePostUiEffect.NavigateBack -> onDismiss.invoke()
-            CreatePostUiEffect.NavigateToChooseWorkout -> onChooseWorkoutClick()
+            CreatePostUiEffect.NavigateToChooseWorkout -> onChooseWorkoutClick(true)
         }
     }
 
@@ -90,6 +95,7 @@ private fun CreatePostContent(
 
         CreatePostActions(
             enabled = !state.isLoading,
+            workoutTitle = state.selectedWorkoutTitle,
             onGalleryClick = { onEvent(CreatePostUiEvent.OnOpenGallery) },
             onDumbbellClick = { onEvent(CreatePostUiEvent.OnChooseWorkoutClick) },
             modifier = Modifier
@@ -121,6 +127,7 @@ private fun CreatePostContent(
 @Composable
 private fun CreatePostActions(
     enabled: Boolean,
+    workoutTitle: String?,
     onGalleryClick: () -> Unit,
     onDumbbellClick: () -> Unit,
     modifier: Modifier = Modifier
@@ -139,7 +146,7 @@ private fun CreatePostActions(
         Spacer(modifier = Modifier.width(8.dp))
 
         GymBroTextButton(
-            text = stringResource(R.string.feature_feed_choose_your_workout),
+            text = workoutTitle ?: stringResource(R.string.feature_feed_choose_your_workout),
             onClick = onDumbbellClick,
             enabled = enabled
         )

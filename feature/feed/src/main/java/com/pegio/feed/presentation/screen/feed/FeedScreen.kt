@@ -33,6 +33,7 @@ import com.pegio.feed.presentation.screen.feed.state.FeedUiState
 internal fun FeedScreen(
     onCreatePostClick: (Boolean) -> Unit,
     onChatClick: () -> Unit,
+    onPostWorkoutClick: (String) -> Unit,
     onShowPostDetails: (String) -> Unit,
     onUserProfileClick: (String) -> Unit,
     onOpenDrawerClick: () -> Unit,
@@ -60,6 +61,7 @@ internal fun FeedScreen(
             is FeedUiEffect.NavigateToCreatePost -> onCreatePostClick(effect.shouldOpenGallery)
             is FeedUiEffect.NavigateToPostDetails -> onShowPostDetails(effect.postId)
             is FeedUiEffect.NavigateToUserProfile -> onUserProfileClick(effect.userId)
+            is FeedUiEffect.NavigateToWorkout -> onPostWorkoutClick(effect.workoutId)
         }
     }
 
@@ -101,6 +103,9 @@ private fun FeedContent(
                     onCommentClick = { onEvent(FeedUiEvent.OnPostCommentClick(postId = post.id)) },
                     onVoteClick = {
                         onEvent(FeedUiEvent.OnPostVote(postId = post.id, voteType = it))
+                    },
+                    onWorkoutClick = {
+                        post.workoutId?.let { onEvent(FeedUiEvent.OnPostWorkoutClick(it)) }
                     }
                 )
             }

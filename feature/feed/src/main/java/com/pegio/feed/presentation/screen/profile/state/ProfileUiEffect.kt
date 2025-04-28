@@ -16,4 +16,5 @@ sealed interface ProfileUiEffect {
     data class NavigateToFollowRecord(val userId: String, val mode: FollowRecord.Type) : ProfileUiEffect
     data class NavigateToCreatePost(val shouldOpenGallery: Boolean) : ProfileUiEffect
     data class NavigateToPostDetail(val postId: String) : ProfileUiEffect
+    data class NavigateToWorkout(val workoutId: String) : ProfileUiEffect
 }

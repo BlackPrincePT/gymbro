@@ -7,6 +7,7 @@ sealed interface CreatePostUiEvent {
     // Main
     data object OnOpenGallery : CreatePostUiEvent
     data object OnPostClick : CreatePostUiEvent
+    data class OnSelectedWorkoutUpdate(val id: String?) : CreatePostUiEvent
 
     // Navigation
     data object OnCancelClick : CreatePostUiEvent

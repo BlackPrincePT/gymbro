@@ -23,6 +23,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.pegio.common.presentation.state.TopBarAction
 import com.pegio.common.presentation.state.TopBarState
 import com.pegio.common.presentation.util.CollectLatestEffect
+import com.pegio.designsystem.component.GymBroTextButton
 import com.pegio.workout.R
 import com.pegio.workout.presentation.model.UiWorkout
 import com.pegio.workout.presentation.screen.userworkouts.state.UserWorkoutsUiEffect
@@ -32,21 +33,25 @@ import com.pegio.workout.presentation.screen.userworkouts.state.UserWorkoutsUiSt
 @Composable
 fun UserWorkoutsScreen(
     viewModel: UserWorkoutsViewModel = hiltViewModel(),
-    onBackClick: () -> Unit,
+    onBackClick: (String?) -> Unit,
     onShowSnackbar: suspend (String) -> Unit,
     onStartWorkout: (String) -> Unit,
     onCreateWorkoutClick: () -> Unit,
     onSetupTopBar: (TopBarState) -> Unit
 ) {
 
-    SetupTopBar(stringResource(R.string.feature_workout_my_workouts), onSetupTopBar, viewModel::onEvent)
+    SetupTopBar(
+        stringResource(R.string.feature_workout_my_workouts),
+        onSetupTopBar,
+        viewModel::onEvent
+    )
 
     val context = LocalContext.current
 
     CollectLatestEffect(viewModel.uiEffect) { effect ->
         when (effect) {
             is UserWorkoutsUiEffect.Failure -> onShowSnackbar(context.getString(effect.errorRes))
-            UserWorkoutsUiEffect.NavigateBack -> onBackClick()
+            is UserWorkoutsUiEffect.NavigateBack -> onBackClick(effect.selectedWorkoutId)
             is UserWorkoutsUiEffect.NavigateToWorkout -> onStartWorkout(effect.workoutId)
             UserWorkoutsUiEffect.NavigateToWorkoutCreation -> onCreateWorkoutClick()
         }
@@ -69,7 +74,9 @@ fun UserWorkoutsContent(
         items(state.workouts) { workout ->
             UserWorkoutItem(
                 workout = workout,
-                onStartWorkout = {onEvent(UserWorkoutsUiEvent.StartWorkout(workout.id)) }
+                isChoosing = state.isChoosing,
+                onChooseClick = { onEvent(UserWorkoutsUiEvent.OnBackClick(workout.id)) },
+                onStartWorkout = { onEvent(UserWorkoutsUiEvent.StartWorkout(workout.id)) }
             )
         }
     }
@@ -78,6 +85,8 @@ fun UserWorkoutsContent(
 @Composable
 fun UserWorkoutItem(
     workout: UiWorkout,
+    isChoosing: Boolean,
+    onChooseClick: () -> Unit,
     onStartWorkout: () -> Unit
 ) {
     Card(
@@ -97,6 +106,11 @@ fun UserWorkoutItem(
                 style = MaterialTheme.typography.bodyMedium,
                 modifier = Modifier.padding(bottom = 8.dp)
             )
+
+            if (isChoosing) GymBroTextButton(
+                text = stringResource(R.string.feature_workout_choose),
+                onClick = onChooseClick
+            )
         }
     }
 }
@@ -114,11 +128,11 @@ private fun SetupTopBar(
                 title = title,
                 navigationIcon = TopBarAction(
                     icon = Icons.AutoMirrored.Default.ArrowBack,
-                    onClick = { onEvent(UserWorkoutsUiEvent.OnBackClick) }
+                    onClick = { onEvent(UserWorkoutsUiEvent.OnBackClick(selectedWorkoutId = null)) }
                 ),
                 actions = listOf(TopBarAction(
                     icon = Icons.Default.Add,
-                    onClick = { onEvent(UserWorkoutsUiEvent.OnCreateWorkoutClick)}
+                    onClick = { onEvent(UserWorkoutsUiEvent.OnCreateWorkoutClick) }
                 ))
             )
         )

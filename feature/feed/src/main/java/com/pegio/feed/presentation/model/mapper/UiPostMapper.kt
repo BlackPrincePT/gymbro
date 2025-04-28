@@ -23,6 +23,7 @@ class UiPostMapper @Inject constructor(
             author = author?.let(uiUserMapper::mapFromDomain) ?: UiUser.EMPTY,
             content = post.content,
             imageUrl = post.imageUrl,
+            workoutId = post.workoutId,
             voteCount = post.voteCount.toString(),
             currentUserVote = currentUserVote,
             commentCount = post.commentCount.toString(),
