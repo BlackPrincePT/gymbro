@@ -22,10 +22,14 @@ class CreatePostViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle
 ) : BaseViewModel<CreatePostUiState, CreatePostUiEffect, CreatePostUiEvent>(initialState = CreatePostUiState()) {
 
+    companion object {
+        const val SELECTED_WORKOUT_KEY = "selected_workout"
+    }
 
     private val args = savedStateHandle.toRoute<CreatePostRoute>()
 
     private val shouldOpenGalleryOnLaunch = args.shouldOpenGallery
+    private val selectedWorkoutId = savedStateHandle.get<String>(SELECTED_WORKOUT_KEY)
 
     init {
         if (shouldOpenGalleryOnLaunch) sendEffect(CreatePostUiEffect.LaunchGallery)
@@ -48,6 +52,7 @@ class CreatePostViewModel @Inject constructor(
             // Compose State
             is CreatePostUiEvent.OnPhotoSelected -> updateState { copy(imageUri = event.imageUri) }
             is CreatePostUiEvent.OnPostTextChange -> updateState { copy(postText = event.value) }
+            CreatePostUiEvent.OnChooseWorkoutClick -> { }
         }
     }
 

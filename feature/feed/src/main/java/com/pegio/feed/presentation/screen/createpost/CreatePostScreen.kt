@@ -1,7 +1,6 @@
 package com.pegio.feed.presentation.screen.createpost
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -16,7 +15,6 @@ import androidx.compose.material.icons.automirrored.filled.Send
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.FitnessCenter
 import androidx.compose.material.icons.filled.Image
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -45,6 +43,7 @@ import com.pegio.feed.presentation.screen.createpost.state.CreatePostUiState
 @Composable
 internal fun CreatePostScreen(
     onDismiss: () -> Unit,
+    onChooseWorkoutClick: () -> Unit,
     onSetupTopBar: (TopBarState) -> Unit,
     onShowSnackbar: suspend (String) -> Unit,
     viewModel: CreatePostViewModel = hiltViewModel()
@@ -68,6 +67,7 @@ internal fun CreatePostScreen(
 
             // Navigation
             CreatePostUiEffect.NavigateBack -> onDismiss.invoke()
+            CreatePostUiEffect.NavigateToChooseWorkout -> onChooseWorkoutClick()
         }
     }
 
@@ -91,7 +91,7 @@ private fun CreatePostContent(
         CreatePostActions(
             enabled = !state.isLoading,
             onGalleryClick = { onEvent(CreatePostUiEvent.OnOpenGallery) },
-            onDumbbellClick = { },
+            onDumbbellClick = { onEvent(CreatePostUiEvent.OnChooseWorkoutClick) },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(vertical = 8.dp)

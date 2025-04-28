@@ -10,6 +10,7 @@ sealed interface CreatePostUiEvent {
 
     // Navigation
     data object OnCancelClick : CreatePostUiEvent
+    data object OnChooseWorkoutClick : CreatePostUiEvent
 
     // Compose State
     data class OnPhotoSelected(val imageUri: Uri) : CreatePostUiEvent
