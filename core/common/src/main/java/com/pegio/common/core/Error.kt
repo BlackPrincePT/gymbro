@@ -25,12 +25,12 @@ sealed interface DataError : Error {
         UNKNOWN                 // Catch-all for unspecified network errors.
     }
 
-    enum class Auth : DataError {
-        INVALID_CREDENTIAL,     // Inform the user their credentials are incorrect.
-        INVALID_USER,           // Alert about issues with the user account.
-        UNAUTHENTICATED,        // Force re-authentication.
-        CANCELLED,              // Google options cancelled.
-        UNKNOWN                 // A fallback for any Firebase Auth errors not explicitly handled.
+    sealed interface Auth : DataError {
+        data object Unauthenticated : Auth
+        data object InvalidCredential : Auth
+        data object AccountAlreadyExists : Auth, Displayable
+        data object Cancelled : Auth
+        data object Unknown : Auth
     }
 
     sealed interface Firestore : DataError {
@@ -77,13 +77,13 @@ sealed interface ValidationError : Error {
 
 sealed interface WorkoutValidationError : Error {
 
-    enum class WorkoutTitle : WorkoutValidationError{
+    enum class WorkoutTitle : WorkoutValidationError {
         EMPTY, // When the workout title is blank
         TOO_SHORT,  // When the title is too short
         TOO_LONG // When the title is too long
     }
 
-    enum class WorkoutDescription : WorkoutValidationError{
+    enum class WorkoutDescription : WorkoutValidationError {
         EMPTY, // When the workout description is blank
         TOO_SHORT,  // When the description is too short
         TOO_LONG // When the description is too long

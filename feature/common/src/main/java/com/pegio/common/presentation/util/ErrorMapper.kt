@@ -58,9 +58,8 @@ private fun WorkoutValidationError.toStringResId(): Int = when (this) {
 
 
 private fun DataError.Auth.toStringResId(): Int = when (this) {
-    DataError.Auth.INVALID_CREDENTIAL -> R.string.feature_common_presentation_error_invalid_credential
-    DataError.Auth.INVALID_USER -> R.string.feature_common_presentation_error_invalid_user
-    DataError.Auth.UNAUTHENTICATED -> R.string.feature_common_presentation_error_unauthenticated
+    DataError.Auth.Unauthenticated -> R.string.feature_common_presentation_error_unauthenticated
+    DataError.Auth.AccountAlreadyExists -> R.string.feature_common_presentation_error_account_already_exists
     else -> R.string.feature_common_presentation_error_generic
 }
 

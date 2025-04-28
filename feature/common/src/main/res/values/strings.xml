@@ -22,6 +22,7 @@
     <string name="feature_common_presentation_error_invalid_credential">Invalid credentials provided.</string>
     <string name="feature_common_presentation_error_invalid_user">User account not found or invalid.</string>
     <string name="feature_common_presentation_error_unauthenticated">Your session has expired. Please log in again.</string>
+    <string name="feature_common_presentation_error_account_already_exists">Account already exists!</string>
 
     <!-- Firestore errors -->
     <string name="feature_common_presentation_error_document_not_found">The requested document could not be found.</string>
