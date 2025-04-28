@@ -30,12 +30,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.pegio.common.presentation.components.WorkoutImage
 import com.pegio.model.Exercise.MuscleGroup
 import com.pegio.model.Exercise.Type
+import com.pegio.workout.R
 import com.pegio.workout.presentation.model.UiExercise
 import com.pegio.workout.presentation.screen.workout.state.WorkoutUiEvent
 import com.pegio.workout.presentation.screen.workout.state.WorkoutUiState
@@ -99,8 +101,15 @@ fun WorkoutDetailsCard(workout: UiExercise) {
                 WorkoutDetailChip(
                     icon = Icons.Default.FitnessCenter,
                     text = when (workout.type) {
-                        Type.REPETITION -> "${workout.value} reps"
-                        Type.TIMED -> "${workout.value} seconds"
+                        Type.REPETITION -> stringResource(
+                            R.string.feature_workout_reps,
+                            workout.value
+                        )
+
+                        Type.TIMED -> stringResource(
+                            R.string.feature_workout_seconds,
+                            workout.value
+                        )
                     },
                     modifier = Modifier.weight(1f)
                 )
@@ -108,7 +117,7 @@ fun WorkoutDetailsCard(workout: UiExercise) {
                 if (workout.sets > 1) {
                     WorkoutDetailChip(
                         icon = Icons.Default.Repeat,
-                        text = "${workout.sets} sets",
+                        text = stringResource(R.string.feature_workout_sets, workout.sets),
                         modifier = Modifier.weight(1f)
                     )
                 }
@@ -169,7 +178,7 @@ fun WorkoutDetails(
                 timerState = state.timerState,
                 onPauseTimer = { onEvent(WorkoutUiEvent.PauseTimer) },
                 onResumeTimer = { onEvent(WorkoutUiEvent.ResumeTimer) },
-                onResetTimer = { onEvent(WorkoutUiEvent.ResetTimer)}
+                onResetTimer = { onEvent(WorkoutUiEvent.ResetTimer) }
             )
 
             Spacer(modifier = Modifier.weight(1f))
@@ -183,7 +192,7 @@ fun WorkoutDetails(
                             .weight(1f)
                             .height(56.dp)
                     ) {
-                        Text("Back", style = MaterialTheme.typography.titleMedium)
+                        Text(stringResource(R.string.feature_workout_back), style = MaterialTheme.typography.titleMedium)
                     }
                 }
 
@@ -195,7 +204,9 @@ fun WorkoutDetails(
                         .height(56.dp)
                 ) {
                     Text(
-                        text = if (state.currentWorkoutIndex == state.workouts.size - 1) "Finish" else "Next",
+                        text = if (state.currentWorkoutIndex == state.workouts.size - 1) stringResource(
+                            R.string.feature_workout_finish
+                        ) else stringResource(R.string.feature_workout_next),
                         style = MaterialTheme.typography.titleMedium
                     )
                 }

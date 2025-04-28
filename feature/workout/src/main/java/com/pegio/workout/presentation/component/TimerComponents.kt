@@ -23,9 +23,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.pegio.model.Exercise.Type
+import com.pegio.workout.R
 import com.pegio.workout.presentation.screen.workout.state.WorkoutUiState.TimerState
 
 @Composable
@@ -58,7 +60,7 @@ fun TimerSection(
                 ) {
                     Icon(
                         imageVector = if (timerState == TimerState.PAUSED)  Icons.Default.PlayArrow else  Icons.Default.Pause ,
-                        contentDescription = "Pause Timer",
+                        contentDescription = stringResource(R.string.feature_workout_pause_timer),
                         tint = MaterialTheme.colorScheme.primary
                     )
                 }
@@ -88,7 +90,7 @@ fun TimerSection(
                     TimerState.NOT_STARTED -> {
                         Icon(
                             imageVector = Icons.Default.PlayArrow,
-                            contentDescription = "Start Timer",
+                            contentDescription = stringResource(R.string.feature_workout_start_timer),
                             tint = MaterialTheme.colorScheme.primary,
                             modifier = Modifier.size(48.dp)
                         )
@@ -117,7 +119,7 @@ fun TimerSection(
                 ) {
                     Icon(
                         imageVector = Icons.Default.Refresh,
-                        contentDescription = "Reset Timer",
+                        contentDescription = stringResource(R.string.feature_workout_reset_timer),
                         tint = MaterialTheme.colorScheme.primary
                     )
                 }

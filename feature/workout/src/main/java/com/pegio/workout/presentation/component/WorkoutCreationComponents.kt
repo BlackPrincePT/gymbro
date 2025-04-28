@@ -55,6 +55,7 @@ import coil3.compose.AsyncImage
 import com.pegio.designsystem.component.FormTextField
 import com.pegio.model.Exercise.MuscleGroup
 import com.pegio.model.Exercise.Type
+import com.pegio.workout.R
 import com.pegio.workout.presentation.model.UiExercise
 import com.pegio.workout.presentation.screen.workoutcreation.state.WorkoutCreationUiEvent
 import com.pegio.workout.presentation.screen.workoutcreation.state.WorkoutCreationUiState
@@ -82,7 +83,7 @@ fun WorkoutItem(
             ) {
                 AsyncImage(
                     model = workout.workoutImage,
-                    contentDescription = "Workout Image",
+                    contentDescription = stringResource(R.string.feature_workout_workout_image),
                     modifier = Modifier
                         .size(100.dp)
                         .clip(RoundedCornerShape(12.dp)),
@@ -118,8 +119,14 @@ fun WorkoutItem(
                         Spacer(modifier = Modifier.width(12.dp))
 
                         val valueText = when (workout.type) {
-                            Type.TIMED -> "${workout.value} seconds"
-                            Type.REPETITION -> "${workout.value} reps"
+                            Type.TIMED -> stringResource(
+                                R.string.feature_workout_seconds,
+                                workout.value
+                            )
+                            Type.REPETITION -> stringResource(
+                                R.string.feature_workout_reps,
+                                workout.value
+                            )
                         }
 
                         Text(
@@ -130,7 +137,10 @@ fun WorkoutItem(
                         Spacer(modifier = Modifier.width(12.dp))
 
                         Text(
-                            text = "${workout.sets} sets",
+                            text = stringResource(
+                                R.string.feature_workout_sets,
+                                workout.value
+                            ),
                             style = MaterialTheme.typography.bodySmall
                         )
                     }
@@ -139,7 +149,7 @@ fun WorkoutItem(
                 IconButton(onClick = { onEvent(WorkoutCreationUiEvent.RemoveWorkout(workout.id)) }) {
                     Icon(
                         imageVector = Icons.Default.Delete,
-                        contentDescription = "Remove Workout"
+                        contentDescription = stringResource(R.string.feature_workout_remove_workout)
                     )
                 }
             }
@@ -200,7 +210,7 @@ fun AddWorkoutDialog(
                     .padding(16.dp)
             ) {
                 Text(
-                    text = "Add New Workout",
+                    text = stringResource(R.string.feature_workout_add_new_workout),
                     style = MaterialTheme.typography.titleLarge,
                     modifier = Modifier.padding(bottom = 16.dp)
                 )
@@ -217,7 +227,7 @@ fun AddWorkoutDialog(
                     if (state.newWorkout.workoutImage.isNotEmpty()) {
                         AsyncImage(
                             model = state.newWorkout.workoutImage,
-                            contentDescription = "Workout Image",
+                            contentDescription = stringResource(R.string.feature_workout_workout_image),
                             modifier = Modifier.fillMaxSize(),
                             contentScale = ContentScale.Fit
                         )
@@ -225,12 +235,12 @@ fun AddWorkoutDialog(
                         Column(horizontalAlignment = Alignment.CenterHorizontally) {
                             Icon(
                                 imageVector = Icons.Default.CameraAlt,
-                                contentDescription = "Select Image",
+                                contentDescription = stringResource(R.string.feature_workout_select_image),
                                 tint = MaterialTheme.colorScheme.onSurfaceVariant
                             )
                             Spacer(modifier = Modifier.height(4.dp))
                             Text(
-                                text = "Select Workout Image",
+                                text = stringResource(R.string.feature_workout_select_workout_image),
                                 style = MaterialTheme.typography.bodyMedium,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant
                             )
@@ -259,7 +269,7 @@ fun AddWorkoutDialog(
                             )
                         )
                     },
-                    label = "Workout Name",
+                    label = stringResource(R.string.feature_workout_workout_name),
                     error = state.validationError.name,
                     modifier = Modifier.fillMaxWidth()
                 )
@@ -276,7 +286,7 @@ fun AddWorkoutDialog(
                             )
                         )
                     },
-                    label = "Description",
+                    label = stringResource(R.string.feature_workout_description),
                     error = state.validationError.description,
                     modifier = Modifier.fillMaxWidth()
                 )
@@ -292,7 +302,7 @@ fun AddWorkoutDialog(
                         value = state.newWorkout.type.toString(),
                         onValueChange = { },
                         readOnly = true,
-                        label = { Text("Workout Type") },
+                        label = { Text(stringResource(R.string.feature_workout_workout_type)) },
                         trailingIcon = {
                             ExposedDropdownMenuDefaults.TrailingIcon(expanded = workoutTypeExpanded)
                         },
@@ -339,7 +349,7 @@ fun AddWorkoutDialog(
                                     )
                                 )
                             },
-                            label = "Time (seconds)",
+                            label = stringResource(R.string.feature_workout_time_seconds),
                             error = state.validationError.value,
                             isNumberOnly = true,
                             modifier = Modifier.fillMaxWidth()
@@ -358,7 +368,7 @@ fun AddWorkoutDialog(
                                     )
                                 )
                             },
-                            label = "Repetitions",
+                            label = stringResource(R.string.feature_workout_repetitions),
                             error = state.validationError.value,
                             isNumberOnly = true,
                             modifier = Modifier.fillMaxWidth()
@@ -379,14 +389,14 @@ fun AddWorkoutDialog(
                             )
                         )
                     },
-                    label = "Sets",
+                    label = stringResource(R.string.feature_workout_just_sets),
                     error = state.validationError.sets,
                     isNumberOnly = true,
                     modifier = Modifier.fillMaxWidth()
                 )
 
                 Text(
-                    text = "Target Muscle Groups",
+                    text = stringResource(R.string.feature_workout_target_muscle_groups),
                     style = MaterialTheme.typography.titleMedium,
                     modifier = Modifier.padding(vertical = 8.dp)
                 )
@@ -436,7 +446,7 @@ fun AddWorkoutDialog(
                     horizontalArrangement = Arrangement.End
                 ) {
                     TextButton(onClick = { onEvent(WorkoutCreationUiEvent.OnDismissDialog) }) {
-                        Text("Cancel")
+                        Text(stringResource(R.string.feature_workout_cancel))
                     }
 
                     Spacer(modifier = Modifier.width(8.dp))
@@ -444,7 +454,7 @@ fun AddWorkoutDialog(
                     Button(
                         onClick = { onEvent(WorkoutCreationUiEvent.OnSaveWorkout) },
                     ) {
-                        Text("Save")
+                        Text(stringResource(R.string.feature_workout_save))
                     }
                 }
             }

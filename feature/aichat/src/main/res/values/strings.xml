@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="feature_aichat_remove_image">Remove image</string>
+    <string name="feature_aichat_typing">Typing...</string>
+    <string name="feature_aichat_type_a_message">Type a message…</string>
+    <string name="feature_aichat_attach_image">Attach image</string>
+</resources>

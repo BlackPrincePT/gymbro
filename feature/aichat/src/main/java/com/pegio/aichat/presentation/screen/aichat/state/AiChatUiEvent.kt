@@ -1,12 +1,17 @@
-package com.pegio.aichat.presentation.screen.aichat
+package com.pegio.aichat.presentation.screen.aichat.state
 
 import android.net.Uri
 
 sealed interface AiChatUiEvent {
-    data class OnTextChanged(val text: String) : AiChatUiEvent
+    // Actions
     data class OnImageSelected(val imageUri: Uri) : AiChatUiEvent
-    data class OnSendMessage(val imageUri: Uri? = null) : AiChatUiEvent
     data object OnRemoveImage : AiChatUiEvent
+    data class OnSendMessage(val imageUri: Uri? = null) : AiChatUiEvent
+
+    // Fields
+    data class OnTextChanged(val text: String) : AiChatUiEvent
+
+    // Chat old messages
     data object LoadMoreMessages: AiChatUiEvent
 
     // Top Bar

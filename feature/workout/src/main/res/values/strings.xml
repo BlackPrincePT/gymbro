@@ -1,4 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="feature_workout_info_suggestion">Don\'t know which difficulty to choose? Ask GymBro your personal AI Assistant!</string>
+
+    <!--    Workout Creation Screen    -->
+    <string name="feature_workout_add_workout">Add Workout</string>
+    <string name="feature_workout_title">Title</string>
+    <string name="feature_workout_description">Description</string>
+
+    <!--    User Workouts Screen   -->
+    <string name="feature_workout_my_workouts">My workouts</string>
+
+    <!--    Timer Components   -->
+    <string name="feature_workout_pause_timer">Pause Timer</string>
+    <string name="feature_workout_start_timer">Start Timer</string>
+    <string name="feature_workout_reset_timer">Reset Timer</string>
+
+    <!--    Workout Components   -->
+    <string name="feature_workout_reps">%1$s reps</string>
+    <string name="feature_workout_seconds">%1$s seconds</string>
+    <string name="feature_workout_sets">%1$s sets</string>
+    <string name="feature_workout_finish">Finish</string>
+    <string name="feature_workout_next">Next</string>
+    <string name="feature_workout_back">Back</string>
+
+    <!--    Workout Creation Components   -->
+    <string name="feature_workout_workout_image">Workout Image</string>
+    <string name="feature_workout_remove_workout">Remove Workout</string>
+    <string name="feature_workout_add_new_workout">Add New Workout</string>
+    <string name="feature_workout_select_image">Select Image</string>
+    <string name="feature_workout_select_workout_image">Select Workout Image</string>
+    <string name="feature_workout_workout_name">Workout Name</string>
+    <string name="feature_workout_workout_type">Workout Type</string>
+    <string name="feature_workout_just_sets">Sets</string>
+    <string name="feature_workout_time_seconds">Time (seconds)</string>
+    <string name="feature_workout_repetitions">Repetitions</string>
+    <string name="feature_workout_target_muscle_groups">Target Muscle Groups</string>
+    <string name="feature_workout_cancel">Cancel</string>
+    <string name="feature_workout_save">Save</string>
 </resources>
