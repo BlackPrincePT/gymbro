@@ -42,7 +42,11 @@ internal fun FeedScreen(
 ) {
     val context = LocalContext.current
 
-    SetupTopBar(onSetupTopBar, viewModel::onEvent)
+    SetupTopBar(
+        isAnonymous = viewModel.uiState.currentUser == null,
+        onSetupTopBar = onSetupTopBar,
+        onEvent = viewModel::onEvent
+    )
 
     CollectLatestEffect(viewModel.uiEffect) { effect ->
         when (effect) {
@@ -80,7 +84,7 @@ private fun FeedContent(
                 .fillMaxSize()
                 .background(color = MaterialTheme.colorScheme.surface)
         ) {
-            item {
+            if (currentUser != null) item {
                 CreatePostContent(
                     currentUser = currentUser,
                     onClick = { onEvent(FeedUiEvent.OnCreatePostClick(it)) },
@@ -113,22 +117,26 @@ private fun FeedContent(
 
 @Composable
 private fun SetupTopBar(
+    isAnonymous: Boolean,
     onSetupTopBar: (TopBarState) -> Unit,
     onEvent: (FeedUiEvent) -> Unit
 ) {
-    LaunchedEffect(Unit) {
+    val actions =
+        if (isAnonymous) emptyList()
+        else listOf(
+            TopBarAction(
+                icon = Icons.Default.ChatBubble,
+                onClick = { onEvent(FeedUiEvent.OnChatClick) })
+        )
+
+    LaunchedEffect(actions) {
         onSetupTopBar(
             TopBarState(
                 navigationIcon = TopBarAction(
                     icon = Icons.Default.Menu,
                     onClick = { onEvent(FeedUiEvent.OnDrawerClick) }
                 ),
-                actions = listOf(
-                    TopBarAction(
-                        icon = Icons.Default.ChatBubble,
-                        onClick = { onEvent(FeedUiEvent.OnChatClick) }
-                    )
-                )
+                actions = actions
             )
         )
     }

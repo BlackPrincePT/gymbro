@@ -64,7 +64,10 @@ fun ProfileAvatar(
     isCameraIconVisible: Boolean,
     modifier: Modifier = Modifier
 ) {
-    Box(modifier = modifier.clickable { onClick() }) {
+    Box(
+        modifier = modifier
+            .clickable { if (isCameraIconVisible) onClick() }
+    ) {
         if (isCameraIconVisible) CameraIcon(
             isLoading = isLoading,
             onClick = onClick,

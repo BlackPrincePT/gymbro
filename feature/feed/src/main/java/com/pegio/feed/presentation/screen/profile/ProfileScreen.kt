@@ -43,7 +43,6 @@ import com.pegio.common.presentation.components.BackgroundImage
 import com.pegio.common.presentation.components.CameraIcon
 import com.pegio.common.presentation.components.LoadingItemsIndicator
 import com.pegio.common.presentation.components.ProfileAvatar
-import com.pegio.common.presentation.components.ProfileImage
 import com.pegio.common.presentation.model.UiUser
 import com.pegio.common.presentation.state.TopBarAction
 import com.pegio.common.presentation.state.TopBarState
@@ -51,6 +50,7 @@ import com.pegio.common.presentation.util.CollectLatestEffect
 import com.pegio.common.presentation.util.PagingColumn
 import com.pegio.common.presentation.util.rememberGalleryLauncher
 import com.pegio.feed.R
+import com.pegio.common.R as cR
 import com.pegio.feed.presentation.component.CreatePostContent
 import com.pegio.feed.presentation.component.PostContent
 import com.pegio.feed.presentation.model.UiPost
@@ -74,7 +74,7 @@ internal fun ProfileScreen(
 
     val launchGallery = rememberGalleryLauncher(
         onImageSelected = {
-            viewModel.editMode?.run { viewModel.onEvent(getUploadEvent(it)) }
+            viewModel.uiState.editMode?.run { viewModel.onEvent(getUploadEvent(it)) }
         }
     )
 
@@ -98,10 +98,12 @@ internal fun ProfileScreen(
         }
     }
 
-    ProfileContent(state = viewModel.uiState, onEvent = viewModel::onEvent)
+    with(viewModel.uiState) {
+        ProfileContent(state = this, onEvent = viewModel::onEvent)
 
-    if (viewModel.uiState.shouldShowBottomSheet)
-        BottomSheetContent(mode = viewModel.editMode, onEvent = viewModel::onEvent)
+        if (shouldShowBottomSheet)
+            BottomSheetContent(mode = editMode, onEvent = viewModel::onEvent)
+    }
 }
 
 @Composable
@@ -352,7 +354,10 @@ private fun ProfileBackground(
     onCameraIconClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Box(modifier = modifier.clickable { onCameraIconClick() }) {
+    Box(
+        modifier = modifier
+            .clickable { if (isProfileOwner) onCameraIconClick() }
+    ) {
         if (isProfileOwner) CameraIcon(
             isLoading = isLoading,
             onClick = onCameraIconClick,
@@ -404,7 +409,7 @@ private fun BottomSheetContent(
                 .padding(horizontal = 24.dp)
                 .padding(top = 24.dp)
         ) {
-            Text(text = stringResource(R.string.feature_feed_choose_from_gallery))
+            Text(text = stringResource(cR.string.feature_common_edit_your_profile_picture))
         }
 
         Button(
@@ -412,11 +417,12 @@ private fun BottomSheetContent(
                 mode?.run { onEvent(getRemoveEvent()) }
                 fnHideSheet.invoke()
             },
+
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(24.dp)
         ) {
-            Text(text = stringResource(R.string.feature_feed_remove))
+            Text(text = stringResource(cR.string.feature_common_remove))
         }
     }
 }

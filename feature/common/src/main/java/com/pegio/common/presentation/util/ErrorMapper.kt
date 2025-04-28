@@ -3,6 +3,7 @@ package com.pegio.common.presentation.util
 import com.pegio.common.R
 import com.pegio.common.core.DataError
 import com.pegio.common.core.Error
+import com.pegio.common.core.SessionError
 import com.pegio.common.core.ValidationError
 import com.pegio.common.core.WorkoutValidationError
 
@@ -10,6 +11,12 @@ fun Error.toStringResId(): Int = when (this) {
     is DataError -> this.toStringResId()
     is ValidationError -> this.toStringResId()
     is WorkoutValidationError -> this.toStringResId()
+    is SessionError -> this.toStringResId()
+    else -> R.string.feature_common_presentation_error_generic
+}
+
+private fun SessionError.toStringResId(): Int = when (this) {
+    SessionError.AnonymousUser -> R.string.feature_common_presentation_error_anonymous_user
     else -> R.string.feature_common_presentation_error_generic
 }
 

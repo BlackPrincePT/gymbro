@@ -21,13 +21,13 @@ import com.pegio.feed.presentation.screen.feed.state.FeedUiEvent
 import com.pegio.feed.presentation.screen.feed.state.FeedUiState
 import com.pegio.model.Vote
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class FeedViewModel @Inject constructor(
-    private val fetchCurrentUserStream: GetCurrentUserStreamUseCase,
+    private val getCurrentUserStream: GetCurrentUserStreamUseCase,
 
     private val fetchNextRelevantPostsPage: FetchNextRelevantPostsPageUseCase,
     private val resetPostPagination: ResetPostPaginationUseCase,
@@ -40,7 +40,7 @@ class FeedViewModel @Inject constructor(
 ) : BaseViewModel<FeedUiState, FeedUiEffect, FeedUiEvent>(initialState = FeedUiState()) {
 
     init {
-        resetPostPagination()
+        refreshPosts()
         observeCurrentUser()
     }
 
@@ -69,12 +69,14 @@ class FeedViewModel @Inject constructor(
 
 
     private fun observeCurrentUser() = viewModelScope.launch {
-        fetchCurrentUserStream()
-            .collectLatest { updateState { copy(currentUser = uiUserMapper.mapFromDomain(it)) } }
+        getCurrentUserStream()
+            .onSuccess { updateState { copy(currentUser = uiUserMapper.mapFromDomain(it)) } }
+            .onFailure { updateState { copy(currentUser = null) } }
+            .launchIn(viewModelScope)
     }
 
 
-    // <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> \\
+// <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> \\
 
 
     private fun handlePostVote(postId: String, voteType: Vote.Type) {
@@ -102,7 +104,7 @@ class FeedViewModel @Inject constructor(
     }
 
 
-    // <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> \\
+// <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> \\
 
 
     private fun refreshPosts() {
@@ -135,7 +137,7 @@ class FeedViewModel @Inject constructor(
     }
 
 
-    // <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> \\
+// <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> \\
 
 
     private fun updatePost(index: Int, newVote: Vote?, difference: Int) {

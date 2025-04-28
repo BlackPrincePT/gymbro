@@ -1,4 +1,86 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="feature_common_edit_your_profile_picture">Edit your profile picture</string>
+    <string name="feature_common_choose_from_gallery">Choose from gallery</string>
+    <string name="feature_common_remove">Remove</string>
+    <string name="feature_common_sign_in_with_google">Sign in with Google</string>
+
+    <!-- Generic fallback error message -->
+    <string name="feature_common_presentation_error_generic">An error occurred. Please try again later.</string>
+
+    <!-- Session errors -->
+    <string name="feature_common_presentation_error_anonymous_user">Authentication required. Please sign in to continue.</string>
+
+    <!-- Network errors -->
+    <string name="feature_common_presentation_error_no_connection">No internet connection. Please check your network settings.</string>
+    <string name="feature_common_presentation_error_timeout">The request timed out. Please try again.</string>
+    <string name="feature_common_presentation_error_unauthorized">You are not authorized. Please log in again.</string>
+    <string name="feature_common_presentation_error_forbidden">Access forbidden. You do not have permission to perform this action.</string>
+    <string name="feature_common_presentation_error_not_found">The requested resource was not found.</string>
+
+    <!-- Auth errors -->
+    <string name="feature_common_presentation_error_invalid_credential">Invalid credentials provided.</string>
+    <string name="feature_common_presentation_error_invalid_user">User account not found or invalid.</string>
+    <string name="feature_common_presentation_error_unauthenticated">Your session has expired. Please log in again.</string>
+
+    <!-- Firestore errors -->
+    <string name="feature_common_presentation_error_document_not_found">The requested document could not be found.</string>
+    <string name="feature_common_presentation_error_permission_denied">Permission denied to access the requested resource.</string>
+
+    <!-- Username Errors -->
+    <string name="feature_common_presentation_error_username_empty">Username cannot be empty.</string>
+    <string name="feature_common_presentation_error_username_too_short">Username is too short. Please choose a longer username.</string>
+
+    <!-- Age Errors -->
+    <string name="feature_common_presentation_error_age_invalid">The age provided is invalid.</string>
+    <string name="feature_common_presentation_error_age_too_young">You must be at least 18 years old.</string>
+
+    <!-- Gender Errors -->
+    <string name="feature_common_presentation_error_gender_empty">Gender cannot be empty.</string>
+    <string name="feature_common_presentation_error_gender_invalid">The gender provided is invalid.</string>
+
+    <!-- Height Errors -->
+    <string name="feature_common_presentation_error_height_invalid">The height value provided is invalid.</string>
+    <string name="feature_common_presentation_error_height_too_low">The height is below the acceptable threshold.</string>
+
+    <!-- Weight Errors -->
+    <string name="feature_common_presentation_error_weight_invalid">The weight value provided is invalid.</string>
+    <string name="feature_common_presentation_error_weight_too_low">The weight is below the acceptable threshold.</string>
+
+    <!-- Workout Title Error -->
+    <string name="feature_common_presentation_error_workouts_title_too_empty">Title cannot be empty</string>
+    <string name="feature_common_presentation_error_workouts_title_too_short">Title is too short</string>
+    <string name="feature_common_presentation_error_workouts_title_too_long">Title is too long</string>
+
+    <!-- Workout Description Error -->
+    <string name="feature_common_presentation_error_workouts_description_empty">Description cannot be empty</string>
+    <string name="feature_common_presentation_error_workouts_description_too_short">Description is too short</string>
+    <string name="feature_common_presentation_error_workouts_description_too_long">Description is too long</string>
+
+    <!-- Workout Name Error -->
+    <string name="feature_common_presentation_error_name_empty">Workout name cannot be empty</string>
+    <string name="feature_common_presentation_error_name_too_short">Workout name is too short</string>
+
+    <!-- Workout Description Error -->
+
+    <string name="feature_common_presentation_error_description_empty">Workout description cannot be empty</string>
+    <string name="feature_common_presentation_error_description_too_short">Workout description is too short</string>
+
+    <!-- Workout Value Error -->
+    <string name="feature_common_presentation_error_value_invalid">Workout value is invalid</string>
+    <string name="feature_common_presentation_error_value_too_low">Workout value is too low</string>
+
+    <!-- Workout Sets Error -->
+    <string name="feature_common_presentation_error_sets_invalid">Number of sets is invalid</string>
+    <string name="feature_common_presentation_error_sets_too_many">Too many sets specified</string>
+
+    <!-- Workout MuscleGroups Error -->
+    <string name="feature_common_presentation_error_muscle_groups_empty">Please select at least one muscle group</string>
+
+    <!-- Workout Image Error -->
+    <string name="feature_common_presentation_error_workout_image_empty">Workout image is required</string>
+
+    <!-- Workouts List Error -->
+    <string name="feature_common_presentation_error_workouts_list_too_few">You need at least 5 workouts to upload!</string>
+    <string name="feature_common_presentation_error_workouts_list_too_many">You must have less than 30 workouts to upload!</string>
 </resources>

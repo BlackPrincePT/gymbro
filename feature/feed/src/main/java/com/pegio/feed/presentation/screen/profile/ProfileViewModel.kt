@@ -64,9 +64,6 @@ class ProfileViewModel @Inject constructor(
 
     private val userId = savedStateHandle.toRoute<ProfileRoute>().userId
 
-    var editMode: ProfileEditMode? = null
-        private set
-
     init {
         resetPostPagination()
         updateProfileOwnershipStatus()
@@ -82,7 +79,7 @@ class ProfileViewModel @Inject constructor(
         when (event) {
 
             // Main
-            is ProfileUiEvent.OnEditModeChange -> editMode = event.mode
+            is ProfileUiEvent.OnEditModeChange -> updateState { copy(editMode = event.mode) }
             is ProfileUiEvent.OnPostVote -> handlePostVote(event.postId, event.voteType)
             ProfileUiEvent.OnLoadMorePosts -> loadMorePosts()
             ProfileUiEvent.OnPostsRefresh -> refreshPosts()
@@ -190,12 +187,14 @@ class ProfileViewModel @Inject constructor(
 
     private fun follow() {
         followUser(targetUserId = userId)
-        updateState { copy(isFollowing = true) }
+            .onSuccess { updateState { copy(isFollowing = true) } }
+            .onFailure { showDisplayableError(it) }
     }
 
     private fun unfollow() {
         unfollowUser(targetUserId = userId)
-        updateState { copy(isFollowing = false) }
+            .onSuccess { updateState { copy(isFollowing = false) } }
+            .onFailure { showDisplayableError(it) }
     }
 
     private fun updateFollowingStatus() = viewModelScope.launch {

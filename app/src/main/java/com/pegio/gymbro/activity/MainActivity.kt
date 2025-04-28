@@ -1,9 +1,13 @@
 package com.pegio.gymbro.activity
 
+import android.Manifest
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.padding
@@ -19,18 +23,22 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.pegio.auth.presentation.screen.auth.navigation.AuthRoute
 import com.pegio.auth.presentation.screen.auth.navigation.navigateToAuth
 import com.pegio.auth.presentation.screen.register.navigation.RegisterRoute
+import com.pegio.auth.presentation.screen.register.navigation.navigateToRegister
 import com.pegio.common.presentation.util.CollectLatestEffect
 import com.pegio.designsystem.theme.GymBroTheme
+import com.pegio.feed.presentation.screen.profile.navigation.navigateToProfile
 import com.pegio.gymbro.activity.components.DrawerContent
 import com.pegio.gymbro.activity.components.TopBarContent
 import com.pegio.gymbro.activity.state.MainActivityUiEffect
@@ -71,6 +79,8 @@ class MainActivity : ComponentActivity() {
                     RegisterRoute::class.qualifiedName
                 )
 
+                RequestNotificationPermission()
+
                 CollectLatestEffect(viewModel.uiEffect) { effect ->
                     when (effect) {
 
@@ -78,12 +88,15 @@ class MainActivity : ComponentActivity() {
                         MainActivityUiEffect.OpenDrawer -> coroutineScope.launch { drawerState.open() }
                         MainActivityUiEffect.CloseDrawer -> coroutineScope.launch { drawerState.close() }
 
-                        // Drawer
+                        // Navigation
                         MainActivityUiEffect.NavigateToAccount -> navController.navigateToAccount()
                         MainActivityUiEffect.NavigateToSettings -> navController.navigateToSettings()
                         MainActivityUiEffect.NavigateToWorkoutPlan -> navController.navigateToWorkoutPlan()
-                        MainActivityUiEffect.NavigateToAuth -> navController.navigateToAuth()
                         MainActivityUiEffect.NavigateToUserWorkouts -> navController.navigateToUserWorkouts()
+                        MainActivityUiEffect.NavigateToAuth -> navController.navigateToAuth()
+                        MainActivityUiEffect.NavigateToRegister -> navController.navigateToRegister()
+                        is MainActivityUiEffect.NavigateToProfile ->
+                            navController.navigateToProfile(userId = effect.userId)
                     }
                 }
 
@@ -109,25 +122,31 @@ private fun AppContent(
     snackbarHostState: SnackbarHostState,
     drawerState: DrawerState,
     isEntryScreenDisplayed: Boolean
-) {
+) = with(state) {
+
+    val context = LocalContext.current
+
     ModalNavigationDrawer(
         drawerState = drawerState,
-        gesturesEnabled = isEntryScreenDisplayed.not(),
+        gesturesEnabled = !isEntryScreenDisplayed,
         drawerContent = {
-            state.currentUser?.let {
-                DrawerContent(
-                    displayedUser = it,
-                    onAccountClick = { onEvent(MainActivityUiEvent.OnAccountClick) },
-                    onSettingsClick = { onEvent(MainActivityUiEvent.OnSettingsClick) },
-                    onWorkoutPlanClick = { onEvent(MainActivityUiEvent.OnWorkoutPlanClick) },
-                    onSignOutClick = { onEvent(MainActivityUiEvent.OnSignOutClick) },
-                    onUserWorkoutsClick = { onEvent(MainActivityUiEvent.OnUserWorkoutsClick) }
-                )
-            } ?: DrawerContent(onGoogleAuthClick = { })
+            DrawerContent(
+                isAnonymous = isAnonymous,
+                backgroundUrl = currentUser?.imgBackgroundUrl,
+                avatarUrl = currentUser?.avatarUrl,
+                username = currentUser?.username,
+                onAvatarClick = { onEvent(MainActivityUiEvent.OnProfileClick) },
+                onAccountClick = { onEvent(MainActivityUiEvent.OnAccountClick) },
+                onSettingsClick = { onEvent(MainActivityUiEvent.OnSettingsClick) },
+                onWorkoutPlanClick = { onEvent(MainActivityUiEvent.OnWorkoutPlanClick) },
+                onSignOutClick = { onEvent(MainActivityUiEvent.OnSignOutClick) },
+                onGoogleAuthClick = { onEvent(MainActivityUiEvent.LinkAnonymousAccount(context)) },
+                onUserWorkoutsClick = { onEvent(MainActivityUiEvent.OnUserWorkoutsClick) }
+            )
         }
     ) {
         Scaffold(
-            topBar = { if (isEntryScreenDisplayed.not()) TopBarContent(state.topBarState) },
+            topBar = { if (!isEntryScreenDisplayed) TopBarContent(state.topBarState) },
             snackbarHost = {
                 SnackbarHost(
                     hostState = snackbarHostState,
@@ -139,11 +158,28 @@ private fun AppContent(
             NavigationHost(
                 navController = navController,
                 onSetupAppBar = { onEvent(MainActivityUiEvent.OnUpdateTopBarState(it)) },
-                dynamicallyOpenDrawer = { onEvent(MainActivityUiEvent.OnOpenDrawer) },
+                dynamicallyOpenDrawer = { onEvent(MainActivityUiEvent.OnOpenDrawerClick) },
                 onShowSnackbar = { snackbarHostState.showSnackbar(message = it, duration = Short) },
                 modifier = Modifier
                     .padding(innerPadding)
             )
         }
+    }
+}
+
+
+// <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> <*> \\
+
+
+@Composable
+private fun RequestNotificationPermission() {
+    val permissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission(),
+        onResult = { }
+    )
+
+    LaunchedEffect(Unit) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
+            permissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
     }
 }
