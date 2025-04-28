@@ -1,13 +1,9 @@
 package com.pegio.aichat.presentation.model.mapper
 
-import com.pegio.model.AiMessage
 import com.pegio.aichat.presentation.model.UiAiMessage
 import com.pegio.common.core.Mapper
-import kotlinx.datetime.Instant
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.toJavaLocalDateTime
-import kotlinx.datetime.toLocalDateTime
-import java.time.format.DateTimeFormatter
+import com.pegio.common.presentation.util.DateUtils
+import com.pegio.model.AiMessage
 import javax.inject.Inject
 
 class UiAiMessageMapper @Inject constructor() : Mapper<UiAiMessage, AiMessage> {
@@ -28,16 +24,7 @@ class UiAiMessageMapper @Inject constructor() : Mapper<UiAiMessage, AiMessage> {
             text = data.text,
             imageUrl = data.imageUrl,
             isFromUser = data.isFromUser,
-            date = convertEpochToString(data.timestamp)
+            date = DateUtils.formatRelativeTime(data.timestamp)
         )
-    }
-
-    private fun convertEpochToString(epochMillis: Long): String {
-        val instant = Instant.fromEpochMilliseconds(epochMillis)
-        val localDateTime = instant.toLocalDateTime(TimeZone.currentSystemDefault())
-
-        val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss")
-
-        return localDateTime.toJavaLocalDateTime().format(formatter) // FIXME PLEASE
     }
 }

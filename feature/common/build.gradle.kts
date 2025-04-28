@@ -16,5 +16,6 @@ dependencies {
     api(libs.coil.compose)
 
     implementation(libs.javax.inject)
+    implementation(libs.kotlinx.datetime)
     implementation(libs.androidx.hilt.navigation.compose)
 }

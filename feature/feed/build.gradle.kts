@@ -5,7 +5,3 @@ plugins {
 android {
     namespace = "com.pegio.feed"
 }
-
-dependencies {
-    implementation(libs.kotlinx.datetime)
-}

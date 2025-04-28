@@ -5,7 +5,3 @@ plugins {
 android {
     namespace = "com.pegio.aichat"
 }
-
-dependencies {
-    implementation(libs.kotlinx.datetime)
-}
