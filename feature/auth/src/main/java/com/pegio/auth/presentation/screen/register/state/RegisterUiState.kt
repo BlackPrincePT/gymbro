@@ -11,6 +11,7 @@ data class RegisterUiState(
 
     // Compose State
     val selectedImageUri: Uri? = null,
+    val isGenderMenuExpanded: Boolean = false,
     val shouldShowBottomSheet: Boolean = false,
     val formValue: RegisterFormValue = RegisterFormValue(),
     val validationError: RegisterValidationError = RegisterValidationError()

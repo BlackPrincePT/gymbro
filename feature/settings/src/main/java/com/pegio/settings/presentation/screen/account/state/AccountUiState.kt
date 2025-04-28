@@ -13,6 +13,7 @@ data class AccountUiState(
     val isLoadingAvatar: Boolean = false,
 
     // Compose State
+    val isGenderMenuExpanded: Boolean = false,
     val formValue: AccountFormValue = AccountFormValue(),
     val validationError: AccountValidationError = AccountValidationError()
 )

@@ -26,7 +26,7 @@ import com.pegio.common.presentation.components.EditAvatarContent
 import com.pegio.common.presentation.components.EmptyLoadingScreen
 import com.pegio.common.presentation.util.CollectLatestEffect
 import com.pegio.common.presentation.util.rememberGalleryLauncher
-import com.pegio.designsystem.component.DropdownMenu
+import com.pegio.designsystem.component.GymBroDropdownMenu
 import com.pegio.designsystem.component.FormTextField
 import com.pegio.designsystem.component.GymBroButton
 import com.pegio.model.User.Gender
@@ -113,12 +113,15 @@ private fun RegisterContent(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        DropdownMenu(
+        GymBroDropdownMenu(
+            isExpanded = isGenderMenuExpanded,
             options = Gender.entries,
             onSelectionChanged = { onEvent(RegisterUiEvent.OnGenderChanged(it)) },
+            onExpandedChange = { onEvent(RegisterUiEvent.OnGenderMenuExpandedChange(it)) },
             label = stringResource(id = R.string.feature_auth_gender),
             selectedOption = formValue.gender?.name,
-            error = validationError.gender
+            errorRes = validationError.gender,
+            modifier = Modifier.fillMaxWidth()
         )
 
         Spacer(modifier = Modifier.height(16.dp))

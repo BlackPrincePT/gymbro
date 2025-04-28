@@ -38,6 +38,7 @@ class RegisterViewModel @Inject constructor(
             is RegisterUiEvent.OnHeightChanged -> updateForm { copy(height = event.height) }
             is RegisterUiEvent.OnWeightChanged -> updateForm { copy(weight = event.weight) }
             is RegisterUiEvent.OnProfilePhotoSelected -> updateState { copy(selectedImageUri = event.imageUri) }
+            is RegisterUiEvent.OnGenderMenuExpandedChange -> updateState { copy(isGenderMenuExpanded = event.isExpanded) }
         }
     }
 

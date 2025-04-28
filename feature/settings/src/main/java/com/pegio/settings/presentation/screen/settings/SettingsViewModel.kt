@@ -37,6 +37,9 @@ class SettingsViewModel @Inject constructor(
 
             // Navigation
             SettingsUiEvent.OnBackClick -> sendEffect(SettingsUiEffect.NavigateBack)
+
+            // Compose State
+            is SettingsUiEvent.OnThemeMenuExpandedChange -> updateState { copy(isThemeMenuExpanded = event.isExpanded) }
         }
     }
 

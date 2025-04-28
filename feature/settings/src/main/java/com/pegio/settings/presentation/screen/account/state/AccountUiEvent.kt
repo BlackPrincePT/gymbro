@@ -25,4 +25,5 @@ sealed interface AccountUiEvent {
     data class OnGenderChanged(val gender: Gender) : AccountUiEvent
     data class OnHeightChanged(val height: String) : AccountUiEvent
     data class OnWeightChanged(val weight: String) : AccountUiEvent
+    data class OnGenderMenuExpandedChange(val isExpanded: Boolean) : AccountUiEvent
 }

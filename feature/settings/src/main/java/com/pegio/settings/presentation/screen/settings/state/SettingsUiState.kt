@@ -8,5 +8,6 @@ data class SettingsUiState(
     val isLoading: Boolean = false,
 
     // Compose state
-    val selectedMode: ThemeMode? = null
+    val selectedMode: ThemeMode? = null,
+    val isThemeMenuExpanded: Boolean = false
 )
