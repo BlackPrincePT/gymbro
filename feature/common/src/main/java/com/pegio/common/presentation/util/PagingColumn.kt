@@ -33,15 +33,17 @@ fun PagingColumn(
     userScrollEnabled: Boolean = true,
     content: LazyListScope.() -> Unit
 ) {
-    val shouldLoadAnotherPage: Boolean by remember {
+    val lastVisibleIndex: Int? by remember {
         derivedStateOf {
             return@derivedStateOf state.layoutInfo.visibleItemsInfo.lastOrNull()?.index
-                ?.let { it >= itemCount - loadIndex } ?: false
         }
     }
 
-    LaunchedEffect(shouldLoadAnotherPage, isLoading) {
-        if (shouldLoadAnotherPage && isLoading.not()) onLoadAnotherPage()
+    LaunchedEffect(lastVisibleIndex, isLoading) {
+        lastVisibleIndex?.let { lastIndex ->
+            if (lastIndex >= itemCount - loadIndex && !isLoading)
+                onLoadAnotherPage()
+        }
     }
 
     LazyColumn(

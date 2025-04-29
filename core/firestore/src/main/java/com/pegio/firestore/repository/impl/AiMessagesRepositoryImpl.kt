@@ -26,7 +26,7 @@ internal class AiMessagesRepositoryImpl @Inject constructor(
     private var lastVisibleTimestamp: Long? = Long.MAX_VALUE
 
     companion object {
-        private const val MESSAGES_PAGE_SIZE: Long = 30L
+        private const val MESSAGES_PAGE_SIZE: Long = 10L
     }
 
     override fun observeAiMessagesPagingStream(userId: String, earliestMessageTimestamp: Long?): Flow<Resource<List<AiMessage>, DataError.Firestore>> {
