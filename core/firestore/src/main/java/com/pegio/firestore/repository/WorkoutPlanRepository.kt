@@ -1,10 +1,9 @@
 package com.pegio.firestore.repository
 
-import com.pegio.model.WorkoutPlan
 import com.pegio.common.core.DataError
 import com.pegio.common.core.Resource
-import kotlinx.coroutines.flow.Flow
+import com.pegio.model.WorkoutPlan
 
 interface WorkoutPlanRepository {
-    fun observeWorkoutPlansPagingStream(): Flow<Resource<List<WorkoutPlan>, DataError.Firestore>>
+    suspend fun fetchWorkoutPlans(): Resource<List<WorkoutPlan>, DataError.Firestore>
 }
