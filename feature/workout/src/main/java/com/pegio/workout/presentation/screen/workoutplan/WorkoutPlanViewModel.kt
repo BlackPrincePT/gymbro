@@ -1,10 +1,10 @@
 package com.pegio.workout.presentation.screen.workoutplan
 
-import com.pegio.common.core.onFailure
-import com.pegio.common.core.onSuccess
+import com.pegio.common.core.DataError
+import com.pegio.common.core.getOrElse
 import com.pegio.common.presentation.core.BaseViewModel
-import com.pegio.common.presentation.util.toStringResId
-import com.pegio.domain.usecase.workout.FetchWorkoutPlansUseCase
+import com.pegio.domain.usecase.workout.FetchNextWorkoutPlansPageUseCase
+import com.pegio.domain.usecase.workout.RefreshWorkoutPlanPaginationUseCase
 import com.pegio.workout.presentation.model.mapper.UiWorkoutPlanMapper
 import com.pegio.workout.presentation.screen.workoutplan.state.WorkoutPlanUiEffect
 import com.pegio.workout.presentation.screen.workoutplan.state.WorkoutPlanUiEvent
@@ -14,12 +14,13 @@ import javax.inject.Inject
 
 @HiltViewModel
 class WorkoutPlanViewModel @Inject constructor(
-    private val fetchWorkoutPlansUseCase: FetchWorkoutPlansUseCase,
+    private val fetchNextWorkoutPlansPageUseCase: FetchNextWorkoutPlansPageUseCase,
+    private val refreshWorkoutPlanPagination: RefreshWorkoutPlanPaginationUseCase,
     private val uiWorkoutPlanMapper: UiWorkoutPlanMapper
 ) : BaseViewModel<WorkoutPlanUiState, WorkoutPlanUiEffect, WorkoutPlanUiEvent>(initialState = WorkoutPlanUiState()) {
 
     init {
-        loadWorkoutPlans()
+        refreshUserWorkouts()
     }
 
     override fun onEvent(event: WorkoutPlanUiEvent) {
@@ -31,21 +32,33 @@ class WorkoutPlanViewModel @Inject constructor(
                     event.workoutId
                 )
             )
+
+            WorkoutPlanUiEvent.LoadMoreUserWorkouts -> loadNextWorkoutPlansPage()
+            WorkoutPlanUiEvent.RefreshUserWorkouts -> refreshUserWorkouts()
         }
     }
 
     override fun setLoading(isLoading: Boolean) = updateState { copy(isLoading = isLoading) }
 
-    private fun loadWorkoutPlans() = launchWithLoading {
-        fetchWorkoutPlansUseCase()
+    private fun loadNextWorkoutPlansPage() = launchWithLoading {
+        if (uiState.endOfPaginationReached) return@launchWithLoading
 
-            .onSuccess { plans ->
-                val mappedPlans = plans.map(uiWorkoutPlanMapper::mapFromDomain)
-                updateState { copy(plans = mappedPlans) }
+        val fetchedWorkoutPlans = fetchNextWorkoutPlansPageUseCase()
+            .getOrElse { error ->
+                if (error == DataError.Pagination.END_OF_PAGINATION_REACHED)
+                    updateState { copy(endOfPaginationReached = true) }
+
+                return@launchWithLoading
             }
-            .onFailure { error ->
-                sendEffect(WorkoutPlanUiEffect.Failure(error.toStringResId()))
-            }
+            .map(uiWorkoutPlanMapper::mapFromDomain)
+
+        updateState { copy(isRefreshing = false, plans = plans.plus(fetchedWorkoutPlans)) }
+    }
+
+    private fun refreshUserWorkouts() {
+        refreshWorkoutPlanPagination()
+        updateState { copy(plans = emptyList(), isRefreshing = true, endOfPaginationReached = false) }
+        loadNextWorkoutPlansPage()
     }
 }
 

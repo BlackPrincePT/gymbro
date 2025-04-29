@@ -5,5 +5,6 @@ import com.pegio.common.core.Resource
 import com.pegio.model.WorkoutPlan
 
 interface WorkoutPlanRepository {
-    suspend fun fetchWorkoutPlans(): Resource<List<WorkoutPlan>, DataError.Firestore>
+    suspend fun fetchNextWorkoutPlansPage(): Resource<List<WorkoutPlan>, DataError>
+    fun refreshPagination()
 }

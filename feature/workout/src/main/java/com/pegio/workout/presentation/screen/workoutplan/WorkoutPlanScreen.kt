@@ -1,19 +1,21 @@
 package com.pegio.workout.presentation.screen.workoutplan
 
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.pegio.common.presentation.components.LoadingItemsIndicator
 import com.pegio.common.presentation.state.TopBarAction
 import com.pegio.common.presentation.state.TopBarState
 import com.pegio.common.presentation.util.CollectLatestEffect
+import com.pegio.common.presentation.util.PagingColumn
 import com.pegio.workout.presentation.component.WorkoutPlanItemComponents
 import com.pegio.workout.presentation.model.UiWorkoutPlan
 import com.pegio.workout.presentation.screen.workoutplan.state.WorkoutPlanUiEffect
@@ -56,13 +58,26 @@ fun WorkoutPlanContent(
     state: WorkoutPlanUiState,
     onEvent: (WorkoutPlanUiEvent) -> Unit,
     modifier: Modifier = Modifier
-) {
-    LazyColumn(modifier = modifier.fillMaxSize()) {
-        items(state.plans) { workoutPlan ->
-            WorkoutPlanItemComponents(
-                workoutPlan = workoutPlan,
-                onStartWorkout = { onEvent(WorkoutPlanUiEvent.StartWorkout(workoutPlan.workoutId)) }
-            )
+) = with(state) {
+    PullToRefreshBox(
+        isRefreshing = isRefreshing,
+        onRefresh = { onEvent(WorkoutPlanUiEvent.RefreshUserWorkouts) }
+    ) {
+        PagingColumn(
+            isLoading = isLoading,
+            itemCount = plans.size,
+            onLoadAnotherPage = { onEvent(WorkoutPlanUiEvent.LoadMoreUserWorkouts) },
+            modifier = modifier.fillMaxSize()
+        ) {
+            items(plans) { workoutPlan ->
+                WorkoutPlanItemComponents(
+                    workoutPlan = workoutPlan,
+                    onStartWorkout = { onEvent(WorkoutPlanUiEvent.StartWorkout(workoutPlan.workoutId)) }
+                )
+            }
+
+            if (isLoading && !isRefreshing)
+                item { LoadingItemsIndicator() }
         }
     }
 }
