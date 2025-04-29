@@ -36,6 +36,7 @@ internal fun FeedScreen(
     onPostWorkoutClick: (String) -> Unit,
     onShowPostDetails: (String) -> Unit,
     onUserProfileClick: (String) -> Unit,
+    onAskGymBroClick: (String) -> Unit,
     onOpenDrawerClick: () -> Unit,
     onSetupTopBar: (TopBarState) -> Unit,
     onShowSnackbar: suspend (String) -> Unit,
@@ -62,6 +63,7 @@ internal fun FeedScreen(
             is FeedUiEffect.NavigateToPostDetails -> onShowPostDetails(effect.postId)
             is FeedUiEffect.NavigateToUserProfile -> onUserProfileClick(effect.userId)
             is FeedUiEffect.NavigateToWorkout -> onPostWorkoutClick(effect.workoutId)
+            is FeedUiEffect.NavigateToAiChat -> onAskGymBroClick(effect.postId)
         }
     }
 
@@ -106,7 +108,8 @@ private fun FeedContent(
                     },
                     onWorkoutClick = {
                         post.workoutId?.let { onEvent(FeedUiEvent.OnPostWorkoutClick(it)) }
-                    }
+                    },
+                    onAskGymBroClick = { onEvent(FeedUiEvent.OnAskGymBroClick(post.id)) }
                 )
             }
 

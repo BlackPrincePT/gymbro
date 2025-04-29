@@ -12,7 +12,7 @@ class ValidateWorkoutTitleUseCase @Inject constructor() {
         if (name.length < 3)
             return Resource.Failure(error = WorkoutValidationError.WorkoutTitle.TOO_SHORT)
 
-        if (name.length > 15)
+        if (name.length > 50)
             return Resource.Failure(error = WorkoutValidationError.WorkoutTitle.TOO_LONG)
 
         return Resource.Success(Unit)

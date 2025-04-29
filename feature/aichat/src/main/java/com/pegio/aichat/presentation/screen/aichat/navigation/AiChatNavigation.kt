@@ -8,9 +8,9 @@ import com.pegio.common.presentation.state.TopBarState
 import kotlinx.serialization.Serializable
 
 @Serializable
-data object AiChatRoute
+data class AiChatRoute(val postId: String?)
 
-fun NavController.navigateToAiChat() = navigate(route = AiChatRoute)
+fun NavController.navigateToAiChat(postId: String? = null) = navigate(route = AiChatRoute(postId))
 
 fun NavGraphBuilder.aiChatScreen(
     onBackClick: () -> Unit,

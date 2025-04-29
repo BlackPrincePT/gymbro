@@ -16,4 +16,5 @@ sealed interface FeedUiEvent {
     data class OnCreatePostClick(val shouldOpenGallery: Boolean) : FeedUiEvent
     data class OnPostCommentClick(val postId: String) : FeedUiEvent
     data class OnUserProfileClick(val userId: String) : FeedUiEvent
+    data class OnAskGymBroClick(val postId: String) : FeedUiEvent
 }

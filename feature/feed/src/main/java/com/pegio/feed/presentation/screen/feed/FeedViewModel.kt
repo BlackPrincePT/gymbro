@@ -57,6 +57,7 @@ class FeedViewModel @Inject constructor(
             is FeedUiEvent.OnPostCommentClick -> sendEffect(FeedUiEffect.NavigateToPostDetails(event.postId))
             is FeedUiEvent.OnUserProfileClick -> sendEffect(FeedUiEffect.NavigateToUserProfile(event.userId))
             is FeedUiEvent.OnPostWorkoutClick -> sendEffect(FeedUiEffect.NavigateToWorkout(event.workoutId))
+            is FeedUiEvent.OnAskGymBroClick -> sendEffect(FeedUiEffect.NavigateToAiChat(event.postId))
 
             // Top Bar
             FeedUiEvent.OnDrawerClick -> sendEffect(FeedUiEffect.OpenDrawer)

@@ -1,7 +1,5 @@
 package com.pegio.aichat.presentation.screen.aichat
 
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -19,9 +17,12 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
@@ -35,7 +36,6 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.pegio.aichat.R
 import com.pegio.aichat.presentation.component.AttachImageButton
-import com.pegio.aichat.presentation.component.InputTextField
 import com.pegio.aichat.presentation.component.SendButton
 import com.pegio.aichat.presentation.model.UiAiMessage
 import com.pegio.aichat.presentation.screen.aichat.state.AiChatUiEffect
@@ -45,6 +45,7 @@ import com.pegio.common.presentation.components.MessageImage
 import com.pegio.common.presentation.state.TopBarAction
 import com.pegio.common.presentation.state.TopBarState
 import com.pegio.common.presentation.util.CollectLatestEffect
+import com.pegio.common.presentation.util.rememberGalleryLauncher
 
 @Composable
 fun AiChatScreen(
@@ -53,15 +54,20 @@ fun AiChatScreen(
     onSetupTopBar: (TopBarState) -> Unit,
     onShowSnackbar: suspend (String) -> Unit
 ) {
+    val context = LocalContext.current
+
+    val launchGallery = rememberGalleryLauncher(
+        onImageSelected = { viewModel.onEvent(AiChatUiEvent.OnImageSelected(it)) }
+    )
 
     SetupTopBar(onSetupTopBar, viewModel::onEvent)
 
-    val context = LocalContext.current
-
     CollectLatestEffect(viewModel.uiEffect) { effect ->
         when (effect) {
-            is AiChatUiEffect.Failure -> onShowSnackbar(context.getString(effect.errorRes))
+
+            is AiChatUiEffect.ShowSnackbar -> onShowSnackbar(context.getString(effect.errorRes))
             AiChatUiEffect.NavigateBack -> onBackClick()
+            AiChatUiEffect.LaunchGallery -> launchGallery()
         }
     }
 
@@ -79,10 +85,6 @@ private fun AiChatContent(
     modifier: Modifier = Modifier
 ) {
     val listState = rememberLazyListState()
-    val galleryLauncher =
-        rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri ->
-            uri?.let { onEvent(AiChatUiEvent.OnImageSelected(it)) }
-        }
 
     LaunchedEffect(state.messages.size) {
         if (state.messages.isNotEmpty()) {
@@ -142,12 +144,13 @@ private fun AiChatContent(
                 }
             }
 
+            HorizontalDivider()
 
             ChatInput(
                 text = state.inputText,
                 onTextChange = { onEvent(AiChatUiEvent.OnTextChanged(it)) },
                 onSend = { onEvent(AiChatUiEvent.OnSendMessage()) },
-                onImageSelect = { galleryLauncher.launch("image/*") },
+                onImageSelect = { onEvent(AiChatUiEvent.OnLaunchGallery) },
                 isLoading = state.isLoading
             )
         }
@@ -224,16 +227,22 @@ fun ChatInput(
 ) {
     Row(
         modifier = Modifier
-            .fillMaxWidth()
-            .background(Color.LightGray, RoundedCornerShape(3.dp)),
+            .fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically
     ) {
         AttachImageButton(onImageSelect = onImageSelect)
-        InputTextField(
-            text = text,
-            onTextChange = onTextChange,
-            placeholder = stringResource(R.string.feature_aichat_type_a_message),
-            modifier = Modifier.weight(1f)
+
+        TextField(
+            value = text,
+            onValueChange = onTextChange,
+            placeholder = { Text(text = stringResource(R.string.feature_aichat_type_a_message)) },
+            modifier = Modifier.weight(1f),
+            colors = TextFieldDefaults.colors(
+                focusedContainerColor = Color.Transparent,
+                unfocusedContainerColor = Color.Transparent,
+                focusedIndicatorColor = Color.Transparent,
+                unfocusedIndicatorColor = Color.Transparent
+            )
         )
         SendButton(text = text, onSend = onSend, isLoading = isLoading)
     }
@@ -245,9 +254,12 @@ private fun SetupTopBar(
     onSetupTopBar: (TopBarState) -> Unit,
     onEvent: (AiChatUiEvent) -> Unit
 ) {
+    val title = stringResource(R.string.feature_aichat_your_gym_bro)
+
     LaunchedEffect(Unit) {
         onSetupTopBar(
             TopBarState(
+                title = title,
                 navigationIcon = TopBarAction(
                     icon = Icons.AutoMirrored.Default.ArrowBack,
                     onClick = { onEvent(AiChatUiEvent.OnBackClick) }

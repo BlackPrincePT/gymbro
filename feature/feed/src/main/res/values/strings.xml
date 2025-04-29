@@ -11,4 +11,5 @@
     <string name="feature_feed_load_more_comments">Load more comments</string>
     <string name="feature_feed_has_not_posted_yet">%1$s has not posted yet</string>
     <string name="feature_feed_be_first_one_to_comment">No comments yet.\nBe the first to comment!</string>
+    <string name="feature_feed_ask_gym_bro">Ask gym bro</string>
 </resources>

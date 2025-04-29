@@ -9,7 +9,7 @@ class ValidateWorkoutDescriptionUseCase @Inject constructor() {
         if (description.isBlank())
             return Resource.Failure(error = WorkoutValidationError.Description.EMPTY)
 
-        if (description.length < 10)
+        if (description.length < 15)
             return Resource.Failure(error = WorkoutValidationError.Description.TOO_SHORT)
 
         return Resource.Success(Unit)
