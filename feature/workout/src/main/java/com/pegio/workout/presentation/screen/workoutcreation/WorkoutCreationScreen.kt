@@ -30,6 +30,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.pegio.common.presentation.state.TopBarAction
 import com.pegio.common.presentation.state.TopBarState
 import com.pegio.common.presentation.util.CollectLatestEffect
+import com.pegio.common.presentation.util.rememberGalleryLauncher
 import com.pegio.designsystem.component.FormTextField
 import com.pegio.workout.R
 import com.pegio.workout.presentation.component.AddWorkoutDialog
@@ -47,6 +48,10 @@ fun WorkoutCreationScreen(
     onSetupTopBar: (TopBarState) -> Unit
 ) {
 
+    val launchGallery = rememberGalleryLauncher(
+        onImageSelected = { viewModel.onEvent(WorkoutCreationUiEvent.OnWorkoutImageSelected(it)) }
+    )
+
     SetupTopBar(onSetupTopBar, viewModel::onEvent)
 
     val context = LocalContext.current
@@ -55,6 +60,7 @@ fun WorkoutCreationScreen(
         when (effect) {
             is WorkoutCreationUiEffect.Failure -> onShowSnackbar(context.getString(effect.errorRes))
             WorkoutCreationUiEffect.NavigateBack -> onBackClick()
+            WorkoutCreationUiEffect.LaunchGallery -> launchGallery()
         }
     }
 

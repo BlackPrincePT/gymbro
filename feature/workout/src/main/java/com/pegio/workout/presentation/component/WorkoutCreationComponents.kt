@@ -190,12 +190,6 @@ fun AddWorkoutDialog(
 ) {
     var workoutTypeExpanded by remember { mutableStateOf(false) }
 
-    val galleryLauncher =
-        rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri ->
-            uri?.let {
-                onEvent(WorkoutCreationUiEvent.OnEditWorkout(state.newWorkout.copy(workoutImage = uri.toString())))
-            }
-        }
 
     Dialog(onDismissRequest = { onEvent(WorkoutCreationUiEvent.OnDismissDialog) }) {
         Card(
@@ -221,7 +215,7 @@ fun AddWorkoutDialog(
                         .height(120.dp)
                         .clip(RoundedCornerShape(8.dp))
                         .background(MaterialTheme.colorScheme.surfaceVariant)
-                        .clickable { galleryLauncher.launch("image/*") },
+                        .clickable { onEvent ( WorkoutCreationUiEvent.OnLaunchGallery) },
                     contentAlignment = Alignment.Center
                 ) {
                     if (state.newWorkout.workoutImage.isNotEmpty()) {
