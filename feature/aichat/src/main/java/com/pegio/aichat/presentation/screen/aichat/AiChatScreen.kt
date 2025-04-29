@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -45,6 +44,7 @@ import com.pegio.common.presentation.components.MessageImage
 import com.pegio.common.presentation.state.TopBarAction
 import com.pegio.common.presentation.state.TopBarState
 import com.pegio.common.presentation.util.CollectLatestEffect
+import com.pegio.common.presentation.util.PagingColumn
 import com.pegio.common.presentation.util.rememberGalleryLauncher
 
 @Composable
@@ -73,87 +73,81 @@ fun AiChatScreen(
 
     AiChatContent(
         state = viewModel.uiState,
-        onEvent = viewModel::onEvent,
-        modifier = Modifier
+        onEvent = viewModel::onEvent
     )
 }
 
 @Composable
 private fun AiChatContent(
     state: AiChatUiState,
-    onEvent: (AiChatUiEvent) -> Unit,
-    modifier: Modifier = Modifier
-) {
+    onEvent: (AiChatUiEvent) -> Unit
+) = with(state) {
+
     val listState = rememberLazyListState()
 
-    LaunchedEffect(state.messages.size) {
-        if (state.messages.isNotEmpty()) {
-            listState.animateScrollToItem(state.messages.size - 1)
-        }
+    LaunchedEffect(messages.size) {
+        if (messages.isNotEmpty())
+            listState.animateScrollToItem(0)
     }
 
-    LaunchedEffect(listState.firstVisibleItemIndex) {
-        if (listState.firstVisibleItemIndex == 0) {
-            onEvent(AiChatUiEvent.LoadMoreMessages)
-        }
-    }
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+    ) {
 
-    Box(modifier = modifier.fillMaxSize()) {
-        Column(
-            modifier = modifier
-                .fillMaxSize()
+        PagingColumn(
+            itemCount = messages.size,
+            isLoading = false,
+            onLoadAnotherPage = { onEvent(AiChatUiEvent.LoadMoreMessages) },
+            state = listState,
+            reverseLayout = true,
+            modifier = Modifier
+                .weight(1f)
         ) {
-
-            LazyColumn(
-                state = listState,
-                modifier = Modifier
-                    .weight(1f)
-            ) {
-                items(state.messages) { message ->
-                    ChatBubble(message)
-                }
-
-                if (state.isLoading) {
-                    item { ChatBubblePlaceholder() }
-                }
-            }
-            state.selectedImageUri?.let { uri ->
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth(0.25f)
-                        .height(90.dp)
-                        .clip(RoundedCornerShape(8.dp))
-                ) {
-                    MessageImage(
-                        imageUrl = uri.toString(),
-                        modifier = modifier.fillMaxSize()
-                    )
-
-                    IconButton(
-                        onClick = { onEvent(AiChatUiEvent.OnRemoveImage) },
-                        modifier = Modifier
-                            .align(Alignment.TopEnd)
-                            .size(20.dp)
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.Close,
-                            contentDescription = stringResource(R.string.feature_aichat_remove_image),
-                            tint = Color.Red
-                        )
-                    }
-                }
+            items(messages) { message ->
+                ChatBubble(message)
             }
 
-            HorizontalDivider()
-
-            ChatInput(
-                text = state.inputText,
-                onTextChange = { onEvent(AiChatUiEvent.OnTextChanged(it)) },
-                onSend = { onEvent(AiChatUiEvent.OnSendMessage()) },
-                onImageSelect = { onEvent(AiChatUiEvent.OnLaunchGallery) },
-                isLoading = state.isLoading
-            )
+            if (state.isLoading) {
+                item { ChatBubblePlaceholder() }
+            }
         }
+        state.selectedImageUri?.let { uri ->
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth(0.25f)
+                    .height(90.dp)
+                    .clip(RoundedCornerShape(8.dp))
+            ) {
+                MessageImage(
+                    imageUrl = uri.toString(),
+                    modifier = Modifier.fillMaxSize()
+                )
+
+                IconButton(
+                    onClick = { onEvent(AiChatUiEvent.OnRemoveImage) },
+                    modifier = Modifier
+                        .align(Alignment.TopEnd)
+                        .size(20.dp)
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Close,
+                        contentDescription = stringResource(R.string.feature_aichat_remove_image),
+                        tint = Color.Red
+                    )
+                }
+            }
+        }
+
+        HorizontalDivider()
+
+        ChatInput(
+            text = state.inputText,
+            onTextChange = { onEvent(AiChatUiEvent.OnTextChanged(it)) },
+            onSend = { onEvent(AiChatUiEvent.OnSendMessage()) },
+            onImageSelect = { onEvent(AiChatUiEvent.OnLaunchGallery) },
+            isLoading = state.isLoading
+        )
     }
 }
 
@@ -168,7 +162,7 @@ fun ChatBubble(message: UiAiMessage) {
         Column(
             modifier = Modifier
                 .background(
-                    if (message.isFromUser) Color.Blue else Color.Gray,
+                    color = if (message.isFromUser) Color.Blue else Color.Gray,
                     shape = RoundedCornerShape(8.dp)
                 )
                 .padding(8.dp)

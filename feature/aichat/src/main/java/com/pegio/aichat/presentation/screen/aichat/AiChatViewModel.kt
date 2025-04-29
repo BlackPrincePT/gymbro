@@ -45,6 +45,7 @@ class AiChatViewModel @Inject constructor(
     private var aiChatContext: AiChatContext? = null
 
     init {
+        loadMoreMessages()
         args.postId?.let { postId ->
             loadPostContext(postId)
             updateState { copy(inputText = AUTO_POST_QUESTION) }
@@ -96,7 +97,13 @@ class AiChatViewModel @Inject constructor(
 
             saveMessage(aiChatMessage = domainMessage)
 
-            updateState { copy(messages = messages + uiMessage, inputText = "", selectedImageUri = null) }
+            updateState {
+                copy(
+                    messages = messages + uiMessage,
+                    inputText = "",
+                    selectedImageUri = null
+                )
+            }
             sendAiResponse()
         }
     }
@@ -125,13 +132,11 @@ class AiChatViewModel @Inject constructor(
 
         observeAiMessagesPagingStream(lastMessageId = uiState.earliestMessageTimestamp)
             .onSuccess { messages ->
+                val fetchedMessages = messages.map(uiAiMessageMapper::mapFromDomain)
                 updateState {
                     copy(
                         earliestMessageTimestamp = messages.lastOrNull()?.timestamp,
-                        messages = messages
-                            .map(uiAiMessageMapper::mapFromDomain)
-                            .reversed()
-                            .plus(currentMessages)
+                        messages = currentMessages.plus(fetchedMessages)
                     )
                 }
             }
