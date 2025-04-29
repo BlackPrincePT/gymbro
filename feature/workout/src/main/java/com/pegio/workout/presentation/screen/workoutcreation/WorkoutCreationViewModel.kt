@@ -27,6 +27,7 @@ class WorkoutCreationViewModel @Inject constructor(
 ) : BaseViewModel<WorkoutCreationUiState, WorkoutCreationUiEffect, WorkoutCreationUiEvent>(
     initialState = WorkoutCreationUiState()
 ) {
+
     override fun onEvent(event: WorkoutCreationUiEvent) {
         when (event) {
             // Workout actions
@@ -34,6 +35,10 @@ class WorkoutCreationViewModel @Inject constructor(
             WorkoutCreationUiEvent.OnUploadWorkouts -> uploadWorkouts()
             is WorkoutCreationUiEvent.RemoveWorkout -> removeWorkout(event.workoutId)
             is WorkoutCreationUiEvent.OnEditWorkout -> editWorkout(event.workout)
+            WorkoutCreationUiEvent.OnLaunchGallery -> sendEffect(WorkoutCreationUiEffect.LaunchGallery)
+            is WorkoutCreationUiEvent.OnWorkoutImageSelected -> updateState {
+                copy(newWorkout = newWorkout.copy(workoutImage = event.uri.toString()))
+            }
 
             // Workout Dialog
             WorkoutCreationUiEvent.OnDismissDialog -> hideAddWorkoutDialog()
@@ -47,6 +52,11 @@ class WorkoutCreationViewModel @Inject constructor(
             WorkoutCreationUiEvent.OnBackClick -> sendEffect(WorkoutCreationUiEffect.NavigateBack)
         }
     }
+
+    override fun setLoading(isLoading: Boolean) {
+        updateState { copy(isLoading = isLoading) }
+    }
+
 
     private fun showAddWorkoutDialog() {
         updateState {
@@ -100,14 +110,16 @@ class WorkoutCreationViewModel @Inject constructor(
     }
 
 
-
     private fun areWorkoutFieldsValid(): Boolean = with(uiState.newWorkout) {
         val nameError = workoutFormValidator.validateWorkoutName(name).errorOrNull()
-        val descriptionError = workoutFormValidator.validateWorkoutDescription(description).errorOrNull()
+        val descriptionError =
+            workoutFormValidator.validateWorkoutDescription(description).errorOrNull()
         val valueError = workoutFormValidator.validateWorkoutValue(value).errorOrNull()
         val setsError = workoutFormValidator.validateWorkoutSets(sets).errorOrNull()
-        val muscleGroupsError = workoutFormValidator.validateWorkoutMuscleGroups(muscleGroups).errorOrNull()
-        val workoutImageError = workoutFormValidator.validateWorkoutImage(workoutImage).errorOrNull()
+        val muscleGroupsError =
+            workoutFormValidator.validateWorkoutMuscleGroups(muscleGroups).errorOrNull()
+        val workoutImageError =
+            workoutFormValidator.validateWorkoutImage(workoutImage).errorOrNull()
 
         updateState {
             copy(
@@ -164,7 +176,8 @@ class WorkoutCreationViewModel @Inject constructor(
 
     private fun validateWorkoutFields(): Boolean {
         val titleError = workoutFormValidator.validateWorkoutTitle(uiState.title).errorOrNull()
-        val mainDescriptionError = workoutFormValidator.validateWorkoutMainDescription(uiState.description).errorOrNull()
+        val mainDescriptionError =
+            workoutFormValidator.validateWorkoutMainDescription(uiState.description).errorOrNull()
 
         updateState {
             copy(
@@ -182,9 +195,5 @@ class WorkoutCreationViewModel @Inject constructor(
         updateState {
             copy(exercises = exercises.filter { it.id != workoutId })
         }
-    }
-
-    override fun setLoading(isLoading: Boolean) {
-        updateState { copy(isLoading = isLoading) }
     }
 }
