@@ -7,7 +7,7 @@ import javax.inject.Inject
 
 class ValidateWorkoutsListUseCase @Inject constructor() {
     operator fun invoke(exercises: List<Exercise>): Resource<Unit, WorkoutValidationError.Workouts> {
-        if (exercises.size < 5) {
+        if (exercises.size < 2) {
             return Resource.Failure(error = WorkoutValidationError.Workouts.TOO_FEW)
         }
         else if (exercises.size > 30){

@@ -3,7 +3,7 @@ package com.pegio.network.core
 object OpenAiConstants {
     const val GPT_MODEL = "gpt-4o-mini"
     const val MAX_TOKENS = 300
-    const val DEFAULT_SYSTEM_MESSAGE = "You are gym assistant in app called gymBro"
+    const val DEFAULT_SYSTEM_MESSAGE = "You are gym assistant in social app called GymBro."
 
     /**
      *  Role

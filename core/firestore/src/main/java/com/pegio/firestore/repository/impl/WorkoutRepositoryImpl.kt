@@ -15,7 +15,9 @@ import com.pegio.firestore.util.FirestoreUtils
 import com.pegio.model.Workout
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
+import javax.inject.Singleton
 
+@Singleton
 internal class WorkoutRepositoryImpl @Inject constructor(
     private val db: FirebaseFirestore,
     private val workoutDtoMapper: WorkoutDtoMapper,
@@ -40,6 +42,10 @@ internal class WorkoutRepositoryImpl @Inject constructor(
         val workoutDto = workoutDtoMapper.mapFromDomain(workout)
         val documentRef = db.collection(WORKOUTS).add(workoutDto).await()
         return documentRef.id
+    }
+
+    override fun refreshPagination() {
+        workoutsPagingSource.resetPagination()
     }
 
     override suspend fun fetchNextUserWorkoutsPage(authorId: String): Resource<List<Workout>, DataError> {

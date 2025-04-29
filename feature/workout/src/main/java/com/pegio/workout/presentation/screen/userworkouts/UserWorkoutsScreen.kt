@@ -1,28 +1,31 @@
 package com.pegio.workout.presentation.screen.userworkouts
 
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Card
+import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.pegio.common.presentation.components.LoadingItemsIndicator
 import com.pegio.common.presentation.state.TopBarAction
 import com.pegio.common.presentation.state.TopBarState
 import com.pegio.common.presentation.util.CollectLatestEffect
+import com.pegio.common.presentation.util.PagingColumn
 import com.pegio.designsystem.component.GymBroTextButton
 import com.pegio.workout.R
 import com.pegio.workout.presentation.model.UiWorkout
@@ -69,15 +72,29 @@ fun UserWorkoutsContent(
     state: UserWorkoutsUiState,
     onEvent: (UserWorkoutsUiEvent) -> Unit,
     modifier: Modifier = Modifier
-) {
-    LazyColumn(modifier = modifier.fillMaxSize()) {
-        items(state.workouts) { workout ->
-            UserWorkoutItem(
-                workout = workout,
-                isChoosing = state.isChoosing,
-                onChooseClick = { onEvent(UserWorkoutsUiEvent.OnBackClick(workout.id)) },
-                onStartWorkout = { onEvent(UserWorkoutsUiEvent.StartWorkout(workout.id)) }
-            )
+) = with(state) {
+
+    PullToRefreshBox(
+        isRefreshing = isRefreshing,
+        onRefresh = { onEvent(UserWorkoutsUiEvent.RefreshUserWorkouts) }
+    ) {
+        PagingColumn(
+            isLoading = isLoading,
+            itemCount = workouts.size,
+            onLoadAnotherPage = { onEvent(UserWorkoutsUiEvent.LoadMoreUserWorkouts) },
+            modifier = modifier.fillMaxSize()
+        ) {
+            items(workouts) { workout ->
+                UserWorkoutItem(
+                    workout = workout,
+                    isChoosing = isChoosing,
+                    onChooseClick = { onEvent(UserWorkoutsUiEvent.OnBackClick(workout.id)) },
+                    onStartWorkout = { onEvent(UserWorkoutsUiEvent.StartWorkout(workout.id)) }
+                )
+            }
+
+            if (isLoading && !isRefreshing)
+                item { LoadingItemsIndicator() }
         }
     }
 }
@@ -95,26 +112,30 @@ fun UserWorkoutItem(
             .padding(16.dp)
             .clickable(onClick = onStartWorkout),
     ) {
-        Column(modifier = Modifier.padding(16.dp)) {
-            Text(
-                text = workout.title,
-                style = MaterialTheme.typography.bodyLarge,
-                modifier = Modifier.padding(bottom = 8.dp)
-            )
-            Text(
-                text = workout.description,
-                style = MaterialTheme.typography.bodyMedium,
-                modifier = Modifier.padding(bottom = 8.dp)
-            )
-
-            if (isChoosing) GymBroTextButton(
-                text = stringResource(R.string.feature_workout_choose),
-                onClick = onChooseClick
-            )
-        }
+        ListItem(
+            headlineContent = {
+                Text(
+                    text = workout.title,
+                    style = MaterialTheme.typography.bodyLarge,
+                    modifier = Modifier.padding(bottom = 8.dp)
+                )
+            },
+            supportingContent = {
+                Text(
+                    text = workout.description,
+                    style = MaterialTheme.typography.bodyMedium,
+                    modifier = Modifier.padding(bottom = 8.dp)
+                )
+            },
+            trailingContent = {
+                if (isChoosing) GymBroTextButton(
+                    text = stringResource(R.string.feature_workout_choose),
+                    onClick = onChooseClick
+                )
+            }
+        )
     }
 }
-
 
 @Composable
 private fun SetupTopBar(
@@ -137,4 +158,15 @@ private fun SetupTopBar(
             )
         )
     }
+}
+
+@Preview
+@Composable
+private fun UserWorkoutItemPreview() {
+    UserWorkoutItem(
+        workout = UiWorkout.DEFAULT,
+        isChoosing = true,
+        onChooseClick = { },
+        onStartWorkout = { }
+    )
 }

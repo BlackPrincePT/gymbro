@@ -137,6 +137,7 @@ fun NavigationHost(
             onShowPostDetails = navController::navigateToPostDetails,
             onPostAuthorClick = navController::navigateToProfile,
             onPostWorkoutClick = navController::navigateToWorkout,
+            onAskGymBroClick = navController::navigateToAiChat,
             onChatClick = navController::navigateToAiChat,
             onOpenDrawerClick = dynamicallyOpenDrawer,
             onShowSnackbar = onShowSnackbar,

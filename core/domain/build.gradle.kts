@@ -1,5 +1,6 @@
 plugins {
     alias(libs.plugins.gymbro.android.library)
+    alias(libs.plugins.kotlin.serialization)
 }
 
 android {
@@ -18,4 +19,5 @@ dependencies {
     implementation(project(":core:uploadmanager"))
 
     implementation(libs.javax.inject)
+    implementation(libs.kotlinx.serialization.json)
 }

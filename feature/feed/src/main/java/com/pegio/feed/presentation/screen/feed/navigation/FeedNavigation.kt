@@ -17,6 +17,7 @@ fun NavGraphBuilder.feedScreen(
     onCreatePostClick: (Boolean) -> Unit,
     onShowPostDetails: (String) -> Unit,
     onPostWorkoutClick: (String) -> Unit,
+    onAskGymBroClick: (String) -> Unit,
     onPostAuthorClick: (String) -> Unit,
     onChatClick: () -> Unit,
     onOpenDrawerClick: () -> Unit,
@@ -30,6 +31,7 @@ fun NavGraphBuilder.feedScreen(
             onUserProfileClick = onPostAuthorClick,
             onPostWorkoutClick = onPostWorkoutClick,
             onChatClick = onChatClick,
+            onAskGymBroClick = onAskGymBroClick,
             onOpenDrawerClick = onOpenDrawerClick,
             onShowSnackbar = onShowSnackbar,
             onSetupTopBar = onSetupTopBar

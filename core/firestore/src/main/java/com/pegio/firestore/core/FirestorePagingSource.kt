@@ -37,4 +37,21 @@ internal class FirestorePagingSource<T>(
                 pagingResult.objects
             }
     }
+
+//    fun loadNextPageStream(baseQuery: Query): Flow<Resource<List<T>, DataError>> {
+//        if (isEndOfList)
+//            return flow { DataError.Pagination.END_OF_PAGINATION_REACHED.asFailure() }
+//
+//        val query = lastVisibleDocument?.let { baseQuery.startAfter(it).limit(pageSize) }
+//            ?: baseQuery.limit(pageSize)
+//
+//        return firestoreUtils.observeDocuments(query, klass)
+//            .onSuccess { pagingResult ->
+//                lastVisibleDocument = pagingResult.lastDocument
+//
+//                if (pagingResult.objects.size < pageSize)
+//                    isEndOfList = true
+//            }
+//            .convert { it.objects }
+//    }
 }

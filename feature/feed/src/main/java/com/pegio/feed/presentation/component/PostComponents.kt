@@ -1,6 +1,7 @@
 package com.pegio.feed.presentation.component
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -16,11 +17,18 @@ import androidx.compose.material.icons.filled.ArrowDownward
 import androidx.compose.material.icons.filled.ArrowUpward
 import androidx.compose.material.icons.filled.FitnessCenter
 import androidx.compose.material.icons.filled.Image
+import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -28,6 +36,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -35,6 +44,8 @@ import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 import com.pegio.common.presentation.components.ProfileImage
 import com.pegio.common.presentation.model.UiUser
+import com.pegio.designsystem.component.GymBroIconButton
+import com.pegio.feed.R
 import com.pegio.feed.presentation.model.UiPost
 import com.pegio.model.Vote
 
@@ -45,12 +56,17 @@ internal fun PostContent(
     modifier: Modifier = Modifier,
     onCommentClick: () -> Unit = { },
     onProfileClick: () -> Unit = { },
-    onWorkoutClick: () -> Unit = { }
+    onWorkoutClick: () -> Unit = { },
+    onAskGymBroClick: () -> Unit = { }
 ) {
     Column(
         modifier = modifier
     ) {
-        PostHeader(post, onProfileClick)
+        PostHeader(
+            post = post,
+            onProfileClick = onProfileClick,
+            onAskGymBroClick = onAskGymBroClick
+        )
 
         Spacer(modifier = Modifier.height(8.dp))
 
@@ -76,7 +92,6 @@ private fun PostContent(
     Column {
         Text(
             text = post.content,
-            maxLines = 3, // TODO IMPLEMENT LOAD MORE
             modifier = Modifier
                 .padding(horizontal = 16.dp)
         )
@@ -99,7 +114,8 @@ private fun PostContent(
 @Composable
 private fun PostHeader(
     post: UiPost,
-    onProfileClick: () -> Unit
+    onProfileClick: () -> Unit,
+    onAskGymBroClick: () -> Unit
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -133,6 +149,8 @@ private fun PostHeader(
                 color = Color.Gray
             )
         }
+
+        PostMoreActions(onAskGymBroClick = onAskGymBroClick)
     }
 }
 
@@ -249,6 +267,36 @@ private fun PostAction(
     }
 }
 
+@Composable
+private fun PostMoreActions(
+    onAskGymBroClick: () -> Unit
+) {
+
+    var isExpanded by remember { mutableStateOf(false) }
+
+    Box {
+        GymBroIconButton(
+            imageVector = Icons.Default.MoreVert,
+            onClick = { isExpanded = true },
+            modifier = Modifier.size(24.dp)
+        )
+
+        DropdownMenu(
+            expanded = isExpanded,
+            onDismissRequest = { isExpanded = false }
+        ) {
+
+            DropdownMenuItem(
+                text = { Text(text = stringResource(R.string.feature_feed_ask_gym_bro)) },
+                onClick = {
+                    onAskGymBroClick()
+                    isExpanded = false
+                }
+            )
+        }
+    }
+}
+
 // ====== ====== Create ====== ====== \\
 
 @Composable
@@ -315,6 +363,7 @@ internal fun PostImage(
 private fun PostHeaderPreview() {
     PostHeader(
         post = UiPost.DEFAULT,
+        onAskGymBroClick = { },
         onProfileClick = { }
     )
 }
