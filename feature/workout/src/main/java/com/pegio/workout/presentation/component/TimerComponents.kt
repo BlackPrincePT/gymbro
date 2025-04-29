@@ -57,6 +57,8 @@ fun TimerSection(
                         if (timerState == TimerState.RUNNING) onPauseTimer()
                         else onResumeTimer()
                     },
+                    modifier = Modifier
+                        .padding(8.dp)
                 ) {
                     Icon(
                         imageVector = if (timerState == TimerState.PAUSED)  Icons.Default.PlayArrow else  Icons.Default.Pause ,
@@ -116,6 +118,8 @@ fun TimerSection(
             if (timerState != TimerState.NOT_STARTED) {
                 IconButton(
                     onClick = onResetTimer,
+                    modifier = Modifier
+                        .padding(8.dp)
                 ) {
                     Icon(
                         imageVector = Icons.Default.Refresh,
