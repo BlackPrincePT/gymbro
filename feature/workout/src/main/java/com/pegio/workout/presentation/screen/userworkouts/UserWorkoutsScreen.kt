@@ -8,7 +8,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material3.Card
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -106,35 +105,32 @@ fun UserWorkoutItem(
     onChooseClick: () -> Unit,
     onStartWorkout: () -> Unit
 ) {
-    Card(
+    ListItem(
+        headlineContent = {
+            Text(
+                text = workout.title,
+                style = MaterialTheme.typography.bodyLarge,
+                modifier = Modifier.padding(bottom = 8.dp)
+            )
+        },
+        supportingContent = {
+            Text(
+                text = workout.description,
+                style = MaterialTheme.typography.bodyMedium,
+                modifier = Modifier.padding(bottom = 8.dp)
+            )
+        },
+        trailingContent = {
+            if (isChoosing) GymBroTextButton(
+                text = stringResource(R.string.feature_workout_choose),
+                onClick = onChooseClick
+            )
+        },
         modifier = Modifier
             .fillMaxWidth()
             .padding(16.dp)
             .clickable(onClick = onStartWorkout),
-    ) {
-        ListItem(
-            headlineContent = {
-                Text(
-                    text = workout.title,
-                    style = MaterialTheme.typography.bodyLarge,
-                    modifier = Modifier.padding(bottom = 8.dp)
-                )
-            },
-            supportingContent = {
-                Text(
-                    text = workout.description,
-                    style = MaterialTheme.typography.bodyMedium,
-                    modifier = Modifier.padding(bottom = 8.dp)
-                )
-            },
-            trailingContent = {
-                if (isChoosing) GymBroTextButton(
-                    text = stringResource(R.string.feature_workout_choose),
-                    onClick = onChooseClick
-                )
-            }
-        )
-    }
+    )
 }
 
 @Composable
