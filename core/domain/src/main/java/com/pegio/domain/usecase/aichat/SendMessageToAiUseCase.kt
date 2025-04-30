@@ -62,8 +62,6 @@ class SendMessageToAiUseCase @Inject constructor(
 
         messages.add(messageWithContext)
 
-        messages.joinToString().also { println(it.length) }
-
         return aiChatRepository.sendMessage(aiMessage = messages)
     }
 }

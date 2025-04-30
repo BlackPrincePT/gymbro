@@ -107,11 +107,12 @@ private fun AiChatContent(
             items(messages) { message ->
                 ChatBubble(message)
             }
-
-            if (state.isLoading) {
-                item { ChatBubblePlaceholder() }
-            }
         }
+
+        if (state.isLoading) {
+            ChatBubblePlaceholder()
+        }
+
         state.selectedImageUri?.let { uri ->
             Box(
                 modifier = Modifier
@@ -196,7 +197,9 @@ fun ChatBubble(message: UiAiMessage) {
                 Text(
                     text = message.text,
                     color = Color.White,
-                    modifier = Modifier.padding(top = 4.dp)
+                    modifier = Modifier
+                        .fillMaxWidth(0.69f)
+                        .padding(top = 4.dp)
                 )
             }
         }

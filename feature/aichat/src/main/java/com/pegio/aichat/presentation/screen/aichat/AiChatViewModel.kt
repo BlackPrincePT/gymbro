@@ -20,6 +20,7 @@ import com.pegio.domain.usecase.aichat.ObserveAiMessagesPagingStreamUseCase
 import com.pegio.domain.usecase.aichat.SaveFireStoreMessagesUseCase
 import com.pegio.domain.usecase.aichat.SendMessageToAiUseCase
 import com.pegio.domain.usecase.common.EnqueueFileUploadUseCase
+import com.pegio.model.AiMessage
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.launchIn
 import javax.inject.Inject
@@ -79,16 +80,14 @@ class AiChatViewModel @Inject constructor(
 
     private fun sendMessage() = with(uiState) {
         launchWithLoading {
-            val uiMessage = UiAiMessage(
-                text = inputText,
-                isUploading = selectedImageUri != null
-            )
+            val uiMessage = UiAiMessage(text = inputText, isUploading = selectedImageUri != null)
+
+            updateState { copy(inputText = "") }
 
             var domainMessage = uiAiMessageMapper.mapToDomain(uiMessage)
 
             selectedImageUri?.let { imageUri ->
-                val pendingMessage = uiMessage.copy(isUploading = true)
-                updateState { copy(messages = messages + pendingMessage) }
+                updateState { copy(selectedImageUri = null, messages = listOf(uiMessage) + messages) }
 
                 enqueueFileUpload(imageUri.toString())
                     .onSuccess { domainMessage = domainMessage.copy(imageUrl = it) }
@@ -97,19 +96,13 @@ class AiChatViewModel @Inject constructor(
 
             saveMessage(aiChatMessage = domainMessage)
 
-            updateState {
-                copy(
-                    messages = messages + uiMessage,
-                    inputText = "",
-                    selectedImageUri = null
-                )
-            }
-            sendAiResponse()
+            sendAiResponse(newMessage = domainMessage)
+
         }
     }
 
-    private suspend fun sendAiResponse() {
-        val domainMessages = uiState.messages.map(uiAiMessageMapper::mapToDomain)
+    private suspend fun sendAiResponse(newMessage: AiMessage) {
+        val domainMessages = uiState.messages.map(uiAiMessageMapper::mapToDomain) + newMessage
 
         sendMessageToAi(aiMessages = domainMessages, aiChatContext)
             .onFailure { sendEffect(AiChatUiEffect.ShowSnackbar(errorRes = it.toStringResId())) }
